@@ -56,6 +56,10 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
             continue
         end
         
+        
+        EEG.ref = 'CZ';
+        
+        pop_eegplot()
         % save to set
         try
             pop_saveset(EEG, 'filename', Filename.SET, ...
