@@ -1,3 +1,9 @@
+
+# EEG related stuff
+.fdt
+.set
+.mat
+.eeg
   
 # Windows default autosave extension
 *.asv
