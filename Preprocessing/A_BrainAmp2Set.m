@@ -8,6 +8,8 @@ clear
 Refresh = false;
 GeneralPreprocessingParameters
 
+load('StandardChanlocs128.mat') % has channel locations in StandardChanlocs
+
 
 for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
     for Indx_F = 1:size(Folders.Subfolders, 1) % loop through all subfolders
@@ -58,9 +60,8 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
         
         
         EEG.ref = 'CZ';
+        EEG.chanlocs = StandardChanlocs;
         
-        pop_eegplot()
-        % save to set
         try
             pop_saveset(EEG, 'filename', Filename.SET, ...
                 'filepath', Path, ...
