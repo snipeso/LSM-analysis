@@ -8,6 +8,7 @@ clear
 Refresh = false;
 SpotCheck = true;
 GeneralPreprocessingParameters
+Folder.LightFiltering = 'LightFiltering';
 
 for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
     for Indx_F = 1:size(Folders.Subfolders, 1) % loop through all subfolders
@@ -45,7 +46,7 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
         Filename.SET = Content(SET, :);
         
         % set up destination location
-        Destination = fullfile(Paths.Preprocessed, Task);
+        Destination = fullfile(Paths.Preprocessed, Folder.LightFiltering, Task);
         Filename.Core = join([Folders.Datasets{Indx_D}, Levels(:)'], '_');
         Filename.Destination = [Filename.Core{1}, '.set'];
         
