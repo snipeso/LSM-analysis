@@ -76,3 +76,8 @@ for Indx_Ch = 1:numel(Channels)
     end
 end
 
+
+%TODO: run iCA on mini EEG (1 min), with 15s removed from 3 channels (10, 70, edge) by either
+% settin to 0, or interpolating, or intact.
+% compare preferred condition with actual artefact data
+
