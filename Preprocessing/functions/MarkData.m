@@ -16,14 +16,18 @@ if ismember('badchans', {Content.name})
     Colors(m.badchans) = {[1, 0, 0]};
 end
     
-
+if ismember('cutData', {Content.name})
+    Data2 = m.cutData;
+else
+    Data2 = nan(size(EEG.data));
+end
 
 if ismember('TMPREJ', {Content.name})
     eegplot(EEG.data, 'srate', EEG.srate, 'winlength', 20, ...
     'command', 'm.TMPREJ = TMPREJ', 'color', Colors, 'butlabel', 'Save', ...
-    'winrej', m.TMPREJ)
+    'winrej', m.TMPREJ, 'data2', Data2)
 else
     eegplot(EEG.data, 'srate', EEG.srate, 'winlength', 20, ...
-        'command', 'm.TMPREJ = TMPREJ', 'color', Colors, 'butlabel', 'Save')
+        'command', 'm.TMPREJ = TMPREJ', 'color', Colors, 'butlabel', 'Save', 'data2', Data2)
 end
 % TODO, mark with data2 little cuts, immersed in NANs
