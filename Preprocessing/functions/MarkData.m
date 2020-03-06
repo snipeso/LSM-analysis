@@ -1,4 +1,5 @@
 function MarkData(EEG)
+close all
 
 CURRENTSET = 1;
 ALLEEG(1) = EEG;
@@ -19,11 +20,10 @@ end
 
 if ismember('TMPREJ', {Content.name})
     eegplot(EEG.data, 'srate', EEG.srate, 'winlength', 20, ...
-    'command', 'm.TMPREJ = TMPREJ;', 'color', Colors, 'butlabel', 'Save', ...
+    'command', 'm.TMPREJ = TMPREJ', 'color', Colors, 'butlabel', 'Save', ...
     'winrej', m.TMPREJ)
 else
     eegplot(EEG.data, 'srate', EEG.srate, 'winlength', 20, ...
-        'command', 'm.TMPREJ = TMPREJ;', 'color', Colors, 'butlabel', 'Save')
+        'command', 'm.TMPREJ = TMPREJ', 'color', Colors, 'butlabel', 'Save')
 end
-
 % TODO, mark with data2 little cuts, immersed in NANs

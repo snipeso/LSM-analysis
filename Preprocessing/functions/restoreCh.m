@@ -1,4 +1,4 @@
-function restoreCh(Ch, CutFilename)
+function restoreCh(CutFilename, Ch)
 
 m = matfile(CutFilename,'Writable',true);
 

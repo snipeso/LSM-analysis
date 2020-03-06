@@ -1,4 +1,4 @@
-function rmCh(Ch, CutFilename)
+function rmCh(CutFilename, Ch)
 
 m = matfile(CutFilename,'Writable',true);
 
