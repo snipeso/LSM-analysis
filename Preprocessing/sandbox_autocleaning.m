@@ -13,14 +13,7 @@ limit = norm*mad(meanChannels);
 Eyes = [1:26];
 Windows = TMPREJ(:, [1,2]);
 YWindows = ones(size(Windows));
-figure
-hold on
-% plot(mean(abs(EEG.data)))
-plot(meanChannels)
-plot(limit*ones(size(meanChannels)))
-plot(norm*ones(size(meanChannels)))
-plot(Windows', YWindows', 'k', 'LineWidth', 5)
-legend({'meanAllCh', 'meanbackCh', 'threshold', 'mean of ch'})
+
 
 
 AboveThresholds = meanChannels > limit;
@@ -39,34 +32,69 @@ fs = EEG.srate;
 [Channels, Points] = size(EEG.data);
 NewStarts = zeros(size(Starts));
 NewEnds = zeros(size(Ends));
+
 for Indx_I = 1:numel(Starts)
     Start = Starts(Indx_I);
     
-    [~, indx] =  min(Start - MedianStarts(MedianStarts<Start));
-    Start = MedianStarts(indx) - fs*Padding;
+    Previous = MedianStarts(MedianStarts<Start);
+    Start = Previous(end) - fs*Padding;
     
     if Start <= 0
         Start = 1;
     end
     
+    NewStarts(Indx_I) = Start;
     
-        End = Ends(Indx_I);
+    End = Ends(Indx_I);
     
-    [~, indx] =  min(End - MedianEnds(MedianEnds>End));
-    End = MedianEnds(indx) + fs*Padding;
+    Next = MedianEnds(MedianEnds>End);
+    End = Next(1) + fs*Padding;
     
     if End > Points
         End = Points;
     end
-    
+    NewEnds(Indx_I) = End;
     
 end
 
 
-autoWindows = [Starts; Ends]
+minGap = 5;
+
+for Indx_I = 1:numel(NewStarts)
+    NewStart = NewStarts(Indx_I);
+
+    NewEnd = NewEnds(Indx_I);
+    OverlapWindowsIndx = ((NewStarts <= NewStart & NewEnds >= NewStart) | ...
+        (NewStarts <= NewEnd & NewEnds >= NewEnd));
+    if ~any(OverlapWindowsIndx)
+        continue
+    end
+    OverlapStarts = NewStarts(OverlapWindowsIndx);
+    OverlapEnds = NewEnds(OverlapWindowsIndx);
+    
+    NewStart = min(OverlapStarts);
+    NewEnd = max(OverlapEnds);
+
+    
+    NewStarts(OverlapWindowsIndx) = NewStart;
+    NewEnds(OverlapWindowsIndx) = NewEnd;
+end
+
+UniqueWindows = unique([NewStarts(:), NewEnds(:)], 'rows');
+
+YUniqueWindows = 2*ones(size(UniqueWindows));
 
 
 
+figure
+hold on
+% plot(mean(abs(EEG.data)))
+plot(meanChannels)
+plot(limit*ones(size(meanChannels)))
+plot(norm*ones(size(meanChannels)))
+plot(Windows', YWindows', 'k', 'LineWidth', 5)
+plot(UniqueWindows', YUniqueWindows', 'r', 'LineWidth', 5)
+legend({'meanAllCh', 'meanbackCh', 'threshold', 'mean of ch'})
 
 
 
