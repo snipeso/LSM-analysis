@@ -3,8 +3,8 @@
 
 % either choose a specific file
 GeneralPreprocessingParameters
-Paths.LFiltered = 'C:\Users\colas\Desktop\FakeDataPreprocessedEEG\LightlyFiltered';
-Filename.LFiltered = 'P02_Session2.set';
+Paths.LFiltered = 'C:\Users\colas\Desktop\FakeDataPreprocessedEEG\LightFiltering';
+Filename = 'P02_Session2.set';
 % Filename = [];
 Folder.Data = 'Session2';
 
@@ -28,3 +28,6 @@ restoreCh(EEG.CutFilepath, Ch) % restore removed channels
 %% remove cut data
 
 % remove channels entirely, 
+
+
+% and to restore a snippet
