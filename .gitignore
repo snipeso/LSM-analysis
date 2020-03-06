@@ -39,3 +39,4 @@ octave-workspace
 Preprocessing/allfilts.mat
 *.fig
 *.mat
+*.set
