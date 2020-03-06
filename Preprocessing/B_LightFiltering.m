@@ -67,6 +67,9 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
         SpotCheckOriginals = EEG.data(CheckChannels, :);
         originalFS = EEG.srate;
         
+        % TODO: check if ever peaks max amplitude, if so, skip with warning
+        % so person can crop the data appropriately, and start again.
+        
         % notch filter for line noise
         EEG = lineFilter(EEG, 'EU', false);
         
