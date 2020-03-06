@@ -1,29 +1,26 @@
 
 %% Choose a file
 
-Path = 'C:\Users\colas\Desktop\FakeDataPreprocessedEEG\Session2';
-Filename = 'P02_Session2.set';
+% either choose a specific file
+GeneralPreprocessingParameters
+Paths.LFiltered = 'C:\Users\colas\Desktop\FakeDataPreprocessedEEG\LightlyFiltered';
+% Filename.LFiltered = 'P02_Session2.set';
+Filename = [];
+Folder.Data = 'Session2';
 
-
-EEG = pop_loadset('filename', Filename, 'filepath', Path);
-
+EEG = loadEEGtoCut(Paths, Folder.Data, Filename);
 
 %% plot all
-CURRENTSET = 1;
-ALLEEG(1) = EEG;
-pop_eegplot(EEG, 1, 1, 0)
 
-eegplot(EEG)
+MarkData(EEG)
 
-function disp1
-pop_select
-
-disp(1)
-end
 
 %% remove a channel
 
 % choose either a specific file, or a random new one
+Ch = [];
+rmCh(EEG.CutFilepath, Ch) % remove channel or list of channels
+% restoreCh(EEG.CutFilepath, Ch) % restore removed channels
 
 % function to plot a given dataset, with prev markings if exist, save the markings to a file
 
