@@ -4,9 +4,9 @@
 % either choose a specific file
 GeneralPreprocessingParameters
 Paths.LFiltered = 'C:\Users\colas\Desktop\FakeDataPreprocessedEEG\LightFiltering';
-Filename = 'P02_Session2.set';
+Filename = 'P02_Session1.set';
 % Filename = [];
-Folder.Data = 'Session2';
+Folder.Data = 'Session1';
 
 EEG = loadEEGtoCut(Paths, Folder.Data, Filename);
 m = matfile(EEG.CutFilepath,'Writable',true);
@@ -14,7 +14,6 @@ m = matfile(EEG.CutFilepath,'Writable',true);
 %% plot all
 
 MarkData(EEG)
-
 
 %% remove a channel
 
@@ -27,7 +26,6 @@ restoreCh(EEG.CutFilepath, Ch) % restore removed channels
 
 %% remove cut data
 
-% remove channels entirely, 
-
-
-% and to restore a snippet
+% remove channels entirely
+CutSnippet(EEG, StartTime, EndTime, Channel)
+RestoreSnippet(EEG, StartTime, EndTime, Channel)
