@@ -1,7 +1,4 @@
-function AutoCut(CutFilepath, Threshold, showPlots)
-
-% Procedure:
-% -
+function AutoCut(EEG, Threshold, showPlots)
 
 % parameters
 NonEyeChannels = 27:128;
@@ -9,21 +6,28 @@ Padding = 2; % in seconds, time window around edge of artefact to cut out
 minGap = 10; % in seconds, minimum time between artefacts to unify
 
 % load files
-m = matfile(CutFilepath,'Writable',true); % contains cutting info
-EEG = pop_loadset('filename', m.filename, 'filepath', m.filepath);
+
+m = matfile(EEG.CutFilepath,'Writable',true); % contains cutting info
 
 fs = EEG.srate;
-[Channels, Points] = size(EEG.data);
+[~, Points] = size(EEG.data);
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% Set limits
 
 % average all channels together; this is so no one channel drives the cutting too much.
 meanChannel = mean(abs(EEG.data(NonEyeChannels, :)));
 
 % establish limits based on median and median absolute deviance; so extreme values don't push the limits too high
 medianVoltage = median(meanChannel);
-limit = medianVoltage*mad(meanChannel);
+
+if ~exist('Threshold', 'var') || numel(Threshold) == 0
+    Threshold = medianVoltage*mad(meanChannel);
+end
 
 % get all segments above the threshold
-AboveThresholds = meanChannel > limit;
+AboveThresholds = meanChannel > Threshold;
 AboveThresholds = [0, AboveThresholds, 0]; % to make sure there's always a start and finish
 Segments = diff(AboveThresholds);
 Starts = find(Segments == 1);
@@ -119,7 +123,7 @@ disp(['Auto removed ' num2str(DataCutAuto/60), ' min, ', ...
     num2str(100*(DataCutAuto/TotData)), '% of all data.'])
 
 
-if exist('showPlots', 'var')
+if exist('showPlots', 'var') && showPlots
     
     % plot all values of the average of the channels
     figure
@@ -129,14 +133,11 @@ if exist('showPlots', 'var')
     figure
     hold on
     plot(meanChannel)
-    plot(limit*ones(size(meanChannel)))
+    plot(Threshold*ones(size(meanChannel)))
     plot(medianVoltage*ones(size(meanChannel)))
     
     plot(newWindows', YnewWindows', 'r', 'LineWidth', 5)
     legend({'meanbackCh', 'threshold', 'median of ch', 'cut windows'})
-    
-    
-    
 end
 
 % save
@@ -149,7 +150,7 @@ NewTMPREJ(:, 3:5) = repmat([1, 1, 0],  size(newWindows, 1), 1);
 Content = whos(m);
 if ismember('TMPREJ', {Content.name})
     % add new windows to old ones
-    m.TMPREJ = [TMPREJ; NewTMPREJ];
+    m.TMPREJ = [m.TMPREJ; NewTMPREJ];
     
 else
     m.TMPREJ = NewTMPREJ;

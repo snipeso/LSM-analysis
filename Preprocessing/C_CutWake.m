@@ -1,5 +1,8 @@
 
 %% Choose a file
+clear
+clc
+close all
 
 % either choose a specific file
 GeneralPreprocessingParameters
@@ -10,7 +13,7 @@ Folder.Data = 'Session1';
 
 EEG = loadEEGtoCut(Paths, Folder.Data, Filename); % load file
 m = matfile(EEG.CutFilepath,'Writable',true); % create cuts file, load it to current workspace
-autoCut()
+AutoCut(EEG, [], true)
 
 %% plot all
 
