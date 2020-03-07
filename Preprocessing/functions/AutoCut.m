@@ -109,10 +109,14 @@ for Indx_I = 1:numel(NewStarts)
     
 end
 
+newWindows = unique([NewStarts(:), NewEnds(:)], 'rows');
 
+
+% show how much data was cut
 TotData = Points/fs;
 DataCutAuto =  sum(newWindows(:, 2) - newWindows(:, 1))/fs;
-
+disp(['Auto removed ' num2str(DataCutAuto/60), ' min, ', ...
+    num2str(100*(DataCutAuto/TotData)), '% of all data.'])
 
 
 if exist('showPlots', 'var')
@@ -121,13 +125,31 @@ if exist('showPlots', 'var')
     figure
     histogram(meanChannel)
     
+    YnewWindows = 2*ones(size(newWindows));
+    figure
+    hold on
+    plot(meanChannel)
+    plot(limit*ones(size(meanChannel)))
+    plot(medianVoltage*ones(size(meanChannel)))
+    
+    plot(newWindows', YnewWindows', 'r', 'LineWidth', 5)
+    legend({'meanbackCh', 'threshold', 'median of ch', 'cut windows'})
+    
+    
     
 end
 
 % save
+
+NewTMPREJ = zeros(size(newWindows, 1), 133);
+NewTMPREJ(:, 1:2) = newWindows;
+NewTMPREJ(:, 3:5) = repmat([1, 1, 0],  size(newWindows, 1), 1);
+
+
 Content = whos(m);
 if ismember('TMPREJ', {Content.name})
     % add new windows to old ones
+    m.TMPREJ = [TMPREJ; NewTMPREJ];
     
 else
     m.TMPREJ = NewTMPREJ;
