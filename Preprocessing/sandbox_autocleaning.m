@@ -121,6 +121,29 @@ plot(UniqueWindows', YUniqueWindows', 'r', 'LineWidth', 5)
 legend({'meanAllCh', 'meanbackCh', 'threshold', 'mean of ch'})
 
 
+TotData = Points/fs;
+DataCutManual = sum(Windows(:, 2) - Windows(:, 1))/fs;
+DataCutAuto =  sum(UniqueWindows(:, 2) - UniqueWindows(:, 1))/fs;
+
+ManualVector = zeros(1, Points);
+AutoVector = ManualVector;
+
+Windows = round(Windows);
+for Indx_M = 1:size(Windows, 1)
+   ManualVector(Windows(Indx_M, 1):Windows(Indx_M, 2)) = 1; 
+end
+
+UniqueWindows = round(UniqueWindows);
+for Indx_A = 1:size(UniqueWindows, 1)
+   AutoVector(UniqueWindows(Indx_A, 1):UniqueWindows(Indx_A, 2)) = 1; 
+end
+
+Overlap = ManualVector + AutoVector;
+nOverlap = nnz(Overlap == 2)/fs;
+
+disp(['Manual removed ' num2str(DataCutManual/60), ' min out of ', num2str(TotData/60), ' min'])
+disp(['Auto removed ' num2str(DataCutAuto/60), ' min'])
+disp(['Rejection overlap was ', num2str(nOverlap/60), ' min; ', num2str((nOverlap/DataCutManual)*100), '% of manual'])
 
 % try removing just eyes
 

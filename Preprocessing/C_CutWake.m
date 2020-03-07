@@ -8,8 +8,9 @@ Filename = 'P02_Session1.set';
 % Filename = [];
 Folder.Data = 'Session1';
 
-EEG = loadEEGtoCut(Paths, Folder.Data, Filename);
-m = matfile(EEG.CutFilepath,'Writable',true);
+EEG = loadEEGtoCut(Paths, Folder.Data, Filename); % load file
+m = matfile(EEG.CutFilepath,'Writable',true); % create cuts file, load it to current workspace
+autoCut()
 
 %% plot all
 
