@@ -30,6 +30,17 @@ MedianEnds = find(MedianSegments == -1);
 Padding = 1;
 fs = EEG.srate;
 [Channels, Points] = size(EEG.data);
+Starts = find(Segments == 1);
+Ends = find(Segments == -1);
+
+MedianAboveThresholds = meanChannels > norm;
+MedianAboveThresholds = [0, MedianAboveThresholds, 0]; % to make sure there's always a start and finish
+MedianSegments = diff(MedianAboveThresholds);
+MedianStarts = find(MedianSegments == 1);
+MedianEnds = find(MedianSegments == -1);
+Padding = 1;
+fs = EEG.srate;
+[Channels, Points] = size(EEG.data);
 NewStarts = zeros(size(Starts));
 NewEnds = zeros(size(Ends));
 
@@ -58,14 +69,15 @@ for Indx_I = 1:numel(Starts)
 end
 
 
-minGap = 5;
+minGap = 10;
 
 for Indx_I = 1:numel(NewStarts)
     NewStart = NewStarts(Indx_I);
-
+    
     NewEnd = NewEnds(Indx_I);
     OverlapWindowsIndx = ((NewStarts <= NewStart & NewEnds >= NewStart) | ...
         (NewStarts <= NewEnd & NewEnds >= NewEnd));
+    
     if ~any(OverlapWindowsIndx)
         continue
     end
@@ -74,10 +86,22 @@ for Indx_I = 1:numel(NewStarts)
     
     NewStart = min(OverlapStarts);
     NewEnd = max(OverlapEnds);
-
     
-    NewStarts(OverlapWindowsIndx) = NewStart;
-    NewEnds(OverlapWindowsIndx) = NewEnd;
+    NearbyWindowsIndx = (NewEnds >= NewStart - minGap*fs & NewEnds <= NewEnd) | ...
+        (NewStarts <= NewEnd + minGap*fs & NewEnds >= NewStart);
+    
+    if nnz(NearbyWindowsIndx) ~= nnz(OverlapWindowsIndx)
+        A = 1;
+    end
+    
+    NearbyStarts = NewStarts(NearbyWindowsIndx | OverlapWindowsIndx);
+    NearbyEnds = NewEnds(NearbyWindowsIndx | OverlapWindowsIndx);
+    
+    NewStart = min(NearbyStarts);
+    NewEnd = max(NearbyEnds);
+    
+    NewStarts(OverlapWindowsIndx | NearbyWindowsIndx) = NewStart;
+    NewEnds(OverlapWindowsIndx | NearbyWindowsIndx) = NewEnd;
 end
 
 UniqueWindows = unique([NewStarts(:), NewEnds(:)], 'rows');
