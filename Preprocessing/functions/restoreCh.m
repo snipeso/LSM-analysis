@@ -1,6 +1,6 @@
-function restoreCh(CutFilename, Ch)
+function restoreCh(CutFilepath, Ch)
 
-m = matfile(CutFilename,'Writable',true);
+m = matfile(CutFilepath,'Writable',true);
 
 Content = whos(m);
 if ismember('badchans', {Content.name})
