@@ -4,6 +4,7 @@ function AutoCut(EEG, Threshold, showPlots)
 NonEyeChannels = 27:128;
 Padding = 2; % in seconds, time window around edge of artefact to cut out
 minGap = 10; % in seconds, minimum time between artefacts to unify
+% AmpThreshold = 40; % Default Threshold
 
 % load files
 
@@ -23,11 +24,17 @@ meanChannel = mean(abs(EEG.data(NonEyeChannels, :)));
 medianVoltage = median(meanChannel);
 
 if ~exist('Threshold', 'var') || numel(Threshold) == 0
-    Threshold = medianVoltage*mad(meanChannel);
+%     Threshold = AmpThreshold;
+%     Threshold = medianVoltage*mad(meanChannel);
+
+Threshold = 3*exp(mad(log(meanChannel))) + medianVoltage;
 end
 
 % get all segments above the threshold
-AboveThresholds = meanChannel > Threshold;
+% AboveThresholds = meanChannel > Threshold;
+Smooth = exp(smoothdata(log(meanChannel), 'gaussian', fs*2));
+AboveThresholds = Smooth > Threshold;
+
 AboveThresholds = [0, AboveThresholds, 0]; % to make sure there's always a start and finish
 Segments = diff(AboveThresholds);
 Starts = find(Segments == 1);
@@ -51,7 +58,7 @@ for Indx_I = 1:numel(Starts) % loop through all above-threshold segments
     
     % get new start
     Start = Starts(Indx_I); % data goes above threshold
-    Previous = MedianStarts(MedianStarts<Start); % previous point in which data crossed median value
+    Previous = [1, MedianStarts(MedianStarts<Start)]; % previous point in which data crossed median value
     Start = Previous(end) - fs*Padding; % move start by padding value
     
     if Start <= 0 % handle edge case
@@ -135,8 +142,9 @@ if exist('showPlots', 'var') && showPlots
     plot(meanChannel)
     plot(Threshold*ones(size(meanChannel)))
     plot(medianVoltage*ones(size(meanChannel)))
-    
+    plot(Smooth, 'g', 'LineWidth', 2)
     plot(newWindows', YnewWindows', 'r', 'LineWidth', 5)
+    
     legend({'meanbackCh', 'threshold', 'median of ch', 'cut windows'})
 end
 
@@ -144,8 +152,8 @@ end
 
 NewTMPREJ = zeros(size(newWindows, 1), 133);
 NewTMPREJ(:, 1:2) = newWindows;
-NewTMPREJ(:, 3:5) = repmat([1, 1, 0],  size(newWindows, 1), 1);
-
+% NewTMPREJ(:, 3:5) = repmat([1, 1, 0],  size(newWindows, 1), 1);
+NewTMPREJ(:, 3:5) = repmat([0, 1, 1],  size(newWindows, 1), 1);
 
 Content = whos(m);
 if ismember('TMPREJ', {Content.name})
