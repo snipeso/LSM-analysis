@@ -7,13 +7,13 @@ close all
 % either choose a specific file
 GeneralPreprocessingParameters
 Paths.LFiltered = 'C:\Users\colas\Desktop\FakeDataPreprocessedEEG\LightFiltering';
-Filename = 'P02_Session1.set';
+Filename = 'P01_Session1.set';
 % Filename = [];
 Folder.Data = 'Session1';
 
 EEG = loadEEGtoCut(Paths, Folder.Data, Filename); % load file
 m = matfile(EEG.CutFilepath,'Writable',true); % create cuts file, load it to current workspace
-AutoCut(EEG, [], true)
+% AutoCut(EEG, [], true)
 
 %% plot all
 
