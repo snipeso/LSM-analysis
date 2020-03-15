@@ -4,10 +4,9 @@ function AutoCut(EEG, Threshold, showPlots)
 NonEyeChannels = 27:128;
 Padding = 2; % in seconds, time window around edge of artefact to cut out
 minGap = 10; % in seconds, minimum time between artefacts to unify
-% AmpThreshold = 40; % Default Threshold
+
 
 % load files
-
 m = matfile(EEG.CutFilepath,'Writable',true); % contains cutting info
 
 fs = EEG.srate;
@@ -20,18 +19,14 @@ fs = EEG.srate;
 % average all channels together; this is so no one channel drives the cutting too much.
 meanChannel = mean(abs(EEG.data(NonEyeChannels, :)));
 
-% establish limits based on median and median absolute deviance; so extreme values don't push the limits too high
-medianVoltage = median(meanChannel);
+% establish limits based on median and median absolute deviance
+medianVoltage = median(meanChannel); % median because it is less vulnerable to extreme values
 
-if ~exist('Threshold', 'var') || numel(Threshold) == 0
-%     Threshold = AmpThreshold;
-%     Threshold = medianVoltage*mad(meanChannel);
-
-Threshold = 3*exp(mad(log(meanChannel))) + medianVoltage;
+if ~exist('Threshold', 'var') || numel(Threshold) == 0 % allows user to set threshold if needed
+    Threshold = 3*exp(mad(log(meanChannel))) + medianVoltage; % by doing log/exp, it accounts for skewedness of the data
 end
 
 % get all segments above the threshold
-% AboveThresholds = meanChannel > Threshold;
 Smooth = exp(smoothdata(log(meanChannel), 'gaussian', fs*2));
 AboveThresholds = Smooth > Threshold;
 
