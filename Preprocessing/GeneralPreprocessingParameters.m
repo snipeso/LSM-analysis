@@ -3,8 +3,8 @@
 Paths = struct();
 Folders = struct();
 
-Paths.Datasets = 'C:\Users\colas\Desktop\FakeData';
-Paths.Preprocessed = 'C:\Users\colas\Desktop\FakeDataPreprocessedEEG';
+Paths.Datasets = 'C:\Users\colas\Desktop\FakeDataReal';
+Paths.Preprocessed = 'C:\Users\colas\Desktop\FakeDataRealPreprocessedEEG';
 
 Folders.Template = 'PXX';
 Folders.Logs = 'PreprocessingLogs';
@@ -31,3 +31,6 @@ Paths.Logs = fullfile(Paths.Preprocessed, Folders.Logs);
 if ~exist(Paths.Logs, 'dir')
     mkdir(Paths.Logs)
 end
+
+
+
