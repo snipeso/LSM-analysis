@@ -1,5 +1,5 @@
 % first script is for converting egi files so there's a .set with the data.
-% Spits out a .txt file indicating all that was skipped because of
+% Spits out a .mat file indicating all that was skipped because of
 % inconsistencies
 close all
 clc
@@ -10,22 +10,25 @@ GeneralPreprocessingParameters
 
 load('StandardChanlocs128.mat') % has channel locations in StandardChanlocs
 
-
-StartTIme = datestr(now, 'yy-mm-dd_HH-MM');
-m = matfile(fullfile(Paths.Datasets, StartTime, '_A_Log.mat'),'Writable',true);
+% initiate log
+StartTime = datestr(now, 'yy-mm-dd_HH-MM');
+m = matfile(fullfile(Paths.Logs, [StartTime, '_A_Log.mat']),'Writable',true);
 
 missing = struct();
 skipped = struct();
 converted = struct();
 
-A = tic;
+%%% loop through all EEG folders, and convert whatever files possible
+A = tic; % keeps track of how long this takes
 for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
     for Indx_F = 1:size(Folders.Subfolders, 1) % loop through all subfolders
+        
+        % get path
         Path = fullfile(Paths.Datasets, Folders.Datasets{Indx_D}, Folders.Subfolders{Indx_F});
         
-        % skip rest if folder not found
+        % skip rest if path not found
         if ~exist(Path, 'dir')
-            missing(end + 1).path = Path;
+            missing(end + 1).path = Path; %#ok<SAGROW>
             missing(end).reason = 'no path';
             warning([deblank(Path), ' does not exist'])
             continue
@@ -46,7 +49,7 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
                 warning([Path, ' is missing EEG files'])
             end
             continue
-        elseif nnz(VHDR) > 1
+        elseif nnz(VHDR) > 1 % or if there's more than 1 file
             skipped(end + 1).path = Path; %#ok<SAGROW>
             skipped(end).files = Content(VHDR, :);
             skipped(end).reason = 'more than one VHDR file';
@@ -60,6 +63,7 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
         Filename.SET = [Filename.Core, '.set'];
         disp(['***********', 'Loading ', Filename.Core, '***********'])
         
+        % skip if requested
         if not(Refresh) && any(strcmpi(Content, Filename.SET))
             disp(['***********', 'Already did ', Filename.Core, '***********'])
             skipped(end + 1).path = Path; %#ok<SAGROW>
@@ -68,22 +72,24 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
             continue
         end
         
+        % load EEG, skip if this fails for some reason
         try
             EEG = pop_loadbv(Path, Filename.VHDR);
         catch
-            warning(['Failed to load ', Filename.VHDR]) % TODO, add to log
+            warning(['Failed to load ', Filename.VHDR])
             skipped(end + 1).path = Path; %#ok<SAGROW>
             skipped(end).filename = Filename.VHDR;
             skipped(end).reason = 'failed to load';
             continue
         end
         
-        
+        % update EEG structure
         EEG.ref = 'CZ';
         EEG.chanlocs = StandardChanlocs;
-        EEG.info.oldname = filename.VHDR;
+        EEG.info.oldname = Filename.VHDR;
         EEG.info.oldpath = Path;
         
+        % save
         try
             pop_saveset(EEG, 'filename', Filename.SET, ...
                 'filepath', Path, ...
@@ -92,7 +98,7 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
             converted(end + 1).path = Path; %#ok<SAGROW>
             converted(end).filename = Filename.SET;
         catch
-            warning(['Failed to save ', Filename.Core]) % TODO, save to log
+            warning(['Failed to save ', Filename.Core])
             skipped(end + 1).path = Path; %#ok<SAGROW>
             skipped(end).filename = Filename.VHDR;
             skipped(end).reason = 'failed to save';
@@ -100,9 +106,9 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
     end
 end
 
+
+% save log info
 m.CleaningTime = toc(A);
 m.missing = missing;
 m.skipped = skipped;
 m.converted = converted;
-
-%TODO, create log with all parameters and outputs
