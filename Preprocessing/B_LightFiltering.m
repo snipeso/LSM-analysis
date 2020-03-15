@@ -73,12 +73,13 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
         % notch filter for line noise
         EEG = lineFilter(EEG, 'EU', false);
         
+        % low-pass filter
+        EEG = pop_eegfiltnew(EEG, [], high_cutoff); % this is a form of antialiasing, but it not really needed because usually we use 40hz with 256 srate
+        
         % down-sample
         EEG = pop_resample(EEG, new_fs);
         EEG = eeg_checkset( EEG );
         
-        % low-pass filter
-        EEG = pop_eegfiltnew(EEG, [], high_cutoff);
         
         % high-pass filter. NOTE: this is different from LP on purpose
         EEG =  bandpassEEG(EEG, low_cutoff, []);
