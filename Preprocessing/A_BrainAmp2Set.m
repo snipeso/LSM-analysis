@@ -94,7 +94,8 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
             pop_saveset(EEG, 'filename', Filename.SET, ...
                 'filepath', Path, ...
                 'check', 'on', ...
-                'savemode', 'onefile');
+                'savemode', 'onefile', ...
+                'version', '7.3');
             converted(end + 1).path = Path; %#ok<SAGROW>
             converted(end).filename = Filename.SET;
         catch
@@ -112,3 +113,6 @@ m.CleaningTime = toc(A);
 m.missing = missing;
 m.skipped = skipped;
 m.converted = converted;
+
+
+% NOTE: refresh doesn't seem to work?
