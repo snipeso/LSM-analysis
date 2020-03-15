@@ -7,7 +7,8 @@ Paths.Datasets = 'C:\Users\colas\Desktop\FakeData';
 Paths.Preprocessed = 'C:\Users\colas\Desktop\FakeDataPreprocessedEEG';
 
 Folders.Template = 'PXX';
-Folders.Ignore = {'CSVs', 'other'};
+Folders.Logs = 'PreprocessingLogs';
+Folders.Ignore = {'CSVs', Folders.Logs, 'other'};
 
 %%% parameters
 
@@ -25,3 +26,8 @@ CheckChannels = [10, 70]; % frontal and occipital channel
 addpath(fullfile(cd, 'functions'))
 
 [Folders.Subfolders, Folders.Datasets] = AllFolderPaths(Paths.Datasets, Folders.Template, false, Folders.Ignore);
+
+Paths.Logs = fullfile(Paths.Preprocessed, Folders.Logs);
+if ~exist(Paths.Logs, 'dir')
+    mkdir(Paths.Logs)
+end
