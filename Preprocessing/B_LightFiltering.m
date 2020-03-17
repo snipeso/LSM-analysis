@@ -14,12 +14,11 @@ Folder.LightFiltering = 'LightFiltering';
 StartTime = datestr(now, 'yy-mm-dd_HH-MM');
 m = matfile(fullfile(Paths.Logs, [StartTime, '_B_Log.mat']),'Writable',true);
 
-missing = struct();
-skipped = struct();
-converted = struct();
+m.log = struct();
 
 for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
-    for Indx_F = 1:size(Folders.Subfolders, 1) % loop through all subfolders
+    log = struct();
+    parfor Indx_F = 1:size(Folders.Subfolders, 1) % loop through all subfolders
         
         %%%%%%%%%%%%%%%%%%%%%%%%
         %%% Check if data exists
@@ -28,8 +27,9 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
         
         % skip rest if folder not found
         if ~exist(Path, 'dir')
-            missing(end + 1).path = Path; %#ok<SAGROW>
-            missing(end).reason = 'no path';
+            log(Indx_F).path = Path;
+            log(Indx_F).info = 'missing';
+            log(Indx_F).reason = 'no path';
             warning([deblank(Path), ' does not exist'])
             continue
         end
@@ -46,43 +46,45 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
         SET = contains(string(Content), '.set');
         if ~any(SET)
             if any(strcmpi(Levels, 'EEG')) % if there should have been an EEG file, be warned
-                missing(end+1).path = Path;
-                missing(end).reason = 'no set eeg';
+                log(Indx_F).path = Path;
+                log(Indx_F).info = 'missing';
+                log(Indx_F).reason = 'no set file';
+                
                 warning([Path, ' is missing SET file'])
             end
             continue
         elseif nnz(SET) > 1 % if there's more than one set file, you'll need to fix that
-            skipped(end + 1).path = Path; %#ok<SAGROW>
-            skipped(end).files = Content(VHDR, :);
-            skipped(end).reason = 'more than one set file';
+            log(Indx_F).path = Path;
+            log(Indx_F).info = 'skipping';
+            log(Indx_F).reason = 'more than one set file';
             warning([Path, ' has more than one SET file'])
             continue
         end
         
-        Filename.SET = Content(SET, :);
+        Filename_SET = Content(SET, :);
         
         % set up destination location
         Destination = fullfile(Paths.Preprocessed, Folder.LightFiltering, Task);
-        Filename.Core = join([Folders.Datasets{Indx_D}, Levels(:)'], '_');
-        Filename.Destination = [Filename.Core{1}, '.set'];
+        Filename_Core = join([Folders.Datasets{Indx_D}, Levels(:)'], '_');
+        Filename_Destination = [Filename_Core{1}, '.set'];
         
         if ~exist(Destination, 'dir')
             mkdir(Destination)
         end
         
         % skip filtering if file already exists
-        if ~Refresh && exist(fullfile(Destination, Filename.Destination), 'file')
-            skipped(end + 1).path = Path; %#ok<SAGROW>
-            skipped(end).filename = Filename.SET;
-            skipped(end).reason = 'already done';
-            disp(['***********', 'Already did ', Filename.Core, '***********'])
+        if ~Refresh && exist(fullfile(Destination, Filename_Destination), 'file')
+            log(Indx_F).path = Path;
+            log(Indx_F).info = 'skipping';
+            log(Indx_F).reason = 'already done';
+            disp(['***********', 'Already did ', Filename_Core, '***********'])
             continue
         end
         
         %%%%%%%%%%%%%%%%%%%
         %%% filter the data
         
-        EEG = pop_loadset('filepath', Path, 'filename', Filename.SET);
+        EEG = pop_loadset('filepath', Path, 'filename', Filename_SET);
         
         SpotCheckOriginals = EEG.data(CheckChannels, :);
         originalFS = EEG.srate;
@@ -105,10 +107,11 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
             % high-pass filter. NOTE: this is different from LP on purpose
             EEG =  bandpassEEG(EEG, low_cutoff, []);
         catch
-            skipped(end + 1).path = Path; %#ok<SAGROW>
-            skipped(end).filename = Filename.SET;
-            skipped(end).reason = 'failed to filter';
-            warning(['could not clean ', Filename.SET])
+            log(Indx_F).path = Path;
+            log(Indx_F).info = 'skipping';
+            log(Indx_F).reason = 'failed to filter';
+            
+            warning(['could not clean ', Filename_SET])
             continue
         end
         
@@ -132,10 +135,18 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
         end
         
         EEG.setname = [extractBefore(EEG.filename, '.set'), '_LF'];
-        pop_saveset(EEG, 'filename', Filename.Destination, ...
+        pop_saveset(EEG, 'filename', Filename_Destination, ...
             'filepath', Destination, ...
             'check', 'on', ...
             'savemode', 'onefile');
-        A = 2;
+        
+        log(Indx_F).path = Path;
+        log(Indx_F).info = 'converted';
+        log(Indx_F).reason = ['everything was ok with ', Filename_SET];
     end
+    
+    m.log(Indx_D).log = log;
+    disp(['************** Finished ',  Folders.Datasets{Indx_D}, '***************'])
+    
+    
 end
