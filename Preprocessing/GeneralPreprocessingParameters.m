@@ -8,6 +8,7 @@ Folders = struct();
 
 Paths.Datasets = 'C:\Users\colas\Desktop\FakeDataReal';
 Paths.Preprocessed = 'C:\Users\colas\Desktop\FakeDataPreprocessedEEG';
+Paths.LFiltered = fullfile(Paths.Preprocessed, 'LightFiltering');
 
 Folders.Template = 'PXX';
 Folders.Logs = 'PreprocessingLogs';
