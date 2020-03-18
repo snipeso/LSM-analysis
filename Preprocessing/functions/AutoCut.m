@@ -147,8 +147,7 @@ end
 
 NewTMPREJ = zeros(size(newWindows, 1), 133);
 NewTMPREJ(:, 1:2) = newWindows;
-% NewTMPREJ(:, 3:5) = repmat([1, 1, 0],  size(newWindows, 1), 1);
-NewTMPREJ(:, 3:5) = repmat([0, 1, 1],  size(newWindows, 1), 1);
+NewTMPREJ(:, 3:5) = repmat([1, 1, 0],  size(newWindows, 1), 1);
 
 Content = whos(m);
 if ismember('TMPREJ', {Content.name})
