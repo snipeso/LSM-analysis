@@ -14,8 +14,8 @@ Folder.LightFiltering = 'LightFiltering';
 StartTime = datestr(now, 'yy-mm-dd_HH-MM');
 m = matfile(fullfile(Paths.Logs, [StartTime, '_B_Log.mat']),'Writable',true);
 
-m.log = struct();
 
+allLog = struct();
 for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
     log = struct();
     parfor Indx_F = 1:size(Folders.Subfolders, 1) % loop through all subfolders
@@ -129,7 +129,7 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
                 hold on
                 plot(tO, SpotCheckOriginals(Indx_Ch, :), 'k')
                 plot(tF, SpotCheckFiltered(Indx_Ch, :), 'r')
-                title([Filename.Destination, ' ', num2str(CheckChannels(Indx_Ch))])
+                title([Filename_Destination, ' ', num2str(CheckChannels(Indx_Ch))])
                 
             end
         end
@@ -138,15 +138,17 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
         pop_saveset(EEG, 'filename', Filename_Destination, ...
             'filepath', Destination, ...
             'check', 'on', ...
-            'savemode', 'onefile');
+            'savemode', 'onefile', ...
+                'version', '7.3');
         
         log(Indx_F).path = Path;
         log(Indx_F).info = 'converted';
         log(Indx_F).reason = ['everything was ok with ', Filename_SET];
     end
     
-    m.log(Indx_D).log = log;
+    allLog(Indx_D).log = log;
     disp(['************** Finished ',  Folders.Datasets{Indx_D}, '***************'])
-    
+    m.log = allLog;
     
 end
+

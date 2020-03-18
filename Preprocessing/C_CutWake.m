@@ -43,6 +43,7 @@ Threshold = [];
 showPlots = false;
 AutoCut(EEG, [], showPlots)
 
+%TODO: Autoremove EMG
 % RemoveCuts(EEG, [1, 1, 0]) % removes autocut data
 
 %% Section 3: plot all
@@ -61,7 +62,7 @@ MarkData(EEG)
 %%% right channels or not. You can restore channels that are fine with
 %%% restoreCh;
 
-Ch = [];
+% Ch = [];
 rmCh(EEG.CutFilepath, Ch) % remove channel or list of channels
 restoreCh(EEG.CutFilepath, Ch) % restore removed channels
 
