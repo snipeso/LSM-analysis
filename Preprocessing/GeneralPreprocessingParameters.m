@@ -21,6 +21,10 @@ new_fs = 256; % maybe 250?
 high_cutoff = 40;
 low_cutoff = 0.5;
 
+% heavy filtering
+ICA_low_cutoff = 1;
+ICA_high_cutoff = 30;
+
 % spot checking
 SpotCheckFrequency = 20; % 1 out of this number will be plotted
 CheckChannels = [10, 70]; % frontal and occipital channel
