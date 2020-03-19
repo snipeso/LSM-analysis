@@ -65,10 +65,12 @@ for Indx_I = 1:numel(Starts) % loop through all above-threshold segments
     % get new end
     End = Ends(Indx_I);
     Next = MedianEnds(MedianEnds>End);
-    End = Next(1) + fs*Padding;
-    
-    if End > Points
+    if numel(Next) < 1 ||  End > Points
         End = Points;
+    else
+        End = Next(1) + fs*Padding;
+        
+        
     end
     
     NewEnds(Indx_I) = End;
