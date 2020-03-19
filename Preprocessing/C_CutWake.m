@@ -40,8 +40,9 @@ m = matfile(EEG.CutFilepath,'Writable',true); % create cuts file, load it to cur
 %%this will just make a mess.
 
 Threshold = [];
+Color = [1, 1, 0]; % Color for AutoCut
 showPlots = false;
-AutoCut(EEG, [], showPlots)
+AutoCut(EEG, Color, [], showPlots)
 
 %TODO: Autoremove EMG
 % RemoveCuts(EEG, [1, 1, 0]) % removes autocut data
