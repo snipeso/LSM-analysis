@@ -21,6 +21,7 @@ emgL  = 107;
 emgR  = 113;
 ndxch = [f3, f4, c3, c4, o1, o2, a1, a2, eogbottomL, eogbottomR, eogtopL, eogtopR, emgL, emgR]; % original
 
+%TODO: change to mastoid reference, filter EMG
 
 for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
     
