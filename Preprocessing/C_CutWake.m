@@ -21,7 +21,7 @@ GeneralPreprocessingParameters
 
 % Filename = 'P03_MWT_Main.set'; % choose this if you want to clean a specific file
 Filename = []; % choose this if you want to randomly select a file to clean from the list
-Folders.Data = 'MWT';
+Folders.Data = 'LAT';
 
 EEG = loadEEGtoCut(Paths, Folders.Data, Filename); % load file
 m = matfile(EEG.CutFilepath,'Writable',true); % create cuts file, load it to current workspace
