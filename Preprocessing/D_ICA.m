@@ -15,7 +15,7 @@ if ~exist(Destination, 'dir')
 end
 
 Files = deblank(cellstr(ls(Source)));
-Files(contains(Files, '.set')) = [];
+Files(~contains(Files, '.set')) = [];
 
 for Indx_F = 1:numel(Files) % loop through files in target folder
     
