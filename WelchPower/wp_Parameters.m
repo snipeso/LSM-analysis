@@ -11,3 +11,5 @@ Paths.powerdata = fullfile(Paths.Preprocessing, 'WelchPower', Task);
 if ~exist(Paths.powerdata, 'dir')
     mkdir(Paths.powerdata) 
 end
+
+% todo, set a path with all the general functions
