@@ -64,7 +64,7 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
         disp(['***********', 'Loading ', Filename.Core, '***********'])
         
         % skip if requested
-        if ~Refresh && any(strcmpi(Content, Filename.SET))
+        if ~Refresh &&  any(contains(cellstr(Content), Filename.SET))
             disp(['***********', 'Already did ', Filename.Core, '***********'])
             skipped(end + 1).path = Path; %#ok<SAGROW>
             skipped(end).filename = Filename.SET;
