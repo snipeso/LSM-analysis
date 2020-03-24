@@ -3,6 +3,7 @@
 close all
 clc
 clear
+% TODO: interpolate CZ as well!!!!
 
 Target = 'LAT'; % specify folder for analysis
 Refresh = false;

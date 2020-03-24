@@ -4,7 +4,7 @@ clc
 close all
 
 
-Refresh = false;
+Refresh = true;
 wp_Parameters
 
 Files = deblank(cellstr(ls(Paths.EEGdata)));

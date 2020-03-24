@@ -28,7 +28,6 @@ end
 
 % save to mega struct
 FFT.Epochs = FFT_E;
-FFT.Average = mean(FFT_Ch);
 FFT.Channels = FFT_Ch;
 
 
