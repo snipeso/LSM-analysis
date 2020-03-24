@@ -69,14 +69,9 @@ for Indx_I = 1:numel(Starts) % loop through all above-threshold segments
         End = Points;
     else
         End = Next(1) + fs*Padding;
-        
-        
     end
     
     NewEnds(Indx_I) = End;
-    
-    
-    
 end
 
 

@@ -19,8 +19,8 @@ clc
 close all
 GeneralPreprocessingParameters
 
-% Filename = 'P01_LAT_Session2Comp.set'; % choose this if you want to clean a specific file
-Filename = []; % choose this if you want to randomly select a file to clean from the list
+Filename = 'P03_LAT_Extras.set'; % choose this if you want to clean a specific file
+% Filename = []; % choose this if you want to randomly select a file to clean from the list
 Folders.Data = 'LAT';
 
 EEG = loadEEGtoCut(Paths, Folders.Data, Filename); % load file
@@ -42,7 +42,7 @@ m = matfile(EEG.CutFilepath,'Writable',true); % create cuts file, load it to cur
 Threshold = [];
 Color = [1, 1, 0]; % Color for AutoCut
 showPlots = false;
-AutoCut(EEG, Color, [], showPlots)
+% AutoCut(EEG, Color, [], showPlots)
 
 %TODO: Autoremove EMG
 % RemoveCuts(EEG, [1, 1, 0]) % removes autocut data

@@ -4,12 +4,13 @@ Paths = struct();
 Folders = struct();
 
 Paths.Datasets = 'D:\LSM\data';
-Paths.Preprocessed = 'C:\Users\schlaf\Desktop\LSMpreprocessed';
+% Paths.Preprocessed = 'C:\Users\schlaf\Desktop\LSMpreprocessed';
+
+
+Paths.Datasets = 'C:\Users\colas\Desktop\FakeDataReal';
+Paths.Preprocessed = 'C:\Users\colas\Desktop\FakeDataPreprocessedEEG';
+
 Paths.LFiltered = fullfile(Paths.Preprocessed, 'LightFiltering');
-
-% Paths.Datasets = 'C:\Users\colas\Desktop\FakeDataReal';
-% Paths.Preprocessed = 'C:\Users\colas\Desktop\FakeDataPreprocessedEEG';
-
 Folders.Template = 'PXX';
 Folders.Logs = 'PreprocessingLogs';
 Folders.Ignore = {'CSVs', Folders.Logs, 'other', 'Lazy', 'P00'};
@@ -36,10 +37,10 @@ addpath(fullfile(cd, 'functions'))
 [Folders.Subfolders, Folders.Datasets] = AllFolderPaths(Paths.Datasets, ...
     Folders.Template, false, Folders.Ignore);
 
-Paths.Logs = fullfile(Paths.Preprocessed, Folders.Logs);
-if ~exist(Paths.Logs, 'dir')
-    mkdir(Paths.Logs)
-end
+% Paths.Logs = fullfile(Paths.Preprocessed, Folders.Logs);
+% if ~exist(Paths.Logs, 'dir')
+%     mkdir(Paths.Logs)
+% end
 
 
 
