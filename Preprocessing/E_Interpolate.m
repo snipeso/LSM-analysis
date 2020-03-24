@@ -22,9 +22,8 @@ Files(~contains(Files, '.set')) = [];
 
 for Indx_F = 1:numel(Files) % loop through files in target folder
     
-    %     % get filenames
-    %     Filename_Source_EEG = Files{Indx_F};
-    Filename_Source_EEG = 'P03_LAT_Extras_ICAd.set'; %TEMP
+    % get filenames
+    Filename_Source_EEG = Files{Indx_F};
     Filename_Cuts =  [extractBefore(Filename_Source_EEG,'_ICAd.set'), '_Cuts.mat'];
     Filename_Destination = [extractBefore(Filename_Source_EEG,'.set'), '_Interped.set'];
     
@@ -71,18 +70,17 @@ for Indx_F = 1:numel(Files) % loop through files in target folder
         for Indx_Ch = 1:numel(Clusters(Indx_C).Channels)
             Ch = Clusters(Indx_C).Channels(Indx_Ch);
             EEGnew.data(Ch, Range(1):Range(2)) = EEGmini.data(Ch, :);
-            
-            % TEMP
-            figure
-            hold on
-            plot(EEG.data(Ch, Range(1):Range(2)))
-            plot(EEGnew.data(Ch, Range(1):Range(2)))
+           
         end
     end
     
     % interpolate bad channels
-    EEGnew = pop_select(EEGnew, 'nochannel', badchans(~ismember(badchans, notEEG))); % NOTE: this also takes out the not EEG channels and interpolates them; this is fine, we ignore it, but you have to remove them because otherwise they contribute to the interpolation
-    EEGnew = pop_interp(EEGnew, EEG.chanlocs);
+    EEGtemp = pop_select(EEGnew, 'nochannel', unique([badchans, notEEG])); % NOTE: this also takes out the not EEG channels and interpolates them; this is fine, we ignore it, but you have to remove them because otherwise they contribute to the interpolation
+    EEGtemp = pop_interp(EEGtemp, EEG.chanlocs);
+    
+    % replace only bad channels, and not "not EEG" channels
+    badchans = badchans(~ismember(badchans, notEEG));
+    EEGnew.data(badchans, :) = EEGtemp.data(badchans, :);
     
     
     pop_saveset(EEGnew,  'filename', Filename_Destination, ...
@@ -92,7 +90,7 @@ for Indx_F = 1:numel(Files) % loop through files in target folder
         'version', '7.3');
     
     % TODO: randomly plot, plot normal eeg with interpolated eeg on top
-    eegplot(EEG.data, 'srate', EEG.srate, 'data2', EEGnew.data)
+    %     eegplot(EEG.data, 'srate', EEG.srate, 'data2', EEGnew.data)
     
     
     clear badchans cutData filename filepath TMPREJ
