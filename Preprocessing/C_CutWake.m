@@ -19,7 +19,7 @@ clc
 close all
 GeneralPreprocessingParameters
 
-% Filename = 'P03_MWT_Main.set'; % choose this if you want to clean a specific file
+% Filename = 'P01_LAT_Session2Comp.set'; % choose this if you want to clean a specific file
 Filename = []; % choose this if you want to randomly select a file to clean from the list
 Folders.Data = 'LAT';
 
@@ -51,7 +51,7 @@ AutoCut(EEG, Color, [], showPlots)
 %%% run this function to open the popup window for marking the data. SAVE
 %%% BEFORE CLOSING. But if you do that, you can always open wherever you
 %%% left off. Run as many times as you want
-
+rmCh(EEG.CutFilepath, [107 113])
 MarkData(EEG) 
 
 %% remove or restore a whole channel
@@ -64,6 +64,7 @@ MarkData(EEG)
 %%% restoreCh;
 
 % Ch = [];
+
 rmCh(EEG.CutFilepath, Ch) % remove channel or list of channels
 restoreCh(EEG.CutFilepath, Ch) % restore removed channels
 
