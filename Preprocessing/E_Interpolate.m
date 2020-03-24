@@ -5,7 +5,8 @@ clc
 clear
 
 Target = 'LAT'; % specify folder for analysis
-Refresh = true;
+Refresh = false;
+SpotCheck = true;
 GeneralPreprocessingParameters
 
 % get files and paths
@@ -50,28 +51,32 @@ for Indx_F = 1:numel(Files) % loop through files in target folder
     %%% interpolate bad segments
     
     % get clusters of data to interpolate (overlapping segments)
-    Segments = data2Segments(cutData); % data is saved as nans with segments to cut out from lightly filtered
-    Segments(ismember(Segments(:, 1), notEEG), :) = []; % ignore segments that get cut out anyway because not EEG
-    Clusters = segments2clusters(Segments); % group segments into clusters based on temporal overlap
-    
-    for Indx_C = 1:size(Clusters, 2)
+    if exist('cutData', 'var')
         
-        % select the column of data of the current cluster
-        Range = [Clusters(Indx_C).Start, Clusters(Indx_C).End];
-        EEGmini =  pop_select(EEG, 'point', Range);
+        Segments = data2Segments(cutData); % data is saved as nans with segments to cut out from lightly filtered
+        Segments(ismember(Segments(:, 1), notEEG), :) = []; % ignore segments that get cut out anyway because not EEG
+        Clusters = segments2clusters(Segments); % group segments into clusters based on temporal overlap
         
-        % remove bad segment, and any bad channels and not eeg channels
-        EEGmini = pop_select(EEGmini, 'nochannel', unique([Clusters(Indx_C).Channels, badchans, notEEG]));
-        
-        % interpolate bad segment
-        EEGmini = pop_interp(EEGmini, EEG.chanlocs);
-        
-        % replace interpolated data into new data structure
-        for Indx_Ch = 1:numel(Clusters(Indx_C).Channels)
-            Ch = Clusters(Indx_C).Channels(Indx_Ch);
-            EEGnew.data(Ch, Range(1):Range(2)) = EEGmini.data(Ch, :);
-           
+        for Indx_C = 1:size(Clusters, 2)
+            
+            % select the column of data of the current cluster
+            Range = [Clusters(Indx_C).Start, Clusters(Indx_C).End];
+            EEGmini =  pop_select(EEG, 'point', Range);
+            
+            % remove bad segment, and any bad channels and not eeg channels
+            EEGmini = pop_select(EEGmini, 'nochannel', unique([Clusters(Indx_C).Channels, badchans, notEEG]));
+            
+            % interpolate bad segment
+            EEGmini = pop_interp(EEGmini, EEG.chanlocs);
+            
+            % replace interpolated data into new data structure
+            for Indx_Ch = 1:numel(Clusters(Indx_C).Channels)
+                Ch = Clusters(Indx_C).Channels(Indx_Ch);
+                EEGnew.data(Ch, Range(1):Range(2)) = EEGmini.data(Ch, :);
+                
+            end
         end
+        
     end
     
     % interpolate bad channels
@@ -89,9 +94,10 @@ for Indx_F = 1:numel(Files) % loop through files in target folder
         'savemode', 'onefile', ...
         'version', '7.3');
     
-    % TODO: randomly plot, plot normal eeg with interpolated eeg on top
-    %     eegplot(EEG.data, 'srate', EEG.srate, 'data2', EEGnew.data)
-    
+    % randomly plot normal eeg with interpolated eeg on top
+    if SpotCheck && randi(SpotCheckFrequency) == 1
+        eegplot(EEG.data, 'srate', EEG.srate, 'data2', EEGnew.data)
+    end
     
     clear badchans cutData filename filepath TMPREJ
 end

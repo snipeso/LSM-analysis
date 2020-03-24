@@ -4,11 +4,11 @@ Paths = struct();
 Folders = struct();
 
 Paths.Datasets = 'D:\LSM\data';
-% Paths.Preprocessed = 'C:\Users\schlaf\Desktop\LSMpreprocessed';
+Paths.Preprocessed = 'C:\Users\schlaf\Desktop\LSMpreprocessed';
 
 
-Paths.Datasets = 'C:\Users\colas\Desktop\FakeDataReal';
-Paths.Preprocessed = 'C:\Users\colas\Desktop\FakeDataPreprocessedEEG';
+% Paths.Datasets = 'C:\Users\colas\Desktop\FakeDataReal';
+% Paths.Preprocessed = 'C:\Users\colas\Desktop\FakeDataPreprocessedEEG';
 
 Paths.LFiltered = fullfile(Paths.Preprocessed, 'LightFiltering');
 Folders.Template = 'PXX';
@@ -27,7 +27,7 @@ ICA_low_cutoff = 1;
 ICA_high_cutoff = 30;
 
 % spot checking
-SpotCheckFrequency = 20; % 1 out of this number will be plotted
+SpotCheckFrequency = 10; % 1 out of this number will be plotted
 CheckChannels = [10, 70]; % frontal and occipital channel
 
 % channels to ignore
