@@ -20,7 +20,7 @@ uniqueStarts = unique(Segments(:, 2));
 for Indx_C = 1:numel(uniqueStarts)
    Clusters(end + 1).Start = uniqueStarts(Indx_C);
    Clusters(end).End = Segments(find(Segments(:, 2) == uniqueStarts(Indx_C), 1), 3);
-   Clusters(end).Channels = Segments(Segments(:, 2) == uniqueStarts(Indx_C), 1);
+   Clusters(end).Channels = Segments(Segments(:, 2) == uniqueStarts(Indx_C), 1)';
 end
 
 Clusters(1) = [];

@@ -30,6 +30,12 @@ ICA_high_cutoff = 30;
 SpotCheckFrequency = 20; % 1 out of this number will be plotted
 CheckChannels = [10, 70]; % frontal and occipital channel
 
+% channels to ignore
+mastoids = [49, 56];
+EMG = [107, 113];
+face = [126, 127, 48, 119];
+notEEG = [mastoids, EMG, face];
+
 
 %%% Do stuff
 addpath(fullfile(cd, 'functions'))
