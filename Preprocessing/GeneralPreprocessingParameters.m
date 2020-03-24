@@ -4,11 +4,11 @@ Paths = struct();
 Folders = struct();
 
 Paths.Datasets = 'D:\LSM\data';
-% Paths.Preprocessed = 'C:\Users\schlaf\Desktop\LSMpreprocessed';
+Paths.Preprocessed = 'C:\Users\schlaf\Desktop\LSMpreprocessed';
 
 
-Paths.Datasets = 'C:\Users\colas\Desktop\FakeDataReal';
-Paths.Preprocessed = 'C:\Users\colas\Desktop\FakeDataPreprocessedEEG';
+% Paths.Datasets = 'C:\Users\colas\Desktop\FakeDataReal';
+% Paths.Preprocessed = 'C:\Users\colas\Desktop\FakeDataPreprocessedEEG';
 
 Paths.LFiltered = fullfile(Paths.Preprocessed, 'LightFiltering');
 Folders.Template = 'PXX';
