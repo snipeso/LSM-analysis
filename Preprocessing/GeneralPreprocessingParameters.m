@@ -27,7 +27,7 @@ ICA_low_cutoff = 1;
 ICA_high_cutoff = 30;
 
 % spot checking
-SpotCheckFrequency = 20; % 1 out of this number will be plotted
+SpotCheckFrequency = 10; % 1 out of this number will be plotted
 CheckChannels = [10, 70]; % frontal and occipital channel
 
 % channels to ignore

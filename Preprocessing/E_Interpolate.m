@@ -5,7 +5,8 @@ clc
 clear
 
 Target = 'LAT'; % specify folder for analysis
-Refresh = true;
+Refresh = false;
+SpotCheck = true;
 GeneralPreprocessingParameters
 
 % get files and paths
@@ -89,9 +90,10 @@ for Indx_F = 1:numel(Files) % loop through files in target folder
         'savemode', 'onefile', ...
         'version', '7.3');
     
-    % TODO: randomly plot, plot normal eeg with interpolated eeg on top
-    %     eegplot(EEG.data, 'srate', EEG.srate, 'data2', EEGnew.data)
-    
+    % randomly plot normal eeg with interpolated eeg on top
+    if SpotCheck && randi(SpotCheckFrequency) == 1 
+        eegplot(EEG.data, 'srate', EEG.srate, 'data2', EEGnew.data)
+    end
     
     clear badchans cutData filename filepath TMPREJ
 end
