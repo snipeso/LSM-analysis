@@ -1,34 +1,31 @@
-function [FFT, Freqs] = WelchSpectrum(EEG)
+function Struct = WelchSpectrum(EEG, Freqs, Edges)
+% creates little epochs and makes FFT of those epochs, if there are nans,
+% then it adjusts the epoch edge accordingly, or just leaves a nan in its
+% place
 
-Freqs = [1:0.5:30];
-FFT = struct();
+Struct = struct();
 
-
-% run fft on average of channels
-Fs = EEG.srate;
-Points = size(EEG.data, 2);
-
-
-Epochs = Points/(Fs*2);
-Starts = floor(linspace(1, Points - Fs*2, Epochs));
-Stops = floor(Starts + Fs*2);
-
+fs = EEG.srate;
+Channels = size(EEG.data, 1);
+TotEpochs = size(Edges, 1);
 
 % run fft on each channel
-FFT_Ch = zeros(size(EEG.data, 1), length(Freqs));
-FFT_E = zeros(size(EEG.data, 1), length(Freqs), length(Starts));
-for Indx_C = 1:size(EEG.data, 1)
-    for Indx_E = 1:length(Starts)
-        Ch = EEG.data(Indx_C, Starts(Indx_E):Stops(Indx_E));
-        [FFT_E(Indx_C, :, Indx_E), ~] = pwelch(Ch, [], [], Freqs, Fs);
+FFT = zeros(Channels, length(Freqs), TotEpochs);
+for Indx_Ch = 1:Channels
+    for Indx_E = 1:TotEpochs
+        Ch = EEG.data(Indx_Ch, Edges(Indx_E, 1):Edges(Indx_E, 2));
+        if sum(isnan(Ch)) > 0.5*numel(Ch)
+            FFT(Indx_Ch, :, Indx_E) = nan;
+        else
+            Ch(isnan(Ch)) = [];
+            [FFT(Indx_Ch, :, Indx_E), ~] = pwelch(Ch, [], [], Freqs, fs);
+        end
     end
-    
-    [FFT_Ch(Indx_C, :), ~] = pwelch(EEG.data(Indx_C, :), Fs*4, [], Freqs, Fs);
 end
 
-% save to mega struct
-FFT.Epochs = FFT_E;
-FFT.Average = mean(FFT_Ch);
-FFT.Channels = FFT_Ch;
-
+% save to struct
+Struct.FFT = FFT;
+Struct.Edges = Edges;
+Struct.Chanlocs = EEG.chanlocs;
+Struct.Freqs = Freqs;
 

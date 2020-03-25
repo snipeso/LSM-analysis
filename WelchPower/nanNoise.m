@@ -1,36 +1,10 @@
-function nanNoise(FFTepochs, Cuts_Filepath)
+function EEG = nanNoise(EEG, Cuts_Filepath)
 
-badChannels = [];
+m = matfile(Cuts_Filepath);
 
+Starts = round(m.TMPREJ(:, 1));
+Ends = round(m.TMPREJ(:, 2));
 
-load(Cuts_Filepath)
-
-
-EEG = pop_loadset('filename', filename, 'filepath', filepath);
-fs = EEG.srate;
-[Channels, Points] = size(EEG.data);
-
-% remove bad channels
-
-
-% remove bad epochs
-
-
-% remove bad snippets
-
-
-% remove non-task data
-
-
-Epochs = size(FFTepochs, 3);
-StartEpochs = linspace(0, Points, Epochs+1);
-StartEpochs(end) = [];
-
-
-
-
-% TODO, move to general functions
-% cut based on start and stop (try and find start trigger, otherwise use
-% first trigger - 5 seconds)
-% outside this function, save this inside WelchSpectrum; run this in wPA
-% get power.
+for Indx_N = 1:numel(Starts)
+   EEG.data(:, Starts(Indx_N):Ends(Indx_N)) = nan;
+end

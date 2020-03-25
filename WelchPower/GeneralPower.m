@@ -23,6 +23,7 @@ for Indx_Ch = 1:numel(Ch)
     for Indx_S = 1:numel(Sessions)
         All_Averages = nan(numel(Participants), numel(allFFT(1).Freqs));
         Session_Indexes = find(strcmp(Categories(3, :), Sessions{Indx_S}));
+        
         for Indx_P = 1:numel(Session_Indexes)
             All_Averages(Indx_P, :) = mean(allFFT(Session_Indexes(Indx_P)).FFT.Epochs(Ch(Indx_Ch), :, :), 3);
         end
