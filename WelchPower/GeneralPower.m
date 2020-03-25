@@ -35,7 +35,7 @@ for Indx_Ch = 1:numel(Ch)
         All_Averages = nan(numel(Participants), numel(allFFT(1).Freqs));
         Session_Indexes = find(strcmp(Categories(3, :), Sessions{Indx_S}));
         
-        for Indx_P = 1:numel(Session_Indexes)
+        for Indx_P = 2:numel(Session_Indexes)
             All_Averages(Indx_P, :) = nanmean(allFFT(Session_Indexes(Indx_P)).FFT(Ch(Indx_Ch), :, :), 3);
         end
         
@@ -65,7 +65,7 @@ for Indx_Ch = 1:numel(Ch)
     for Indx_S = 1:numel(Sessions)
         All_Averages = nan(numel(Participants), numel(allFFT(1).Freqs));
         Session_Indexes = find(strcmp(Categories(3, :), Sessions{Indx_S}));
-        for Indx_P = 1:numel(Session_Indexes)
+        for Indx_P = 2:numel(Session_Indexes)
             All_Averages(Indx_P, :) = nanmean(allFFT(Session_Indexes(Indx_P)).FFT(Ch(Indx_Ch), :, :), 3);
         end
         
@@ -93,11 +93,11 @@ for Indx_S = 1:numel(Sessions)
         All_Channels = nan(numel(Participants),size(allFFT(1).FFT, 1));
         Session_Indexes = find(strcmp(Categories(3, :), Sessions{Indx_S}));
         
-        for Indx_P = 1:numel(Session_Indexes)
+        for Indx_P = 2:numel(Session_Indexes)
             All_Channels(Indx_P, :) = nanmean(allFFT(Session_Indexes(Indx_P)).FFT(:, FreqsIndx(Indx_F), :), 3);
         end
         subplot(numel(Sessions), numel(Freqs), Indx)
-        topoplot(log(nanmean(All_Channels, 1)), allFFT(1).Chanlocs, 'maplimits', [-2, 1.5], 'style', 'map', 'headrad', 'rim')
+        topoplot(log(nanmean(All_Channels, 1)), allFFT(1).Chanlocs, 'maplimits', [-2, 1], 'style', 'map', 'headrad', 'rim')
         Indx = Indx+1;
         if Indx<=numel(Freqs)
             title([num2str(Freqs(Indx_F)), 'Hz'])
@@ -148,7 +148,7 @@ for Indx_S = 1:numel(Sessions)
         All_Channels = nan(numel(Participants),size(allFFT(1).FFT, 1));
         Session_Indexes = find(strcmp(Categories(3, :), Sessions{Indx_S}));
         
-        for Indx_P = 1:numel(Session_Indexes)
+        for Indx_P = 2:numel(Session_Indexes)
             LeftTopo = nanmean(allFFT(Session_Indexes(Indx_P)).FFT(:, FreqsIndx(Indx_F), (allFFT(Session_Indexes(Indx_P)).Blocks ==1)), 3);
             RightTopo = nanmean(allFFT(Session_Indexes(Indx_P)).FFT(:, FreqsIndx(Indx_F), (allFFT(Session_Indexes(Indx_P)).Blocks ==2)), 3);
             All_Channels(Indx_P, :) = log(LeftTopo)-log(RightTopo);
@@ -161,5 +161,4 @@ for Indx_S = 1:numel(Sessions)
         end
     end
 end
-
 
