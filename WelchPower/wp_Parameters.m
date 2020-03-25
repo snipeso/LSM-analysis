@@ -23,6 +23,10 @@ notEEG = [mastoids, EMG, face, ears, neck];
 % Events
 StartMain = 'S  1';
 EndMain = 'S  2';
+StartLeft = 'S 10'; % corresponds to 1 in matrix
+StartRight = 'S 11';
+Left = 1;
+Right = 2;
 
 
 if ~exist(Paths.powerdata, 'dir')

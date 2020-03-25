@@ -1,8 +1,8 @@
-% script that gets power values of little segments of data
+% script that gets power values of little segments of data, also divided by
+% task block
 clear
 clc
 close all
-
 
 Refresh = true;
 wp_Parameters
@@ -11,61 +11,72 @@ Files = deblank(cellstr(ls(Paths.EEGdata)));
 Files(~contains(Files, '.set')) = [];
 
 for Indx_F = 1:numel(Files)
-%     File = Files{Indx_F};
-File = 'P03_LAT_Extras_ICAd.set';
+    File = Files{Indx_F};
     Filename = [extractBefore(File, '.set'), '_wp.mat'];
     
+    % skip if already done
     if ~Refresh && exist(fullfile(Paths.powerdata, Filename), 'file')
         disp(['**************already did ',Filename, '*************'])
         continue
     end
-    EEG = pop_loadset('filename', File, 'filepath', Paths.EEGdata);
     
-    % remove bad channels
+    % load EEG
+    EEG = pop_loadset('filename', File, 'filepath', Paths.EEGdata);
+
+    
+    %%% Set as nan all noise
+    % remove nonEEG channels
     EEG = pop_select(EEG, 'nochannel', notEEG);
+            [Channels, Points] = size(EEG.data);
+    fs = EEG.srate;
     
     % remove start and stop
     StartPoint = EEG.event(strcmpi({EEG.event.type}, StartMain)).latency;
     EndPoint =  EEG.event(strcmpi({EEG.event.type}, EndMain)).latency;
     EEG.data(:, [1:round(StartPoint),  round(EndPoint):end]) = nan;
     
-    
     % set to nan all cut data
     Cuts_Filepath = fullfile(Paths.Cuts, [extractBefore(File, '_ICA'), '_Cuts.mat']);
     EEG = nanNoise(EEG, Cuts_Filepath);
-    
-    
-    
-    
-    % TODO: create welchspectrum function that takes EEG and edges, so can
-    % run over and over
-    [Channels, Points] = size(EEG.data);
-    fs = EEG.srate;
 
+    
+    %%% get power
+    
+    % divide data into little epochs
     Epochs = Points/(fs*Window);
     Starts = floor(linspace(1, Points - fs*Window, Epochs));
-    Stops = floor(Starts + fs*Window);
-    Edges = [Starts(:), Stops(:)];
+    Ends = floor(Starts + fs*Window);
+    Edges = [Starts(:), Ends(:)];
     
-    General = WelchSpectrum(EEG, Freqs, Edges);
+    % get power for all the epochs
+    Power = WelchSpectrum(EEG, Freqs, Edges);
+
+    % identify corresponding block of each epoch
+    StartBlockEvents = find(strcmpi({EEG.event.type}, StartLeft) | strcmpi({EEG.event.type}, StartRight));
+    EndBlockEvents = [StartBlockEvents(2:end), find(strcmpi({EEG.event.type}, EndMain))];
+    EpochBlocks = zeros(size(Starts));
     
-    % run epochs of all data, shifting boarders to accomodate noise (if > .5, cut short, if <.5, skip)
-    % called General (with FFT, and Edges as fields)
+    for Indx_S = 1:numel(StartBlockEvents)
+       StartIndx = StartBlockEvents(Indx_S);
+       EndIndx = EndBlockEvents(Indx_S); % TODO, directly write into code below
+       StartBlock = EEG.event(StartIndx).latency;
+       EndBlock =  EEG.event(EndIndx).latency;
+       
+       % set block index to 1 or 2 for left and right
+       BlockSide = EEG.event(StartIndx).type;
+       if strcmp(BlockSide, StartLeft);BlockSide=Left;else; BlockSide=Right;end
+       
+       EpochBlocks(Starts >= StartBlock & Ends <= EndBlock)=BlockSide;
+    end
     
-    % run over blocks, called Blocks
-    
-    % run over trials Trials(each trial), with field preFFT, postFFT,
-    % number,block number
-    
-    
-    
-    
-    parsave(fullfile(Paths.powerdata, Filename), FFT, Freqs, EEG.chanlocs) %TODO save sever
+    Power.Blocks = EpochBlocks;
+
+    parsave(fullfile(Paths.powerdata, Filename), Power)
     disp(['*************finished ',Filename '*************'])
     
 end
 
 
-function parsave(fname, FFT)
-save(fname, 'FFT')
+function parsave(fname, Power)
+save(fname, 'Power')
 end
