@@ -2,9 +2,9 @@
 Paths = struct();
 
 Task = 'LAT';
-% Paths.Preprocessing = 'C:\Users\schlaf\Desktop\LSMpreprocessed\';
-Paths.Preprocessing = 'C:\Users\colas\Desktop\FakeDataPreprocessedEEG';
-Paths.EEGdata = fullfile(Paths.Preprocessing, 'Deblinked\', Task);
+Paths.Preprocessing = 'C:\Users\schlaf\Desktop\LSMpreprocessed\';
+% Paths.Preprocessing = 'C:\Users\colas\Desktop\FakeDataPreprocessedEEG';
+Paths.EEGdata = fullfile(Paths.Preprocessing, 'Interpolated\', Task);
 Paths.Cuts = fullfile(Paths.Preprocessing, 'Cuts\', Task);
 Paths.powerdata = fullfile(Paths.Preprocessing, 'WelchPower', Task);
 

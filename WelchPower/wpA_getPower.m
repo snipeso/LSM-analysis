@@ -4,13 +4,13 @@ clear
 clc
 close all
 
-Refresh = true;
+Refresh = false;
 wp_Parameters
 
 Files = deblank(cellstr(ls(Paths.EEGdata)));
 Files(~contains(Files, '.set')) = [];
 
-for Indx_F = 1:numel(Files)
+parfor Indx_F = 1:numel(Files)
     File = Files{Indx_F};
     Filename = [extractBefore(File, '.set'), '_wp.mat'];
     

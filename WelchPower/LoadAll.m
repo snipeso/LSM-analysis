@@ -9,9 +9,10 @@ Categories = cell([numel(split(Files{1}, '_')) , numel(Files)]);
 
 for Indx_F = 1:numel(Files)
     File = Files{Indx_F};
-    load(fullfile(Path, File), 'FFT', 'Freqs')
-    allFFT(Indx_F).FFT = FFT;
-    allFFT(Indx_F).Freqs = Freqs;
-    Categories(:, Indx_F) = split(File, '_');
-   A = 2; 
+    load(fullfile(Path, File), 'Power')
+    allFFT(Indx_F).FFT = Power.FFT;
+    allFFT(Indx_F).Freqs = Power.Freqs;
+    allFFT(Indx_F).Chanlocs = Power.Chanlocs;
+    allFFT(Indx_F).Blocks = Power.Blocks;
+    Categories(:, Indx_F) = split(File, '_'); 
 end
