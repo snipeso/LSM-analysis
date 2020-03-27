@@ -12,7 +12,7 @@ Sessions = {'BaselineBeam', 'MainPre', 'Session1Beam', 'Session2Beam1', 'Session
 Participants = unique(Categories(1, :));
 ChanLabels = {Chanlocs.labels};
 Channels = size(Chanlocs, 2);
-Colors = MapRainbow([Chanlocs.X], [Chanlocs.Y], [Chanlocs.Z], false);
+Colors = MapRainbow([Chanlocs.X], [Chanlocs.Y], [Chanlocs.Z], true);
 
 normFFT = allFFT;
 for Indx_P = 1:numel(Participants)
@@ -38,6 +38,7 @@ end
 
 
 figure
+subplot(5, 9, 1:4*9)
 hold on
 allAverages = nan(Channels, numel(Sessions));
 Freq = 7;
@@ -60,8 +61,15 @@ end
 xticks(1:7)
 xticklabels({'BL', 'Pre', 'S1', 'S2-1', 'S2-2', 'S2-3', 'Post'})
 
-YLims = [min(allAverages(:)), max(allAverages(:))];
+MeanAll = mean(mean(allAverages));
+StdAll = std(mean(allAverages));
+YLims = [MeanAll-3*StdAll,MeanAll+3*StdAll];
 plot(repmat(1:7, 2, 1), repmat(YLims, 7, 1)', 'k', 'LineWidth', 2)
 ylim(YLims)
 xlim([0, 8])
 ylabel('Theta Power Density')
+
+for Indx_S = 1:size(allAverages, 2)
+    subplot(5, 9, 4*9+Indx_S+1)
+     topoplot(allAverages(:, Indx_S), Chanlocs, 'maplimits', YLims, 'style', 'map', 'headrad', 'rim')
+end
