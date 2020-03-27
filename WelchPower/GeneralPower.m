@@ -1,13 +1,12 @@
 
-% clear
-% clc
-% close all
-%
-% wp_Parameters
-%
-%
-% [allFFT, Categories] = LoadAll(Paths.powerdata);
-% plot mean BL, Pre, Post, S1, S2 of beam, whole spectrum of fz
+clear
+clc
+close all
+
+wp_Parameters
+
+
+[allFFT, Categories] = LoadAll(Paths.powerdata);
 
 
 Sessions = unique(Categories(3, :));
@@ -151,7 +150,7 @@ for Indx_S = 1:numel(Sessions)
         for Indx_P = 2:numel(Session_Indexes)
             LeftTopo = nanmean(allFFT(Session_Indexes(Indx_P)).FFT(:, FreqsIndx(Indx_F), (allFFT(Session_Indexes(Indx_P)).Blocks ==1)), 3);
             RightTopo = nanmean(allFFT(Session_Indexes(Indx_P)).FFT(:, FreqsIndx(Indx_F), (allFFT(Session_Indexes(Indx_P)).Blocks ==2)), 3);
-            All_Channels(Indx_P, :) = log(LeftTopo)-log(RightTopo);
+            All_Channels(Indx_P, :) = (log(LeftTopo)-log(RightTopo))./log(RightTopo);
         end
         subplot(numel(Sessions), numel(Freqs), Indx)
         topoplot(nanmean(All_Channels, 1), allFFT(1).Chanlocs, 'maplimits', [-.2, .2], 'style', 'map', 'headrad', 'rim')
