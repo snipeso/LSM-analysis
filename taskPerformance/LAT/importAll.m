@@ -9,7 +9,7 @@ Task = 'LAT';
 Subfolders(~contains(Subfolders, Task)) = [];
 Subfolders(~contains(Subfolders, 'Behavior')) = [];
 AllAnswers = table();
-for Indx_P = 1:numel(Datasets)
+for Indx_P = 1:size(Datasets, 1)
     for Indx_S = 1:numel(Subfolders)
         Participant = deblank(Datasets(Indx_P, :));
         Folder = fullfile(Paths.Datasets, Participant, Subfolders{Indx_S});
@@ -48,6 +48,11 @@ for Indx_P = 1:numel(Datasets)
           end
        end
        
+       % add missing columns to Output
+       MissingCol = setdiff(CurrentColNames, OutputColNames);
+       for Indx_C = 1:numel(MissingCol)
+           Output.(MissingCol{Indx_C}) = cell([size(Output, 1), 1]);
+       end
 
        % if 
        
@@ -55,3 +60,5 @@ for Indx_P = 1:numel(Datasets)
     end
     
 end
+
+save('LATAnswers.mat', 'AllAnswers')
