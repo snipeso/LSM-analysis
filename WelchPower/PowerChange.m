@@ -85,8 +85,8 @@ figure
 
 Channels = [3:7, 9:13, 15, 16, 18:20, 24, 106,111, 112, 117, 118, 123, 124];
 
-ChanIndx = ismember( str2double({Chanlocs.labels}), Channels); % hotspot
-% ChanIndx = ~ismember( str2double({Chanlocs.labels}), Channels); % not hotspot
+% ChanIndx = ismember( str2double({Chanlocs.labels}), Channels); % hotspot
+ChanIndx = ~ismember( str2double({Chanlocs.labels}), Channels); % not hotspot
 
 
 figure
@@ -98,16 +98,16 @@ allAverages = nan(numel(Freqs), numel(Sessions));
 Colors = colormap(flipud(jet(numel(Freqs))));
 for Indx_F = 1:numel(Freqs)
     for Indx_S = 1:numel(Sessions)
-        pAverages = nan(numel(Participants), numel(Channels));
+        pAverages = nan(numel(Participants), nnz(ChanIndx));
         Session_Indexes = find(strcmp(Categories(3, :), Sessions{Indx_S}));
         
-        for Indx_P = 1:numel(Session_Indexes)
-             pAverages(Indx_P, :) = nanmean(allFFT(Session_Indexes(Indx_P)).FFT(ChanIndx, Indx_F, :), 3)';
-%             pAverages(Indx_P, :) = nanmean(normFFT(Session_Indexes(Indx_P)).FFT(ChanIndx, Indx_F, :), 3)';
+        for Indx_P = 4%1:numel(Session_Indexes)
+%              pAverages(Indx_P, :) = nanmean(allFFT(Session_Indexes(Indx_P)).FFT(ChanIndx, Indx_F, :), 3)';
+            pAverages(Indx_P, :) = nanmean(normFFT(Session_Indexes(Indx_P)).FFT(ChanIndx, Indx_F, :), 3)';
         end
         
-        allAverages(Indx_F, Indx_S) = log(nanmean(nanmean(pAverages, 1)));
-%         allAverages(Indx_F, Indx_S) = nanmean(nanmean(pAverages, 1));
+%         allAverages(Indx_F, Indx_S) = log(nanmean(nanmean(pAverages, 1)));
+        allAverages(Indx_F, Indx_S) = nanmean(nanmean(pAverages, 1));
     end
     plot(allAverages(Indx_F,:), 'o-', 'Color', Colors(Indx_F, :), 'LineWidth', 3)
 end
@@ -116,12 +116,13 @@ xticklabels({'BL', 'Pre', 'S1', 'S2-1', 'S2-2', 'S2-3', 'Post'})
 
 MeanAll = mean(mean(allAverages));
 StdAll = std(mean(allAverages));
-YLims = [min(allAverages(:)), max(allAverages(:))];
+% YLims = [min(allAverages(:)), max(allAverages(:))];
+YLims = [-15, 100];
 plot(repmat(1:7, 2, 1), repmat(YLims, 7, 1)', 'k', 'LineWidth', 2)
 ylim(YLims)
 xlim([0, 8])
-title('HotSpot Frequency Change')
-ylabel('(log) Power Density')
+title('NotHotSpot Frequency Change (relative to Pre)')
+ylabel('% Change Power Density')
 c = colorbar;
 caxis([min(Freqs), max(Freqs)])
 

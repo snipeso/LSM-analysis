@@ -1,12 +1,12 @@
-
-clear
-clc
-close all
-
-wp_Parameters
-
-
-[allFFT, Categories] = LoadAll(Paths.powerdata);
+% 
+% clear
+% clc
+% close all
+% 
+% wp_Parameters
+% 
+% 
+% [allFFT, Categories] = LoadAll(Paths.powerdata);
 
 
 Sessions = unique(Categories(3, :));
@@ -80,7 +80,7 @@ end
 
 
 % plot topoplots
-Freqs = [1:15];
+Freqs = [1:2:20];
 Sessions = {'BaselineBeam', 'MainPre', 'Session1Beam', 'Session2Beam1','Session2Beam2', 'Session2Beam3', 'MainPost'};
 FreqsIndx =  dsearchn( allFFT(1).Freqs', Freqs');
 load('StandardChanlocs128.mat')
@@ -92,15 +92,21 @@ for Indx_S = 1:numel(Sessions)
         All_Channels = nan(numel(Participants),size(allFFT(1).FFT, 1));
         Session_Indexes = find(strcmp(Categories(3, :), Sessions{Indx_S}));
         
-        for Indx_P = 2:numel(Session_Indexes)
+        for Indx_P = 1:numel(Session_Indexes)
             All_Channels(Indx_P, :) = nanmean(allFFT(Session_Indexes(Indx_P)).FFT(:, FreqsIndx(Indx_F), :), 3);
         end
         subplot(numel(Sessions), numel(Freqs), Indx)
         topoplot(log(nanmean(All_Channels, 1)), allFFT(1).Chanlocs, 'maplimits', [-2, 1], 'style', 'map', 'headrad', 'rim')
-        Indx = Indx+1;
-        if Indx<=numel(Freqs)
+        
+                if Indx<=numel(Freqs)
             title([num2str(Freqs(Indx_F)), 'Hz'])
+                end
+        if Indx==40
+        pause
         end
+        Indx = Indx+1;
+        
+
     end
 end
 
