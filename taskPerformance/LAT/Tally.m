@@ -1,6 +1,6 @@
-clear
-clc
-close all
+% clear
+% clc
+% close all
 
 LAT_Parameters
 
@@ -16,8 +16,7 @@ for Indx_C = 1:numel(ColNames)
     AllAnswers.(ColNames{Indx_C})(emptyCells) = {nan};
 end
 
-% Sessions = unique(AllAnswers.Session);
-% Sessions(contains(Sessions, 'Comp')) = [];
+
 % Sessions = {'BaselineBeam', 'MainPre', 'Session1Beam', 'Session2Beam1', 'Session2Beam2', 'Session2Beam3', 'MainPost'};
 % SessionLabels = {'Bl', 'Pre', 'S1', 'S2-1', 'S2-2', 'S2-3', 'Post'};
 % plotSessionIndxes = [2, 3, 4, 7];
@@ -60,8 +59,8 @@ for Indx_P = 1:numel(Participants)
     end
 end
 
-figure
-hold on
+
+% plot average bars
 meanResponses = squeeze(nanmean(Responses, 1));
 prcntmeanResponses = 100*(meanResponses./(sum(meanResponses, 2)));
 figure
@@ -73,6 +72,7 @@ legend({'Correct', 'Late', 'Missing'})
 % Sessions = {'MainPre', 'Session1Beam', 'Session2Beam', 'MainPost'};
 % SessionLabels = {'Pre', 'S1', 'S2', 'Post'};
 
+% plot individuals
 figure
 for Indx_P = 1:numel(Participants)
     subplot(1, numel(Participants), Indx_P)
@@ -80,9 +80,46 @@ for Indx_P = 1:numel(Participants)
     PrcntResp = 100*(Resp./(sum(Resp, 2)));
  PlotSessions(PrcntResp, Sessions(plotSessionIndxes), SessionLabels(plotSessionIndxes))
 %  set(gca,'visible','off')  
-set(gca,'xtick',[], 'ytick', [], 'ylabel', [])
+ set(gca,'xtick',[], 'ytick', [], 'ylabel', [])
  title([Participants{Indx_P}])
 end
+
+
+% plot spaghetti plot
+figure
+
+Colors = [linspace(0, (numel(Participants) -1)/numel(Participants), numel(Participants))', ...
+    ones(numel(Participants), 1)*0.2, ...
+   ones(numel(Participants), 1)];
+Colors = hsv2rgb(Colors);
+for Indx_P = 1:numel(Participants)
+    Resp = squeeze(Responses(Indx_P, plotSessionIndxes, :));
+    PrcntResp = 100*(Resp./(sum(Resp, 2)));
+    subplot(1, 2, 1)
+    hold on
+    plot(PrcntResp(:, 1), 'o-', 'LineWidth', 1, 'MarkerFaceColor', Colors(Indx_P, :), 'Color', Colors(Indx_P, :) )
+    title('Hits')
+        subplot(1, 2, 2)
+        hold on
+    plot(PrcntResp(:, 3), 'o-', 'LineWidth', 1, 'MarkerFaceColor', Colors(Indx_P, :), 'Color', Colors(Indx_P, :) )
+    title('Misses')
+end
+subplot(1,2,1)
+plot(prcntmeanResponses(:, 1), 'o-', 'LineWidth', 2, 'Color', 'k',  'MarkerFaceColor', 'k')
+title('% Hits')
+xlim([0, numel(Sessions) + 1])
+xticks(1:numel(Sessions))
+xticklabels(SessionLabels)
+ylim([0 100])
+
+subplot(1,2,2)
+plot(prcntmeanResponses(:, 3), 'o-', 'LineWidth', 2, 'Color', 'k',  'MarkerFaceColor', 'k')
+title('% Misses')
+xlim([0, numel(Sessions) + 1])
+xticks(1:numel(Sessions))
+xticklabels(SessionLabels)
+ylim([0 100])
+
 
 
 function PlotSessions(Data, Sessions, SessionLabels)

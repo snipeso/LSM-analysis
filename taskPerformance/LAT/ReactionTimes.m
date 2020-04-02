@@ -1,4 +1,4 @@
-% 
+
 clear
 clc
 close all
@@ -9,8 +9,7 @@ LAT_Parameters
 
 load('LATAnswers.mat', 'AllAnswers')
 
-% Sessions = unique(AllAnswers.Session);
-% Sessions(contains(Sessions, 'Comp')) = [];
+
 % Sessions = {'BaselineBeam', 'MainPre', 'Session1Beam', 'Session2Beam1', 'Session2Beam2', 'Session2Beam3', 'MainPost'};
 % SessionLabels = {'BL', 'Pre', 'S1', 'S2-1', 'S2-2', 'S2-3', 'Post'};
 
@@ -27,6 +26,11 @@ figure
 hold on
 MeanRTs = nan(numel(Participants), numel(Sessions));
 stdRTs = nan(numel(Participants), numel(Sessions));
+
+Colors = [linspace(0, (numel(Participants) -1)/numel(Participants), numel(Participants))', ...
+    ones(numel(Participants), 1), ...
+   ones(numel(Participants), 1)];
+Colors = hsv2rgb(Colors);
 for Indx_P = 1:numel(Participants)
     for Indx_S = 1:numel(Sessions)
         
@@ -39,7 +43,7 @@ for Indx_P = 1:numel(Participants)
         end
         MeanRTs(Indx_P, Indx_S) = mean(RTs);
         stdRTs(Indx_P, Indx_S) = std(RTs);
-        violin(RTs, 'x', [Indx_S, 0], 'facecolor', [0  0  1], ...
+        violin(RTs, 'x', [Indx_S, 0], 'facecolor', Colors(Indx_P, :), ...
             'edgecolor', [], 'facealpha', 0.1, 'mc', [], 'medc', []);
     end
 end
@@ -53,9 +57,12 @@ ylim([0.1, 1])
 
 figure
 hold on
-Color = [0.7, 0.7, 0.7];
+Colors = [linspace(0, (numel(Participants) -1)/numel(Participants), numel(Participants))', ...
+    ones(numel(Participants), 1)*0.2, ...
+   ones(numel(Participants), 1)];
+Colors = hsv2rgb(Colors);
 for Indx_P = 1:numel(Participants)
-    plot(MeanRTs(Indx_P, :), 'o-', 'LineWidth', 1, 'MarkerFaceColor', Color, 'Color', Color)
+    plot(MeanRTs(Indx_P, :), 'o-', 'LineWidth', 1, 'MarkerFaceColor', Colors(Indx_P, :), 'Color', Colors(Indx_P, :))
 end
 
 plot(nanmean(MeanRTs, 1), 'o-', 'LineWidth', 2, 'Color', 'k',  'MarkerFaceColor', 'k')
@@ -71,7 +78,7 @@ figure
 hold on
 Color = [0.7, 0.7, 0.7];
 for Indx_P = 1:numel(Participants)
-    plot(stdRTs(Indx_P, :), 'o-', 'LineWidth', 1, 'MarkerFaceColor', Color, 'Color', Color)
+    plot(stdRTs(Indx_P, :), 'o-', 'LineWidth', 1, 'MarkerFaceColor', Colors(Indx_P, :), 'Color', Colors(Indx_P, :))
 end
 
 plot(nanmean(stdRTs, 1), 'o-', 'LineWidth', 2, 'Color', 'k',  'MarkerFaceColor', 'k')

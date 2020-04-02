@@ -1,25 +1,25 @@
-
+clear
+clc
+close all
 
 filename = 'LAT_All.csv';
 
 Answers = readtable(filename);
 
-KSS =  Answers.numAnswer(strcmp(Answers.qID, qID));
-
-Categories = {};
-
+qID = 'BAT_1';
 
 % Sessions = {'BaselineBeam', 'Session1Beam', 'Session2Beam1',};
 % SessionLabels = {'BLb', 'S1b', 'S2b1',};
 
-Sessions = {'BaselineBeam', 'MainPre', 'Session1Beam', 'Session2Beam1', 'Session2Beam2', 'Session2Beam3', 'MainPost'};
-SessionLabels = {'BL', 'Pre', 'S1', 'S2-1', 'S2-2', 'S2-3', 'Post'};
+Sessions = {'BaselineComp', 'Session1Comp', 'Session2Comp',};
+SessionLabels = {'BLc', 'S1c', 'S2c',};
+
+% Sessions = {'BaselineBeam', 'MainPre', 'Session1Beam', 'Session2Beam1', 'Session2Beam2', 'Session2Beam3', 'MainPost'};
+% SessionLabels = {'BL', 'Pre', 'S1', 'S2-1', 'S2-2', 'S2-3', 'Post'};
 
 
 Participants = {'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07'};
 
-figure
-hold on
 KSSall = nan(numel(Participants), numel(Sessions));
 for Indx_P = 1:numel(Participants)
    for Indx_S = 1:numel(Sessions)
@@ -37,11 +37,13 @@ end
 
 figure
 hold on
-Color = [0.7, 0.7, 0.7];
-
+Colors = [linspace(0, (numel(Participants) -1)/numel(Participants), numel(Participants))', ...
+    ones(numel(Participants), 1)*0.2, ...
+   ones(numel(Participants), 1)];
+Colors = hsv2rgb(Colors);
 
 for Indx_P = 1:numel(Participants)
-    plot(KSSall(Indx_P, :), 'o-', 'LineWidth', 1, 'MarkerFaceColor', Color, 'Color', Color)
+    plot(KSSall(Indx_P, :), 'o-', 'LineWidth', 1, 'MarkerFaceColor', Colors(Indx_P, :), 'Color', Colors(Indx_P, :))
 end
 
 plot(nanmean(KSSall, 1), 'o-', 'LineWidth', 2, 'Color', 'k',  'MarkerFaceColor', 'k')
