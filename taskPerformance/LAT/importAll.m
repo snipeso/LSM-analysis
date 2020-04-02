@@ -1,3 +1,7 @@
+clear
+clc
+close all
+
 LAT_Parameters
 [Subfolders, Datasets] = AllFolderPaths(Paths.Datasets, 'PXX', false, {'CSVs', 'Lazy', 'P00'});
 
@@ -54,11 +58,24 @@ for Indx_P = 1:size(Datasets, 1)
            Output.(MissingCol{Indx_C}) = cell([size(Output, 1), 1]);
        end
 
-       % if 
+        
        
         AllAnswers = [AllAnswers; Output];
     end
     
 end
+
+
+for Indx_C = 1:numel(CurrentColNames)
+    emptyCells = cellfun('isempty', AllAnswers.(CurrentColNames{Indx_C}));
+    if nnz(emptyCells) < 1
+        continue
+    end
+    AllAnswers.(CurrentColNames{Indx_C})(emptyCells) = {nan};
+    A =1
+    
+end
+
+
 
 save('LATAnswers.mat', 'AllAnswers')

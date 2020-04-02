@@ -5,13 +5,21 @@ close all
 
 LAT_Parameters
 
+ 
 
 load('LATAnswers.mat', 'AllAnswers')
 
 % Sessions = unique(AllAnswers.Session);
 % Sessions(contains(Sessions, 'Comp')) = [];
-Sessions = {'BaselineBeam', 'MainPre', 'Session1Beam', 'Session2Beam1', 'Session2Beam2', 'Session2Beam3', 'MainPost'};
-SessionLabels = {'Bl', 'Pre', 'S1', 'S2-1', 'S2-2', 'S2-3', 'Post'};
+% Sessions = {'BaselineBeam', 'MainPre', 'Session1Beam', 'Session2Beam1', 'Session2Beam2', 'Session2Beam3', 'MainPost'};
+% SessionLabels = {'BL', 'Pre', 'S1', 'S2-1', 'S2-2', 'S2-3', 'Post'};
+
+% Sessions = {'BaselineComp', 'Session1Comp', 'Session2Comp',};
+% SessionLabels = {'BLc', 'S1c', 'S2c',};
+
+Sessions = {'BaselineBeam', 'Session1Beam', 'Session2Beam1',};
+SessionLabels = {'BLb', 'S1b', 'S2b1',};
+
 
 Participants = {'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07'};
 
@@ -56,7 +64,7 @@ xlim([0, numel(Sessions) + 1])
 xticks(1:numel(Sessions))
 xticklabels(SessionLabels)
 ylabel('RT (s)')
-ylim([0.35, 0.55])
+ylim([0.3, 0.6])
 
 
 figure
