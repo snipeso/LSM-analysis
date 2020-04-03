@@ -57,7 +57,7 @@ for Indx_T = 1:numel(filenames)
     
     for Indx_Q = 1:numel(qIDs)
         if Indx_T == 1
-       figure('Name', Titles{Indx_Q}, 'units','normalized','outerposition',[0 0 .5 .7]);
+            figure('Name', Titles{Indx_Q}, 'units','normalized','outerposition',[0 0 .5 .7]);
         else
             figure(Indx_Q)
         end
