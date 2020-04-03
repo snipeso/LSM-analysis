@@ -14,12 +14,9 @@ Figures = struct();
 
 for Indx_T = 1:numel(filenames)
     
-    if contains(filenames{Indx_T}, 'LAT' )
-        Sessions = allSessions.LATBeam;
-        SessionLabels = allSessionLabels.LATBeam;
-    elseif contains(filenames{Indx_T}, 'PVT' )
-        Sessions = allSessions.PVTBeam;
-        SessionLabels = allSessionLabels.PVTBeam;
+    if contains(filenames{Indx_T}, 'LAT' )|| contains(filenames{Indx_T}, 'PVT' )
+        Sessions = allSessions.Comp;
+        SessionLabels = allSessionLabels.Comp;
     else
         Sessions = allSessions.Basic;
         SessionLabels = allSessionLabels.Basic;
