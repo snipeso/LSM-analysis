@@ -9,6 +9,7 @@ Figure_Path = fullfile(Figure_Path, 'BAT');
 filenames = {'LAT_All.csv', 'PVT_All.csv', 'Music_All.csv', 'Game_All.csv', ...
     'Match2Sample_All.csv', 'SpFT_All.csv'};
 
+Figures = struct();
 
 
 for Indx_T = 1:numel(filenames)
@@ -29,10 +30,13 @@ for Indx_T = 1:numel(filenames)
     
     
     % Fix qID problem
-    Answers.qID(strcmp(Answers.qLabels, 'Frustrating/Neutral/Relaxing')) = {'BAT_2'};
     
     
-    qIDs = {'BAT_1', 'BAT_2', 'BAT_3', 'BAT_3_1', 'BAT_4', 'BAT_4_1', 'BAT_5', 'BAT_8'};
+    %split Bat3
+    Answers.qID(strcmp(Answers.qLabels, 'Frustrating/Neutral/Relaxing')) = {'BAT_3_0'};
+    
+    
+    qIDs = {'BAT_1', 'BAT_3_0', 'BAT_3', 'BAT_3_1', 'BAT_4', 'BAT_4_1', 'BAT_5', 'BAT_8'};
     Titles = {'KSS';
         'Frustrating-Relaxing';
         'Boring-Interesting';
@@ -52,14 +56,27 @@ for Indx_T = 1:numel(filenames)
         ones(numel(Participants), 1)];
     Colors = hsv2rgb(Colors);
     
-    figure('Name', filenames{Indx_T}, 'units','normalized','outerposition',[0 0 .5 .7])
+    Task = extractBefore(filenames{Indx_T}, '_');
+    
     for Indx_Q = 1:numel(qIDs)
-        subplot(2, 4, Indx_Q)
+        if Indx_T == 1
+       figure('Name', Titles{Indx_Q}, 'units','normalized','outerposition',[0 0 .5 .7]);
+        else
+            figure(Indx_Q)
+        end
+        subplot(2, 3, Indx_T)
         hold on
         AnsAll = nan(numel(Participants), numel(Sessions));
         for Indx_P = 1:numel(Participants)
             for Indx_S = 1:numel(Sessions)
-                Ans = Answers.numAnswer(strcmp(Answers.qID, qIDs{Indx_Q}) & strcmp(Answers.dataset, Participants{Indx_P}) & strcmp(Answers.Level2, Sessions{Indx_S}));
+                
+                qID = qIDs{Indx_Q};
+                SessionIndexes = strcmp(Answers.dataset, Participants{Indx_P}) & strcmp(Answers.Level2, Sessions{Indx_S});
+                
+                if strcmp(qID, 'BAT_1') && nnz(strcmp(Answers.qID(SessionIndexes), 'BAT_6'))
+                    qID = 'BAT_6';
+                end
+                Ans = Answers.numAnswer(strcmp(Answers.qID, qID) & SessionIndexes);
                 if numel(Ans) < 1
                     continue
                 end
@@ -77,10 +94,13 @@ for Indx_T = 1:numel(filenames)
         xticks(1:numel(Sessions))
         xticklabels(SessionLabels)
         ylim([0 100])
-        title(Titles{Indx_Q})
+        title([Task])
+        if Indx_T == numel(filenames)
+            FigureName =  [Titles{Indx_Q},  '_BAT.svg'];
+            saveas(gcf,fullfile(Figure_Path, FigureName))
+        end
     end
-    FigureName =  [extractBefore(filenames{Indx_T}, '_'),  '_BAT.svg'];
-    saveas(gcf,fullfile(Figure_Path, FigureName))
+    
 end
 
 
