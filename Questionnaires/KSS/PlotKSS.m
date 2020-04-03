@@ -2,21 +2,24 @@ clear
 clc
 close all
 
-filename = 'LAT_All.csv';
+filepath = 'C:\Users\colas\Projects\LSM-analysis\Questionnaires\CSVs';
+filename = 'PVT_All.csv';
 
-Answers = readtable(filename);
+Answers = readtable(fullfile(filepath, filename));
 
 qID = 'BAT_1';
 
 % Sessions = {'BaselineBeam', 'Session1Beam', 'Session2Beam1',};
 % SessionLabels = {'BLb', 'S1b', 'S2b1',};
 
-Sessions = {'BaselineComp', 'Session1Comp', 'Session2Comp',};
-SessionLabels = {'BLc', 'S1c', 'S2c',};
+% Sessions = {'BaselineComp', 'Session1Comp', 'Session2Comp',};
+% SessionLabels = {'BLc', 'S1c', 'S2c',};
 
 % Sessions = {'BaselineBeam', 'MainPre', 'Session1Beam', 'Session2Beam1', 'Session2Beam2', 'Session2Beam3', 'MainPost'};
 % SessionLabels = {'BL', 'Pre', 'S1', 'S2-1', 'S2-2', 'S2-3', 'Post'};
 
+Sessions = {'BaselineBeam', 'MainPre', 'Session1Beam', 'Session2Beam', 'MainPost'};
+SessionLabels = {'BL', 'Pre', 'S1', 'S2', 'Post'};
 
 Participants = {'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07'};
 
