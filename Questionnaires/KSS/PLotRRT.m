@@ -46,46 +46,124 @@ SessionLabels = allSessionLabels.RRT;
 
 
 
-% plot 4 energies
-figure( 'units','normalized','outerposition',[0 0 1 1])
-qID = 'RT_TIR_2';
-SubQs = unique(Answers.qLabels(strcmp(Answers.qID, qID)));
-Titles = { 'Emotional Energy',  'Spiritual Energy', 'Psychologyical Energy', 'Physical Energy',};
-for Indx = 1:numel(SubQs)
-    subqID =  [qID, '_', num2str(Indx)];
-    Answers.qID(strcmp(Answers.qID, qID) & strcmp(Answers.qLabels, SubQs{Indx})) = {subqID};
-    
-     [AnsAll, Labels] = TabulateAnswers(Answers, Sessions,   Participants, subqID);
-     AnsAll = AnsAll.*100;
-     subplot(2, 2, Indx)
-     PlotConfettiSpaghetti(AnsAll, Sessions, SessionLabels, [0 100], Titles{Indx}, Labels)
-end
-saveas(gcf,fullfile(Figure_Path, '4Energies_RRT.svg'))
+%%% plot 4 energies
+%
+% figure( 'units','normalized','outerposition',[0 0 1 1])
+% qID = 'RT_TIR_2';
+% SubQs = unique(Answers.qLabels(strcmp(Answers.qID, qID)));
+% Titles = { 'Emotional Energy',  'Spiritual Energy', 'Psychologyical Energy', 'Physical Energy',};
+% for Indx = 1:numel(SubQs)
+%     subqID =  [qID, '_', num2str(Indx)];
+%     Answers.qID(strcmp(Answers.qID, qID) & strcmp(Answers.qLabels, SubQs{Indx})) = {subqID};
+%     
+%      [AnsAll, Labels] = TabulateAnswers(Answers, Sessions,   Participants, subqID);
+%      AnsAll = AnsAll.*100;
+%      subplot(2, 2, Indx)
+%      PlotConfettiSpaghetti(AnsAll, Sessions, SessionLabels, [0 100], Titles{Indx}, Labels)
+% end
+% saveas(gcf,fullfile(Figure_Path, '4Energies_RRT.svg'))
+
+
 
 
 %%% alertness and focus
-
-figure( 'units','normalized','outerposition',[0 0 1 .5])
-
-[AnsAll, Labels] = TabulateAnswers(Answers, Sessions,  Participants, 'RT_TIR_4');
-AnsAll = AnsAll.*100; 
-subplot(1, 2, 1)
-PlotConfettiSpaghetti(AnsAll, Sessions, SessionLabels, [0 100], 'Alertness', Labels)
-
-[AnsAll, Labels] = TabulateAnswers(Answers, Sessions,  Participants, 'RT_TIR_6');
-AnsAll = AnsAll.*100; 
-subplot(1, 2, 2)
-PlotConfettiSpaghetti(AnsAll, Sessions, SessionLabels, [0 100], 'Focus', Labels)
-saveas(gcf,fullfile(Figure_Path, 'Alertness_RRT.svg'))
-
-
+% 
+% figure( 'units','normalized','outerposition',[0 0 1 .5])
+% 
+% [AnsAll, Labels] = TabulateAnswers(Answers, Sessions,  Participants, 'RT_TIR_4');
+% AnsAll = AnsAll.*100; 
+% subplot(1, 2, 1)
+% PlotConfettiSpaghetti(AnsAll, Sessions, SessionLabels, [0 100], 'Alertness', Labels)
+% 
+% [AnsAll, Labels] = TabulateAnswers(Answers, Sessions,  Participants, 'RT_TIR_6');
+% AnsAll = AnsAll.*100; 
+% subplot(1, 2, 2)
+% PlotConfettiSpaghetti(AnsAll, Sessions, SessionLabels, [0 100], 'Focus', Labels)
+% saveas(gcf,fullfile(Figure_Path, 'Alertness_RRT.svg'))
 
 
+%%% task difficulty Oddball
+
+% figure
+% [AnsAll, Labels] = TabulateAnswers(Answers, Sessions,  Participants, 'RT_oddball');
+% AnsAll = AnsAll.*100; 
+% PlotConfettiSpaghetti(AnsAll, Sessions, SessionLabels, [0 100], 'Oddball Difficulty', Labels)
+% saveas(gcf,fullfile(Figure_Path, 'Oddballdifficulty_RRT.svg'))
+
+
+
+%%% General Feelings
+% 
+% figure( 'units','normalized','outerposition',[0 0 1 .5])
+% 
+% [AnsAll, Labels] = TabulateAnswers(Answers, Sessions,  Participants, 'RT_FEE_3');
+% AnsAll = AnsAll.*100; 
+% subplot(1, 2, 1)
+% PlotConfettiSpaghetti(AnsAll, Sessions, SessionLabels, [0 100], 'Stress', Labels)
+% 
+% [AnsAll, Labels] = TabulateAnswers(Answers, Sessions,  Participants, 'RT_FEE_5');
+% AnsAll = AnsAll.*100; 
+% subplot(1, 2, 2)
+% PlotConfettiSpaghetti(AnsAll, Sessions, SessionLabels, [0 100], 'General Mood', Labels)
+% saveas(gcf,fullfile(Figure_Path, 'GeneralFeelings_RRT.svg'))
+
+
+
+%%% Tolerence to experimenters
+% 
+% figure( 'units','normalized','outerposition',[0 0 .5 .5])
+% [AnsAll, Labels] = TabulateAnswers(Answers, Sessions,  Participants, 'RT_FEE_2');
+% AnsAll = AnsAll.*100; 
+% PlotConfettiSpaghetti(AnsAll, Sessions, SessionLabels, [0 100], 'Tolerence towards Experiment', Labels)
+% saveas(gcf,fullfile(Figure_Path, 'Tolerance_RRT.svg'))
+
+
+%%% feelings
+% figure( 'units','normalized','outerposition',[0 0 1 1])
+% qID = 'RT_FEE_1_1';
+% SubQs = unique(Answers.qLabels(strcmp(Answers.qID, qID)));
+% Titles = { 'Fear',  'Happiness', 'Anger', 'Sadness'};
+% for Indx = 1:numel(SubQs)
+%     subqID =  [qID, '_', num2str(Indx)];
+%     Answers.qID(strcmp(Answers.qID, qID) & strcmp(Answers.qLabels, SubQs{Indx})) = {subqID};
+%     
+%      [AnsAll, Labels] = TabulateAnswers(Answers, Sessions,   Participants, subqID);
+%      AnsAll = AnsAll.*100;
+%      subplot(2, 2, Indx)
+%      PlotConfettiSpaghetti(AnsAll, Sessions, SessionLabels, [0 100], Titles{Indx}, Labels)
+% end
+% saveas(gcf,fullfile(Figure_Path, 'Feelings_RRT.svg'))
 
 
 
 
+%%% current state
+% figure( 'units','normalized','outerposition',[0 0 1 1])
+% qID = 'RT_FEE_4';
+% SubQs = unique(Answers.Question(strcmp(Answers.qID, qID)));
+% Titles = {'Other Pain', 'Headache', 'Hunger', 'Motivation' 'Thirst'};
+% PltIndx = 1;
+% for Indx = [1:3, 5]
+%     subqID =  [qID, '_', num2str(Indx)];
+%     Answers.qID(strcmp(Answers.qID, qID) & strcmp(Answers.Question, SubQs{Indx})) = {subqID};
+%     
+%      [AnsAll, ~] = TabulateAnswers(Answers, Sessions,   Participants, subqID);
+%      AnsAll = AnsAll.*100;
+%      subplot(2, 2, PltIndx)
+%      PlotConfettiSpaghetti(AnsAll, Sessions, SessionLabels, [0 100], Titles{Indx}, {'Not at all', 'Extremely'})
+%      PltIndx = PltIndx + 1;
+% end
+% saveas(gcf,fullfile(Figure_Path, 'Pain_RRT.svg'))
 
+
+
+%%% plot sleep need
+
+[AnsAll, Labels] = TabulateAnswers(Answers, Sessions,   Participants, 'RT_TIR_5' );
+
+
+figure
+PlotRadio(AnsAll, Sessions, SessionLabels, 'Sleep Pressure', Labels)
 
 
 
@@ -147,4 +225,38 @@ yticks(linspace(0, 100, numel(Labels)))
 yticklabels(Labels)
 title(Title)
 
+end
+
+
+function PlotRadio(Matrix, Sessions, SessionLabels, Title, Labels)
+Tot_Answers = max(Matrix(:));
+
+
+Matrix(end+ 1, :) = Tot_Answers;
+
+Colors = colormap(flipud(parula(Tot_Answers)));
+Data = nan(numel(Sessions), Tot_Answers);
+
+for Indx_S = 1:numel(Sessions)
+    Table = tabulate(Matrix(:, Indx_S));
+    Table(end, 2) = Table(end,2) -1;
+   Data(Indx_S, :) = Table(:, 2)';
+    
+end
+
+Data = 100*(Data./(sum(Data, 2)));
+h = bar(Data, 'stacked');
+
+for Indx = 1:Tot_Answers
+    h(Indx).EdgeColor = 'none';
+    h(Indx).FaceColor = 'flat';
+    h(Indx).CData = Colors(Indx, :);
+end
+xlim([0, numel(Sessions) + 1])
+xticks(1:numel(Sessions))
+xticklabels(SessionLabels)
+ylabel('% of Responses')
+ylim([0, 100])
+legend(Labels)
+title(Title)
 end
