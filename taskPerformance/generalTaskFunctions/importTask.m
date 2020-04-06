@@ -1,4 +1,4 @@
-function importTask(DatasetPaths, Task, Destination)
+function AllAnswers = importTask(DatasetPaths, Task, Destination)
 
 % find all paths
 [Subfolders, Datasets] = AllFolderPaths(DatasetPaths, 'PXX', false, {'CSVs', 'Lazy', 'P00'});

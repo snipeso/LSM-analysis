@@ -40,8 +40,10 @@ xticks(1:numel(Sessions))
 xticklabels(SessionLabels)
 
 ylim(YLims)
-yticks(linspace(0, 100, numel(Labels)))
-yticklabels(Labels)
+if ~isempty(Labels)
+    yticks(linspace(0, 100, numel(Labels)))
+    yticklabels(Labels)
+end
 
 title(Title)
 
