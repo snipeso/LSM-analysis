@@ -30,7 +30,7 @@ Participants = {'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07'};
 % get response times
 LATResponses = 'LATResponses.mat';
 if exist(fullfile(Paths.Responses, LATResponses), 'file')
-    load(LATResponses, 'AllAnswers')
+    load(fullfile(Paths.Responses, LATResponses), 'AllAnswers')
 else
     if ~exist(Paths.Responses, 'dir')
         mkdir(Paths.Responses)
