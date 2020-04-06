@@ -25,5 +25,5 @@ ylim([0, 100])
 
 
 if exist('Legend', 'var')
-legend(Legend)
+    legend(Legend)
 end
