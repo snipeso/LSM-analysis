@@ -3,6 +3,7 @@ CSV_Path = 'C:\Users\colas\Projects\LSM-analysis\Questionnaires\CSVs';
 
 Figure_Path= 'C:\Users\colas\Dropbox\Research\SleepLoop\LSM\Figures';
 
+addpath('C:\Users\colas\Projects\LSM-analysis\Questionnaires\PlotFunctions')
 
 % Sessions
 allSessions = struct();
