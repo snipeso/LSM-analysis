@@ -3,10 +3,10 @@ clc
 close all
 
 Q_Parameters
-Figure_Path = fullfile(Figure_Path, 'RRT');
+Figure_Path = fullfile(Paths.Figures, 'RRT');
 filename = 'Fixation_All.csv';
 
-Answers = readtable(fullfile(CSV_Path, filename));
+Answers = readtable(fullfile(Paths.CSV, filename));
 
 Sessions = allSessions.RRT;
 SessionLabels = allSessionLabels.RRT;

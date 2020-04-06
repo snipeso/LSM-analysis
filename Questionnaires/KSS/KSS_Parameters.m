@@ -1,4 +1,0 @@
-
-Paths = struct();
-
-addpath('')

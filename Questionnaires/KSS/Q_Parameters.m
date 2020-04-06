@@ -1,9 +1,13 @@
 
-CSV_Path = 'C:\Users\colas\Projects\LSM-analysis\Questionnaires\CSVs';
+Paths = struct();
+Paths.Analysis = 'C:\Users\colas\Projects\LSM-analysis';
+Paths.CSV = fullfile(Paths.Analysis, 'Questionnaires', 'CSVs');
 
-Figure_Path= 'C:\Users\colas\Dropbox\Research\SleepLoop\LSM\Figures';
+Paths.Figures = 'C:\Users\colas\Dropbox\Research\SleepLoop\LSM\Figures';
 
-addpath('C:\Users\colas\Projects\LSM-analysis\Questionnaires\PlotFunctions')
+% add location of subfunctions
+addpath(fullfile(Paths.Analysis, 'generalFunctions'))
+addpath(fullfile(Paths.Analysis, 'plotFunctions'))
 
 % Sessions
 allSessions = struct();
