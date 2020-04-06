@@ -3,29 +3,23 @@ clc
 close all
 
 wpLAT_Parameters
-Channels = size(Chanlocs, 2);
-normFFT = allFFT;
-for Indx_P = 1:numel(Participants)
-    for Indx_Ch = 1:Channels
-        BL_Indx = find(strcmp(Categories(1, :), Participants{Indx_P}) & strcmp(Categories(3, :), 'MainPre'));
-        BL = nanmean(allFFT(BL_Indx).FFT(Indx_Ch, :, :), 3);
-        
-        for Indx_S = 1:numel(Sessions)
-            F_Indx =  find(strcmp(Categories(1, :),Participants{Indx_P}) & strcmp(Categories(3, :), Sessions{Indx_S}));
-            if isempty(F_Indx)
-                if Indx_Ch == 1
-               disp(['**************Skipping ', Participants{Indx_P},  Sessions{Indx_S}, '*****************'])
-                end
-               continue
-            end
-            S = squeeze(allFFT(F_Indx).FFT(Indx_Ch, :, :));
-            normFFT(F_Indx).FFT(Indx_Ch, :, :) = 100*((S-BL')./BL');
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Scaling = 'log'; % either 'log' or 'norm'
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+switch Scaling
+    case 'log'
+        for Indx_F = 1:size(allFFT, 2)
+            allFFT(Indx_F).FFT = log(allFFT(Indx_F).FFT);
         end
-    end
+    case 'norm'
+        load(fullfile(Paths.wp, 'wPower', 'LAT_FFTnorm.mat'), 'normFFT')
+        allFFT = normFFT;
 end
-
-
-
 
 figure
 hold on
@@ -40,11 +34,9 @@ for Indx_Ch = 1:Channels
         
         for Indx_P = 2:numel(Session_Indexes)
             pAverages(Indx_P) = nanmean(allFFT(Session_Indexes(Indx_P)).FFT(Indx_Ch, FreqIndx, :), 3);
-%             pAverages(Indx_P) = nanmean(normFFT(Session_Indexes(Indx_P)).FFT(Indx_Ch, FreqIndx, :), 3);
         end
         
-        allAverages(Indx_Ch, Indx_S) = log(nanmean(pAverages));
-%         allAverages(Indx_Ch, Indx_S) = nanmean(pAverages);
+        allAverages(Indx_Ch, Indx_S) = nanmean(pAverages);
     end
     plot(allAverages(Indx_Ch,:), 'Color', Colors(Indx_Ch, :), 'LineWidth', 1)
 end

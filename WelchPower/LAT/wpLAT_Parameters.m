@@ -2,6 +2,7 @@ addpath('C:\Users\colas\Projects\LSM-analysis\WelchPower')
 wp_Parameters
 
 Task = 'LAT';
+Refresh = false;
 
 %%% Events
 StartLeft = 'S 10'; % corresponds to 1 in matrix
@@ -35,7 +36,7 @@ end
 
 %%% Get data
 Paths.FFT = fullfile(Paths.wp, 'wPower', [Task, '_FFT.mat']);
-if ~exist(Paths.FFT, 'file')
+if ~exist(Paths.FFT, 'file') || Refresh
     [allFFT, Categories] = LoadAllFFT(Paths.powerdata);
     save(Paths.FFT, 'allFFT', 'Categories')
 else
