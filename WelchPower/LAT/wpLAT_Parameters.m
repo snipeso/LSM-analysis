@@ -30,6 +30,7 @@ Participants = {'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07'};
 %%% Locations
 Paths.EEGdata = fullfile(Paths.Preprocessing, 'Interpolated\', Task);
 Paths.Cuts = fullfile(Paths.Preprocessing, 'Cuts\', Task);
+Paths.Figures = fullfile(Paths.Figures, 'LAT');
 Paths.powerdata = fullfile(Paths.Preprocessing, 'WelchPower', Task);
 
 if ~exist(Paths.powerdata, 'dir') % TODO, move to appropriate location
@@ -47,4 +48,5 @@ else
 end
 
 Chanlocs = allFFT(1).Chanlocs;
-Channels = size(Chanlocs, 2);
+Freqs = allFFT(1).Freqs;
+TotChannels = size(Chanlocs, 2);

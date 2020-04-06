@@ -3,6 +3,7 @@ Paths = struct();
 % Paths.Preprocessing = 'C:\Users\schlaf\Desktop\LSMpreprocessed\';
 Paths.Preprocessing = 'C:\Users\colas\Desktop\FakeDataPreprocessedEEG';
 Paths.Analysis = 'C:\Users\colas\Projects\LSM-analysis\';
+Paths.Figures = 'C:\Users\colas\Dropbox\Research\SleepLoop\LSM\Figures';
 Paths.wp = fullfile(Paths.Analysis, 'WelchPower');
 
 Freqs = [1:0.25:30];
