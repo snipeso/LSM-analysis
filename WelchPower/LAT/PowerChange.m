@@ -2,22 +2,12 @@ clear
 clc
 close all
 
-wp_Parameters
-
-
-[allFFT, Categories] = LoadAll(Paths.powerdata);
-Chanlocs = allFFT(1).Chanlocs;
-
-Sessions = {'BaselineBeam', 'MainPre', 'Session1Beam', 'Session2Beam1', 'Session2Beam2', 'Session2Beam3', 'MainPost'};
-Participants = unique(Categories(1, :));
-ChanLabels = {Chanlocs.labels};
+wpLAT_Parameters
 Channels = size(Chanlocs, 2);
-Colors = MapRainbow([Chanlocs.X], [Chanlocs.Y], [Chanlocs.Z], true);
-
 normFFT = allFFT;
 for Indx_P = 1:numel(Participants)
     for Indx_Ch = 1:Channels
-        BL_Indx = find(strcmp(Categories(1, :),Participants{Indx_P}) & strcmp(Categories(3, :), 'MainPre'));
+        BL_Indx = find(strcmp(Categories(1, :), Participants{Indx_P}) & strcmp(Categories(3, :), 'MainPre'));
         BL = nanmean(allFFT(BL_Indx).FFT(Indx_Ch, :, :), 3);
         
         for Indx_S = 1:numel(Sessions)
@@ -42,6 +32,7 @@ hold on
 allAverages = nan(Channels, numel(Sessions));
 Freq = 7;
 FreqIndx =  dsearchn( allFFT(1).Freqs', Freq);
+Colors = MapRainbow([Chanlocs.X], [Chanlocs.Y], [Chanlocs.Z], true);
 for Indx_Ch = 1:Channels
     for Indx_S = 1:numel(Sessions)
         pAverages = nan(numel(Participants), 1);

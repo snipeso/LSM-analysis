@@ -1,5 +1,6 @@
-function [allFFT, Categories] = LoadAll(Path)
-
+function [allFFT, Categories] = LoadAllFFT(Path)
+% loads all power spectrums in given path, using filenames to determine
+% categories.
 
 Files = deblank(cellstr(ls(Path)));
 Files(~contains(Files, '.mat')) = [];
