@@ -53,7 +53,6 @@ for Indx_T = 1:numel(filenames)
         [AnsAll, Labels] = TabulateAnswers(Answers, Sessions, Participants, qID, 'numAnswer');
         AnsAll = 100*AnsAll;
         
-        
         if Indx_T == 1
             figure('Name', Titles{Indx_Q}, 'units','normalized','outerposition',[0 0 .5 .7]);
         else
@@ -70,9 +69,6 @@ for Indx_T = 1:numel(filenames)
     end
     
 end
-
-
-
 
 
 % TODO: stacked bar on falling asleep
