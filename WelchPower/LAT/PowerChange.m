@@ -58,16 +58,13 @@ YLims = [min(chAverages(:)), max(chAverages(:))];
 plot(repmat(1:numel(Sessions), 2, 1), repmat(YLims, numel(Sessions), 1)', 'k', 'LineWidth', 2)
 ylim(YLims)
 ylabel(YLabel)
-saveas(gcf,fullfile(Paths.Figures, ['LAT_ChannelChanges_', num2str(Freq), '.svg']))
+saveas(gcf,fullfile(Paths.Figures, [Scaling, '_LAT_ChannelChanges_', num2str(Freq), '.svg']))
 
 
 figure( 'units','normalized','outerposition',[0 0 1 .25])
-for Indx_S = 1:size(chAverages, 2)
-    subplot(1, size(chAverages, 2), Indx_S)
-    topoplot(chAverages(:, Indx_S), Chanlocs, 'maplimits', YLims, 'style', 'map', 'headrad', 'rim')
-    title(Sessions{Indx_S})
-end
-saveas(gcf,fullfile(Paths.Figures, ['LAT_TopoSessions.svg']))
+
+PlotTopoChange(chAverages, Sessions, Chanlocs)
+saveas(gcf,fullfile(Paths.Figures, [Scaling, '_LAT_TopoSessions.svg']))
 
 %% frequency
 
@@ -111,4 +108,4 @@ for Indx_H = 1:2
     set(findall(gcf,'-property','FontSize'),'FontSize',12)
     
 end
-saveas(gcf,fullfile(Paths.Figures, ['LAT_PowerChange.svg']))
+saveas(gcf,fullfile(Paths.Figures, [Scaling, '_LAT_PowerChange.svg']))
