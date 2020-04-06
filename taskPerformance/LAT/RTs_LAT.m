@@ -12,7 +12,7 @@ MeanRTs = nan(numel(Participants), numel(Sessions));
 MedianRTs = nan(numel(Participants), numel(Sessions));
 stdRTs = nan(numel(Participants), numel(Sessions));
 
-figure
+figure( 'units','normalized','outerposition',[0 0 .7 .7])
 for Indx_P = 1:numel(Participants)
     for Indx_S = 1:numel(Sessions)
         
@@ -39,21 +39,21 @@ saveas(gcf,fullfile(Paths.Figures, [Title, '_RTs_Flames.jpg']))
 figure
 PlotConfettiSpaghetti(MeanRTs, Sessions, SessionLabels, [0.2, 0.6], 'Reaction Time Means', '')
 ylabel('RT (s)')
-saveas(gcf,fullfile(Paths.Figures, [Title, '_meanRTs.jpg']))
+saveas(gcf,fullfile(Paths.Figures, [Title, '_meanRTs.svg']))
 
 
 %plot standard deviations
 figure
 PlotConfettiSpaghetti(MeanRTs, Sessions, SessionLabels, [0 1], 'Reaction Time Standard Deviations', '')
 ylabel('RT SD (s)')
-saveas(gcf,fullfile(Paths.Figures, [Title, '_stdRTs.jpg']))
+saveas(gcf,fullfile(Paths.Figures, [Title, '_stdRTs.svg']))
 
 
 %plot medians
 figure
 PlotConfettiSpaghetti(MedianRTs, Sessions, SessionLabels, [0.2, 0.6], 'Reaction Time Medians', '')
 ylabel('RT (s)')
-saveas(gcf,fullfile(Paths.Figures, [Title, '_medianRTs.jpg']))
+saveas(gcf,fullfile(Paths.Figures, [Title, '_medianRTs.svg']))
 
 
 
