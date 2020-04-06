@@ -86,14 +86,14 @@ plotFreqs = [1:20];
 FreqIndx =  dsearchn( Freqs', plotFreqs');
 
 Title = 'HotSpot Frequency Change';
-    figure( 'units','normalized','outerposition',[0 0 1 1])
+figure( 'units','normalized','outerposition',[0 0 1 1])
 for Indx_H = 1:2
     if Indx_H == 2
         ChanIndx = ~ismember( str2double({Chanlocs.labels}), plotChannels); % not hotspot
         Title =  'Not HotSpot Frequency Change';
     end
     
-
+    
     frqAverages = nan(numel(plotFreqs), numel(Sessions));
     
     
@@ -101,9 +101,9 @@ for Indx_H = 1:2
         for Indx_S = 1:numel(Sessions)
             pAverages = nan(numel(Participants), 1);
             for Indx_P = 1:numel(Sessions)
-                       if isempty(PowerStruct(Indx_P).(Sessions{Indx_S}))
-                continue
-            end
+                if isempty(PowerStruct(Indx_P).(Sessions{Indx_S}))
+                    continue
+                end
                 pAverages(Indx_P) = nanmean(nanmean(PowerStruct(Indx_P).(Sessions{Indx_S})(ChanIndx, FreqIndx(Indx_F), :), 1));
             end
             frqAverages(Indx_F, Indx_S) = nanmean(pAverages);
