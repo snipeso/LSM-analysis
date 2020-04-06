@@ -8,7 +8,8 @@ wpLAT_Parameters
 
 Scaling = 'log'; % either 'log' or 'norm'
 
-
+Sessions = allSessions.Comp;
+SessionLabels = allSessionLabels.Comp;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 switch Scaling
@@ -21,8 +22,6 @@ switch Scaling
         allFFT = normFFT;
 end
 
-figure
-hold on
 allAverages = nan(Channels, numel(Sessions));
 Freq = 7;
 FreqIndx =  dsearchn( allFFT(1).Freqs', Freq);
@@ -56,12 +55,12 @@ ylabel('Theta Power Density')
 figure
 for Indx_S = 1:size(allAverages, 2)
     subplot(1, size(allAverages, 2), Indx_S)
-     topoplot(allAverages(:, Indx_S), Chanlocs, 'maplimits', YLims, 'style', 'map', 'headrad', 'rim')
-     title(Sessions{Indx_S})
+    topoplot(allAverages(:, Indx_S), Chanlocs, 'maplimits', YLims, 'style', 'map', 'headrad', 'rim')
+    title(Sessions{Indx_S})
 end
 
 figure
- topoplot(allAverages(:, 6), Chanlocs, 'maplimits', YLims, 'electrodes', 'labels', 'style', 'map', 'headrad', 'rim')
+topoplot(allAverages(:, 6), Chanlocs, 'maplimits', YLims, 'electrodes', 'labels', 'style', 'map', 'headrad', 'rim')
 
 %% frequency
 
@@ -85,11 +84,11 @@ for Indx_F = 1:numel(Freqs)
         Session_Indexes = find(strcmp(Categories(3, :), Sessions{Indx_S}));
         
         for Indx_P = 4%1:numel(Session_Indexes)
-%              pAverages(Indx_P, :) = nanmean(allFFT(Session_Indexes(Indx_P)).FFT(ChanIndx, Indx_F, :), 3)';
+            %              pAverages(Indx_P, :) = nanmean(allFFT(Session_Indexes(Indx_P)).FFT(ChanIndx, Indx_F, :), 3)';
             pAverages(Indx_P, :) = nanmean(normFFT(Session_Indexes(Indx_P)).FFT(ChanIndx, Indx_F, :), 3)';
         end
         
-%         allAverages(Indx_F, Indx_S) = log(nanmean(nanmean(pAverages, 1)));
+        %         allAverages(Indx_F, Indx_S) = log(nanmean(nanmean(pAverages, 1)));
         allAverages(Indx_F, Indx_S) = nanmean(nanmean(pAverages, 1));
     end
     plot(allAverages(Indx_F,:), 'o-', 'Color', Colors(Indx_F, :), 'LineWidth', 3)

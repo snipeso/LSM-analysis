@@ -27,3 +27,7 @@ allSessionLabels = struct();
 
 
 addpath(fullfile(Paths.Analysis, 'generalFunctions'))
+
+if ~exist('topoplot', 'file')
+    eeglab
+end

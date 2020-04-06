@@ -4,7 +4,7 @@ close all
 
 wpLAT_Parameters
 
-Channels = size(Chanlocs, 2);
+
 normFFT = allFFT;
 
 Participants = unique(Categories(1, :));

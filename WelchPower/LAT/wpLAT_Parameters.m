@@ -21,6 +21,9 @@ allSessionLabels.Comp = {'BLc', 'S1c', 'S2c'};
 allSessions.LAT = {'BaselineBeam', 'MainPre', 'Session1Beam', 'Session2Beam1', 'Session2Beam2', 'Session2Beam3', 'MainPost'};
 allSessionLabels.LAT = {'BL', 'Pre', 'S1', 'S2-1', 'S2-2', 'S2-3', 'Post'};
 
+allSessions.Comp =  {'BaselineComp', 'Session1Comp', 'Session2Comp'};
+allSessionLabels.Comp = {'BLc', 'S1c', 'S2c'};
+
 Participants = {'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07'};
 
 
@@ -44,3 +47,4 @@ else
 end
 
 Chanlocs = allFFT(1).Chanlocs;
+Channels = size(Chanlocs, 2);
