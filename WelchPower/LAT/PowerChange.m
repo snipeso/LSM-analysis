@@ -6,10 +6,16 @@ wpLAT_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Scaling = 'log'; % either 'log' or 'norm'
+Scaling = 'norm'; % either 'log' or 'norm'
 
-Sessions = allSessions.Comp;
-SessionLabels = allSessionLabels.Comp;
+% Sessions = allSessions.Comp;
+% SessionLabels = allSessionLabels.Comp;
+% SessionsTitle = 'Comp';
+
+Sessions = allSessions.LAT;
+SessionLabels = allSessionLabels.LAT;
+SessionsTitle = 'Beam';
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 switch Scaling
@@ -18,11 +24,13 @@ switch Scaling
             allFFT(Indx_F).FFT = log(allFFT(Indx_F).FFT);
         end
         YLabel = 'Power Density';
+        
     case 'norm'
         load(fullfile(Paths.wp, 'wPower', 'LAT_FFTnorm.mat'), 'normFFT')
         allFFT = normFFT;
         YLabel = '% Change from Pre';
 end
+TitleTag = [Scaling, SessionsTitle];
 
 PowerStruct = GetPowerStruct(allFFT, Categories, Sessions, Participants);
 
@@ -40,6 +48,9 @@ for Indx_Ch = 1:TotChannels
         % get average power for each participant for each channel and session
         pAverages = nan(numel(Participants), 1);
         for Indx_P = 1:numel(Participants)
+            if isempty(PowerStruct(Indx_P).(Sessions{Indx_S}))
+                continue
+            end
             pAverages(Indx_P) = nanmean(PowerStruct(Indx_P).(Sessions{Indx_S})(Indx_Ch, FreqIndx, :));
         end
         
@@ -58,13 +69,13 @@ YLims = [min(chAverages(:)), max(chAverages(:))];
 plot(repmat(1:numel(Sessions), 2, 1), repmat(YLims, numel(Sessions), 1)', 'k', 'LineWidth', 2)
 ylim(YLims)
 ylabel(YLabel)
-saveas(gcf,fullfile(Paths.Figures, [Scaling, '_LAT_ChannelChanges_', num2str(Freq), '.svg']))
+saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_LAT_ChannelChanges_', num2str(Freq), '.svg']))
 
 
-figure( 'units','normalized','outerposition',[0 0 1 .25])
+figure( 'units','normalized','outerposition',[0 0 1 1])
 
 PlotTopoChange(chAverages, Sessions, Chanlocs)
-saveas(gcf,fullfile(Paths.Figures, [Scaling, '_LAT_TopoSessions.svg']))
+saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_LAT_TopoSessions.svg']))
 
 %% frequency
 
@@ -90,6 +101,9 @@ for Indx_H = 1:2
         for Indx_S = 1:numel(Sessions)
             pAverages = nan(numel(Participants), 1);
             for Indx_P = 1:numel(Sessions)
+                       if isempty(PowerStruct(Indx_P).(Sessions{Indx_S}))
+                continue
+            end
                 pAverages(Indx_P) = nanmean(nanmean(PowerStruct(Indx_P).(Sessions{Indx_S})(ChanIndx, FreqIndx(Indx_F), :), 1));
             end
             frqAverages(Indx_F, Indx_S) = nanmean(pAverages);
@@ -108,4 +122,4 @@ for Indx_H = 1:2
     set(findall(gcf,'-property','FontSize'),'FontSize',12)
     
 end
-saveas(gcf,fullfile(Paths.Figures, [Scaling, '_LAT_PowerChange.svg']))
+saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_LAT_PowerChange.svg']))
