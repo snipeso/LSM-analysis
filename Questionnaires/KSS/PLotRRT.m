@@ -12,11 +12,10 @@ Sessions = allSessions.RRT;
 SessionLabels = allSessionLabels.RRT;
 
 %%% plot KSS
-
 [AnsAll, Labels] = TabulateAnswers(Answers, Sessions,  Participants, 'RT_TIR_1', 'numAnswer_1');
 
 AnsAll = 1+AnsAll.*8; % convert to 1 to 9 scale
-figure( 'units','normalized','outerposition',[0 0 .5 .7])
+figure( 'units','normalized','outerposition',[0 0 .5 .5])
 hold on
 PlotConfettiSpaghetti(AnsAll, Sessions, SessionLabels, [0 10], 'RRT KSS', Labels)
 yticks(1:9)
@@ -41,23 +40,6 @@ for Indx_Q = 1:numel(qIDs)
     PlotConfettiSpaghetti(AnsAll, Sessions, SessionLabels, [0 100], Titles{Indx_Q}, Labels)
 end
 saveas(gcf,fullfile(Figure_Path, 'Overview_RRT.svg'))
-
-
-
-% plot motivation
-figure(0, 0, .5, 1)
-subplot(1, 2, 1)
-[AnsAll, Labels] = TabulateAnswers(Answers, Sessions,  Participants, 'RRT_OVT_4', 'numAnswer_1');
-AnsAll = AnsAll.*100;    
-PlotConfettiSpaghetti(AnsAll, Sessions, SessionLabels, [0 100], 'Motivation OVR', Labels)
-
-subplot(1, 2, 2)
-[AnsAll, ~] = TabulateAnswers(Answers, Sessions,  Participants, 'RT_FEE_4', 'numAnswer_1');
-AnsAll = AnsAll.*100;    
-PlotConfettiSpaghetti(AnsAll, Sessions, SessionLabels, [0 100], 'Motivation Feelings', {'Not at all', 'Extremely'})
-    
-saveas(gcf,fullfile(Figure_Path, 'Motivation_RRT.svg'))
-
 
 
 
@@ -99,7 +81,7 @@ saveas(gcf,fullfile(Figure_Path, 'Alertness_RRT.svg'))
 
 %%% task difficulty Oddball
 
-figure
+figure( 'units','normalized','outerposition',[0 0 .5 .5])
 [AnsAll, Labels] = TabulateAnswers(Answers, Sessions,  Participants, 'RT_oddball', 'numAnswer_1');
 AnsAll = AnsAll.*100;
 PlotConfettiSpaghetti(AnsAll, Sessions, SessionLabels, [0 100], 'Oddball Difficulty', Labels)
@@ -170,6 +152,25 @@ for Indx = [1:3, 5]
     PltIndx = PltIndx + 1;
 end
 saveas(gcf,fullfile(Figure_Path, 'Pain_RRT.svg'))
+
+
+
+
+% plot motivation
+figure( 'units','normalized','outerposition',[0 0 1 .5])
+subplot(1, 2, 1)
+[AnsAll, Labels] = TabulateAnswers(Answers, Sessions,  Participants, 'RRT_OVT_4', 'numAnswer_1');
+AnsAll = AnsAll.*100;    
+PlotConfettiSpaghetti(AnsAll, Sessions, SessionLabels, [0 100], 'Motivation OVR', Labels)
+
+subplot(1, 2, 2)
+[AnsAll, ~] = TabulateAnswers(Answers, Sessions,  Participants, 'RT_FEE_4', 'numAnswer_1');
+AnsAll = AnsAll.*100;    
+PlotConfettiSpaghetti(AnsAll, Sessions, SessionLabels, [0 100], 'Motivation Feelings', {'Not at all', 'Extremely'})
+    
+saveas(gcf,fullfile(Figure_Path, 'Motivation_RRT.svg'))
+
+
 
 
 

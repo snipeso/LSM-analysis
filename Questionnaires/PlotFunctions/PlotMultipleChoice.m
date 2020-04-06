@@ -23,7 +23,7 @@ end
 image(Data', 'CDataMapping', 'scaled') % makes the grid thing
 caxis([0 max(Data(:))]); % sets the color axis
 colormap(hot(Tot_Answers))
-colorbar % draws the color axis
+colorbar('XTick', 1:Tot_Answers) % draws the color axis
 yticks(1:Tot_Answers)
 yticklabels(Labels)
 xticks(1:numel(Sessions))
