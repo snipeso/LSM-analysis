@@ -27,10 +27,13 @@ switch Scaling
         end
         YLabel = 'Power Density';
         YLims = [-2.5, 0.5];
+        YLimsInd = [-4, 4];
     case 'norm'
         load(fullfile(Paths.wp, 'wPower', 'LAT_FFTnorm.mat'), 'normFFT')
         allFFT = normFFT;
         YLabel = '% Change from Pre';
+        YLims = [-50, 100];
+        YLimsInd = [-100, 400];
 end
 TitleTag = [Scaling, SessionsTitle];
 
@@ -113,6 +116,9 @@ saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_LAT_PowerTopo.svg']))
 
 
 
+
+
+
 % plot distribution flame plots
 plotFreqs = [3 7 10 18];
 FreqsIndx =  dsearchn( Freqs', plotFreqs');
@@ -132,7 +138,7 @@ for Indx_H = 1:2
         PlotPowerFlames(PowerStruct, ChanIndx, FreqsIndx(Indx_F), Sessions, SessionLabels)
         title([Title, ' ', num2str(plotFreqs(Indx_F)), 'Hz Distribution'])
         ylabel(YLabel)
-        ylim([-4, 4])
+        ylim(YLimsInd)
     end
     saveas(gcf,fullfile(Paths.Figures, [TitleTag,'_', Title, '_LAT_Flames.svg']))
     
@@ -153,9 +159,9 @@ for Indx_H = 1:2
     
     figure( 'units','normalized','outerposition',[0 0 1 1])
     for Indx_F = 1:numel(FreqsIndx)
-          All_Averages = nan(numel(Participants), numel(Sessions));
+        All_Averages = nan(numel(Participants), numel(Sessions));
         for Indx_S = 1:numel(Sessions)
-          
+            
             
             for Indx_P = 1:numel(Participants)
                 if isempty(PowerStruct(Indx_P).(Sessions{Indx_S}))
@@ -167,13 +173,12 @@ for Indx_H = 1:2
         
         subplot(2, 2, Indx_F)
         PlotConfettiSpaghetti(All_Averages, Sessions, SessionLabels, [min(All_Averages(:)), max(All_Averages(:))], ...
-            [Title, ' ', num2str(plotFreqs(Indx_F)), 'Hz Power'], [])
+            [Title, ' ', num2str(plotFreqs(Indx_F)), 'Hz Power'], []) % TODO, make same for all
         
         ylabel(YLabel)
     end
-        saveas(gcf,fullfile(Paths.Figures, [TitleTag,'_', Title, '_LAT_SessionPowerChange.svg']))
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag,'_', Title, '_LAT_SessionPowerChange.svg']))
     
 end
-
 
 
