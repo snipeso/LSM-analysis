@@ -9,8 +9,6 @@ Colors = [linspace(0, (numel(Participants) -1)/numel(Participants), numel(Partic
     ones(numel(Participants), 1)];
 Colors = hsv2rgb(Colors);
 
-%TODO, make it color coded like confetti spaghetti
-
 hold on
 for Indx_P = 1:numel(Participants)
     for Indx_S = 1:numel(Sessions)
