@@ -8,7 +8,7 @@ wpLAT_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Scaling = 'norm'; % either 'log' or 'norm'
+Scaling = 'log'; % either 'log' or 'norm'
 
 % Sessions = allSessions.Comp;
 % SessionLabels = allSessionLabels.Comp;
@@ -38,6 +38,18 @@ end
 TitleTag = [Scaling, SessionsTitle];
 
 PowerStruct = GetPowerStruct(allFFT, Categories, Sessions, Participants);
+
+% get limits per participant
+Quantiles = zeros(numel(Participants), numel(Sessions), 2);
+for Indx_P = 1:numel(Participants)
+    for Indx_S = 1:numel(Sessions)
+        A = PowerStruct(Indx_P).(Sessions{Indx_S});
+        Quantiles(Indx_P, Indx_S, 1) =  quantile(A(:), .001);
+        Quantiles(Indx_P, Indx_S, 2) =  quantile(A(:), .999);
+    end
+end
+
+CLimsInd = [min(Quantiles(:, :, 1),[],  2), max(Quantiles(:, :, 2),[],  2)];
 
 
 figure( 'units','normalized','outerposition',[0 0 .5 .5])
@@ -104,15 +116,38 @@ for Indx_S = 1:numel(Sessions)
         subplot(numel(Sessions), numel(FreqsIndx), Indx)
         topoplot(nanmean(All_Channels, 1), Chanlocs, 'maplimits', YLims, 'style', 'map', 'headrad', 'rim')
         
-        %         if Indx<=numel(FreqsIndx)
-        %             title([num2str(plotFreqs(Indx_F)), 'Hz'])
-        %         end
         title([SessionLabels{Indx_S}, ' ' num2str(plotFreqs(Indx_F)), 'Hz'])
         Indx = Indx+1;
         
     end
 end
 saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_LAT_PowerTopo.svg']))
+
+
+% plot individuals
+plotFreqs = [3 6 8 10 12 16 20];
+FreqsIndx =  dsearchn( Freqs', plotFreqs');
+
+for Indx_P = 1:numel(Participants)
+    figure('units','normalized','outerposition',[0 0 .5 .5])
+    Indx = 1;
+    for Indx_S = 1:numel(Sessions)
+        for Indx_F = 1:numel(FreqsIndx)
+            Data = squeeze(nanmean(PowerStruct(Indx_P).(Sessions{Indx_S})(:, FreqsIndx(Indx_F), :), 3));
+            
+            subplot(numel(Sessions), numel(FreqsIndx), Indx)
+            topoplot(Data, Chanlocs, 'maplimits', CLimsInd(Indx_P, :), 'style', 'map', 'headrad', 'rim')
+            
+            title([SessionLabels{Indx_S}, ' ' num2str(plotFreqs(Indx_F)), 'Hz'])
+            Indx = Indx+1;
+        end
+        
+    end
+    saveas(gcf,fullfile(Paths.Figures, [ Participants{Indx_P}, '_', TitleTag, '_LAT_PowerTopo.svg']))
+
+    
+end
+
 
 
 
