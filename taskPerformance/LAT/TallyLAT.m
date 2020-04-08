@@ -8,7 +8,12 @@ LAT_Parameters
 
 Sessions = allSessions.LAT;
 SessionLabels = allSessionLabels.LAT;
-Title = 'LAT';
+Task = 'LAT';
+
+Title = 'Beam';
+
+Destination = fullfile(Paths.Analysis, 'Regression', 'SummaryData', Task);
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -49,8 +54,8 @@ end
 % plot average bars
 figure
 PlotTally(Responses, Sessions, SessionLabels, {'Correct', 'Late', 'Missing'})
-title([Title, ' Tally'])
-saveas(gcf,fullfile(Paths.Figures, [Title, '_TallyAll.svg']))
+title([Task, ' Tally'])
+saveas(gcf,fullfile(Paths.Figures, [Task, '_TallyAll.svg']))
 
 % plot individuals
 figure( 'units','normalized','outerposition',[0 0 1 .5])
@@ -60,7 +65,7 @@ for Indx_P = 1:numel(Participants)
     set(gca,'xtick',[], 'ytick', [], 'ylabel', [])
     title([Participants{Indx_P}])
 end
-saveas(gcf,fullfile(Paths.Figures, [Title, '_TallyIndividuals.svg']))
+saveas(gcf,fullfile(Paths.Figures, [Task, '_TallyIndividuals.svg']))
 
 
 % plot spaghetti plot
@@ -69,11 +74,19 @@ subplot(1, 2, 1)
 Hits = squeeze(Responses(:, :, 1));
 PlotConfettiSpaghetti(Hits, Sessions, SessionLabels, [0 100], '% Hits', [])
 
+
 subplot(1, 2, 2)
 Misses =  squeeze(Responses(:, :, 3));
 PlotConfettiSpaghetti(Misses, Sessions, SessionLabels, [0 100], '% Misses', [])
-saveas(gcf,fullfile(Paths.Figures, [Title, '_PrcntHitsMisses.svg']))
+saveas(gcf,fullfile(Paths.Figures, [Task, '_PrcntHitsMisses.svg']))
 
+% save matrix
+Filename = [Task, '_', 'Hits' '_', Title, '.mat'];
+Matrix = Hits;
+save(fullfile(Destination, Filename), 'Matrix')
 
+Filename = [Task, '_', 'Misses' '_', Title, '.mat'];
+Matrix = Misses;
+save(fullfile(Destination, Filename), 'Matrix')
 
 
