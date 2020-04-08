@@ -6,6 +6,8 @@ wpLAT_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+Destination = fullfile(Paths.Analysis, 'Regression', 'SummaryData', 'LAT');
+
 Scaling = 'log'; % either 'log' or 'norm'
 
 % Sessions = allSessions.Comp;
@@ -24,6 +26,8 @@ saveFreqs.Theta = [4.5 7.5];
 saveFreqs.Alpha = [8.5 12.5];
 saveFreqs.Beta = [14 25];
 
+plotChannels = [3:7, 9:13, 15, 16, 18:20, 24, 106, 111, 112, 117, 118, 123, 124]; % hotspot
+ChanIndx = ismember( str2double({Chanlocs.labels}), plotChannels);
 
 switch Scaling
     case 'log'
@@ -40,14 +44,15 @@ switch Scaling
         YLims = [-50, 100];
         YLimsInd = [-100, 400];
 end
-TitleTag = [Scaling, SessionsTitle];
+TitleTag = [Scaling, '_', SessionsTitle];
 
 PowerStruct = GetPowerStruct(allFFT, Categories, Sessions, Participants);
 
-saveFreqFields = getfield(saveFreqs);
+saveFreqFields = fieldnames(saveFreqs);
 
 for Indx_F = 1:numel(saveFreqFields)
-    FreqIndx =  dsearchn( Freqs', plotFreqs');
+    FreqLims = saveFreqs.(saveFreqFields{Indx_F});
+    FreqIndx =  dsearchn(Freqs', FreqLims');
     
     Matrix = nan(numel(Participants), numel(Sessions));
     for Indx_P = 1:numel(Participants)
@@ -55,11 +60,13 @@ for Indx_F = 1:numel(saveFreqFields)
             if isempty(PowerStruct(Indx_P).(Sessions{Indx_S}))
                 continue
             end
+            Power = PowerStruct(Indx_P).(Sessions{Indx_S})(ChanIndx, FreqIndx(1):FreqIndx(2), :);
+            Matrix(Indx_P, Indx_S) = sum(nanmean(nanmean(Power, 3), 1));
             
         end
     end
-    Filename = [];
-    save(fullfile(Destination, Filename), Matrix)
+    Filename = [Task, '_', saveFreqFields{Indx_F}, '_', TitleTag, '.mat'];
+    save(fullfile(Destination, Filename), 'Matrix')
 end
 
 
