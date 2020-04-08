@@ -6,7 +6,7 @@ wpLAT_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Destination = fullfile(Paths.Analysis, 'Regression', 'SummaryData', 'LAT');
+Destination = fullfile(Paths.Analysis, 'Regression', 'SummaryData', Task);
 
 Scaling = 'log'; % either 'log' or 'norm'
 
@@ -34,15 +34,9 @@ switch Scaling
         for Indx_F = 1:size(allFFT, 2)
             allFFT(Indx_F).FFT = log(allFFT(Indx_F).FFT);
         end
-        YLabel = 'Power Density';
-        YLims = [-2.5, 0.5];
-        YLimsInd = [-4, 4];
     case 'norm'
         load(fullfile(Paths.wp, 'wPower', 'LAT_FFTnorm.mat'), 'normFFT')
         allFFT = normFFT;
-        YLabel = '% Change from Pre';
-        YLims = [-50, 100];
-        YLimsInd = [-100, 400];
 end
 TitleTag = [Scaling, '_', SessionsTitle];
 
