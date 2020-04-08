@@ -1,0 +1,1 @@
+function CorrMatrix = CorrelateAll(Matrix3)

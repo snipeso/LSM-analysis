@@ -6,7 +6,11 @@ LAT_Parameters
 
 Sessions = allSessions.LAT;
 SessionLabels = allSessionLabels.LAT;
-Title = 'LAT';
+Task = 'LAT';
+Title = 'Beam';
+
+Destination = fullfile(Paths.Analysis, 'Regression', 'SummaryData', Task);
+
 
 MeanRTs = nan(numel(Participants), numel(Sessions));
 MedianRTs = nan(numel(Participants), numel(Sessions));
@@ -32,28 +36,32 @@ PlotFlames(AllAnswers, Sessions, SessionLabels, Participants, 'rt')
 title('Reaction Time Distributions')
 ylabel('RT (s)')
 ylim([0.1, 1])
-saveas(gcf,fullfile(Paths.Figures, [Title, '_RTs_Flames.jpg']))
+saveas(gcf,fullfile(Paths.Figures, [Task, '_RTs_Flames.jpg']))
 
 
 %plot means
 figure
 PlotConfettiSpaghetti(MeanRTs, Sessions, SessionLabels, [0.2, 0.6], 'Reaction Time Means', '')
 ylabel('RT (s)')
-saveas(gcf,fullfile(Paths.Figures, [Title, '_meanRTs.svg']))
+saveas(gcf,fullfile(Paths.Figures, [Task, '_meanRTs.svg']))
 
+% save matrix
+Filename = [Task, '_', 'meanRTs' '_', Title, '.mat'];
+Matrix = MeanRTs;
+save(fullfile(Destination, Filename), 'Matrix')
 
 %plot standard deviations
 figure
-PlotConfettiSpaghetti(MeanRTs, Sessions, SessionLabels, [0 1], 'Reaction Time Standard Deviations', '')
+PlotConfettiSpaghetti(stdRTs, Sessions, SessionLabels, [0 .2], 'Reaction Time Standard Deviations', '')
 ylabel('RT SD (s)')
-saveas(gcf,fullfile(Paths.Figures, [Title, '_stdRTs.svg']))
+saveas(gcf,fullfile(Paths.Figures, [Task, '_stdRTs.svg']))
 
 
 %plot medians
 figure
 PlotConfettiSpaghetti(MedianRTs, Sessions, SessionLabels, [0.2, 0.6], 'Reaction Time Medians', '')
 ylabel('RT (s)')
-saveas(gcf,fullfile(Paths.Figures, [Title, '_medianRTs.svg']))
+saveas(gcf,fullfile(Paths.Figures, [Task, '_medianRTs.svg']))
 
 
 
