@@ -32,6 +32,7 @@ xticklabels(Labels)
 xtickangle(45)
 yticks(1:numel(Labels))
 yticklabels(Labels)
+set(gca,'TickLength',[0 0])
 
 colorbar
 set(gca,'FontSize',15)

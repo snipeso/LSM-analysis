@@ -4,12 +4,17 @@ close all
 
 LAT_Parameters
 
-Sessions = allSessions.LAT;
-SessionLabels = allSessionLabels.LAT;
-Task = 'LAT';
-Title = 'Beam';
+% Sessions = allSessions.LAT;
+% SessionLabels = allSessionLabels.LAT;
+% Task = 'LAT';
+% Title = 'Beam';
 
-Destination = fullfile(Paths.Analysis, 'Regression', 'SummaryData', Task);
+Sessions = allSessions.Comp;
+SessionLabels = allSessionLabels.Comp;
+Task = 'LAT';
+Title = 'Comp';
+
+Destination = fullfile(Paths.Analysis, 'Regression', 'SummaryData', [Task, Title]);
 
 
 MeanRTs = nan(numel(Participants), numel(Sessions));

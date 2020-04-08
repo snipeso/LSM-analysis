@@ -6,17 +6,19 @@ wpLAT_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Destination = fullfile(Paths.Analysis, 'Regression', 'SummaryData', Task);
 
 Scaling = 'log'; % either 'log' or 'norm'
 
-% Sessions = allSessions.Comp;
-% SessionLabels = allSessionLabels.Comp;
-% SessionsTitle = 'Comp';
+Sessions = allSessions.Comp;
+SessionLabels = allSessionLabels.Comp;
+SessionsTitle = 'Comp';
 
-Sessions = allSessions.LAT;
-SessionLabels = allSessionLabels.LAT;
-SessionsTitle = 'Beam';
+% Sessions = allSessions.LAT;
+% SessionLabels = allSessionLabels.LAT;
+% SessionsTitle = 'Beam';
+
+Destination = fullfile(Paths.Analysis, 'Regression', 'SummaryData', [Task, SessionsTitle]);
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

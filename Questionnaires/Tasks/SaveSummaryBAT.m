@@ -5,11 +5,11 @@ close all
 Q_Parameters
 
 filename = 'LAT_All.csv';
-    Sessions = allSessions.LAT;
-    SessionLabels = allSessionLabels.LAT;
-    Task = 'LAT';
-    Title = 'Beam';
-    Destination = fullfile(Paths.Analysis, 'Regression', 'SummaryData', Task);
+Sessions = allSessions.LAT;
+SessionLabels = allSessionLabels.LAT;
+Task = 'LAT';
+Title = 'Beam';
+Destination = fullfile(Paths.Analysis, 'Regression', 'SummaryData', Task);
 
 
 qIDs = {'BAT_1', 'BAT_3_0', 'BAT_3', ...
@@ -49,12 +49,12 @@ for Indx_Q = 1:numel(qIDs)
     AnsAll = 100*AnsAll;
     
     % save matrix
-Filename = [Task, '_', Titles{Indx_Q}, '_', Title, '.mat'];
-Matrix = AnsAll;
-save(fullfile(Destination, Filename), 'Matrix')
-
-  
-
+    Filename = [Task, '_', Titles{Indx_Q}, '_', Title, '.mat'];
+    Matrix = AnsAll;
+    save(fullfile(Destination, Filename), 'Matrix')
+    
+    
+    
 end
 
 

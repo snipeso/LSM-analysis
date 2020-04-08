@@ -5,7 +5,7 @@ close all
 Regression_Parameters
 
 Task ='LAT';
-Normalized = true;
+Correction = 'zscore'; % 'change', 'zscore' 'none'
 
 NormCol = 2;
 DataPath = fullfile(Paths.Data, Task);
@@ -36,17 +36,20 @@ Files = {
     'LAT_Interesting_Beam.mat';
     'LAT_Motivation_Beam.mat';
     'LAT_Relaxing_Beam.mat';
-    'LAT_Time_Beam.mat'
+%     'LAT_Time_Beam.mat'
+     'LAT_TimeAwake_Beam.mat'
     };
 
 
 Labels = extractBetween(Files, 'LAT_', '_Beam.mat');
+     Task = [Task, Correction];
 
-if Normalized
-     Task = [Task, 'zscore'];
-%      Matrix2 = nan(numel(Participants)*(numel(Sessions)-1), numel(Files)); % temp
- Matrix2 = nan(numel(Participants)*numel(Sessions), numel(Files));
-else
+    switch Correction
+        case 'change'
+
+     Matrix2 = nan(numel(Participants)*(numel(Sessions)-1), numel(Files)); % temp
+
+        otherwise
     Matrix2 = nan(numel(Participants)*numel(Sessions), numel(Files)); % temp
 
 end
@@ -54,11 +57,13 @@ end
 
 for Indx_F = 1:numel(Files)
     load(fullfile(DataPath, Files{Indx_F}), 'Matrix')
-%         disp(Files{Indx_F})
-%     Matrix
-    if Normalized
+
+    switch Correction
+        case 'change'
         Matrix = (Matrix-Matrix(:, NormCol));
         Matrix(:,NormCol) = [];
+        case 'zscore'
+            Matrix = zscore(Matrix, 0, 2);
     end
     Matrix2(:, Indx_F) = reshape(Matrix, [], 1);
 

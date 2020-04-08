@@ -5,14 +5,19 @@ close all
 LAT_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 
+% Sessions = allSessions.LAT;
+% SessionLabels = allSessionLabels.LAT;
+% Task = 'LAT';
+% Title = 'Beam';
 
-Sessions = allSessions.LAT;
-SessionLabels = allSessionLabels.LAT;
+
+Sessions = allSessions.Comp;
+SessionLabels = allSessionLabels.Comp;
 Task = 'LAT';
+Title = 'Comp';
 
-Title = 'Beam';
-
-Destination = fullfile(Paths.Analysis, 'Regression', 'SummaryData', Task);
+Destination = fullfile(Paths.Analysis, 'Regression', 'SummaryData', [Task, Title]);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
