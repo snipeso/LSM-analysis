@@ -133,6 +133,10 @@ for Indx_P = 1:numel(Participants)
     Indx = 1;
     for Indx_S = 1:numel(Sessions)
         for Indx_F = 1:numel(FreqsIndx)
+            if isempty(PowerStruct(Indx_P).(Sessions{Indx_S}))
+                Indx = Indx+1;
+                continue
+            end
             Data = squeeze(nanmean(PowerStruct(Indx_P).(Sessions{Indx_S})(:, FreqsIndx(Indx_F), :), 3));
             
             subplot(numel(Sessions), numel(FreqsIndx), Indx)
@@ -144,7 +148,7 @@ for Indx_P = 1:numel(Participants)
         
     end
     saveas(gcf,fullfile(Paths.Figures, [ Participants{Indx_P}, '_', TitleTag, '_LAT_PowerTopo.svg']))
-
+    
     
 end
 
