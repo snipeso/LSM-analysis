@@ -3,7 +3,7 @@ Theta =  dsearchn( Freqs', 6.5);
 Alpha =  dsearchn( Freqs', 10);
 
 PlotTicks = 1:5:30;
-PlotTicksIndxes = dsearchn( Freqs', PlotTicks);
+PlotTicksIndxes = dsearchn( Freqs', PlotTicks');
 YLims = [ dsearchn(Freqs', YLims(1)),  dsearchn(Freqs', YLims(2))];
 
 hold on
@@ -14,10 +14,11 @@ yticklabels(PlotTicks)
 colormap(parula)
 caxis(CLims)
 
-xlim([find(~isnan(mean(squeeze(Matrix(:, 1, :)))), 1, 'first'),...
-    find(~isnan(mean(squeeze(Matrix(:, 1, :)))), 1, 'last')])
+XLims = [find(~isnan(mean(Matrix)), 1, 'first'),...
+    find(~isnan(mean(Matrix)), 1, 'last')];
+xlim(XLims)
 
-ylim(YLimFreq)
+ylim(YLims)
 
-plot([0, 250], [Theta Theta], '--', 'Color' ,'r')
-plot([0,250], [Alpha Alpha], '--', 'Color' ,'w')
+plot([XLims], [Theta Theta], '--', 'Color' ,'r')
+plot([XLims], [Alpha Alpha], '--', 'Color' ,'w')

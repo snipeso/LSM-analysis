@@ -10,13 +10,15 @@ wpLAT_Parameters
 
 Scaling = 'norm'; % either 'log' or 'norm'
 
-% Sessions = allSessions.Comp;
-% SessionLabels = allSessionLabels.Comp;
-% SessionsTitle = 'Comp';
+Sessions = allSessions.Comp;
+SessionLabels = allSessionLabels.Comp;
+SessionsTitle = 'Comp';
+SessionsSmall = {'BaselineComp', 'Session2Comp'};
 
-Sessions = allSessions.LAT;
-SessionLabels = allSessionLabels.LAT;
-SessionsTitle = 'Beam';
+% Sessions = allSessions.LAT;
+% SessionLabels = allSessionLabels.LAT;
+% SessionsTitle = 'Beam';
+% SessionsSmall = {'MainPre', 'Session2Beam2'};
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -83,7 +85,7 @@ for Indx_H = 1:2
             A = PowerStruct(Indx_P).(Sessions{Indx_S});
             subplot(numel(Participants), numel(Sessions), numel(Sessions) * (Indx_P - 1) + Indx_S )
             
-            PlotSessionFreqs(squeeze(nanmean(A(finalChanIndx, :, :), 1)), YLimFreq, CLimsInd(Indx_P, :) )
+            PlotSessionFreqs(squeeze(nanmean(A(finalChanIndx, :, :), 1)), YLimFreq, CLimsInd(Indx_P, :), Freqs )
             title([Participants{Indx_P}, ' ', Title, ' ', Sessions{Indx_S}])
         end
         
@@ -93,22 +95,22 @@ end
 
 
 YLimFreq = [2 20];
-SessionsSmall = {'BaselineBeam', 'Session2Beam2'};
+
 for Indx_P = 1:numel(Participants)
     figure( 'units','normalized','outerposition',[0 0 1 1])
     
     for Indx_S = 1:numel(SessionsSmall)
         subplot(2,numel(SessionsSmall), Indx_S)
         A = PowerStruct(Indx_P).(SessionsSmall{Indx_S});
-        PlotSessionFreqs(squeeze(nanmean(A(ChanIndx, :, :), 1)), YLimFreq, CLimsInd(Indx_P, :) )
+        PlotSessionFreqs(squeeze(nanmean(A(ChanIndx, :, :), 1)), YLimFreq, CLimsInd(Indx_P, :), Freqs )
         title([Participants{Indx_P}, ' Hotspot ', SessionsSmall{Indx_S}])
         
         subplot(2,numel(SessionsSmall), numel(SessionsSmall)+ Indx_S)
         A = PowerStruct(Indx_P).(SessionsSmall{Indx_S});
-        PlotSessionFreqs(squeeze(nanmean(A(NotChanIndx, :, :), 1)), YLimFreq, CLimsInd(Indx_P, :) )
+        PlotSessionFreqs(squeeze(nanmean(A(NotChanIndx, :, :), 1)), YLimFreq, CLimsInd(Indx_P, :), Freqs )
         title([Participants{Indx_P}, ' NotHotspot ', SessionsSmall{Indx_S}])
         
     end
     
-    saveas(gcf,fullfile(Paths.Figures, [TitleTag,'_', Participant{Indx_P}, '_LAT_TimeFreq.svg']))
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag,'_', Participants{Indx_P}, '_LAT_TimeFreq.svg']))
 end
