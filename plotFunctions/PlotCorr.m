@@ -14,13 +14,17 @@ posCols(:, 2:3) = [linspace(0, posCol(2), n)', linspace(1, posCol(3), n)'];
 
 ColorMapHSV = [negCols; posCols];
 ColorMap = hsv2rgb(ColorMapHSV);
-surf(peaks)
-colormap(ColorMap)
+% surf(peaks)
+% colormap(ColorMap)
 
 
 % remove non significant values
-if ~isempty(pMatrix)
-    CorrMatrix(pMatrix>alpha) = 0;
+if  ~isempty(pMatrix)
+    if nnz(pMatrix==1) + nnz(~pMatrix) == numel(pMatrix)
+        CorrMatrix(~pMatrix) = 0;
+    else
+        CorrMatrix(pMatrix>alpha) = 0;
+    end
 end
 
 

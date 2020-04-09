@@ -5,11 +5,18 @@ close all
 Q_Parameters
 
 filename = 'LAT_All.csv';
-Sessions = allSessions.LAT;
-SessionLabels = allSessionLabels.LAT;
+% Sessions = allSessions.LAT;
+% SessionLabels = allSessionLabels.LAT;
+% Task = 'LAT';
+% Title = 'Beam';
+
+Sessions = allSessions.Comp;
+SessionLabels = allSessionLabels.Comp;
 Task = 'LAT';
-Title = 'Beam';
-Destination = fullfile(Paths.Analysis, 'Regression', 'SummaryData', Task);
+Title = 'Comp';
+
+Destination = fullfile(Paths.Analysis, 'Regression', 'SummaryData', [Task, Title]);
+
 
 
 qIDs = {'BAT_1', 'BAT_3_0', 'BAT_3', ...
