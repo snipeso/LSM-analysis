@@ -35,7 +35,7 @@ end
 % plot mean
 plot(nanmean(Matrix, 1), 'o-', 'LineWidth', 2, 'Color', 'k',  'MarkerFaceColor', 'k')
 
-xlim([0, numel(Sessions) + 1])
+xlim([0.5, numel(Sessions) + .5])
 xticks(1:numel(Sessions))
 xticklabels(SessionLabels)
 
