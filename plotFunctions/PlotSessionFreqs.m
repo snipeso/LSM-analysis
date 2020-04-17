@@ -11,7 +11,7 @@ image(Matrix, 'CDataMapping', 'scaled')
 set(gca,'YDir','normal')
 yticks(PlotTicksIndxes)
 yticklabels(PlotTicks)
-colormap(parula)
+colormap(magma)
 caxis(CLims)
 
 XLims = [find(~isnan(mean(Matrix)), 1, 'first'),...

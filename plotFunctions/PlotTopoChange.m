@@ -17,6 +17,7 @@ for Indx_X = 1:TotTopos
     for Indx_Y = 1:TotTopos
         subplot(TotTopos + 1, TotTopos, TotTopos*Indx_Y + Indx_X)
         topoplot(Matrix(:, Indx_X) - Matrix(:, Indx_Y), Chanlocs, 'maplimits', YLimsDiff, 'style', 'map', 'headrad', 'rim')
+     colormap(parula)
     end
     
 end
