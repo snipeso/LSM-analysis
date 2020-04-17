@@ -1,27 +1,27 @@
-clear
-clc
-close all
+% clear
+% clc
+% close all
 
 wpLAT_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Scaling = 'norm'; % either 'log' or 'norm'
+Scaling = 'log'; % either 'log' or 'norm'
 
-% Sessions = allSessions.Comp;
-% SessionLabels = allSessionLabels.Comp;
-% SessionsTitle = 'Comp';
+Sessions = allSessions.Comp;
+SessionLabels = allSessionLabels.Comp;
+SessionsTitle = 'Comp';
 
-Sessions = allSessions.LAT;
-SessionLabels = allSessionLabels.LAT;
-SessionsTitle = 'Beam';
+% Sessions = allSessions.LAT;
+% SessionLabels = allSessionLabels.LAT;
+% SessionsTitle = 'Beam';
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 switch Scaling
     case 'log'
         for Indx_F = 1:size(allFFT, 2)
-            allFFT(Indx_F).FFT = log(allFFT(Indx_F).FFT);
+            allFFT(Indx_F).FFT = log(allFFT(Indx_F).FFT + 1);
         end
         YLabel = 'Power Density';
         

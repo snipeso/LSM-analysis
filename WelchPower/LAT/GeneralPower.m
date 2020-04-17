@@ -23,10 +23,11 @@ SessionsTitle = 'Beam';
 switch Scaling
     case 'log'
         for Indx_F = 1:size(allFFT, 2)
-            allFFT(Indx_F).FFT = log(allFFT(Indx_F).FFT);
+            allFFT(Indx_F).FFT = log(allFFT(Indx_F).FFT + 1);
         end
         YLabel = 'Power Density';
-        YLims = [-2.5, 0.5];
+%         YLims = [-2.5, 0.5];
+YLims = [0, 1];
         YLimsInd = [-4, 4];
     case 'norm'
         load(fullfile(Paths.wp, 'wPower', 'LAT_FFTnorm.mat'), 'normFFT')

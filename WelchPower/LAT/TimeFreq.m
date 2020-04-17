@@ -25,7 +25,7 @@ SessionsSmall = {'BaselineComp', 'Session2Comp'};
 switch Scaling
     case 'log'
         for Indx_F = 1:size(allFFT, 2)
-            allFFT(Indx_F).FFT = log(allFFT(Indx_F).FFT);
+            allFFT(Indx_F).FFT = log(allFFT(Indx_F).FFT + 1);
         end
         YLabel = 'Power Density';
         
