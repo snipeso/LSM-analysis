@@ -20,5 +20,8 @@ allSessionLabels.LAT = {'BL', 'Pre', 'S1', 'S2-1', 'S2-2', 'S2-3', 'Post'};
 allSessions.Comp =  {'BaselineComp', 'Session1Comp', 'Session2Comp'};
 allSessionLabels.Comp = {'BLc', 'S1c', 'S2c'};
 
+allSessions.Beam =  {'BaselineBeam', 'Session1Beam', 'Session2Beam1'};
+allSessionLabels.Beam = {'BL', 'S1', 'S2'};
+
 
 Participants = {'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07'};
