@@ -32,11 +32,14 @@ image(CorrMatrix, 'CDataMapping', 'scaled')
 colormap(ColorMap)
 caxis([-1 1])
 xticks(1:numel(Labels))
+xlim([.5, numel(Labels)+.5])
 xticklabels(Labels)
 xtickangle(45)
+
 yticks(1:numel(Labels))
 yticklabels(Labels)
+ylim([.5, numel(Labels)+.5])
 set(gca,'TickLength',[0 0])
-
 colorbar
-set(gca,'FontSize',15)
+% set(gca,'FontSize',15)
+set(gca,'ydir','reverse')
