@@ -28,6 +28,8 @@ allSessionLabels = struct();
 
 
 addpath(fullfile(Paths.Analysis, 'generalFunctions'))
+addpath(fullfile(Paths.Analysis, 'plotFunctions'))
+addpath('C:\Users\colas\Projects\Plots\Colormaps')
 
 if ~exist('topoplot', 'file')
     eeglab

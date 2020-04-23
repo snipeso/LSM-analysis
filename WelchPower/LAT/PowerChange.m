@@ -1,6 +1,6 @@
-% clear
-% clc
-% close all
+clear
+clc
+close all
 
 wpLAT_Parameters
 
@@ -72,10 +72,28 @@ ylabel(YLabel)
 saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_LAT_ChannelChanges_', num2str(Freq), '.svg']))
 
 
-figure( 'units','normalized','outerposition',[0 0 1 1])
-
-PlotTopoChange(chAverages, Sessions, Chanlocs)
+% figure( 'units','normalized','outerposition',[0 0 1 1])
+figure( 'units','normalized','outerposition',[0 0 numel(Sessions)*.1 numel(Sessions)*.2])
+PlotTopoChange(chAverages, SessionLabels, Chanlocs)
 saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_LAT_TopoSessions.svg']))
+
+
+figure( 'units','normalized','outerposition',[0 0 .4 .4])
+YLimsMain = [min(chAverages(:)), max(chAverages(:))];
+subplot(1, 2, 1)
+LabelIndx = contains(SessionLabels, 'BL');
+topoplot(chAverages(:, LabelIndx), Chanlocs, 'maplimits', YLimsMain, 'style', 'map', 'headrad', 'rim', 'gridscale', 150)
+title('Baseline')
+colorbar
+
+subplot(1,2,2)
+LabelIndx = contains(SessionLabels, 'S2');
+topoplot(chAverages(:, LabelIndx), Chanlocs, 'maplimits', YLimsMain, 'style', 'map', 'headrad', 'rim', 'gridscale', 150)
+title('Sleep Deprivation')
+colorbar
+colormap(viridis)
+saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_LAT_TopoSimple.svg']))
+
 
 %% frequency
 
@@ -86,7 +104,7 @@ plotFreqs = [1:20];
 FreqIndx =  dsearchn( Freqs', plotFreqs');
 
 Title = 'HotSpot Frequency Change';
-figure( 'units','normalized','outerposition',[0 0 1 1])
+figure( 'units','normalized','outerposition',[0 0 .5 .5])
 for Indx_H = 1:2
     if Indx_H == 2
         ChanIndx = ~ismember( str2double({Chanlocs.labels}), plotChannels); % not hotspot

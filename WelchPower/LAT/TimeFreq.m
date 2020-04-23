@@ -8,12 +8,13 @@ wpLAT_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Scaling = 'norm'; % either 'log' or 'norm'
+Scaling = 'log'; % either 'log' or 'norm'
 
 Sessions = allSessions.Comp;
 SessionLabels = allSessionLabels.Comp;
 SessionsTitle = 'Comp';
 SessionsSmall = {'BaselineComp', 'Session2Comp'};
+SessionsSmallLabels = {'BL', 'S2'};
 
 % Sessions = allSessions.LAT;
 % SessionLabels = allSessionLabels.LAT;
@@ -97,19 +98,19 @@ end
 YLimFreq = [2 20];
 
 for Indx_P = 1:numel(Participants)
-    figure( 'units','normalized','outerposition',[0 0 1 1])
+    figure( 'units','normalized','outerposition',[0 0 .5 .5])
     
     for Indx_S = 1:numel(SessionsSmall)
         subplot(2,numel(SessionsSmall), Indx_S)
         A = PowerStruct(Indx_P).(SessionsSmall{Indx_S});
         PlotSessionFreqs(squeeze(nanmean(A(ChanIndx, :, :), 1)), YLimFreq, CLimsInd(Indx_P, :), Freqs )
-        title([Participants{Indx_P}, ' Hotspot ', SessionsSmall{Indx_S}])
-        
+        title([Participants{Indx_P}, ' Hotspot ', SessionsSmallLabels{Indx_S}])
+        colorbar
         subplot(2,numel(SessionsSmall), numel(SessionsSmall)+ Indx_S)
         A = PowerStruct(Indx_P).(SessionsSmall{Indx_S});
         PlotSessionFreqs(squeeze(nanmean(A(NotChanIndx, :, :), 1)), YLimFreq, CLimsInd(Indx_P, :), Freqs )
-        title([Participants{Indx_P}, ' NotHotspot ', SessionsSmall{Indx_S}])
-        
+        title([Participants{Indx_P}, ' NotHotspot ', SessionsSmallLabels{Indx_S}])
+        colorbar
     end
     
     saveas(gcf,fullfile(Paths.Figures, [TitleTag,'_', Participants{Indx_P}, '_LAT_TimeFreq.svg']))

@@ -7,16 +7,16 @@ wpLAT_Parameters
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+Colormap = 'viridis';
 Scaling = 'log'; % either 'log' or 'norm'
 
-% Sessions = allSessions.Comp;
-% SessionLabels = allSessionLabels.Comp;
-% SessionsTitle = 'Comp';
+Sessions = allSessions.Comp;
+SessionLabels = allSessionLabels.Comp;
+SessionsTitle = 'Comp';
 
-Sessions = allSessions.LAT;
-SessionLabels = allSessionLabels.LAT;
-SessionsTitle = 'Beam';
+% Sessions = allSessions.LAT;
+% SessionLabels = allSessionLabels.LAT;
+% SessionsTitle = 'Beam';
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -28,7 +28,7 @@ switch Scaling
         YLabel = 'Power Density';
 %         YLims = [-2.5, 0.5];
 YLims = [0, 1];
-        YLimsInd = [-4, 4];
+        YLimsInd = [0, 4];
     case 'norm'
         load(fullfile(Paths.wp, 'wPower', 'LAT_FFTnorm.mat'), 'normFFT')
         allFFT = normFFT;
@@ -45,8 +45,8 @@ Quantiles = zeros(numel(Participants), numel(Sessions), 2);
 for Indx_P = 1:numel(Participants)
     for Indx_S = 1:numel(Sessions)
         A = PowerStruct(Indx_P).(Sessions{Indx_S});
-        Quantiles(Indx_P, Indx_S, 1) =  quantile(A(:), .001);
-        Quantiles(Indx_P, Indx_S, 2) =  quantile(A(:), .999);
+        Quantiles(Indx_P, Indx_S, 1) =  quantile(A(:), .01);
+        Quantiles(Indx_P, Indx_S, 2) =  quantile(A(:), .99);
     end
 end
 
@@ -122,6 +122,7 @@ for Indx_S = 1:numel(Sessions)
         
     end
 end
+colormap(Colormap)
 saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_LAT_PowerTopo.svg']))
 
 
@@ -148,9 +149,8 @@ for Indx_P = 1:numel(Participants)
         end
         
     end
+colormap(Colormap)
     saveas(gcf,fullfile(Paths.Figures, [ Participants{Indx_P}, '_', TitleTag, '_LAT_PowerTopo.svg']))
-    
-    
 end
 
 
