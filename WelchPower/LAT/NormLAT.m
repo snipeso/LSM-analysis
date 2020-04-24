@@ -3,12 +3,12 @@ clc
 close all
 
 wpLAT_Parameters
-
-
+Name = 'PreNormBeam';
 normFFT = allFFT;
 
 Participants = unique(Categories(1, :));
 
+Baselines = nan(numel(Participants), numel(Freqs));
 for Indx_P = 1:numel(Participants)
     BL_Indx = find(strcmp(Categories(1, :), Participants{Indx_P}) & strcmp(Categories(3, :), 'MainPre'));
     
@@ -29,4 +29,4 @@ for Indx_P = 1:numel(Participants)
     end
 end
 
-save(fullfile(Paths.wp, 'wPower', 'LAT_FFTnorm.mat'), 'normFFT', 'Categories')
+save(fullfile(Paths.wp, 'wPower', 'LAT_FFT', Name, '.mat'), 'normFFT', 'Categories')

@@ -8,7 +8,7 @@ wpLAT_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Colormap = 'viridis';
-Scaling = 'log'; % either 'log' or 'norm'
+Scaling = 'norm'; % either 'log' or 'norm'
 
 Sessions = allSessions.Comp;
 SessionLabels = allSessionLabels.Comp;
@@ -26,8 +26,8 @@ switch Scaling
             allFFT(Indx_F).FFT = log(allFFT(Indx_F).FFT + 1);
         end
         YLabel = 'Power Density';
-%         YLims = [-2.5, 0.5];
-YLims = [0, 1];
+        %         YLims = [-2.5, 0.5];
+        YLims = [0, 1];
         YLimsInd = [0, 4];
     case 'norm'
         load(fullfile(Paths.wp, 'wPower', 'LAT_FFTnorm.mat'), 'normFFT')
@@ -149,7 +149,7 @@ for Indx_P = 1:numel(Participants)
         end
         
     end
-colormap(Colormap)
+    colormap(Colormap)
     saveas(gcf,fullfile(Paths.Figures, [ Participants{Indx_P}, '_', TitleTag, '_LAT_PowerTopo.svg']))
 end
 
