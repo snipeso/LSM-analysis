@@ -8,22 +8,23 @@ Tot_Peeps = size(Matrix, 1); % number of participants
 
 % select background colors for participants
 if exist('ColorGroup', 'var')
+    
+    % get one color per group
     Groups = unique(ColorGroups);
     Tot_Groups = numel(Groups);
-    Unique_Colors = [linspace(0, (Tot_Groups -1)/Tot_Groups,Tot_Groups)', ...
-        ones(Tot_Groups, 1)*0.2, ...
-        ones(Tot_Groups, 1)];
+    Unique_Colors = palehsv(Tot_Groups + 1);
+    Unique_Colors(end) = [];
+    
+    % for each participant, assign group color
     Colors = zeros(Tot_Peeps, 3);
     for Indx_G = 1:Tot_Groups
         Colors(ismember(ColorGroups, Groups(Indx_G)), :) = Unique_Colors(Indx_G, :);
     end
 else
-    Colors = [linspace(0, (Tot_Peeps -1)/Tot_Peeps,Tot_Peeps)', ...
-        ones(Tot_Peeps, 1)*0.2, ...
-        ones(Tot_Peeps, 1)];
+    Colors = palehsv(Tot_Peeps + 1);
+    Colors(end) = [];
 end
 
-Colors = hsv2rgb(Colors);
 
 % plot each participant
 hold on
