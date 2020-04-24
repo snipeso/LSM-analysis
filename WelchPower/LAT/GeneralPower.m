@@ -53,7 +53,7 @@ end
 CLimsInd = [min(Quantiles(:, :, 1),[],  2), max(Quantiles(:, :, 2),[],  2)];
 
 
-figure( 'units','normalized','outerposition',[0 0 .5 .5])
+figure('units','normalized','outerposition',[0 0 .5 .5])
 Colors = {[ 0.00000  0.43922  0.36863], ... %BL
     [1.00000  0.61961  0.38039], ... % pre
     [ 1.00000  0.78039  0.80392], ... %session1
@@ -63,7 +63,7 @@ Colors = {[ 0.00000  0.43922  0.36863], ... %BL
     [0.58039  0.00000  0.61961],... % post
     };
 
-plotChannels = [3:7, 9:13, 15, 16, 18:20, 24, 106, 111, 112, 117, 118, 123, 124]; % hotspot
+plotChannels = Hotspot; % hotspot
 ChanIndx = ismember( str2double({Chanlocs.labels}), plotChannels);
 Title = 'HotSpot';
 

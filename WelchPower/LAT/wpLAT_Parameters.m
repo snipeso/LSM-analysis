@@ -26,6 +26,7 @@ allSessionLabels.Comp = {'BLc', 'S1c', 'S2c'};
 
 Participants = {'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07'};
 
+Hotspot = [3:7, 9:13, 15, 16, 18:20, 24, 106, 111, 112, 117, 118, 123, 124];
 
 %%% Locations
 Paths.EEGdata = fullfile(Paths.Preprocessing, 'Interpolated\', Task);
