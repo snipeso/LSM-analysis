@@ -13,7 +13,7 @@ if exist('ColorGroup', 'var')
     Groups = unique(ColorGroups);
     Tot_Groups = numel(Groups);
     Unique_Colors = palehsv(Tot_Groups + 1);
-    Unique_Colors(end) = [];
+    Unique_Colors(end, :) = [];
     
     % for each participant, assign group color
     Colors = zeros(Tot_Peeps, 3);
@@ -22,7 +22,8 @@ if exist('ColorGroup', 'var')
     end
 else
     Colors = palehsv(Tot_Peeps + 1);
-    Colors(end) = [];
+    Colors(end, :) = [];
+
 end
 
 
