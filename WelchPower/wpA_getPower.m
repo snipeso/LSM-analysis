@@ -22,12 +22,12 @@ parfor Indx_F = 1:numel(Files)
     
     % load EEG
     EEG = pop_loadset('filename', File, 'filepath', Paths.EEGdata);
-
+    
     
     %%% Set as nan all noise
     % remove nonEEG channels
     EEG = pop_select(EEG, 'nochannel', notEEG);
-            [Channels, Points] = size(EEG.data);
+    [Channels, Points] = size(EEG.data);
     fs = EEG.srate;
     
     % remove start and stop
@@ -38,7 +38,7 @@ parfor Indx_F = 1:numel(Files)
     % set to nan all cut data
     Cuts_Filepath = fullfile(Paths.Cuts, [extractBefore(File, '_ICA'), '_Cuts.mat']);
     EEG = nanNoise(EEG, Cuts_Filepath);
-
+    
     
     %%% get power
     
@@ -50,27 +50,27 @@ parfor Indx_F = 1:numel(Files)
     
     % get power for all the epochs
     Power = WelchSpectrum(EEG, Freqs, Edges);
-
+    
     % identify corresponding block of each epoch
     StartBlockEvents = find(strcmpi({EEG.event.type}, StartLeft) | strcmpi({EEG.event.type}, StartRight));
     EndBlockEvents = [StartBlockEvents(2:end), find(strcmpi({EEG.event.type}, EndMain))];
     EpochBlocks = zeros(size(Starts));
     
     for Indx_S = 1:numel(StartBlockEvents)
-       StartIndx = StartBlockEvents(Indx_S);
-       EndIndx = EndBlockEvents(Indx_S); % TODO, directly write into code below
-       StartBlock = EEG.event(StartIndx).latency;
-       EndBlock =  EEG.event(EndIndx).latency;
-       
-       % set block index to 1 or 2 for left and right
-       BlockSide = EEG.event(StartIndx).type;
-       if strcmp(BlockSide, StartLeft);BlockSide=Left;else; BlockSide=Right;end
-       
-       EpochBlocks(Starts >= StartBlock & Ends <= EndBlock)=BlockSide;
+        StartIndx = StartBlockEvents(Indx_S);
+        EndIndx = EndBlockEvents(Indx_S); % TODO, directly write into code below
+        StartBlock = EEG.event(StartIndx).latency;
+        EndBlock =  EEG.event(EndIndx).latency;
+        
+        % set block index to 1 or 2 for left and right
+        BlockSide = EEG.event(StartIndx).type;
+        if strcmp(BlockSide, StartLeft);BlockSide=Left;else; BlockSide=Right;end
+        
+        EpochBlocks(Starts >= StartBlock & Ends <= EndBlock)=BlockSide;
     end
     
     Power.Blocks = EpochBlocks;
-
+    
     parsave(fullfile(Paths.powerdata, Filename), Power)
     disp(['*************finished ',Filename '*************'])
     
