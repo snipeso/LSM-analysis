@@ -8,18 +8,19 @@ wpLAT_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Scaling = 'log'; % either 'log' or 'norm'
+Scaling = 'norm'; % either 'log' or 'norm'
 
-Sessions = allSessions.Comp;
-SessionLabels = allSessionLabels.Comp;
-SessionsTitle = 'Comp';
-SessionsSmall = {'BaselineComp', 'Session2Comp'};
+% Sessions = allSessions.Comp;
+% SessionLabels = allSessionLabels.Comp;
+% SessionsTitle = 'Comp';
+% SessionsSmall = {'BaselineComp', 'Session2Comp'};
+% SessionsSmallLabels = {'BL', 'S2'};
+
+Sessions = allSessions.LAT;
+SessionLabels = allSessionLabels.LAT;
+SessionsTitle = 'Beam';
+SessionsSmall = {'MainPre', 'Session2Beam2'};
 SessionsSmallLabels = {'BL', 'S2'};
-
-% Sessions = allSessions.LAT;
-% SessionLabels = allSessionLabels.LAT;
-% SessionsTitle = 'Beam';
-% SessionsSmall = {'MainPre', 'Session2Beam2'};
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
