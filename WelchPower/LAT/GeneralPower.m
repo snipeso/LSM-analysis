@@ -10,13 +10,14 @@ wpLAT_Parameters
 Colormap = 'viridis';
 Scaling = 'norm'; % either 'log' or 'norm'
 
-Sessions = allSessions.Comp;
-SessionLabels = allSessionLabels.Comp;
-SessionsTitle = 'Comp';
+% Sessions = allSessions.Comp;
+% SessionLabels = allSessionLabels.Comp;
+% SessionsTitle = 'Comp';
 
-% Sessions = allSessions.LAT;
-% SessionLabels = allSessionLabels.LAT;
-% SessionsTitle = 'Beam';
+Sessions = allSessions.LAT;
+SessionLabels = allSessionLabels.LAT;
+SessionsTitle = 'Beam';
+Name = 'PreNormBeam'; % only for norm scaling
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -27,21 +28,21 @@ switch Scaling
         end
         YLabel = 'Power Density';
         %         YLims = [-2.5, 0.5];
-        YLims = [0, 1];
-        YLimsInd = [0, 4];
+%         YLims = [0, 1];
+
     case 'norm'
-        load(fullfile(Paths.wp, 'wPower', 'LAT_FFTnorm.mat'), 'normFFT')
+        load(fullfile(Paths.wp, 'wPower', ['LAT_FFT_', Name, '.mat']), 'normFFT')
         allFFT = normFFT;
         YLabel = '% Change from Pre';
         YLims = [-50, 100];
-        YLimsInd = [-100, 400];
+
 end
 TitleTag = [Scaling, SessionsTitle];
 
 PowerStruct = GetPowerStruct(allFFT, Categories, Sessions, Participants);
 
 % get limits per participant
-Quantiles = zeros(numel(Participants), numel(Sessions), 2);
+Quantiles = nan(numel(Participants), numel(Sessions), 2);
 for Indx_P = 1:numel(Participants)
     for Indx_S = 1:numel(Sessions)
         A = PowerStruct(Indx_P).(Sessions{Indx_S});
@@ -49,6 +50,8 @@ for Indx_P = 1:numel(Participants)
         Quantiles(Indx_P, Indx_S, 2) =  quantile(A(:), .99);
     end
 end
+
+% YLims = squeeze(nanmean(nanmean(Quantiles(:, :, :), 2),1));
 
 CLimsInd = [min(Quantiles(:, :, 1),[],  2), max(Quantiles(:, :, 2),[],  2)];
 
@@ -126,33 +129,33 @@ colormap(Colormap)
 saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_LAT_PowerTopo.svg']))
 
 
-% plot individuals
-plotFreqs = [3 6 8 10 12 16 20];
-FreqsIndx =  dsearchn( Freqs', plotFreqs');
-
-for Indx_P = 1:numel(Participants)
-    figure('units','normalized','outerposition',[0 0 .5 .5])
-    Indx = 1;
-    for Indx_S = 1:numel(Sessions)
-        for Indx_F = 1:numel(FreqsIndx)
-            if isempty(PowerStruct(Indx_P).(Sessions{Indx_S}))
-                Indx = Indx+1;
-                continue
-            end
-            Data = squeeze(nanmean(PowerStruct(Indx_P).(Sessions{Indx_S})(:, FreqsIndx(Indx_F), :), 3));
-            
-            subplot(numel(Sessions), numel(FreqsIndx), Indx)
-            topoplot(Data, Chanlocs, 'maplimits', CLimsInd(Indx_P, :), 'style', 'map', 'headrad', 'rim')
-            
-            title([SessionLabels{Indx_S}, ' ' num2str(plotFreqs(Indx_F)), 'Hz'])
-            Indx = Indx+1;
-        end
-        
-    end
-    colormap(Colormap)
-    saveas(gcf,fullfile(Paths.Figures, [ Participants{Indx_P}, '_', TitleTag, '_LAT_PowerTopo.svg']))
-end
-
+% % plot individuals
+% plotFreqs = [3 6 8 10 12 16 20];
+% FreqsIndx =  dsearchn( Freqs', plotFreqs');
+% 
+% for Indx_P = 1:numel(Participants)
+%     figure('units','normalized','outerposition',[0 0 .5 .5])
+%     Indx = 1;
+%     for Indx_S = 1:numel(Sessions)
+%         for Indx_F = 1:numel(FreqsIndx)
+%             if isempty(PowerStruct(Indx_P).(Sessions{Indx_S}))
+%                 Indx = Indx+1;
+%                 continue
+%             end
+%             Data = squeeze(nanmean(PowerStruct(Indx_P).(Sessions{Indx_S})(:, FreqsIndx(Indx_F), :), 3));
+%             
+%             subplot(numel(Sessions), numel(FreqsIndx), Indx)
+%             topoplot(Data, Chanlocs, 'maplimits', CLimsInd(Indx_P, :), 'style', 'map', 'headrad', 'rim')
+%             
+%             title([SessionLabels{Indx_S}, ' ' num2str(plotFreqs(Indx_F)), 'Hz'])
+%             Indx = Indx+1;
+%         end
+%         
+%     end
+%     colormap(Colormap)
+%     saveas(gcf,fullfile(Paths.Figures, [ Participants{Indx_P}, '_', TitleTag, '_LAT_PowerTopo.svg']))
+% end
+% 
 
 
 
@@ -178,7 +181,7 @@ for Indx_H = 1:2
         PlotPowerFlames(PowerStruct, ChanIndx, FreqsIndx(Indx_F), Sessions, SessionLabels)
         title([Title, ' ', num2str(plotFreqs(Indx_F)), 'Hz Distribution'])
         ylabel(YLabel)
-        ylim(YLimsInd)
+%         ylim(YLimsInd)
     end
     saveas(gcf,fullfile(Paths.Figures, [TitleTag,'_', Title, '_LAT_Flames.svg']))
     
