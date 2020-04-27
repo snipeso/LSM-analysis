@@ -6,7 +6,7 @@ wpLAT_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Scaling = 'log'; % either 'log' or 'norm'
+Scaling = 'none'; % either 'log' or 'norm'
 
 Sessions = allSessions.Comp;
 SessionLabels = allSessionLabels.Comp;
@@ -23,12 +23,15 @@ switch Scaling
         for Indx_F = 1:size(allFFT, 2)
             allFFT(Indx_F).FFT = log(allFFT(Indx_F).FFT + 1);
         end
-        YLabel = 'Power Density';
+        YLabel = 'Power Density of Log';
         
     case 'norm'
         load(fullfile(Paths.wp, 'wPower', 'LAT_FFTnorm.mat'), 'normFFT')
         allFFT = normFFT;
         YLabel = '% Change from Pre';
+    case 'none'
+        YLabel = 'Power Density';
+        
 end
 TitleTag = [Scaling, SessionsTitle];
 

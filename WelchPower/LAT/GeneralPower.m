@@ -8,7 +8,7 @@ wpLAT_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Colormap = 'viridis';
-Scaling = 'norm'; % either 'log' or 'norm'
+Scaling = 'none'; % either 'log' or 'norm'
 
 % Sessions = allSessions.Comp;
 % SessionLabels = allSessionLabels.Comp;
@@ -26,7 +26,7 @@ switch Scaling
         for Indx_F = 1:size(allFFT, 2)
             allFFT(Indx_F).FFT = log(allFFT(Indx_F).FFT + 1);
         end
-        YLabel = 'Power Density';
+        YLabel = 'Log Power Density';
         %         YLims = [-2.5, 0.5];
 %         YLims = [0, 1];
 
@@ -35,7 +35,11 @@ switch Scaling
         allFFT = normFFT;
         YLabel = '% Change from Pre';
         YLims = [-50, 100];
-
+        
+    case 'none'
+         YLabel = 'Power Density';
+% 
+         YLims = [0, 2.5];
 end
 TitleTag = [Scaling, SessionsTitle];
 

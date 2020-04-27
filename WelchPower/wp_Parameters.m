@@ -6,7 +6,8 @@ Paths.Analysis = 'C:\Users\colas\Projects\LSM-analysis\';
 Paths.Figures = 'C:\Users\colas\Dropbox\Research\SleepLoop\LSM\Figures';
 Paths.wp = fullfile(Paths.Analysis, 'WelchPower');
 
-Freqs = [1:0.25:30];
+FreqRes = 0.25;
+Freqs = [1:FreqRes:30];
 Window = 4; % window for epochs when looking at general power;
 
 % channels to ignore
