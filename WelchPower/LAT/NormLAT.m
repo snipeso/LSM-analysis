@@ -43,7 +43,7 @@ for Indx_P = 1:numel(Participants)
     end
 end
 
-save(fullfile(Paths.wp, 'wPower', ['LAT_FFT', Name, '.mat']), 'normFFT', 'Categories')
+save(fullfile(Paths.wp, 'wPower', ['LAT_FFT_', Name, '.mat']), 'normFFT', 'Categories')
 
 
 ChanIndx = ismember( str2double({Chanlocs.labels}), Hotspot);
