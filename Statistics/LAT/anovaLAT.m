@@ -10,9 +10,22 @@ Stats_Parameters
 DataPath = fullfile(Paths.Analysis, 'Statistics', 'LAT', 'Data'); % for statistics
 
 % Data type
-Type = 'Hits';
+% Type = 'Hits';
+% YLabel = '%';
+% Loggify = false; % msybe?
+% 
+% Type = 'theta';
+% YLabel = 'Power (log)';
+% Loggify = true;
+% 
+% Type = 'meanRTs';
+% YLabel = 'RTs (log(s))';
+% Loggify = true;
+
+Type = 'KSS';
 YLabel = 'VAS Score';
-Loggify = true;
+Loggify = false;
+
 
 MES = 'eta2';
 
@@ -42,7 +55,6 @@ SopSEM = std(SopoMatrix)./sqrt(size(SopoMatrix, 1));
 
 Soporific = mat2table(SopoMatrix, Participants, {'s4', 's5', 's6'}, 'Participant', [], Type);
 
-
 Between = [Classic, Soporific(:, 2:end)];
 
 Within = table();
@@ -71,7 +83,7 @@ C_BLvS2= SxC.pValue(strcmp(SxC.Condition, 'C')&strcmp(SxC.Session_1, 'B')& strcm
 C_S1vS2= SxC.pValue(strcmp(SxC.Condition, 'C')&strcmp(SxC.Session_1, 'S1')& strcmp(SxC.Session_2, 'S2'));
 
 % plot barplots
-figure('units','normalized','outerposition',[0 0 1 1])
+figure('units','normalized','outerposition',[0 0 .4 .4])
 subplot(1, 2, 1)
 PlotBars([ClassicMeans; SopMeans]', [ClassicSEM; SopSEM]', {'BL', 'S1', 'S2'}, {'Classic', 'Soporific'})
 
@@ -117,9 +129,21 @@ stats = mes2way(Table.Data, [Table.Session, Table.Condition], MES, ...
     'fName',{'Session', 'Condition'}, 'isDep',[1 1], 'nBoot', 1000);
 subplot(1, 2, 2)
 hold on
-bar(1:3, stats.(MES))
-errorbar(1:3, stats.(MES), stats.([MES, 'Ci'])(:, 1),  stats.([MES, 'Ci'])(:, 2), 'LineStyle', 'none')
+bar(1:3, stats.(MES), 'FaceColor', [.5 .5 .5], 'LineStyle', 'none')
+errorbar(1:3, stats.(MES), stats.(MES)-stats.([MES, 'Ci'])(:, 1),  stats.([MES, 'Ci'])(:, 2)-stats.(MES), ...
+    'Color', 'k', 'LineStyle', 'none', 'LineWidth', 2 )
 xticks(1:3)
 xticklabels({'Session', 'Condition', 'Interaction'})
-title(MES)
+xlim([.5, 3.5])
+ylim([0 1])
+title(['Effect size: ', MES])
+
+
+% plot all values
+figure('units','normalized','outerposition',[0 0 .4 .4])
+subplot(1,2,1)
+PlotConfettiSpaghetti(ClassicMatrix, {'BL', 'S1', 'S2'}, [], ['LAT Classic ', Type], [])
+
+subplot(1,2,2)
+PlotConfettiSpaghetti(SopoMatrix, {'BL', 'S1', 'S2'}, [], ['LAT Classic ', Type], [])
 
