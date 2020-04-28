@@ -43,7 +43,7 @@ FreqIndx =  dsearchn( allFFT(1).Freqs', Freq);
 Colors = MapRainbow([Chanlocs.X], [Chanlocs.Y], [Chanlocs.Z], true);
 
 
-figure( 'units','normalized','outerposition',[0 0 1 1])
+figure('units','normalized','outerposition',[0 0 1 1])
 hold on
 for Indx_Ch = 1:TotChannels
     for Indx_S = 1:numel(Sessions)
