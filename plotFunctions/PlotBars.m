@@ -28,7 +28,7 @@ for i = 1:nbars
 end
 
 xticklabels(xLabels)
-legend(Legend)
+legend(Legend, 'Location', 'southeast','AutoUpdate','off')
 
 
 

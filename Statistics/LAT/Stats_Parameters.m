@@ -6,6 +6,7 @@ Paths.Figures = 'C:\Users\colas\Dropbox\Research\SleepLoop\LSM\Figures';
 
 % add location of subfunctions
 addpath(fullfile(Paths.Analysis, 'generalFunctions'))
+addpath(fullfile(Paths.Analysis, 'generalFunctions', 'hhentschke-measures-of-effect-size-toolbox-3d90ae5'))
 addpath(fullfile(Paths.Analysis, 'plotFunctions'))
 
 % Sessions
