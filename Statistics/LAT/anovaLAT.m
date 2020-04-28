@@ -14,17 +14,22 @@ DataPath = fullfile(Paths.Analysis, 'Statistics', 'LAT', 'Data'); % for statisti
 % YLabel = '%';
 % Loggify = false; % msybe?
 % 
-% Type = 'theta';
-% YLabel = 'Power (log)';
-% Loggify = true;
+
+% Type = 'Misses';
+% YLabel = '%';
+% Loggify = false; % msybe?
+
+Type = 'beta';
+YLabel = 'Power (log)';
+Loggify = true;
 % 
 % Type = 'meanRTs';
 % YLabel = 'RTs (log(s))';
-% Loggify = true;
+% Loggify = false;
 
-Type = 'KSS';
-YLabel = 'VAS Score';
-Loggify = false;
+% Type = 'KSS';
+% YLabel = 'VAS Score';
+% Loggify = false;
 
 
 MES = 'eta2';
@@ -137,13 +142,16 @@ xticklabels({'Session', 'Condition', 'Interaction'})
 xlim([.5, 3.5])
 ylim([0 1])
 title(['Effect size: ', MES])
-
+saveas(gcf,fullfile(Paths.Figures, 'ESRSPoster', [Type, '_Stats_LAT_timeXcondition.svg']))
 
 % plot all values
+All =[ClassicMatrix(:); SopoMatrix(:)]; 
+YLims = [min(All), max(All)];
 figure('units','normalized','outerposition',[0 0 .4 .4])
 subplot(1,2,1)
-PlotConfettiSpaghetti(ClassicMatrix, {'BL', 'S1', 'S2'}, [], ['LAT Classic ', Type], [])
+PlotConfettiSpaghetti(ClassicMatrix, {'BL', 'S1', 'S2'}, YLims, ['LAT Classic ', Type], [])
 
 subplot(1,2,2)
 PlotConfettiSpaghetti(SopoMatrix, {'BL', 'S1', 'S2'}, [], ['LAT Classic ', Type], [])
+saveas(gcf,fullfile(Paths.Figures, 'ESRSPoster', [Type, '_Means_LAT_timeXcondition.svg']))
 
