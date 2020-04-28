@@ -1,4 +1,5 @@
-function PlotConfettiSpaghetti(Matrix, Sessions, SessionLabels, YLims, Title, Labels, ColorGroups)
+function PlotConfettiSpaghetti(Matrix, SessionLabels, YLims, Title, Labels, ColorGroups)
+% PlotConfettiSpaghetti(Matrix, SessionLabels, YLims, Title, Labels, ColorGroups)
 % plots a speghetti plot based on the matrix, with sessions on the x axis.
 % A faded color indicates participants; either a unique color per person,
 % or a seperate color for each group specified in last, optional variable.
@@ -37,11 +38,13 @@ end
 % plot mean
 plot(nanmean(Matrix, 1), 'o-', 'LineWidth', 2, 'Color', 'k',  'MarkerFaceColor', 'k')
 
-xlim([0.5, numel(Sessions) + .5])
-xticks(1:numel(Sessions))
+xlim([0.5, numel(SessionLabels) + .5])
+xticks(1:numel(SessionLabels))
 xticklabels(SessionLabels)
 
+if~isempty(YLims)
 ylim(YLims)
+end
 if ~isempty(Labels)
     yticks(linspace(0, 100, numel(Labels)))
     yticklabels(Labels)
