@@ -1,4 +1,4 @@
-function varargout=sigstar(groups,stats,nosort)
+function varargout=sigstar(groups,stats, colors, nosort)
     % sigstar - Add significance stars to bar charts, boxplots, line charts, etc,
     %
     % H = sigstar(groups,stats,nsort)
@@ -78,13 +78,13 @@ function varargout=sigstar(groups,stats,nosort)
         groups={groups};
     end
 
-    if nargin<2 
+    if nargin<3 
         stats=repmat(0.05,1,length(groups));
     end
     if isempty(stats)
         stats=repmat(0.05,1,length(groups));
     end
-    if nargin<3
+    if nargin<4
         nosort=0;
     end
 
@@ -182,7 +182,8 @@ function varargout=sigstar(groups,stats,nosort)
 
     for ii=1:length(groups)
         thisY=findMinY(xlocs(ii,:))+yd;
-        H(ii,:)=makeSignificanceBar(xlocs(ii,:),thisY,stats(ii));
+        H(ii,:)=makeSignificanceBar(xlocs(ii,:),thisY,stats(ii), colors{ii});
+     
     end
     %-----------------------------------------------------
 
@@ -227,7 +228,7 @@ end %close sigstar
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Internal functions
 
-function H=makeSignificanceBar(x,y,p)
+function H=makeSignificanceBar(x,y,p,c)
     %makeSignificanceBar produces the bar and defines how many asterisks we get for a 
     %given p-value
 
@@ -247,7 +248,7 @@ function H=makeSignificanceBar(x,y,p)
     x=repmat(x,2,1);
     y=repmat(y,4,1);
 
-    H(1)=plot(x(:),y,'-k','LineWidth',1.5,'Tag','sigstar_bar');
+    H(1)=plot(x(:),y,'-k','LineWidth',1.5,'Tag','sigstar_bar', 'Color', c);
 
     %Increase offset between line and text if we will print "n.s."
     %instead of a star. 
@@ -261,7 +262,7 @@ function H=makeSignificanceBar(x,y,p)
     H(2)=text(mean(x(:)),starY,stars,...
         'HorizontalAlignment','Center',...
         'BackGroundColor','none',...
-        'Tag','sigstar_stars');
+        'Tag','sigstar_stars', 'Color', c);
 
     Y=ylim;
     if Y(2)<starY

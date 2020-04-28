@@ -10,9 +10,11 @@ Stats_Parameters
 DataPath = fullfile(Paths.Analysis, 'Statistics', 'LAT', 'Data'); % for statistics
 
 % Data type
-Type = 'theta';
+Type = 'Hits';
 YLabel = 'VAS Score';
 Loggify = true;
+
+MES = 'eta2';
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -69,30 +71,32 @@ C_BLvS2= SxC.pValue(strcmp(SxC.Condition, 'C')&strcmp(SxC.Session_1, 'B')& strcm
 C_S1vS2= SxC.pValue(strcmp(SxC.Condition, 'C')&strcmp(SxC.Session_1, 'S1')& strcmp(SxC.Session_2, 'S2'));
 
 % plot barplots
-figure
+figure('units','normalized','outerposition',[0 0 1 1])
+subplot(1, 2, 1)
 PlotBars([ClassicMeans; SopMeans]', [ClassicSEM; SopSEM]', {'BL', 'S1', 'S2'}, {'Classic', 'Soporific'})
 
 title(['LAT ', Type])
 ylabel(YLabel)
 
+Colors = plasma(3); % TODO, make this only once, and not in plotbars
+
 % plot significance 
 % (if I'm ever inspired, I'll make this automated; for now its manual)
 comparisons = {
-[.9, 1.1], BL_SvC;
-[1.9, 2.1], S1_SvC;
-[2.9, 3.1], S2_SvC;
+[.9, 1.1], BL_SvC, [0 0 0];
+[1.9, 2.1], S1_SvC, [0 0 0];
+[2.9, 3.1], S2_SvC, [0 0 0];
 
-[.9, 1.9], C_BLvS1;
-[1.1, 2.1], S_BLvS1;
-[.9, 2.9], C_BLvS2;
-[1.1, 3.1], S_BLvS2;
-[1.9, 2.9], C_S1vS2;
-[2.1, 3.1], S_S1vS2
-};
+[.9, 1.9], C_BLvS1, Colors(1, :);
+[1.1, 2.1], S_BLvS1, Colors(2, :);
+[.9, 2.9], C_BLvS2, Colors(1, :);
+[1.1, 3.1], S_BLvS2,  Colors(2, :);
+[1.9, 2.9], C_S1vS2, Colors(1, :);
+[2.1, 3.1], S_S1vS2, Colors(2, :)};
 
 comparisons([comparisons{:, 2}]>=0.1, :) = [];
 if size(comparisons, 1) > 0
-sigstar(comparisons(:, 1),[comparisons{:, 2}])
+sigstar(comparisons(:, 1),[comparisons{:, 2}], comparisons(:, 3))
 end
 
 
@@ -109,7 +113,13 @@ SopoTable = mat2table(SopoMatrix, Participants, [1:size(SopoMatrix, 2)]', ...
 SopoTable.Condition = ones(size(SopoTable.Session));
 Table = [ClassicTable; SopoTable];
 
-stats = mes2way(Table.Data, [Table.Session, Table.Condition], 'eta2', ...
-    'fName',{'Session', 'Condition'}, 'isDep',[1 1], 'nBoot', 1000)
-
+stats = mes2way(Table.Data, [Table.Session, Table.Condition], MES, ...
+    'fName',{'Session', 'Condition'}, 'isDep',[1 1], 'nBoot', 1000);
+subplot(1, 2, 2)
+hold on
+bar(1:3, stats.(MES))
+errorbar(1:3, stats.(MES), stats.([MES, 'Ci'])(:, 1),  stats.([MES, 'Ci'])(:, 2), 'LineStyle', 'none')
+xticks(1:3)
+xticklabels({'Session', 'Condition', 'Interaction'})
+title(MES)
 
