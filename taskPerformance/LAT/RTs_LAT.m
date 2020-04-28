@@ -4,18 +4,28 @@ close all
 
 LAT_Parameters
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Task = 'LAT';
+
 % Sessions = allSessions.LAT;
 % SessionLabels = allSessionLabels.LAT;
-% Task = 'LAT';
 % Title = 'Beam';
 
 Sessions = allSessions.Comp;
 SessionLabels = allSessionLabels.Comp;
-Task = 'LAT';
-Title = 'Comp';
+Title = 'Classic';
 
-Destination = fullfile(Paths.Analysis, 'Regression', 'SummaryData', [Task, Title]);
+% main beamer tasks
+% Sessions = allSessions.Beam;
+% SessionLabels = allSessionLabels.Beam;
+% Title = 'Soporific';
 
+% Destination = fullfile(Paths.Analysis, 'Regression', 'SummaryData', [Task, Title]);
+Destination = fullfile(Paths.Analysis, 'Statistics', Task, 'Data'); % for statistics
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 MeanRTs = nan(numel(Participants), numel(Sessions));
 MedianRTs = nan(numel(Participants), numel(Sessions));

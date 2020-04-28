@@ -5,20 +5,24 @@ close all
 LAT_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
+
+Task = 'LAT';
+
 % Sessions = allSessions.LAT;
 % SessionLabels = allSessionLabels.LAT;
-% Task = 'LAT';
 % Title = 'Beam';
 
+% main beamer tasks
+Sessions = allSessions.Beam;
+SessionLabels = allSessionLabels.Beam;
+Title = 'Soporific';
 
-Sessions = allSessions.Comp;
-SessionLabels = allSessionLabels.Comp;
-Task = 'LAT';
-Title = 'Comp';
+% Sessions = allSessions.Comp;
+% SessionLabels = allSessionLabels.Comp;
+% Title = 'Classic';
 
-Destination = fullfile(Paths.Analysis, 'Regression', 'SummaryData', [Task, Title]);
-
+% Destination = fullfile(Paths.Analysis, 'Regression', 'SummaryData', [Task, Title]);
+Destination = fullfile(Paths.Analysis, 'Statistics', Task, 'Data'); % for statistics
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

@@ -15,8 +15,8 @@ allSessions = struct();
 allSessionLabels = struct();
 
 % Recurring labels
-allSessions.LATBeam = {'BaselineBeam', 'Session1Beam', 'Session2Beam1'};
-allSessionLabels.LATBeam = {'BLb', 'S1b', 'S2b1'};
+allSessions.Beam = {'BaselineBeam', 'Session1Beam', 'Session2Beam1'};
+allSessionLabels.Beam = {'BLb', 'S1b', 'S2b1'};
 
 allSessions.Comp =  {'BaselineComp', 'Session1Comp', 'Session2Comp'};
 allSessionLabels.Comp = {'BLc', 'S1c', 'S2c'};

@@ -12,19 +12,19 @@ wpLAT_Parameters
 Scaling = 'none'; % either 'log', 'none', or 'norm'
 
 % Computer tasks
-Sessions = allSessions.Comp;
-SessionLabels = allSessionLabels.Comp;
-SessionsTitle = 'Classic';
+% Sessions = allSessions.Comp;
+% SessionLabels = allSessionLabels.Comp;
+% Title = 'Classic';
 
 % all beamer tasks
 % Sessions = allSessions.LAT;
 % SessionLabels = allSessionLabels.LAT;
-% SessionsTitle = 'ProjectorAll';
+% Title = 'ProjectorAll';
 
-% all beamer tasks
-% Sessions = allSessions.Beam;
-% SessionLabels = allSessionLabels.Beam;
-% SessionsTitle = 'Soporific';
+% main beamer tasks
+Sessions = allSessions.Beam;
+SessionLabels = allSessionLabels.Beam;
+Title = 'Soporific';
 
 % Destination = fullfile(Paths.Analysis, 'Regression', 'SummaryData', [Task, SessionsTitle]); % for regression
 Destination = fullfile(Paths.Analysis, 'Statistics', Task, 'Data'); % for statistics
@@ -53,7 +53,7 @@ switch Scaling
 %         ChanIndx = 1:size(Chanlocs, 2);
         Scaling = '';
 end
-TitleTag = [Scaling, SessionsTitle];
+TitleTag = [Scaling, Title];
 
 PowerStruct = GetPowerStruct(allFFT, Categories, Sessions, Participants);
 
