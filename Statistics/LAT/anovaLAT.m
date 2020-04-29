@@ -19,7 +19,7 @@ DataPath = fullfile(Paths.Analysis, 'Statistics', 'LAT', 'Data'); % for statisti
 % YLabel = '%';
 % Loggify = false; % msybe?
 
-% Type = 'beta';
+% Type = 'theta';
 % YLabel = 'Power (log)';
 % Loggify = true;
 % 
@@ -42,7 +42,11 @@ load(fullfile(DataPath, ['LAT_', Type, '_Classic.mat']))
 ClassicMatrix = Matrix;
 if Loggify
     ClassicMatrix = log(ClassicMatrix);
+
 end
+        for Indx_P = 1:numel(Participants)
+        ClassicMatrix(Indx_P, :) = mat2gray(ClassicMatrix(Indx_P, :));
+    end
 
 ClassicMeans = nanmean(ClassicMatrix);
 ClassicSEM = nanstd(ClassicMatrix)./sqrt(size(ClassicMatrix, 1));
@@ -53,7 +57,11 @@ load(fullfile(DataPath, ['LAT_', Type, '_Soporific.mat']))
 SopoMatrix = Matrix;
 if Loggify
     SopoMatrix = log(SopoMatrix);
+
 end
+    for Indx_P = 1:numel(Participants)
+        SopoMatrix(Indx_P, :) = mat2gray(SopoMatrix(Indx_P, :));
+    end
 
 SopMeans = nanmean(SopoMatrix);
 SopSEM = std(SopoMatrix)./sqrt(size(SopoMatrix, 1));
