@@ -10,16 +10,12 @@ Stats_Parameters
 DataPath = fullfile(Paths.Analysis, 'Statistics', 'LAT', 'Data'); % for statistics
 
 % Data type
-% Type = 'Hits';
-% YLabel = '%';
-% Loggify = false; % msybe?
-%
 
-% Type = 'Misses';
-% YLabel = '%';
-% Loggify = false; % msybe?
+Type = 'Hits';
+YLabel = '%';
+Loggify = false; % msybe?
 
-% Type = 'delta';
+% Type = 'alpha';
 % YLabel = 'Power (log)';
 % Loggify = true;
 %
@@ -27,7 +23,7 @@ DataPath = fullfile(Paths.Analysis, 'Statistics', 'LAT', 'Data'); % for statisti
 % YLabel = 'RTs (log(s))';
 % Loggify = false;
 
-% Type = 'KSS';
+% Type = 'Effortful';
 % YLabel = 'VAS Score';
 % Loggify = false;
 
@@ -124,8 +120,6 @@ end
 
 
 %%% plot effect sizes (with CIs?) of Session vs Condition
-
-
 % uses the MES toolbox, so data needs to be restructured
 ClassicTable = mat2table(ClassicMatrix, Participants, [1:size(ClassicMatrix, 2)]', ...
     'Participant', 'Session', 'Data');
@@ -136,7 +130,7 @@ SopoTable = mat2table(SopoMatrix, Participants, [1:size(SopoMatrix, 2)]', ...
 SopoTable.Condition = ones(size(SopoTable.Session));
 Table = [ClassicTable; SopoTable];
 
-stats = mes2way(Table.Data, [Table.Session, Table.Condition], MES, ...
+[stats, Table] = mes2way(Table.Data, [Table.Session, Table.Condition], MES, ...
     'fName',{'Session', 'Condition'}, 'isDep',[1 1], 'nBoot', 1000);
 subplot(1, 2, 2)
 hold on
@@ -148,6 +142,14 @@ xticklabels({'Session', 'Condition', 'Interaction'})
 xlim([.5, 3.5])
 ylim([0 1])
 title(['Effect size: ', MES])
+
+pValues = [cell2mat(Table( 3:5,6)), [1:3]'];
+pValues(pValues(:, 1)>.1, :) = [];
+for Indx = 1:size(pValues, 1)
+    sigstar({[pValues(Indx, 2)-.1, pValues(Indx, 2)+.1]},[pValues(Indx, 1)], {[0 0 0]})
+end
+
+
 saveas(gcf,fullfile(Paths.Figures, 'ESRSPoster', [Type, '_Stats_LAT_timeXcondition.svg']))
 
 % plot all values
