@@ -13,23 +13,23 @@ DataPath = fullfile(Paths.Analysis, 'Statistics', 'LAT', 'Data'); % for statisti
 % Type = 'Hits';
 % YLabel = '%';
 % Loggify = false; % msybe?
-% 
+%
 
 % Type = 'Misses';
 % YLabel = '%';
 % Loggify = false; % msybe?
 
-% Type = 'theta';
+% Type = 'delta';
 % YLabel = 'Power (log)';
 % Loggify = true;
-% 
+%
 % Type = 'meanRTs';
 % YLabel = 'RTs (log(s))';
 % Loggify = false;
 
-Type = 'KSS';
-YLabel = 'VAS Score';
-Loggify = false;
+% Type = 'KSS';
+% YLabel = 'VAS Score';
+% Loggify = false;
 
 
 MES = 'eta2';
@@ -42,31 +42,29 @@ load(fullfile(DataPath, ['LAT_', Type, '_Classic.mat']))
 ClassicMatrix = Matrix;
 if Loggify
     ClassicMatrix = log(ClassicMatrix);
-
 end
-        for Indx_P = 1:numel(Participants)
-        ClassicMatrix(Indx_P, :) = mat2gray(ClassicMatrix(Indx_P, :));
-    end
+
+load(fullfile(DataPath, ['LAT_', Type, '_Soporific.mat']))
+SopoMatrix = Matrix;
+
+if Loggify
+    SopoMatrix = log(SopoMatrix);
+end
+
+for Indx_P = 1:numel(Participants)
+    All = mat2gray([ClassicMatrix(Indx_P, :), SopoMatrix(Indx_P, :)]);
+    ClassicMatrix(Indx_P, :) = All(1:size(ClassicMatrix, 2));
+    SopoMatrix(Indx_P, :) = All(size(ClassicMatrix, 2)+1:end);
+end
+
+SopMeans = nanmean(SopoMatrix);
+SopSEM = std(SopoMatrix)./sqrt(size(SopoMatrix, 1));
+Soporific = mat2table(SopoMatrix, Participants, {'s4', 's5', 's6'}, 'Participant', [], Type);
 
 ClassicMeans = nanmean(ClassicMatrix);
 ClassicSEM = nanstd(ClassicMatrix)./sqrt(size(ClassicMatrix, 1));
 Classic = mat2table(ClassicMatrix, Participants, {'s1', 's2', 's3'}, 'Participant', [], Type);
 
-
-load(fullfile(DataPath, ['LAT_', Type, '_Soporific.mat']))
-SopoMatrix = Matrix;
-if Loggify
-    SopoMatrix = log(SopoMatrix);
-
-end
-    for Indx_P = 1:numel(Participants)
-        SopoMatrix(Indx_P, :) = mat2gray(SopoMatrix(Indx_P, :));
-    end
-
-SopMeans = nanmean(SopoMatrix);
-SopSEM = std(SopoMatrix)./sqrt(size(SopoMatrix, 1));
-
-Soporific = mat2table(SopoMatrix, Participants, {'s4', 's5', 's6'}, 'Participant', [], Type);
 
 Between = [Classic, Soporific(:, 2:end)];
 
@@ -105,23 +103,23 @@ ylabel(YLabel)
 
 Colors = plasma(3); % TODO, make this only once, and not in plotbars
 
-% plot significance 
+% plot significance
 % (if I'm ever inspired, I'll make this automated; for now its manual)
 comparisons = {
-[.9, 1.1], BL_SvC, [0 0 0];
-[1.9, 2.1], S1_SvC, [0 0 0];
-[2.9, 3.1], S2_SvC, [0 0 0];
-
-[.9, 1.9], C_BLvS1, Colors(1, :);
-[1.1, 2.1], S_BLvS1, Colors(2, :);
-[.9, 2.9], C_BLvS2, Colors(1, :);
-[1.1, 3.1], S_BLvS2,  Colors(2, :);
-[1.9, 2.9], C_S1vS2, Colors(1, :);
-[2.1, 3.1], S_S1vS2, Colors(2, :)};
+    [.9, 1.1], BL_SvC, [0 0 0];
+    [1.9, 2.1], S1_SvC, [0 0 0];
+    [2.9, 3.1], S2_SvC, [0 0 0];
+    
+    [.9, 1.9], C_BLvS1, Colors(1, :);
+    [1.1, 2.1], S_BLvS1, Colors(2, :);
+    [.9, 2.9], C_BLvS2, Colors(1, :);
+    [1.1, 3.1], S_BLvS2,  Colors(2, :);
+    [1.9, 2.9], C_S1vS2, Colors(1, :);
+    [2.1, 3.1], S_S1vS2, Colors(2, :)};
 
 comparisons([comparisons{:, 2}]>=0.1, :) = [];
 if size(comparisons, 1) > 0
-sigstar(comparisons(:, 1),[comparisons{:, 2}], comparisons(:, 3))
+    sigstar(comparisons(:, 1),[comparisons{:, 2}], comparisons(:, 3))
 end
 
 
@@ -153,12 +151,12 @@ title(['Effect size: ', MES])
 saveas(gcf,fullfile(Paths.Figures, 'ESRSPoster', [Type, '_Stats_LAT_timeXcondition.svg']))
 
 % plot all values
-% All =[ClassicMatrix(:); SopoMatrix(:)]; 
+% All =[ClassicMatrix(:); SopoMatrix(:)];
 % YLims = [min(All), max(All)];
 % figure('units','normalized','outerposition',[0 0 .4 .4])
 % subplot(1,2,1)
 % PlotConfettiSpaghetti(ClassicMatrix, {'BL', 'S1', 'S2'}, YLims, ['LAT Classic ', Type], [])
-% 
+%
 % subplot(1,2,2)
 % PlotConfettiSpaghetti(SopoMatrix, {'BL', 'S1', 'S2'}, [], ['LAT Soporific ', Type], [])
 % saveas(gcf,fullfile(Paths.Figures, 'ESRSPoster', [Type, '_Means_LAT_timeXcondition.svg']))
@@ -168,5 +166,5 @@ figure('units','normalized','outerposition',[0 0 .4 .4])
 PlotScales(ClassicMatrix, SopoMatrix, {'BL', 'S1', 'S2'}, {'Class', 'Sopo'})
 ylabel(YLabel)
 title(['LAT ', Type, ' All Means'])
- saveas(gcf,fullfile(Paths.Figures, 'ESRSPoster', [Type, '_LAT_timeANDcondition.svg']))
+saveas(gcf,fullfile(Paths.Figures, 'ESRSPoster', [Type, '_LAT_timeANDcondition.svg']))
 
