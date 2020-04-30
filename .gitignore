@@ -1,3 +1,8 @@
+# My scripts related stuff
+EEG_preprocessing/~$Complete LSM Pipeline.pptx
+figures/
+data/
+tasks/data
 
 # EEG related stuff
 .fdt
@@ -49,4 +54,4 @@ Preprocessing/~$How_to_Cut_Data.pptx
 *.csv
 *.svg
 *.loc
-EEG_preprocessing/~$Complete LSM Pipeline.pptx
+
