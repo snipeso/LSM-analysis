@@ -1,0 +1,12 @@
+File     : tmse018.R04
+Started  : S22:50:24, 1999-06-24
+Duration : 08H15'00"  (1485 x 20s)
+Sampling : 128 Hz
+Comment  : Human-Online-4, 2614, EVA
+Montage  : SCREEN.MNT
+
+Channel  Volt2048  Index  .SPn Filter=3dB
+------- ---------- ----- ----- ----------
+*F3A2     0.002048     1       0.16-49 Hz
+*C3A2     0.002048     2       0.16-49 Hz
+*O1A2     0.002048     3       0.16-49 Hz

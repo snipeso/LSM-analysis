@@ -106,4 +106,8 @@ EEG_Triggers.LAT.StartRight = 'S 11';
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+if ~exist(Paths.Figures, 'dir')
+    mkdir(Paths.Figures)
+end
+
 
