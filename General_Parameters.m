@@ -12,8 +12,8 @@ Paths.Figures = fullfile(Paths.Analysis, 'figures');
 Paths.Preprocessing = fullfile(Paths.Analysis, 'EEG_preprocessing');
 
 % add location of subfunctions
-addpath(fullfile(Paths.Analysis, 'functions_general'))
-addpath(fullfile(Paths.Analysis, 'functions_plots'))
+addpath(fullfile(Paths.Analysis, 'functions','general'))
+addpath(fullfile(Paths.Analysis, 'functions','plots'))
 
 run(fullfile(Paths.Analysis, 'functions_external', 'addExternalFunctions'))
 
