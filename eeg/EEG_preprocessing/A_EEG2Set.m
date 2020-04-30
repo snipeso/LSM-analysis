@@ -6,7 +6,7 @@ clc
 clear
 
 Refresh = false;
-GeneralPreprocessingParameters
+EEG_Parameters
 
 load('StandardChanlocs128.mat') % has channel locations in StandardChanlocs
 
