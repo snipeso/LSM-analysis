@@ -1,31 +1,17 @@
-Paths = struct();
-Paths.Datasets = 'D:\LSM\data';
-Paths.Analysis = 'C:\Users\colas\Projects\LSM-analysis';
-Paths.Responses = fullfile(Paths.Analysis, 'taskPerformance', 'Responses');
+% get general parameters (script in main folder of LSM-analysis)
+run(fullfile(extractBefore(mfilename('fullpath'), 'tasks'), 'General_Parameters'))
 
-Paths.Figures = 'C:\Users\colas\Dropbox\Research\SleepLoop\LSM\Figures\LAT';
+% Locations
+Paths.Responses = fullfile(Paths.Analysis, 'tasks', 'data');
+
+Paths.Figures = fullfile(Paths.Figures, 'LAT');
 
 % add location of subfunctions
-addpath(fullfile(Paths.Analysis, 'generalFunctions'))
-addpath(fullfile(Paths.Analysis, 'plotFunctions'))
-addpath(fullfile(Paths.Analysis, 'taskPerformance', 'generalTaskFunctions'))
+addpath(fullfile(Paths.Analysis, 'tasks', 'functions_tasks'))
 
-% Sessions
-allSessions = struct();
-allSessionLabels = struct();
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Recurring labels
-allSessions.Beam = {'BaselineBeam', 'Session1Beam', 'Session2Beam1'};
-allSessionLabels.Beam = {'BLb', 'S1b', 'S2b1'};
-
-allSessions.Comp =  {'BaselineComp', 'Session1Comp', 'Session2Comp'};
-allSessionLabels.Comp = {'BLc', 'S1c', 'S2c'};
-
-allSessions.LAT = {'BaselineBeam', 'MainPre', 'Session1Beam', 'Session2Beam1', 'Session2Beam2', 'Session2Beam3', 'MainPost'};
-allSessionLabels.LAT = {'BL', 'Pre', 'S1', 'S2-1', 'S2-2', 'S2-3', 'Post'};
-
-Participants = {'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07'};
-
+%%% Do stuff 
 
 % get response times
 LATResponses = 'LATResponses.mat';
@@ -35,5 +21,5 @@ else
     if ~exist(Paths.Responses, 'dir')
         mkdir(Paths.Responses)
     end
-    AllAnswers = importTask(Paths.Datasets, 'LAT', cd);
+    AllAnswers = importTask(Paths.Datasets, 'LAT', cd); % needs to have access to raw data folder
 end
