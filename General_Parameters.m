@@ -15,7 +15,7 @@ Paths.Preprocessing = fullfile(Paths.Analysis, 'EEG_preprocessing');
 addpath(fullfile(Paths.Analysis, 'functions','general'))
 addpath(fullfile(Paths.Analysis, 'functions','plots'))
 
-run(fullfile(Paths.Analysis, 'functions_external', 'addExternalFunctions'))
+run(fullfile(Paths.Analysis, 'functions', 'external', 'addExternalFunctions'))
 
 % if eeglab has not run, run it so all the subdirectories get added
 if ~exist('topoplot', 'file')
