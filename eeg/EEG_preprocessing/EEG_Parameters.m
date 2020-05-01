@@ -7,6 +7,7 @@ addpath(fullfile(Paths.Analysis, 'functions','eeg'))
 Paths.Datasets = 'D:\LSM\data';
 Paths.Preprocessed = 'C:\Users\schlaf\Desktop\LSMpreprocessed';
 Paths.LFiltered = fullfile(Paths.Preprocessed, 'LightFiltering');
+Paths.Logs = fullfile(Paths.Preprocessed, 'Logs');
 
 % Paths.Datasets = 'C:\Users\colas\Desktop\FakeDataReal';
 % Paths.Preprocessed = 'C:\Users\colas\Desktop\FakeDataPreprocessedEEG';
