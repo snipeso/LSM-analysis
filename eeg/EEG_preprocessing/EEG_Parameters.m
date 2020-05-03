@@ -20,16 +20,17 @@ Folders.Ignore = {'CSVs', 'other', 'Lazy', 'P00'};
 %%% parameters
 
 % light filtering
-new_fs = 256; % maybe 250?
-high_cutoff = 40;
-low_cutoff = 0.5;
+new_fs = 125; % maybe 250?
+low_pass = 40;
+high_pass = 0.5;
+hp_stopband = 0.25;
 
 % heavy filtering
 ICA_low_cutoff = 1;
 ICA_high_cutoff = 30;
 
 % spot checking
-SpotCheckFrequency = 10; % 1 out of this number will be plotted
+SpotCheckFrequency = 1; % 1 out of this number will be plotted
 CheckChannels = [10, 70]; % frontal and occipital channel
 
 
