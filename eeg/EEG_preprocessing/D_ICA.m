@@ -1,10 +1,13 @@
 close all
 clc
 clear
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Target = 'LAT';
 Refresh = false;
-GeneralPreprocessingParameters
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+EEG_Parameters
 
 % get files and paths
 Source = fullfile(Paths.LFiltered, Target);
