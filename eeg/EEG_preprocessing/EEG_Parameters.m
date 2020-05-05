@@ -19,7 +19,7 @@ Folders.Ignore = {'CSVs', 'other', 'Lazy', 'P00'};
 %%% parameters
 
 % light filtering
-new_fs = 256; % maybe 250?
+new_fs = 125; % maybe 250?
 high_cutoff = 40;
 low_cutoff = 0.5;
 
