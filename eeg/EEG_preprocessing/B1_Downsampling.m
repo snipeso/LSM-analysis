@@ -24,7 +24,7 @@ for Indx_F = 1:numel(Files) % loop through files in target folder
     
     % get filenames
     Filename_Source = Files{Indx_F};
-    Filename_Destination = [extractBefore(Filename_Source,'.set'), '_ICAd.set'];
+    Filename_Destination = [extractBefore(Filename_Source,'.set'), '_ds.set'];
     
     % skip filtering if file already exists
     if ~Refresh && exist(fullfile(Destination, Filename_Destination), 'file')
@@ -37,6 +37,7 @@ for Indx_F = 1:numel(Files) % loop through files in target folder
     
     % run ICA (takes a while)
     EEG = pop_resample(EEG, new_fs);
+    EEG.setname = [EEG.setname, 'Scoring'];
     
     % save new dataset
     pop_saveset(EEG, 'filename', Filename_Destination, ...

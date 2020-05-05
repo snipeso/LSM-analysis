@@ -4,13 +4,14 @@ run(fullfile(extractBefore(mfilename('fullpath'), 'eeg'), 'General_Parameters'))
 addpath(fullfile(Paths.Analysis, 'functions','eeg'))
 
 %%% locations
-Paths.Datasets = 'D:\LSM\data';
-Paths.Preprocessed = 'C:\Users\schlaf\Desktop\LSMpreprocessed';
+% Paths.Datasets = 'D:\LSM\data';
+% Paths.Preprocessed = 'C:\Users\schlaf\Desktop\LSMpreprocessed';
+
+Paths.Datasets = 'C:\Users\colas\Desktop\FakeDataReal';
+Paths.Preprocessed = 'C:\Users\colas\Desktop\FakeDataPreprocessedEEG';
+
 Paths.LFiltered = fullfile(Paths.Preprocessed, 'LightFiltering');
 Paths.Logs = fullfile(Paths.Preprocessed, 'Logs');
-
-% Paths.Datasets = 'C:\Users\colas\Desktop\FakeDataReal';
-% Paths.Preprocessed = 'C:\Users\colas\Desktop\FakeDataPreprocessedEEG';
 
 Folders = struct();
 
@@ -20,7 +21,7 @@ Folders.Ignore = {'CSVs', 'other', 'Lazy', 'P00'};
 %%% parameters
 
 % light filtering
-new_fs = 125; % maybe 250?
+new_fs = 100; % maybe 250?
 high_cutoff = 40;
 low_cutoff = 0.5;
 
