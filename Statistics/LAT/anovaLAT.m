@@ -1,6 +1,6 @@
 clear
 clc
-% close all
+close all
 
 
 Stats_Parameters
@@ -15,17 +15,17 @@ DataPath = fullfile(Paths.Analysis, 'Statistics', 'LAT', 'Data'); % for statisti
 % YLabel = '%';
 % Loggify = false; % msybe?
 
-Type = 'theta';
-YLabel = 'Power (log)';
-Loggify = true;
+% Type = 'theta';
+% YLabel = 'Power (log)';
+% Loggify = true;
 %
 % Type = 'meanRTs';
 % YLabel = 'RTs (log(s))';
 % Loggify = false;
 % 
-% Type = 'KSS';
-% YLabel = 'VAS Score';
-% Loggify = false;
+Type = 'KSS';
+YLabel = 'VAS Score';
+Loggify = false;
 
 
 MES = 'eta2';
@@ -76,7 +76,7 @@ rm = fitrm(Between,'s1-s6~1', 'WithinDesign',Within);
 % test of sphericity
 % M = mauchly(rm);
 
-ranovatbl = ranova(rm, 'WithinModel', 'Session*Condition');
+[ranovatbl, ~, c] = ranova(rm, 'WithinModel', 'Session*Condition');
 SxC = multcompare(rm, 'Session', 'By', 'Condition');
 CxS = multcompare(rm, 'Condition', 'By', 'Session');
 
@@ -158,27 +158,30 @@ end
 
 
 % pairwise effect sizes
-Hedges = nan(2, 2);
-HedgesCI = nan(2, 2, 2);
-for Indx = 1:2
+Hedges = nan(2, 3);
+HedgesCI = nan(2, 3, 2);
+for Indx = 1:3
 if Indx == 1
     Matrix = ClassicMatrix;
-else
+elseif Indx ==2
     Matrix = SopoMatrix;
+else
+    Matrix = (SopoMatrix +ClassicMatrix)./2;
 end
 
-stats = mes(Matrix(:, 2), Matrix(:, 1), 'hedgesg', 'isDep', 1, 'nBoot', 1000);
-Hedges(1, Indx) = stats.hedgesg;
-HedgesCI(1, Indx, :) = stats.hedgesgCi;
+statsHedges = mes(Matrix(:, 2), Matrix(:, 1), 'hedgesg', 'isDep', 1, 'nBoot', 1000);
+Hedges(1, Indx) = statsHedges.hedgesg;
+HedgesCI(1, Indx, :) = statsHedges.hedgesgCi;
 
-stats = mes(Matrix(:, 3), Matrix(:, 2), 'hedgesg', 'isDep', 1, 'nBoot', 1000);
-Hedges(2, Indx) = stats.hedgesg;
-HedgesCI(2, Indx, :) = stats.hedgesgCi;
+statsHedges = mes(Matrix(:, 3), Matrix(:, 2), 'hedgesg', 'isDep', 1, 'nBoot', 1000);
+Hedges(2, Indx) = statsHedges.hedgesg;
+HedgesCI(2, Indx, :) = statsHedges.hedgesgCi;
 
 
 end
+
 subplot(1, 3, 3)
-PlotBars(Hedges, HedgesCI, {'BLvsS1','S1vsS2'})
+PlotBars(Hedges(:, 1:2), HedgesCI(:, 1:2, :), {'BLvsS1','S1vsS2'})
 title(['Hedges g'])
 ylim([-3 7])
 
@@ -203,11 +206,41 @@ ylabel(YLabel)
 title(['LAT ', Type, ' All Means'])
 saveas(gcf,fullfile(Paths.Figures, 'ESRSPoster', [Type, '_LAT_timeANDcondition.svg']))
 
+clc
 
+%%% write out F values
+disp(ranovatbl)
+disp('**************************************************************')
+disp(['for ', Type, '...'])
+Comparison = {'intercept','Session', 'Condition', 'Interaction' };
+for Indx = 2:4 % loop through session, condition and interaction
+    % correct for sphericity
+    MauchlyTest = mauchly(rm, c);
+    if MauchlyTest.W(Indx) <.05
+        Correction = 'GG';
+    else
+        Correction = '';
+        DFm = ranovatbl.DF(Indx*2-1);
+        DFr = ranovatbl.DF(Indx*2);
+    end
+        pValue = ranovatbl.(['pValue', Correction])(Indx*2-1);
+        F = ranovatbl.F(Indx*2-1);
 
-% TODO:
-% - compare effect sizes
-% TODO: use ordered dummy contrasts!!! I think ANOVA picks up on it, since
-% now it;s not significant anymore
+   
+    if pValue < .05
+        Negation = '';
+    else
+        Negation = 'NOT ';
+    end
 
+disp(join(['There is ', Negation, 'an effect of ', Comparison{Indx}, ...
+    '; F(', num2str(DFm), ', ', num2str(DFr), ') = ', num2str(F), ...
+    ', p = ', num2str(pValue)], ''))
+end
+
+Conditions = {'classic', 'soporific'};
+for Indx = 1:2
+disp(['Hedges g for BL vs S1 in condition ', Conditions{Indx},' is: ', num2str(Hedges(1, Indx)), ])
+disp(['Hedges g for S1 vs S2 in condition ', Conditions{Indx},' is: ', num2str(Hedges(2, Indx)), ])
+end
 
