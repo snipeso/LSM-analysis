@@ -68,7 +68,8 @@ Between = [Classic, Soporific(:, 2:end)];
 
 Within = table();
 
-Within.Session= [0, 1, 2, 0, 1, 2]';
+% Within.Session= [0, 1, 2, 0, 1, 2]';
+Within.Session = {'B'; 'S1'; 'S2'; 'B'; 'S1'; 'S2'};
 Within.Condition = {'C'; 'C'; 'C'; 'S'; 'S'; 'S'};
 
 rm = fitrm(Between,'s1-s6~1', 'WithinDesign',Within);
@@ -82,18 +83,29 @@ CxS = multcompare(rm, 'Condition', 'By', 'Session');
 
 %%% manually assemble p-values
 
-% within session comparisons
-BL_SvC = CxS.pValue(CxS.Session==0 & strcmp(CxS.Condition_1, 'S') & strcmp(CxS.Condition_2, 'C'));
-S1_SvC = CxS.pValue(CxS.Session==1 & strcmp(CxS.Condition_1, 'S')& strcmp(CxS.Condition_2, 'C'));
-S2_SvC = CxS.pValue(CxS.Session==2 &strcmp(CxS.Condition_1, 'S')& strcmp(CxS.Condition_2, 'C'));
+BL_SvC = CxS.pValue(strcmp(CxS.Session, 'B')&strcmp(CxS.Condition_1, 'S')& strcmp(CxS.Condition_2, 'C'));
+S1_SvC = CxS.pValue(strcmp(CxS.Session, 'S1')&strcmp(CxS.Condition_1, 'S')& strcmp(CxS.Condition_2, 'C'));
+S2_SvC = CxS.pValue(strcmp(CxS.Session, 'S2')&strcmp(CxS.Condition_1, 'S')& strcmp(CxS.Condition_2, 'C'));
 
-% between session comparisons
-S_BLvS1 = SxC.pValue(strcmp(SxC.Condition, 'S')&SxC.Session_1==0& SxC.Session_2==1);
-S_BLvS2= SxC.pValue(strcmp(SxC.Condition, 'S')&SxC.Session_1==0& SxC.Session_2==2);
-S_S1vS2= SxC.pValue(strcmp(SxC.Condition, 'S')&SxC.Session_1==1& SxC.Session_2==2);
-C_BLvS1= SxC.pValue(strcmp(SxC.Condition, 'C')&SxC.Session_1==0& SxC.Session_2==1);
-C_BLvS2= SxC.pValue(strcmp(SxC.Condition, 'C')&SxC.Session_1==0& SxC.Session_2==2);
-C_S1vS2= SxC.pValue(strcmp(SxC.Condition, 'C')&SxC.Session_1==1& SxC.Session_2==2);
+S_BLvS1 = SxC.pValue(strcmp(SxC.Condition, 'S')&strcmp(SxC.Session_1, 'B')& strcmp(SxC.Session_2, 'S1'));
+S_BLvS2= SxC.pValue(strcmp(SxC.Condition, 'S')&strcmp(SxC.Session_1, 'B')& strcmp(SxC.Session_2, 'S2'));
+S_S1vS2= SxC.pValue(strcmp(SxC.Condition, 'S')&strcmp(SxC.Session_1, 'S1')& strcmp(SxC.Session_2, 'S2'));
+C_BLvS1= SxC.pValue(strcmp(SxC.Condition, 'C')&strcmp(SxC.Session_1, 'B')& strcmp(SxC.Session_2, 'S1'));
+C_BLvS2= SxC.pValue(strcmp(SxC.Condition, 'C')&strcmp(SxC.Session_1, 'B')& strcmp(SxC.Session_2, 'S2'));
+C_S1vS2= SxC.pValue(strcmp(SxC.Condition, 'C')&strcmp(SxC.Session_1, 'S1')& strcmp(SxC.Session_2, 'S2'));
+
+% % within session comparisons
+% BL_SvC = CxS.pValue(CxS.Session==0 & strcmp(CxS.Condition_1, 'S') & strcmp(CxS.Condition_2, 'C'));
+% S1_SvC = CxS.pValue(CxS.Session==1 & strcmp(CxS.Condition_1, 'S')& strcmp(CxS.Condition_2, 'C'));
+% S2_SvC = CxS.pValue(CxS.Session==2 &strcmp(CxS.Condition_1, 'S')& strcmp(CxS.Condition_2, 'C'));
+% 
+% % between session comparisons
+% S_BLvS1 = SxC.pValue(strcmp(SxC.Condition, 'S')&SxC.Session_1==0& SxC.Session_2==1);
+% S_BLvS2= SxC.pValue(strcmp(SxC.Condition, 'S')&SxC.Session_1==0& SxC.Session_2==2);
+% S_S1vS2= SxC.pValue(strcmp(SxC.Condition, 'S')&SxC.Session_1==1& SxC.Session_2==2);
+% C_BLvS1= SxC.pValue(strcmp(SxC.Condition, 'C')&SxC.Session_1==0& SxC.Session_2==1);
+% C_BLvS2= SxC.pValue(strcmp(SxC.Condition, 'C')&SxC.Session_1==0& SxC.Session_2==2);
+% C_S1vS2= SxC.pValue(strcmp(SxC.Condition, 'C')&SxC.Session_1==1& SxC.Session_2==2);
 
 
 % plot barplots
@@ -223,6 +235,8 @@ for Indx = 2:4 % loop through session, condition and interaction
         DFm = ranovatbl.DF(Indx*2-1);
         DFr = ranovatbl.DF(Indx*2);
     end
+
+    
         pValue = ranovatbl.(['pValue', Correction])(Indx*2-1);
         F = ranovatbl.F(Indx*2-1);
 
