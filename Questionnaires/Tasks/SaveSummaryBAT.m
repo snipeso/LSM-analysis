@@ -6,26 +6,27 @@ Q_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Task = 'PVT';
+Task = 'LAT';
 filename = [Task, '_All.csv'];
-
-% Sessions = allSessions.LAT;
-% SessionLabels = allSessionLabels.LAT;
-% Title = 'Beam';
-
-Sessions = allSessions.Comp;
-SessionLabels = allSessionLabels.Comp;
-Title = 'Classic';
+% 
+% Sessions = allSessions.Comp;
+% SessionLabels = allSessionLabels.Comp;
+% Title = 'Classic';
 
 % main beamer tasks
-% Sessions = allSessions.Beam;
-% SessionLabels = allSessionLabels.Beam;
-% Title = 'Soporific';
+Sessions = allSessions.Beam;
+SessionLabels = allSessionLabels.Beam;
+Title = 'Soporific';
 
 % Destination = fullfile(Paths.Analysis, 'Regression', 'SummaryData', [Task, Title]);
 Destination = fullfile(Paths.Analysis, 'Statistics', 'ANOVA', 'Data'); % for statistics
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+if strcmp(Title, 'Soporific') && strcmp(Task, 'PVT')
+    Sessions = allSessions.PVTBeam;
+SessionLabels = allSessionLabels.PVTBeam;
+end
 
 qIDs = {'BAT_1', 'BAT_3_0', 'BAT_3', ...
     'BAT_3_1', 'BAT_4', 'BAT_4_1', ...
@@ -57,7 +58,7 @@ for Indx_Q = 1:numel(qIDs)
     
     % this was named differently just for P01
     if strcmp(qID, 'BAT_1') && nnz(strcmp(Answers.qID, 'BAT_6'))
-        qID = 'BAT_6';
+        Answers.qID(strcmp(Answers.qID, 'BAT_6')) = {'BAT_1'};
     end
     
     [AnsAll, Labels] = TabulateAnswers(Answers, Sessions, Participants, qID, 'numAnswer');
