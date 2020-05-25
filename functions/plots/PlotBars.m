@@ -27,7 +27,7 @@ for i = 1:nbars
     if ndims(Errors) == 2
     errorbar(x, Data(:,i), Errors(:,i), 'k', 'linestyle', 'none', 'LineWidth', 2);
     elseif ndims(Errors) == 3
-        errorbar(x, Data(:,i), Errors(:,i, 1), Errors(:,i, 2), 'k', 'linestyle', 'none', 'LineWidth', 2);
+        errorbar(x, Data(:,i), abs(Data(:,i)-Errors(:,i, 1)), abs(Errors(:,i, 2)-Data(:,i)), 'k', 'linestyle', 'none', 'LineWidth', 2);
     end
     
 end
