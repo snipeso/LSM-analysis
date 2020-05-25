@@ -28,6 +28,7 @@ low_cutoff = 0.5;
 % heavy filtering
 ICA_low_cutoff = 1;
 ICA_high_cutoff = 30;
+Padding = 1; % amount of time in seconds to keep around start and stop triggers
 
 % spot checking
 SpotCheckFrequency = 10; % 1 out of this number will be plotted
