@@ -6,24 +6,24 @@ Q_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Task = 'LAT';
-filename = 'LAT_All.csv';
+Task = 'PVT';
+filename = [Task, '_All.csv'];
 
 % Sessions = allSessions.LAT;
 % SessionLabels = allSessionLabels.LAT;
 % Title = 'Beam';
 
-% Sessions = allSessions.Comp;
-% SessionLabels = allSessionLabels.Comp;
-% Title = 'Classic';
+Sessions = allSessions.Comp;
+SessionLabels = allSessionLabels.Comp;
+Title = 'Classic';
 
 % main beamer tasks
-Sessions = allSessions.Beam;
-SessionLabels = allSessionLabels.Beam;
-Title = 'Soporific';
+% Sessions = allSessions.Beam;
+% SessionLabels = allSessionLabels.Beam;
+% Title = 'Soporific';
 
 % Destination = fullfile(Paths.Analysis, 'Regression', 'SummaryData', [Task, Title]);
-Destination = fullfile(Paths.Analysis, 'Statistics', Task, 'Data'); % for statistics
+Destination = fullfile(Paths.Analysis, 'Statistics', 'ANOVA', 'Data'); % for statistics
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
