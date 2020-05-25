@@ -1,17 +1,20 @@
 clear
 clc
-% close all
+close all
 
 
 Stats_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-DataPath = fullfile(Paths.Analysis, 'Statistics', 'LAT', 'Data'); % for statistics
+DataPath = fullfile(Paths.Analysis, 'Statistics', 'ANOVA', 'Data'); % for statistics
+
+Task = 'LAT';
+Sessions = 'SD3'; % either SD3 or Sessions
 
 % Data type
 
-% Type = 'Hits';
+% Type = 'Misses';
 % YLabel = '%';
 % Loggify = false; % msybe?
 % 
@@ -19,53 +22,42 @@ DataPath = fullfile(Paths.Analysis, 'Statistics', 'LAT', 'Data'); % for statisti
 % YLabel = 'Power (log)';
 % Loggify = true;
 
-Type = 'meanRTs';
-YLabel = 'RTs (log(s))';
-Loggify = false;
-
-% Type = 'KSS';
-% YLabel = 'VAS Score';
+% Type = 'meanRTs';
+% YLabel = 'RTs (log(s))';
 % Loggify = false;
+
+Type = 'KSS';
+YLabel = 'VAS Score';
+Loggify = false;
 
 
 MES = 'eta2';
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-
-load(fullfile(DataPath, ['LAT_', Type, '_Classic.mat']))
-ClassicMatrix = Matrix;
+load(fullfile(DataPath, [Task, '_', Type, '_,', Sessions, '.mat']))
 if Loggify
-    ClassicMatrix = log(ClassicMatrix);
+    Matrix = log(Matrix);
 end
-
-load(fullfile(DataPath, ['LAT_', Type, '_Soporific.mat']))
-SopoMatrix = Matrix;
-
-if Loggify
-    SopoMatrix = log(SopoMatrix);
-end
-
 
 % levene test on variance (maybe should be done after?)
-Groups = repmat([1 2 3], 7, 1);
-Levenetest([ClassicMatrix(:), Groups(:); SopoMatrix(:), 3+Groups(:)],.05)
+Groups = repmat(1:size(Matrix, 2), size(Matrix, 1), 1);
+Levenetest([Matrix(:), Groups(:)],.05)
 
 % % z-score
-% for Indx_P = 1:numel(Participants)
-%     All = zscore([ClassicMatrix(Indx_P, :), SopoMatrix(Indx_P, :)]);
-%     ClassicMatrix(Indx_P, :) = All(1:size(ClassicMatrix, 2));
-%     SopoMatrix(Indx_P, :) = All(size(ClassicMatrix, 2)+1:end);
-% end
+for Indx_P = 1:numel(Participants)
+    All = zscore([Matrix(Indx_P, :), SopoMatrix(Indx_P, :)]);
+    Matrix(Indx_P, :) = All(1:size(Matrix, 2));
+    SopoMatrix(Indx_P, :) = All(size(Matrix, 2)+1:end);
+end
 
 SopMeans = nanmean(SopoMatrix);
 SopSEM = std(SopoMatrix)./sqrt(size(SopoMatrix, 1));
 Soporific = mat2table(SopoMatrix, Participants, {'s4', 's5', 's6'}, 'Participant', [], Type);
 
-ClassicMeans = nanmean(ClassicMatrix);
-ClassicSEM = nanstd(ClassicMatrix)./sqrt(size(ClassicMatrix, 1));
-Classic = mat2table(ClassicMatrix, Participants, {'s1', 's2', 's3'}, 'Participant', [], Type);
+ClassicMeans = nanmean(Matrix);
+ClassicSEM = nanstd(Matrix)./sqrt(size(Matrix, 1));
+Classic = mat2table(Matrix, Participants, {'s1', 's2', 's3'}, 'Participant', [], Type);
 
 
 Between = [Classic, Soporific(:, 2:end)];
@@ -117,7 +109,7 @@ figure('units','normalized','outerposition',[0 0 .4 .4])
 subplot(1, 3, 1)
 PlotBars([ClassicMeans; SopMeans]', [ClassicSEM; SopSEM]', {'BL', 'S1', 'S2'})
 legend({'Classic', 'Soporific'}, 'Location', 'southeast','AutoUpdate','off')
-title(['LAT ', Type])
+title([Task, ' ', Type])
 ylabel(YLabel)
 
 Colors = plasma(3); % TODO, make this only once, and not in plotbars
@@ -144,7 +136,7 @@ end
 
 %%% plot effect sizes (with CIs?) of Session vs Condition
 % uses the MES toolbox, so data needs to be restructured
-ClassicTable = mat2table(ClassicMatrix, Participants, [1:size(ClassicMatrix, 2)]', ...
+ClassicTable = mat2table(Matrix, Participants, [1:size(Matrix, 2)]', ...
     'Participant', 'Session', 'Data');
 ClassicTable.Condition = zeros(size(ClassicTable.Session));
 
@@ -178,11 +170,11 @@ Hedges = nan(2, 3);
 HedgesCI = nan(2, 3, 2);
 for Indx = 1:3
 if Indx == 1
-    Matrix = ClassicMatrix;
+    Matrix = Matrix;
 elseif Indx ==2
     Matrix = SopoMatrix;
 else
-    Matrix = (SopoMatrix +ClassicMatrix)./2;
+    Matrix = (SopoMatrix +Matrix)./2;
 end
 
 statsHedges = mes(Matrix(:, 2), Matrix(:, 1), 'hedgesg', 'isDep', 1, 'nBoot', 1000);
@@ -202,7 +194,7 @@ title(['Hedges g'])
 ylim([-3 7])
 
 
-saveas(gcf,fullfile(Paths.Figures, 'ESRSPoster', [Type, '_Stats_LAT_timeXcondition.svg']))
+saveas(gcf,fullfile(Paths.Figures, 'ESRSPoster', [Type, '_Stats_', Task, '_timeXcondition.svg']))
 
 % plot all values
 % All =[ClassicMatrix(:); SopoMatrix(:)];
@@ -217,10 +209,10 @@ saveas(gcf,fullfile(Paths.Figures, 'ESRSPoster', [Type, '_Stats_LAT_timeXconditi
 
 % plot all values in same plot
 figure('units','normalized','outerposition',[0 0 .4 .4])
-PlotScales(ClassicMatrix, SopoMatrix, {'BL', 'S1', 'S2'}, {'Class', 'Sopo'})
+PlotScales(Matrix, SopoMatrix, {'BL', 'S1', 'S2'}, {'Class', 'Sopo'})
 ylabel(YLabel)
-title(['LAT ', Type, ' All Means'])
-saveas(gcf,fullfile(Paths.Figures, 'ESRSPoster', [Type, '_LAT_timeANDcondition.svg']))
+title([Task, ' ', Type, ' All Means'])
+saveas(gcf,fullfile(Paths.Figures, 'ESRSPoster', [Type, '_', Task, '_timeANDcondition.svg']))
 
 clc
 
