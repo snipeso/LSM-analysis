@@ -1,5 +1,6 @@
 function EEG_filt = lineFilter(EEG, linefs, showFiltPlots)
 % removes line noise, and harmonics
+% TODO: see if lab has the latest version of this
 
 EEG_filt = EEG;
 fs = EEG.srate; % Sampling Frequency (Hz)
@@ -10,6 +11,8 @@ switch linefs
     otherwise
         fcuts= [46 48 52 54 96 98 102 104 146 148 152 154 246 248 252 254];
 end
+
+error()
 
 %%% create filter weights
 mags = [1 0 1 0 1 0 1 0 1]; % Passbands & Stopbands
