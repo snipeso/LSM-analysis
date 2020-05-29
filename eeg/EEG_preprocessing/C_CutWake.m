@@ -23,7 +23,7 @@ Filename = 'P03_LAT_Extras.set'; % choose this if you want to clean a specific f
 % Filename = []; % choose this if you want to randomly select a file to clean from the list
 Folders.Data = 'LAT';
 
-EEG = loadEEGtoCut(Paths, Folders.Data, Filename); % load file
+EEG = loadEEGtoCut(Paths, Folders.Data, Filename, EEG_Triggers); % load file
 m = matfile(EEG.CutFilepath,'Writable',true); % create cuts file, load it to current workspace
 
 

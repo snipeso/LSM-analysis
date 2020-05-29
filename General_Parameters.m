@@ -50,6 +50,10 @@ allSessionLabels.PVTBeam = allSessionLabels.Beam;
 allSessions.LAT = {'BaselineBeam', 'MainPre', 'Session1Beam', 'Session2Beam1', 'Session2Beam2', 'Session2Beam3', 'MainPost'};
 allSessionLabels.LAT = {'BL', 'Pre', 'S1', 'S2-1', 'S2-2', 'S2-3', 'Post'};
 
+% Labels for only LAT beamer conditions
+allSessions.SD3 = {'Session2Beam1', 'Session2Beam2', 'Session2Beam3'};
+allSessionLabels.SD3 = {'S1', 'S2', 'S3'};
+
 % Labels for all PVT beamer conditions
 allSessions.PVT = {'BaselineBeam', 'MainPre', 'Session1Beam', 'Session2Beam', 'MainPost'};
 allSessionLabels.PVT = {'BL', 'Pre', 'S1', 'S2', 'Post'};
@@ -79,7 +83,7 @@ EEG_Channels.mastoids = [49, 56];
 EEG_Channels.EMG = [107, 113];
 EEG_Channels.face = [125, 126, 127, 128];
 EEG_Channels.ears  = [43, 48, 119, 120];
-EEG_Channels.neck = [63, 68, 73, 81, 88, 94, 99, 107, 113];
+EEG_Channels.neck = [63, 68, 73, 81, 88, 94, 99];
 EEG_Channels.notEEG = [EEG_Channels.mastoids, EEG_Channels.EMG, ...
     EEG_Channels.face, EEG_Channels.ears, EEG_Channels.neck];
 

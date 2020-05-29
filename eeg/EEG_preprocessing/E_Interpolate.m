@@ -65,6 +65,9 @@ for Indx_F = 1:numel(Files) % loop through files in target folder
             EEGmini =  pop_select(EEG, 'point', Range);
             
             % remove bad segment, and any bad channels and not eeg channels
+            pause
+            %TODO: make channel index selection based on label names, not
+            %absolute numbers
             EEGmini = pop_select(EEGmini, 'nochannel', unique([Clusters(Indx_C).Channels, badchans, notEEG]));
             
             % interpolate bad segment

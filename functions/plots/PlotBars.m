@@ -1,4 +1,4 @@
-function PlotBars(Data, Errors, xLabels, Legend)
+function PlotBars(Data, Errors, xLabels)
 % PValues is a cell array with 2 elements, the first contains a list of pvalues
 % for the major segments
 
@@ -24,11 +24,15 @@ groupwidth = min(0.8, nbars/(nbars + 1.5));
 for i = 1:nbars
     % Calculate center of each bar
     x = (1:ngroups) - groupwidth/2 + (2*i-1) * groupwidth / (2*nbars);
+    if ndims(Errors) == 2
     errorbar(x, Data(:,i), Errors(:,i), 'k', 'linestyle', 'none', 'LineWidth', 2);
+    elseif ndims(Errors) == 3
+        errorbar(x, Data(:,i), abs(Data(:,i)-Errors(:,i, 1)), abs(Errors(:,i, 2)-Data(:,i)), 'k', 'linestyle', 'none', 'LineWidth', 2);
+    end
+    
 end
 
 xticklabels(xLabels)
-legend(Legend, 'Location', 'southeast','AutoUpdate','off')
 
 
 

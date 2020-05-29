@@ -1,4 +1,4 @@
-function EEG = loadEEGtoCut(Paths, DataFolder, FilteredFilename)
+function EEG = loadEEGtoCut(Paths, DataFolder, FilteredFilename, EEG_Triggers)
 % loads EEG and specifies where cut information is saved. If only EEG
 % folder is provided, then a randomly chosen EEG from those not done will
 % get Cut.
@@ -51,5 +51,12 @@ end
 m = matfile(CutFilepath,'Writable',true);
 m.filename = FilteredFilename;
 m.filepath = FilteredFolder;
+
+Triggers = {EEG.event.type};
+Start = strcmp(Triggers, EEG_Triggers.Start);
+End = strcmp(Triggers, EEG_Triggers.End);
+m.StartPoint = EEG.event(Start).latency;
+m.EndPoint = EEG.event(End).latency;
+    
 
 EEG.CutFilepath = CutFilepath;

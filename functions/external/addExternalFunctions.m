@@ -6,3 +6,4 @@ Path = extractBefore(Path, 'addExternalFunctions');
 
 % add MES toolbox
 addpath(fullfile(Path, 'hhentschke-measures-of-effect-size-toolbox-3d90ae5'))
+addpath(fullfile(Path, 'levene'))
