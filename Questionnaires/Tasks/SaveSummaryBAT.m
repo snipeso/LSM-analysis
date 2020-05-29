@@ -13,10 +13,15 @@ filename = [Task, '_All.csv'];
 % SessionLabels = allSessionLabels.Comp;
 % Title = 'Classic';
 
-% main beamer tasks
-Sessions = allSessions.Beam;
-SessionLabels = allSessionLabels.Beam;
-Title = 'Soporific';
+% % main beamer tasks
+% Sessions = allSessions.Beam;
+% SessionLabels = allSessionLabels.Beam;
+% Title = 'Soporific';
+
+% sleep dep sessions
+Sessions = allSessions.SD3;
+SessionLabels = allSessionLabels.SD3;
+Title = 'SD3';
 
 % Destination = fullfile(Paths.Analysis, 'Regression', 'SummaryData', [Task, Title]);
 Destination = fullfile(Paths.Analysis, 'Statistics', 'ANOVA', 'Data'); % for statistics
@@ -25,7 +30,7 @@ Destination = fullfile(Paths.Analysis, 'Statistics', 'ANOVA', 'Data'); % for sta
 
 if strcmp(Title, 'Soporific') && strcmp(Task, 'PVT')
     Sessions = allSessions.PVTBeam;
-SessionLabels = allSessionLabels.PVTBeam;
+    SessionLabels = allSessionLabels.PVTBeam;
 end
 
 qIDs = {'BAT_1', 'BAT_3_0', 'BAT_3', ...

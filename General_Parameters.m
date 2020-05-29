@@ -50,6 +50,10 @@ allSessionLabels.PVTBeam = allSessionLabels.Beam;
 allSessions.LAT = {'BaselineBeam', 'MainPre', 'Session1Beam', 'Session2Beam1', 'Session2Beam2', 'Session2Beam3', 'MainPost'};
 allSessionLabels.LAT = {'BL', 'Pre', 'S1', 'S2-1', 'S2-2', 'S2-3', 'Post'};
 
+% Labels for only LAT beamer conditions
+allSessions.SD3 = {'Session2Beam1', 'Session2Beam2', 'Session2Beam3'};
+allSessionLabels.SD3 = {'S1', 'S2', 'S3'};
+
 % Labels for all PVT beamer conditions
 allSessions.PVT = {'BaselineBeam', 'MainPre', 'Session1Beam', 'Session2Beam', 'MainPost'};
 allSessionLabels.PVT = {'BL', 'Pre', 'S1', 'S2', 'Post'};

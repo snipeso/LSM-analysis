@@ -21,13 +21,13 @@ Task = 'LAT';
 % YLabel = 'Power (log)';
 % Loggify = true;
 
-% Type = 'meanRTs';
-% YLabel = 'RTs (log(s))';
-% Loggify = false;
-
-Type = 'KSS';
-YLabel = 'VAS Score';
+Type = 'meanRTs';
+YLabel = 'RTs (log(s))';
 Loggify = false;
+
+% Type = 'KSS';
+% YLabel = 'VAS Score';
+% Loggify = false;
 
 
 MES = 'eta2';
