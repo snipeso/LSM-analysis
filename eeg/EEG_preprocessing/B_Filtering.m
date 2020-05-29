@@ -22,9 +22,6 @@ SpotCheck = true; % occasionally plot results, to make sure things are ok
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% initiate log
-StartTime = datestr(now, 'yy-mm-dd_HH-MM');
-m = matfile(fullfile(Paths.Logs, [StartTime, '_B_Log.mat']),'Writable',true);
 
 % Consider only relevant subfolders
 Folders.Subfolders(~contains(Folders.Subfolders, Tasks)) = [];
@@ -39,7 +36,6 @@ hp_stopband = Parameters(Indx).hp_stopband;
 
 allLog = struct();
 for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
-    Log = struct();
     for Indx_F = 1:size(Folders.Subfolders, 1) % loop through all subfolders
         
         %%%%%%%%%%%%%%%%%%%%%%%%
@@ -49,9 +45,6 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
         
         % skip rest if folder not found
         if ~exist(Path, 'dir')
-            Log(Indx_F).path = Path;
-            Log(Indx_F).info = 'missing';
-            Log(Indx_F).reason = 'no path';
             warning([deblank(Path), ' does not exist'])
             continue
         end
@@ -68,17 +61,10 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
         SET = contains(string(Content), '.set');
         if ~any(SET)
             if any(strcmpi(Levels, 'EEG')) % if there should have been an EEG file, be warned
-                Log(Indx_F).path = Path;
-                Log(Indx_F).info = 'missing';
-                Log(Indx_F).reason = 'no set file';
-                
                 warning([Path, ' is missing SET file'])
             end
             continue
         elseif nnz(SET) > 1 % if there's more than one set file, you'll need to fix that
-            Log(Indx_F).path = Path;
-            Log(Indx_F).info = 'skipping';
-            Log(Indx_F).reason = 'more than one set file';
             warning([Path, ' has more than one SET file'])
             continue
         end
@@ -97,9 +83,6 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
         
         % skip filtering if file already exists
         if ~Refresh && exist(fullfile(Destination, Filename_Destination), 'file')
-            Log(Indx_F).path = Path;
-            Log(Indx_F).info = 'skipping';
-            Log(Indx_F).reason = 'already done';
             disp(['***********', 'Already did ', Filename_Core, '***********'])
             continue
         end
@@ -123,17 +106,13 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
             % resample
             EEG = pop_resample(EEG, new_fs);
             
-            % high-pass filter. NOTE: this is after resampling, otherwise
-            % crazy slow.
+            % high-pass filter
+            % NOTE: this is after resampling, otherwise crazy slow.
             EEG = hpEEG(EEG, highpass, hp_stopband);
             
             EEG = eeg_checkset(EEG);
             
         catch
-            Log(Indx_F).path = Path;
-            Log(Indx_F).info = 'skipping';
-            Log(Indx_F).reason = 'failed to filter';
-            
             warning(['could not clean ', Filename_SET])
             continue
         end
@@ -158,16 +137,7 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
             'check', 'on', ...
             'savemode', 'onefile', ...
             'version', '7.3');
-        
-        Log(Indx_F).path = Path;
-        Log(Indx_F).info = 'converted';
-        Log(Indx_F).reason = ['everything was ok with ', Filename_SET];
     end
     
-    allLog(Indx_D).log = Log;
-    disp(['************** Finished ',  Folders.Datasets{Indx_D}, '***************'])
-    m.log = allLog;
-    
+    disp(['************** Finished ',  Folders.Datasets{Indx_D}, '***************'])   
 end
-
-% TODO: remove log
