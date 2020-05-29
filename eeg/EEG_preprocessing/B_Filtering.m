@@ -35,7 +35,7 @@ Indx = strcmp({Parameters.Format}, Destination_Format);
 new_fs = Parameters(Indx).fs;
 lowpass = Parameters(Indx).lp;
 highpass = Parameters(Indx).hp;
-
+hp_stopband = Parameters(Indx).hp_stopband;
 
 allLog = struct();
 for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
@@ -115,18 +115,17 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
         
         try
             % notch filter for line noise
-            EEG = lineFilter(EEG, 'EU', false); %TODO adapt to new format
+            EEG = lineFilter(EEG, 50, false);
             
             % low-pass filter
             EEG = pop_eegfiltnew(EEG, [], lowpass); % this is a form of antialiasing, but it not really needed because usually we use 40hz with 256 srate
             
-                        % notch filter for line noise
-            EEG = lineFilter(EEG, 50, false);
+            % resample
+            EEG = pop_resample(EEG, new_fs);
             
-
-            
-            % high-pass filter. NOTE: this is different from LP on purpose
-            EEG = hpEEG(EEG, high_pass, hp_stopband);
+            % high-pass filter. NOTE: this is after resampling, otherwise
+            % crazy slow.
+            EEG = hpEEG(EEG, highpass, hp_stopband);
             
             EEG = eeg_checkset(EEG);
             
@@ -142,43 +141,18 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
         % randomly check some of the datasets to make sure things look ok
         if SpotCheck && randi(SpotCheckFrequency) == 1
             SpotCheckFiltered = EEG.data(CheckChannels, :);
-            
-            % time vectors
-            tO = linspace(0, size(SpotCheckOriginals, 2)/originalFS, size(SpotCheckOriginals, 2));
-            tF = linspace(0, size(SpotCheckFiltered, 2)/EEG.srate, size(SpotCheckFiltered, 2));
-            
-            figure
-            for Indx_Ch = 1:numel(CheckChannels) % plot a subplot for each channel
-                subplot(numel(CheckChannels), 1, Indx_Ch)
-                hold on
-                plot(tO, SpotCheckOriginals(Indx_Ch, :), 'k')
-                plot(tF, SpotCheckFiltered(Indx_Ch, :), 'r')
-                title([Filename_Destination, ' ', num2str(CheckChannels(Indx_Ch))])
-            end
-            
-            fs = EEG.srate;
-            figure
-            for Indx_Ch = 1:numel(CheckChannels) % plot a subplot for each channel
-                subplot(numel(CheckChannels), 1, Indx_Ch)
-                hold on
-                
-                x = SpotCheckOriginals(Indx_Ch, :);
-                [pxx,f] = pwelch(x,length(x),[],length(x),fs);
-                plot(f, log(pxx), 'k')
-                x =  SpotCheckFiltered(Indx_Ch, :);
-                [pxx,f] = pwelch(x,length(x),[],length(x),fs);
-                plot(f, log(pxx), 'r')
-                title([ 'FFT ', Filename_Destination, ' ', num2str(CheckChannels(Indx_Ch))])
-            end
-            
-            
+            SpotCheckChannels(SpotCheckOriginals, OriginalFS, ...
+                SpotCheckFiltered, EEG.srate, CheckChannels)
         end
         
+        % save preprocessing info in eeg structure
         EEG.setname = Filename_Core;
         EEG.filename = Filename_Destination;
         EEG.original.filename = Filename_SET;
         EEG.original.filepath = Path;
         EEG.preprocessing = Parameters(Indx);
+        
+        % save EEG
         pop_saveset(EEG, 'filename', Filename_Destination, ...
             'filepath', Destination, ...
             'check', 'on', ...

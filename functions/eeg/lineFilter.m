@@ -1,29 +1,17 @@
 function EEG_filt = lineFilter(EEG, linefs, showFiltPlots)
 % removes line noise, and harmonics
-% TODO: see if lab has the latest version of this
 
 EEG_filt = EEG;
 fs = EEG.srate; % Sampling Frequency (Hz)
-
-% switch linefs
-%     case 'US'
-%         fcuts = [56 58 62 64 116 118 122 124 176 178 182 184];      % Frequencies
-%     otherwise
-%         fcuts= [46 48 52 54 96 98 102 104 146 148 152 154 246 248 252 254];
-% end
 
 Harmonics = linefs:linefs:(round(fs/2)-4);
 fcuts = [Harmonics - 4; Harmonics - 2; Harmonics + 2; Harmonics + 4];
 fcuts = fcuts(:);
 
-
-error()
-
 %%% create filter weights
 mags = [repmat([1, 0], 1, numel(Harmonics)), 1];  % Passbands & Stopbands
 devs = [repmat([0.05, 0.01], 1, numel(Harmonics)), .05]; % Tolerances
-% mags = [1 0 1 0 1 0 1 0 1]; % Passbands & Stopbands
-% devs = [0.05 0.01 0.05 0.01 0.05 0.01 0.05 0.01 0.05]; % Tolerances
+
 [n,Wn,beta,ftype] = kaiserord(fcuts,mags,devs,fs); % Kaiser Window FIR Specification
 n = n + rem(n,2);
 hh = fir1(n,Wn,ftype,kaiser(n+1,beta),'noscale'); % Filter realisation
@@ -32,7 +20,7 @@ hh = fir1(n,Wn,ftype,kaiser(n+1,beta),'noscale'); % Filter realisation
 EEG_filt.data = filtfilt(hh, 1, double(EEG.data)')';
 
 %%% plot filter if requested
-if showFiltPlots
+if exist('showFiltPlots', 'var') && showFiltPlots
     
     % plot filter
     figure
