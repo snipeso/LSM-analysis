@@ -7,10 +7,9 @@ addpath(fullfile(Paths.Analysis, 'functions','eeg'))
 % Paths.Datasets = 'D:\LSM\data';
 % Paths.Preprocessed = 'C:\Users\schlaf\Desktop\LSMpreprocessed';
 
-Paths.Datasets = 'C:\Users\colas\Desktop\FakeDataReal';
-Paths.Preprocessed = 'C:\Users\colas\Desktop\FakeDataPreprocessedEEG';
+Paths.Datasets = 'L:\Somnus-Data\Data01\LSM\Data\Raw';
+Paths.Preprocessed = 'L:\Somnus-Data\Data01\LSM\Data\Preprocessed';
 
-Paths.LFiltered = fullfile(Paths.Preprocessed, 'LightFiltering');
 Paths.Logs = fullfile(Paths.Preprocessed, 'Logs');
 
 Folders = struct();
@@ -46,7 +45,7 @@ Parameters(3).Format = 'Wake'; % reference name
 Parameters(3).fs = 500; % new sampling rate
 Parameters(3).lp = 40; % low pass filter
 Parameters(3).hp = 0.5; % high pass filter
-Parameters().hp_stopband = 0.25; % high pass filter
+Parameters(3).hp_stopband = 0.25; % high pass filter
 
 % ICA: heavily filtered data for getting ICA components
 Parameters(4).Format = 'ICA'; % reference name
@@ -59,7 +58,7 @@ Trigger_Padding = 1; % amount of time in seconds to keep around start and stop t
 
 
 % spot checking
-SpotCheckFrequency = 1; % 1 out of this number will be plotted
+SpotCheckFrequency = 10; % 1 out of this number will be plotted
 CheckChannels = [10, 70]; % frontal and occipital channel
 
 

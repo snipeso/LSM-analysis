@@ -120,7 +120,7 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
         % randomly check some of the datasets to make sure things look ok
         if SpotCheck && randi(SpotCheckFrequency) == 1
             SpotCheckFiltered = EEG.data(CheckChannels, :);
-            SpotCheckChannels(SpotCheckOriginals, OriginalFS, ...
+            SpotCheckChannels(SpotCheckOriginals, originalFS, ...
                 SpotCheckFiltered, EEG.srate, CheckChannels)
         end
         
