@@ -72,7 +72,7 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
         Filename_SET = Content(SET, :);
         
         % set up destination location
-        Destination = fullfile(Paths.Preprocessed, Destination_Format, Task);
+        Destination = fullfile(Paths.Preprocessed, Destination_Format, 'SET', Task);
         Filename_Core = join([Folders.Datasets{Indx_D}, Levels(:)', Destination_Format], '_');
         Filename_Destination = [Filename_Core{1}, '.set'];
         
