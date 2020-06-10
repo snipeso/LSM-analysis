@@ -81,11 +81,13 @@ EEG_Channels = struct();
 
 EEG_Channels.mastoids = [49, 56];
 EEG_Channels.EMG = [107, 113];
+EEG_Channels.EOG = [8, 32];
 EEG_Channels.face = [125, 126, 127, 128];
 EEG_Channels.ears  = [43, 48, 119, 120];
 EEG_Channels.neck = [63, 68, 73, 81, 88, 94, 99];
 EEG_Channels.notEEG = [EEG_Channels.mastoids, EEG_Channels.EMG, ...
     EEG_Channels.face, EEG_Channels.ears, EEG_Channels.neck];
+EEG_Channels.occipital = [70, 83];
 
 EEG_Channels.Hotspot = [3:7, 9:13, 15, 16, 18:20, 24, 106, 111, 112, 117, 118, 123, 124];
 

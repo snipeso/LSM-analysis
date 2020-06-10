@@ -13,10 +13,10 @@ Tasks = {'LAT', 'PVT'}; % which tasks to convert (for now)
 % options: 'LAT', 'PVT', 'SpFT', 'Game', 'Music', 'MWT', 'Sleep',
 % 'Fixation', 'Oddball', 'Standing', 'Questionnaire'
 
-Destination_Format = 'Microsleeps'; % chooses which filtering to do
+Destination_Format = 'Cleaning'; % chooses which filtering to do
 % options: 'Scoring', 'Cleaning', 'ICA', 'Wake' 'Microsleeps'
 
-Refresh = false; % redo files that are already in destination folder
+Refresh = true; % redo files that are already in destination folder
 
 SpotCheck = true; % occasionally plot results, to make sure things are ok
 
@@ -72,7 +72,7 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
         Filename_SET = Content(SET, :);
         
         % set up destination location
-        Destination = fullfile(Paths.Preprocessed, Destination_Format, Task);
+        Destination = fullfile(Paths.Preprocessed, Destination_Format, 'SET', Task);
         Filename_Core = join([Folders.Datasets{Indx_D}, Levels(:)', Destination_Format], '_');
         Filename_Destination = [Filename_Core{1}, '.set'];
         
