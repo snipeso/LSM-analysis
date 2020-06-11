@@ -13,10 +13,10 @@ Tasks = {'LAT', 'PVT'}; % which tasks to convert (for now)
 % options: 'LAT', 'PVT', 'SpFT', 'Game', 'Music', 'MWT', 'Sleep',
 % 'Fixation', 'Oddball', 'Standing', 'Questionnaire'
 
-Destination_Format = 'Microsleeps'; % chooses which filtering to do
+Destination_Format = 'Cleaning'; % chooses which filtering to do
 % options: 'Scoring', 'Cleaning', 'ICA', 'Wake' 'Microsleeps'
 
-Refresh = false; % redo files that are already in destination folder
+Refresh = true; % redo files that are already in destination folder
 
 SpotCheck = true; % occasionally plot results, to make sure things are ok
 
@@ -120,7 +120,7 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
         % randomly check some of the datasets to make sure things look ok
         if SpotCheck && randi(SpotCheckFrequency) == 1
             SpotCheckFiltered = EEG.data(CheckChannels, :);
-            SpotCheckChannels(SpotCheckOriginals, OriginalFS, ...
+            SpotCheckChannels(SpotCheckOriginals, originalFS, ...
                 SpotCheckFiltered, EEG.srate, CheckChannels)
         end
         

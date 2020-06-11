@@ -3,14 +3,15 @@ clc
 clear
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Targets = 'LAT';
+Targets = {'LAT', 'PVT'};
 Refresh = false;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 EEG_Parameters
 
-for Target = Targets
+for Indx_T = 1:numel(Targets)
     
+    Target = Targets{Indx_T};
     % get files and paths
     Source = fullfile(Paths.Preprocessed, 'Microsleeps', 'SET', Target);
     Destination = fullfile(Paths.Preprocessed, 'Microsleeps', 'MAT', Target);

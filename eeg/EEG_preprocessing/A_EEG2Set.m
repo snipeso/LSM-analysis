@@ -10,14 +10,6 @@ EEG_Parameters
 
 load('StandardChanlocs128.mat') % has channel locations in StandardChanlocs
 
-% initiate log
-StartTime = datestr(now, 'yy-mm-dd_HH-MM');
-m = matfile(fullfile(Paths.Logs, [StartTime, '_A_Log.mat']),'Writable',true);
-
-missing = struct();
-skipped = struct();
-converted = struct();
-
 %%% loop through all EEG folders, and convert whatever files possible
 A = tic; % keeps track of how long this takes
 for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
@@ -28,8 +20,6 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
         
         % skip rest if path not found
         if ~exist(Path, 'dir')
-            missing(end + 1).path = Path; %#ok<SAGROW>
-            missing(end).reason = 'no path';
             warning([deblank(Path), ' does not exist'])
             continue
         end
@@ -44,15 +34,10 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
         VHDR = contains(string(Content), '.vhdr');
         if ~any(VHDR)
             if any(strcmpi(Levels, 'EEG'))
-                missing(end+1).path = Path;
-                missing(end).reason = 'no raw eeg';
                 warning([Path, ' is missing EEG files'])
             end
             continue
         elseif nnz(VHDR) > 1 % or if there's more than 1 file
-            skipped(end + 1).path = Path; %#ok<SAGROW>
-            skipped(end).files = Content(VHDR, :);
-            skipped(end).reason = 'more than one VHDR file';
             warning([Path, ' has more than one eeg file'])
             continue
         end
@@ -66,9 +51,6 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
         % skip if requested
         if ~Refresh &&  any(contains(cellstr(Content), Filename.SET))
             disp(['***********', 'Already did ', Filename.Core, '***********'])
-            skipped(end + 1).path = Path; %#ok<SAGROW>
-            skipped(end).filename = Filename.SET;
-            skipped(end).reason = 'already done';
             continue
         end
         
@@ -77,9 +59,6 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
             EEG = pop_loadbv(Path, Filename.VHDR);
         catch
             warning(['Failed to load ', Filename.VHDR])
-            skipped(end + 1).path = Path; %#ok<SAGROW>
-            skipped(end).filename = Filename.VHDR;
-            skipped(end).reason = 'failed to load';
             continue
         end
         
@@ -100,19 +79,9 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
             converted(end).filename = Filename.SET;
         catch
             warning(['Failed to save ', Filename.Core])
-            skipped(end + 1).path = Path; %#ok<SAGROW>
-            skipped(end).filename = Filename.VHDR;
-            skipped(end).reason = 'failed to save';
         end
     end
 end
-
-
-% save log info
-m.CleaningTime = toc(A);
-m.missing = missing;
-m.skipped = skipped;
-m.converted = converted;
 
 
 % NOTE: refresh doesn't seem to work?
