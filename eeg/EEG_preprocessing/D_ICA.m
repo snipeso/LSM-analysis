@@ -3,12 +3,13 @@ clc
 clear
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Target = 'LAT';
+Targets = 'LAT';
 Refresh = false;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 EEG_Parameters
 
+for Target = Targets
 % get files and paths
 Source = fullfile(Paths.LFiltered, Target);
 Source_Cuts = fullfile(Paths.Preprocessed, 'Cuts', Target);
@@ -55,7 +56,7 @@ for Indx_F = 1:numel(Files) % loop through files in target folder
     end
     
     % remove non-EEG channels
-    EEG = pop_select(EEG, 'nochannel', unique([EEG_Channels.mastoids, EEG_Channels.EMG]))
+    EEG = pop_select(EEG, 'nochannel', unique([EEG_Channels.mastoids, EEG_Channels.EMG]));
     
     % filter data a little more (not strictly needed, but might as well)
     EEG = pop_eegfiltnew(EEG, [], ICA_high_cutoff);
@@ -76,4 +77,5 @@ for Indx_F = 1:numel(Files) % loop through files in target folder
         'version', '7.3');
     
     disp(['***********', 'Finished ', Filename_Destination, '***********'])
+end
 end
