@@ -10,13 +10,11 @@ Refresh = false;
 EEG_Parameters
 
 for Indx_T = 1:numel(Targets)
-    
     Target = Targets{Indx_T};
-    
     % get files and paths
-    Source = fullfile(Paths.LFiltered, Target);
+    Source = fullfile(Paths.Preprocessed, 'ICA', 'SET', Target);
     Source_Cuts = fullfile(Paths.Preprocessed, 'Cuts', Target);
-    Destination = fullfile(Paths.Preprocessed, 'HeavyFiltering', Target);
+    Destination = fullfile(Paths.Preprocessed, 'ICA', 'Components', Target);
     
     if ~exist(Destination, 'dir')
         mkdir(Destination)
@@ -30,9 +28,9 @@ for Indx_T = 1:numel(Targets)
         % get filenames
         Filename_Source = Files{Indx_F};
         Filename_Cuts =  [extractBefore(Filename_Source,'_ICAd.set'), '_Cuts.mat'];
-        Filename_Destination = [extractBefore(Filename_Source,'.set'), '_ICAd.set'];
+        Filename_Destination = [extractBefore(Filename_Source,'.set'), '_Components.set'];
         
-        % skip filtering if file already exists
+        % skip if file already exists
         if ~Refresh && exist(fullfile(Destination, Filename_Destination), 'file')
             disp(['***********', 'Already did ', Filename_Destination, '***********'])
             continue
@@ -50,17 +48,24 @@ for Indx_T = 1:numel(Targets)
             badchans = [];
         end
         
+        % if present, remove data before start and stop
+        Triggers = {EEG.event.type};
+        StartPoint = EEG.event(strcmp(Triggers, EEG_Triggers.Start)).latency;
+        EndPoint = EEG.event( strcmp(Triggers, EEG_Triggers.End)).latency;
+        if ~isempty(StartPoint) && ~isempty(EndPoint)
+            EEG = pop_select(EEG, 'point', [StartPoint -EEG.srate*Padding, EndPoint + EEG.srate*Padding]);
+        end
         
-        % filter data a little more (not strictly needed, but might as well)
-        EEG = pop_eegfiltnew(EEG, [], ICA_high_cutoff);
-        EEG = bandpassEEG(EEG, ICA_low_cutoff, []); % TODO: try with and without, especially for datasrts that had little noise things
-        
+        % remove non-EEG channels and bad channels
+        EEG = pop_select(EEG, 'nochannel', unique([badchans,EEG_Channels.EMG]));
         
         % rereference to average
         EEG = pop_reref(EEG, []);
         
         % run ICA (takes a while)
         EEG = pop_runica(EEG, 'runica');
+        
+        EEG.data = []; % remove data from information for lighter file; later this will be merged with standard file
         
         % save new dataset
         pop_saveset(EEG, 'filename', Filename_Destination, ...
