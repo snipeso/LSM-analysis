@@ -51,6 +51,7 @@ end
 m = matfile(CutFilepath,'Writable',true);
 m.filename = FilteredFilename;
 m.filepath = FilteredFolder;
+m.srate = EEG.srate;
 
 Triggers = {EEG.event.type};
 Start = strcmp(Triggers, EEG_Triggers.Start);

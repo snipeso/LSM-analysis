@@ -4,6 +4,9 @@ close all
 clc
 clear
 % TODO: interpolate CZ as well!!!!
+% - adapt to new merge script
+% - loop through targets
+% - rescale cuts based on sampling rate
 
 Target = 'LAT'; % specify folder for analysis
 Refresh = false;
