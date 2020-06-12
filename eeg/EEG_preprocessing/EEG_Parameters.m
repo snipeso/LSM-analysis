@@ -7,8 +7,12 @@ addpath(fullfile(Paths.Analysis, 'functions','eeg'))
 % Paths.Datasets = 'D:\LSM\data';
 % Paths.Preprocessed = 'C:\Users\schlaf\Desktop\LSMpreprocessed';
 
+% Paths.Datasets = 'L:\Somnus-Data\Data01\LSM\Data\Raw';
+% Paths.Preprocessed = 'L:\Somnus-Data\Data01\LSM\Data\Preprocessed';
+
 Paths.Datasets = 'L:\Somnus-Data\Data01\LSM\Data\Raw';
-Paths.Preprocessed = 'L:\Somnus-Data\Data01\LSM\Data\Preprocessed';
+Paths.Preprocessed = 'C:\Users\schlaf\Desktop\LSMData';
+
 
 Paths.Logs = fullfile(Paths.Preprocessed, 'Logs');
 
