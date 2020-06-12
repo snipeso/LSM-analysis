@@ -17,13 +17,16 @@
 clear
 clc
 close all
-GeneralPreprocessingParameters
+EEG_Parameters
 
-Filename = 'P03_LAT_Extras.set'; % choose this if you want to clean a specific file
-% Filename = []; % choose this if you want to randomly select a file to clean from the list
-Folders.Data = 'LAT';
+% Filename = 'P03_LAT_Extras.set'; % choose this if you want to clean a specific file
+Filename = []; % choose this if you want to randomly select a file to clean from the list
+Folder = 'LAT';
 
-EEG = loadEEGtoCut(Paths, Folders.Data, Filename, EEG_Triggers); % load file
+Source = fullfile(Paths.Preprocessed, 'Cleaning', 'SET', Folder);
+Destination = fullfile(Paths.Preprocessed, 'Cleaning', 'Cuts', Folder);
+
+EEG = loadEEGtoCut(Source, Destination, Filename, EEG_Triggers); % load file
 m = matfile(EEG.CutFilepath,'Writable',true); % create cuts file, load it to current workspace
 
 
@@ -42,7 +45,7 @@ m = matfile(EEG.CutFilepath,'Writable',true); % create cuts file, load it to cur
 Threshold = [];
 Color = [1, 1, 0]; % Color for AutoCut
 showPlots = false;
-% AutoCut(EEG, Color, [], showPlots)
+AutoCut(EEG, Color, [], showPlots)
 
 %TODO: Autoremove EMG
 % RemoveCuts(EEG, [1, 1, 0]) % removes autocut data
