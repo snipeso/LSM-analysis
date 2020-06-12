@@ -22,7 +22,7 @@ if isempty(FilteredFilename) % randomly choose a file that hasn't been cut yet
     Uncut(contains( AllEEG,intersect(AllEEG, AllCuts))) = [];
     
     if isempty(Uncut)
-        disp(['You are finished with ', DataFolder, ...
+        disp(['You are finished with ', Source, ...
             '! If you want to redo one of the files, specify the filename.'])
         return
     end

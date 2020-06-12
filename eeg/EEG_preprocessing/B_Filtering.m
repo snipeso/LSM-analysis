@@ -16,7 +16,7 @@ Tasks = {'LAT', 'PVT'}; % which tasks to convert (for now)
 Destination_Format = 'Cleaning'; % chooses which filtering to do
 % options: 'Scoring', 'Cleaning', 'ICA', 'Wake' 'Microsleeps'
 
-Refresh = true; % redo files that are already in destination folder
+Refresh = false; % redo files that are already in destination folder
 
 SpotCheck = true; % occasionally plot results, to make sure things are ok
 
