@@ -9,11 +9,11 @@ EEG_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Tasks = {'LAT', 'PVT'}; % which tasks to convert (for now)
+Tasks = {'Fixation', 'Oddball'}; % which tasks to convert (for now)
 % options: 'LAT', 'PVT', 'SpFT', 'Game', 'Music', 'MWT', 'Sleep',
 % 'Fixation', 'Oddball', 'Standing', 'Questionnaire'
 
-Destination_Format = 'Cleaning'; % chooses which filtering to do
+Destination_Format = 'ICA'; % chooses which filtering to do
 % options: 'Scoring', 'Cleaning', 'ICA', 'Wake' 'Microsleeps'
 
 Refresh = false; % redo files that are already in destination folder
@@ -35,7 +35,7 @@ highpass = Parameters(Indx).hp;
 hp_stopband = Parameters(Indx).hp_stopband;
 
 allLog = struct();
-for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
+parfor Indx_D = 1:size(Folders.Datasets,1) % loop through participants
     for Indx_F = 1:size(Folders.Subfolders, 1) % loop through all subfolders
         
         %%%%%%%%%%%%%%%%%%%%%%%%

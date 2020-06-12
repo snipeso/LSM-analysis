@@ -5,7 +5,8 @@ clear
 clc
 close all
 
-GeneralPreprocessingParameters
+EEG_Parameters
+Refresh = false;
 Padding = 5; % time around the events to keep in cut
 
 StartFixCode = 'S 12';
@@ -18,60 +19,50 @@ Folders.RRT = cellstr(ls(fullfile(Paths.Datasets, Folders.Template, 'Fixation'))
 Folders.RRT(contains(Folders.RRT, '.')) = [];
 
 StartTime = datestr(now, 'yy-mm-dd_HH-MM');
-m = matfile(fullfile(Paths.Logs, [StartTime, '_A2_Log.mat']),'Writable',true);
 
-missing = struct();
-skipped = struct();
-converted = struct();
-
-
-A = tic;
 for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
     
     for Indx_F = 1:numel(Folders.RRT)
-        Paths.Fixation = fullfile(Paths.Datasets, Folders.Datasets{Indx_D}, ...
+        Paths_Fixation = fullfile(Paths.Datasets, Folders.Datasets{Indx_D}, ...
             'Fixation', Folders.RRT{Indx_F}, 'EEG');
-        Paths.Standing =  fullfile(Paths.Datasets, Folders.Datasets{Indx_D}, ...
+        Paths_Standing =  fullfile(Paths.Datasets, Folders.Datasets{Indx_D}, ...
             'Standing', Folders.RRT{Indx_F}, 'EEG');
-        Paths.Oddball =  fullfile(Paths.Datasets, Folders.Datasets{Indx_D}, ...
+        Paths_Oddball =  fullfile(Paths.Datasets, Folders.Datasets{Indx_D}, ...
             'Oddball', Folders.RRT{Indx_F}, 'EEG');
         
-        Paths.QuestionnaireEEG = fullfile(Paths.Datasets, Folders.Datasets{Indx_D}, ...
+        Paths_QuestionnaireEEG = fullfile(Paths.Datasets, Folders.Datasets{Indx_D}, ...
             'QuestionnaireEEG', Folders.RRT{Indx_F}, 'EEG');
         
-        if ~exist(Paths.QuestionnaireEEG, 'dir')
-            mkdir(Paths.QuestionnaireEEG)
+        if ~exist(Paths_QuestionnaireEEG, 'dir')
+            mkdir(Paths_QuestionnaireEEG)
         end
         
         
         % skip rest if folder not found
-        if ~exist(Paths.Fixation, 'dir')
-            missing(end + 1).path = Paths.Fixation; %#ok<SAGROW>
-            missing(end).reason = 'no path';
-            warning([deblank(Paths.Fixation), ' does not exist'])
+        if ~exist(Paths_Fixation, 'dir')
+            warning([deblank(Paths_Fixation), ' does not exist'])
             continue
         end
         
         % if does not contain EEG, then skip
-        Content = ls(Paths.Fixation);
-        SET = contains(string(Content), '.set');
-        if ~any(SET)
-            missing(end+1).path = Paths.Fixation; %#ok<SAGROW>
-            missing(end).reason = 'no SET file';
-            warning([Paths.Fixation, ' is missing EEG files'])
-            
-            continue
-        elseif nnz(SET) > 1
-            skipped(end + 1).path = Paths.Fixation; %#ok<SAGROW>
-            skipped(end).files = Content(SET, :);
-            skipped(end).reason = 'more than one SET file';
-            warning([Paths.Fixation, ' has more than one eeg file'])
+        if ~CheckSet(Paths_Fixation)
             continue
         end
+        
+        
+Content = contains(string(ls(Path)), '.set');
         Filename.SET = Content(SET, :);
         
+        % if not going to refresh and file already split, skip
+        if ~Refresh && CheckSet(Paths_Standing) && CheckSet(Paths_Oddball) ...
+                && CheckSet(Paths_QuestionnaireEEG)
+            disp(['****** Skipping ', Filename.SET, ' *******'])
+            continue
+        end
         
-        EEG = pop_loadset('filename', Filename.SET, 'filepath', Paths.Fixation);
+        
+        
+        EEG = pop_loadset('filename', Filename.SET, 'filepath', Paths_Fixation);
         
         try
             % get start fixation
@@ -89,14 +80,11 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
             
             % save
             pop_saveset(EEGfix, 'filename', Filename.SET, ...
-                'filepath', Paths.Fixation, ...
+                'filepath', Paths_Fixation, ...
                 'check', 'on', ...
                 'savemode', 'onefile', ...
                 'version', '7.3');
         catch
-            skipped(end + 1).path = Paths.Fixation; %#ok<SAGROW>
-            skipped(end).files = Filename.SET;
-            skipped(end).reason = 'creating fixation file failed';
             warning(['couldnt make fixation file for ', Filename.SET]) % TODO: add to log
         end
         
@@ -116,16 +104,11 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
             
             % save
             pop_saveset(EEGStand, 'filename', ['Stand_', Filename.SET], ...
-                'filepath', Paths.Standing, ...
+                'filepath', Paths_Standing, ...
                 'check', 'on', ...
                 'savemode', 'onefile', ...
                 'version', '7.3');
         catch
-            
-            skipped(end + 1).path = Paths.Fixation; %#ok<SAGROW>
-            skipped(end).files = ['Stand_', Filename.SET];
-            skipped(end).reason = 'creating stand file failed';
-            
             warning(['couldnt make standing file for ', Filename.SET]) % TODO: add to log
         end
         
@@ -144,16 +127,11 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
             
             % save
             pop_saveset(EEGOddball, 'filename', ['Oddball_', Filename.SET], ...
-                'filepath', Paths.Oddball, ...
+                'filepath', Paths_Oddball, ...
                 'check', 'on', ...
                 'savemode', 'onefile', ...
                 'version', '7.3');
         catch
-            
-            skipped(end + 1).path = Paths.Fixation; %#ok<SAGROW>
-            skipped(end).files = ['Oddball_', Filename.SET];
-            skipped(end).reason = 'creating oddball file failed';
-            
             warning(['couldnt make oddball file for ', Filename.SET]) % TODO: add to log
         end
         
@@ -167,7 +145,7 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
             
             % save
             pop_saveset(EEGQ, 'filename', ['Questionnaire_', Filename.SET], ...
-                'filepath', Paths.QuestionnaireEEG, ...
+                'filepath', Paths_QuestionnaireEEG, ...
                 'check', 'on', ...
                 'savemode', 'onefile', ...
                 'version', '7.3');
@@ -175,4 +153,23 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
             warning(['couldnt make questionnaire file for ', Filename.SET]) % TODO: add to log
         end
     end
+end
+
+
+function IsPresent = CheckSet(Path)
+% checks if there is a set file in the folder
+
+IsPresent = false;
+Content = ls(Path);
+SET = contains(string(Content), '.set');
+
+if ~any(SET)
+    warning([Paths_Fixation, ' is missing EEG files'])
+elseif nnz(SET) > 1
+    warning([Paths_Fixation, ' has more than one eeg file'])
+else
+    IsPresent = true;
+end
+
+
 end

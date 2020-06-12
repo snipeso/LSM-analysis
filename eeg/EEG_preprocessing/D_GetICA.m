@@ -3,7 +3,7 @@ clc
 clear
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Targets = 'LAT';
+Targets = {'LAT'};
 Refresh = false;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -13,7 +13,7 @@ for Indx_T = 1:numel(Targets)
     Target = Targets{Indx_T};
     % get files and paths
     Source = fullfile(Paths.Preprocessed, 'ICA', 'SET', Target);
-    Source_Cuts = fullfile(Paths.Preprocessed, 'Cuts', Target);
+    Source_Cuts = fullfile(Paths.Preprocessed, 'Cleaning', 'Cuts', Target);
     Destination = fullfile(Paths.Preprocessed, 'ICA', 'Components', Target);
     
     if ~exist(Destination, 'dir')
