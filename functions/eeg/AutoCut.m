@@ -28,20 +28,11 @@ end
 
 % get all segments above the threshold
 Smooth = exp(smoothdata(log(meanChannel), 'gaussian', fs*2));
-AboveThresholds = Smooth > Threshold;
-
-AboveThresholds = [0, AboveThresholds, 0]; % to make sure there's always a start and finish
-Segments = diff(AboveThresholds);
-Starts = find(Segments == 1);
-Ends = find(Segments == -1);
-
+[Starts, Ends] = data2windows(Smooth, Threshold);
 
 % get all segments above the median
-MedianAboveThresholds = meanChannel > medianVoltage;
-MedianAboveThresholds = [0, MedianAboveThresholds, 0]; % to make sure there's always a start and finish
-MedianSegments = diff(MedianAboveThresholds);
-MedianStarts = find(MedianSegments == 1);
-MedianEnds = find(MedianSegments == -1);
+[MedianStarts, MedianEnds] = data2windows(meanChannel, medianVoltage);
+
 
 %%% expand every segment above threshold until it reaches closest value
 %%% that crosses median
