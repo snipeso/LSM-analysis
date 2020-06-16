@@ -1,6 +1,8 @@
 function CutSnippet2(EEG, StartTime, EndTime, Channels)
 
 AllChannels = zeros(1, EEG.nbchan);
+
+
 AllChannels(Channels) = 1; % TODO: make this based on labels, so more flexible
 NewTMPREJ = [[StartTime, EndTime]*EEG.srate, [1 1 1], AllChannels];
 
