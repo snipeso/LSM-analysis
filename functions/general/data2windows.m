@@ -10,7 +10,7 @@ Points = numel(Data); % maybe need to change if want to work on matrices
 
 %%% convert data if it's not already binary
 
-if any(Data ~= 0 | Data~=1)
+if any(Data ~= 0 & Data~=1)
     
    % set threshold to 0 if none provided
    if ~exist('Threshold', 'var')
