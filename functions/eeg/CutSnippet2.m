@@ -4,7 +4,7 @@ AllChannels = zeros(1, EEG.nbchan);
 
 
 AllChannels(Channels) = 1; % TODO: make this based on labels, so more flexible
-NewTMPREJ = [[StartTime, EndTime]*EEG.srate, [1 1 1], AllChannels];
+NewTMPREJ = [round([StartTime, EndTime]*EEG.srate), [1 .9 .9], AllChannels];
 
 m = matfile(EEG.CutFilepath,'Writable',true);
 
