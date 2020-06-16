@@ -133,7 +133,7 @@ end
 
 % save
 
-NewTMPREJ = zeros(size(newWindows, 1), 133);
+NewTMPREJ = zeros(size(newWindows, 1), EEG.nbchan + 5);
 NewTMPREJ(:, 1:2) = newWindows;
 NewTMPREJ(:, 3:5) = repmat(Color,  size(newWindows, 1), 1);
 
