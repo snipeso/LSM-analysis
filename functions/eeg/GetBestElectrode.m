@@ -7,7 +7,8 @@ Channels = string(Channels);
 EEG_Channels = {EEG.chanlocs.labels};
 
 if isempty(intersect(EEG_Channels, Channels))
-    error(['No channels were found for ', EEG.filename])
+    warning(['No channels were found for ', EEG.filename])
+    Index = [];
 end
 
 

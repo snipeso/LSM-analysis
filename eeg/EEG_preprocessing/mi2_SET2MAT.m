@@ -40,20 +40,28 @@ for Indx_T = 1:numel(Targets)
         
         Data = struct();
         
-        %TODO: mini function for choosing the first channel that's present
-        O1 = GetBestElectrode(EEG, EEG_Channels.O1);
+        % select best channel available
+        Data.EEG.O1 = EEG.data(GetBestElectrode(EEG, EEG_Channels.O1), :);
+        Data.EEG.O2 =  EEG.data(GetBestElectrode(EEG, EEG_Channels.O2), :);
+        Data.EEG.M1 =  EEG.data(GetBestElectrode(EEG, EEG_Channels.M1), :);
+        Data.EEG.M2 =  EEG.data(GetBestElectrode(EEG, EEG_Channels.M2), :);
+        Data.EEG.EOG1 =  EEG.data(GetBestElectrode(EEG, EEG_Channels.EOG1), :);
+        Data.EEG.EOG2 =  EEG.data(GetBestElectrode(EEG, EEG_Channels.EOG2), :);
         
-        Data.EEG.O1 = EEG.data(EEG_Channels.occipital(1), :);
-        Data.EEG.O2 =  EEG.data(EEG_Channels.occipital(2), :);
-        Data.EEG.M1 =  EEG.data(EEG_Channels.mastoids(1), :);
-        Data.EEG.M2 =  EEG.data(EEG_Channels.mastoids(2), :);
-        Data.EEG.EOG1 =  EEG.data(EEG_Channels.EOG(1), :);
-        Data.EEG.EOG2 =  EEG.data(EEG_Channels.EOG(2), :);
+        % back up if there are no eye channels
+        if isempty(Data.EEG.EOG1) || isempty(Data.EEG.EOG2)
+            Data.EEG.EOG1 =  EEG.data(GetBestElectrode(EEG, EEG_Channels.EOG1v2), :);
+            Data.EEG.EOG2 =  EEG.data(GetBestElectrode(EEG, EEG_Channels.EOG2v2), :);
+            
+            if isempty(Data.EEG.EOG1) || isempty(Data.EEG.EOG2)
+                error(['No eye channels left for ', Filename_Source])
+            end
+        end
         
         Data.srate = EEG.srate;
         
         save(fullfile(Destination, Filename_Destination), 'Data')
-
+        
         disp(['***********', 'Finished ', Filename_Destination, '***********'])
     end
     
