@@ -87,7 +87,8 @@ EEG_Channels.ears  = [43, 48, 119, 120];
 EEG_Channels.neck = [63, 68, 73, 81, 88, 94, 99];
 EEG_Channels.notEEG = [EEG_Channels.mastoids, EEG_Channels.EMG, ...
     EEG_Channels.face, EEG_Channels.ears, EEG_Channels.neck];
-EEG_Channels.occipital = [70, 83];
+EEG_Channels.O1 = [70, 65, 66, 69, 71, 74, 59, 60, 67]; % first is preferred o1, the others are decreasing next best options
+EEG_Channels.O2 = [83, 90, 84, 89, 76, 82, 91, 85, 77];
 
 EEG_Channels.Hotspot = [3:7, 9:13, 15, 16, 18:20, 24, 106, 111, 112, 117, 118, 123, 124];
 

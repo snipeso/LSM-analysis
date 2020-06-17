@@ -40,6 +40,9 @@ for Indx_T = 1:numel(Targets)
         
         Data = struct();
         
+        %TODO: mini function for choosing the first channel that's present
+        O1 = GetBestElectrode(EEG, EEG_Channels.O1);
+        
         Data.EEG.O1 = EEG.data(EEG_Channels.occipital(1), :);
         Data.EEG.O2 =  EEG.data(EEG_Channels.occipital(2), :);
         Data.EEG.M1 =  EEG.data(EEG_Channels.mastoids(1), :);
