@@ -7,7 +7,6 @@ Content = whos(m);
 
 if ~ismember('cutData', {Content.name})
     m.cutData = nan(size(EEG.data)); % for plotting purposes
-   
 end
 
 fs = EEG.srate;

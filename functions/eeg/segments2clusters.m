@@ -1,6 +1,6 @@
 function Clusters = segments2clusters(Segments)
 
-Clusters = struct();
+Clusters = struct(); % has to be struct because can have different number of channels
 
 for Indx_S = 1:size(Segments, 1)
     Start = Segments(Indx_S, 2);
