@@ -34,7 +34,7 @@ for Indx_T = 1:numel(Targets)
         
         % get filenames
         Filename_Source = Files{Indx_F};
-        Filename_Cuts =  [extractBefore(Filename_Source,'_Microsleeps'), '_Cuts.mat'];
+        Filename_Cuts =  [extractBefore(Filename_Source,'_Microsleeps'), '_Cleaning_Cuts.mat'];
         Filename_Destination = [extractBefore(Filename_Source,'.set'), '_Cleaned.set'];
         
         % skip filtering if file already exists
