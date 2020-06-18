@@ -81,7 +81,7 @@ EEG_Channels = struct();
 
 EEG_Channels.mastoids = [49, 56];
 EEG_Channels.EMG = [107, 113];
-EEG_Channels.face = [125, 126, 127, 128];
+EEG_Channels.face = [126, 127];
 EEG_Channels.ears  = [43, 48, 119, 120];
 EEG_Channels.neck = [63, 68, 73, 81, 88, 94, 99];
 EEG_Channels.notEEG = [EEG_Channels.mastoids, EEG_Channels.EMG, ...
