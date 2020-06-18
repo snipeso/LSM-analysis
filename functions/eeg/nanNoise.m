@@ -8,7 +8,6 @@ Ends =  convertFS(m.TMPREJ(:, 2), m.srate, EEG.srate);
 for Indx_N = 1:numel(Starts)
    EEG.data(:, Starts(Indx_N):Ends(Indx_N)) = nan;
 end
-A = 1
 end
 
 function Point = convertFS(Point, fs1, fs2)

@@ -59,6 +59,7 @@ for Indx_T = 1:numel(Targets)
         
         % set to 0 all 
         EEG = nanNoise(EEG, Cuts_Filepath);
+        EEG.data(isnan(EEG.data)) = 0;
         
         % save
         pop_saveset(EEG,  'filename', Filename_Destination, ...
