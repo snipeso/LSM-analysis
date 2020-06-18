@@ -15,6 +15,10 @@ end
 for Ch = Channels
     if ismember(Ch, EEG_Channels)
         Index = find(strcmp(EEG_Channels, Ch)); % TODO: eventually make more succint
+        
+        if Ch ~= Channels(1)
+            disp(['Using ch ', Ch, ' instead of ', Channels(1), ' for ' EEG.filename])
+        end
         return
     end
 end
