@@ -1,4 +1,4 @@
-function [EEGnew, badchans] = CleanData(EEG, Cuts_Filepath, EEG_Channels, PlotData)
+function [EEGnew, badchans] = InterpolateSegments(EEG, Cuts_Filepath, EEG_Channels, PlotData)
 % badchans is a list of bad channels marked in cuts, adapted to the new EEG
 % set size.
 
@@ -72,7 +72,7 @@ RemoveChannels = string(unique(badchans));
 [~, badchans] = intersect(ChanLabels, RemoveChannels);
 
 
-if exist('PlotData', 'var')
+if exist('PlotData', 'var') && PlotData
      eegplot(EEG.data, 'srate', EEG.srate, 'winlength', 30, 'data2', EEGnew.data)
      disp(['Starts:'])
     disp({Clusters.Start})

@@ -54,7 +54,7 @@ for Indx_T = 1:numel(Targets)
         EEG = pop_loadset('filepath', Source_EEG, 'filename', Filename_Source_EEG);
         
         % clean data segments
-        [EEGnew, badchans] = CleanData(EEG, fullfile(Source_Cuts, Filename_Cuts), EEG_Channels);
+        [EEGnew, badchans] = InterpolateSegments(EEG, fullfile(Source_Cuts, Filename_Cuts), EEG_Channels);
           
         
         % interpolate bad channels

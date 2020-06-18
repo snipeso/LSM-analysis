@@ -37,6 +37,8 @@ for Indx_T = 1:numel(Targets)
         Filename_Cuts =  [extractBefore(Filename_Source,'_Microsleeps'), '_Cleaning_Cuts.mat'];
         Filename_Destination = [extractBefore(Filename_Source,'.set'), '_Cleaned.set'];
         
+        Cuts_Filepath = fullfile(Source_Cuts, Filename_Cuts);
+        
         % skip filtering if file already exists
         if ~Refresh && exist(fullfile(Destination, Filename_Destination), 'file')
             disp(['***********', 'Already did ', Filename_Destination, '***********'])
@@ -50,10 +52,13 @@ for Indx_T = 1:numel(Targets)
         EEG = pop_loadset('filepath', Source_EEG, 'filename', Filename_Source);
         
         % interpolate bad segments
-        [EEG, badchans] = CleanData(EEG, fullfile(Source_Cuts, Filename_Cuts), EEG_Channels);
+        [EEG, badchans] = InterpolateSegments(EEG, Cuts_Filepath, EEG_Channels);
         
         % remove bad channels
         EEG = pop_select(EEG, 'nochannel', badchans);
+        
+        % set to 0 all 
+        EEG = nanNoise(EEG, Cuts_Filepath);
         
         % save
         pop_saveset(EEG,  'filename', Filename_Destination, ...
