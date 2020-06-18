@@ -13,7 +13,7 @@ for Indx_T = 1:numel(Targets)
     
     Target = Targets{Indx_T};
     % get files and paths
-    Source = fullfile(Paths.Preprocessed, 'Microsleeps', 'SET', Target);
+    Source = fullfile(Paths.Preprocessed, 'Microsleeps', 'Cleaned', Target);
     Destination = fullfile(Paths.Preprocessed, 'Microsleeps', 'MAT', Target);
     
     if ~exist(Destination, 'dir')
