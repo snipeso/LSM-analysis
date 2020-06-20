@@ -42,10 +42,10 @@ xlim([0.5, numel(SessionLabels) + .5])
 xticks(1:numel(SessionLabels))
 xticklabels(SessionLabels)
 
-if~isempty(YLims)
+if ~isempty(YLims)
 ylim(YLims)
 end
-if ~isempty(Labels)
+if exist('Labels', 'var') && ~isempty(Labels)
     yticks(linspace(0, 100, numel(Labels)))
     yticklabels(Labels)
 end
