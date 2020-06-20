@@ -1,6 +1,6 @@
 clear
 clc
-close all
+% close all
 
 
 Stats_Parameters
@@ -9,7 +9,7 @@ Stats_Parameters
 
 DataPath = fullfile(Paths.Analysis, 'Statistics', 'ANOVA', 'Data'); % for statistics
 
-Task = 'LAT';
+Task = 'LATandPVT';
 
 % Data type
 
@@ -20,14 +20,20 @@ Task = 'LAT';
 % Type = 'theta';
 % YLabel = 'Power (log)';
 % Loggify = true;
-
-Type = 'meanRTs';
-YLabel = 'RTs (log(s))';
-Loggify = false;
+% 
+% Type = 'meanRTs';
+% YLabel = 'RTs (log(s))';
+% Loggify = false;
 
 % Type = 'KSS';
 % YLabel = 'VAS Score';
 % Loggify = false;
+
+% 
+Type = 'miDuration';
+YLabel = 'Seconds (log)';
+Loggify = false;
+
 
 
 MES = 'eta2';
@@ -39,27 +45,28 @@ MES = 'eta2';
 load(fullfile(DataPath, [Task, '_', Type, '_Classic.mat']))
 ClassicMatrix = Matrix;
 if Loggify
-    ClassicMatrix = log(ClassicMatrix);
+    
+    ClassicMatrix = log(ClassicMatrix+1);
 end
 
 load(fullfile(DataPath, [Task, '_', Type, '_Soporific.mat']))
 SopoMatrix = Matrix;
 
 if Loggify
-    SopoMatrix = log(SopoMatrix);
+    SopoMatrix = log(SopoMatrix+1);
 end
 
 
 % levene test on variance (maybe should be done after?)
-Groups = repmat([1 2 3], 7, 1);
+Groups = repmat([1 2 3], 10, 1);
 Levenetest([ClassicMatrix(:), Groups(:); SopoMatrix(:), 3+Groups(:)],.05)
-
-% % z-score
-for Indx_P = 1:numel(Participants)
-    All = zscore([ClassicMatrix(Indx_P, :), SopoMatrix(Indx_P, :)]);
-    ClassicMatrix(Indx_P, :) = All(1:size(ClassicMatrix, 2));
-    SopoMatrix(Indx_P, :) = All(size(ClassicMatrix, 2)+1:end);
-end
+% 
+% % % z-score
+% for Indx_P = 1:numel(Participants)
+%     All = zscore([ClassicMatrix(Indx_P, :), SopoMatrix(Indx_P, :)]);
+%     ClassicMatrix(Indx_P, :) = All(1:size(ClassicMatrix, 2));
+%     SopoMatrix(Indx_P, :) = All(size(ClassicMatrix, 2)+1:end);
+% end
 
 SopMeans = nanmean(SopoMatrix);
 SopSEM = std(SopoMatrix)./sqrt(size(SopoMatrix, 1));
