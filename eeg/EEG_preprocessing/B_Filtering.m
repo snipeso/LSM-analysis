@@ -34,7 +34,7 @@ lowpass = Parameters(Indx).lp;
 highpass = Parameters(Indx).hp;
 hp_stopband = Parameters(Indx).hp_stopband;
 
-allLog = struct();
+
 parfor Indx_D = 1:size(Folders.Datasets,1) % loop through participants
     for Indx_F = 1:size(Folders.Subfolders, 1) % loop through all subfolders
         

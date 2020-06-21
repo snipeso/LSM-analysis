@@ -1,0 +1,22 @@
+File     : tmse018.R04
+Started  : S22:50:24, 1999-06-24
+Duration : 08H15'00"  (1485 x 20s)
+Sampling : 128 Hz
+Comment  : Human-Online-4, 2614, EVA
+Montage  : SCREEN.MNT
+
+Channel  Volt2048  Index  .SPn Filter=3dB
+------- ---------- ----- ----- ----------
+*EMG      0.002048     1       15.6-54 Hz
+*EOG1     0.002048     2       0.16-49 Hz
+*EOG2     0.002048     3       0.16-49 Hz
+*F3A2     0.002048     4       0.16-49 Hz
+*F4A1     0.002048     5       0.16-49 Hz
+*C3A2     0.002048     6    1  0.16-49 Hz
+*C4A1     0.002048     7       0.16-49 Hz
+*O1A2     0.002048     8       0.16-49 Hz
+*O2A1     0.002048     9       0.16-49 Hz
+
+
+
+
