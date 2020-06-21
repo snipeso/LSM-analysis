@@ -29,7 +29,7 @@ parfor Indx_D = 1:size(Folders.Datasets,1) % loop through participants
             continue
         end
         
-  % identify menaingful folders traversed
+        % identify menaingful folders traversed
         Levels = split(Folders.Subfolders{Indx_F}, '\');
         Levels(cellfun('isempty',Levels)) = []; % remove blanks
         Levels(strcmpi(Levels, 'EEG')) = []; % remove uninformative level that its an EEG
@@ -52,17 +52,16 @@ parfor Indx_D = 1:size(Folders.Datasets,1) % loop through participants
         Filename_SET = Content(SET, :);
         
         % set up destination location
-        Destination = fullfile(Paths.Preprocessed, Destination_Format, 'SET', Task);
+        Destination = fullfile(Paths.Preprocessed, Destination_Format, 'Scoring', Task);
         Filename_Core = join([Folders.Datasets{Indx_D}, Levels(:)', Destination_Format], '_');
-        Filename_Destination = [Filename_Core{1}, '.set'];
-        
+
         % create destination folder
         if ~exist(Destination, 'dir')
             mkdir(Destination)
         end
         
         % skip filtering if file already exists
-        if ~Refresh && exist(fullfile(Destination, Filename_Destination), 'file')
+        if ~Refresh && exist(fullfile(Destination, Filename_Core), 'file')
             disp(['***********', 'Already did ', Filename_Core, '***********'])
             continue
         end
@@ -72,45 +71,19 @@ parfor Indx_D = 1:size(Folders.Datasets,1) % loop through participants
         %%% process the data
         
         % load file
-        EEG = LoadEEGLAB(Filepath, Channels); % loads a .set, selects relevant channels
+        EEG = LoadEEGLAB(Filepath, Sleep_Channels()); % loads a .set, selects relevant channels
         
-        % check if there's a field specifying which channels to use
-        if isfield(EEG, 'Sleep_Channels')
-            EEG = LoadEEGLAB(Filepath, EEG.Sleep_Channels); % reloads the data, this time with correct channels
-        else
-            Ch = EEG_Channels;
-        end
+        % filter and downsample the data
+        EEG = FilterScoring(EEG);
         
-        % pop select only relevant channels
-        Channel_Indexes = [
-            Ch.F3(1); Ch.F4(1);
-            Ch.C3(1); Ch.C4(1);
-            Ch.O1(1); Ch.O2(1);
-            Ch.M1(1); Ch.M2(1);
-            Ch.EOG
-            
-            ];
+        %%% Rereference the data
+        ScoringData = RereferenceScoring(EEG.data); % Only takes the data matrix
         
+        %%% Create delta power (sp1) and vigilance index (sp2) spectrums
+        [sp1, sp2] = SpectrumScoring(ScoringData(Parameters(5).SpChannel, :), Parameters(5).fs);
         
-        
-        % filter
-        
-        % rereference appropriately
-        
-        
-        %%%%%%%%%%%%%%%%%%%
-        %%% save the data
-        
-        % copy template, and save file inside
-        
-        
-        
-        
-        
+        %%% Save
+        SaveScoring(Destination, Filename_Core, ScoringData, double(sp1), double(sp2));
     end
-    
-    
-    
-    
 end
 

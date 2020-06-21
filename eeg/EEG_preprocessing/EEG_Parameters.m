@@ -58,6 +58,11 @@ Parameters(4).lp = 100; % low pass filter
 Parameters(4).hp = 2.5; % high pass filter
 Parameters(4).hp_stopband = .5; % high pass filter
 
+% Scoring: has special script for running this
+Parameters(5).Format = 'Scoring';
+Parameters(5).fs = 128;
+Parameters(5).SpChannel = 6;
+
 Trigger_Padding = 1; % amount of time in seconds to keep around start and stop triggers
 
 
