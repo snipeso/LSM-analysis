@@ -1,5 +1,5 @@
 
-run(fullfile(extractBefore(mfilename('fullpath'), 'EEG_power_Hilbert'), 'General_Parameters'))
+run(fullfile(extractBefore(mfilename('fullpath'), 'LSM-analysis'),'LSM-analysis', 'General_Parameters.m'))
 
 % Parameters
 Bands = [

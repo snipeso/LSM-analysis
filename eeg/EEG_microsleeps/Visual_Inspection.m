@@ -1,14 +1,14 @@
-MIcrosleeps_Parameters
+Microsleeps_Parameters
 
-Task = 'PVT';
-filename = ['P02_', Task,'_Session2Beam_Microsleeps'];
-filepath = fullfile(Paths.Preprocessed, 'Microsleeps\');
+Task = 'LAT';
+filename = ['P02_', Task,'_Session2Beam3'];
+filepath_microsleeps = fullfile(Paths.Preprocessed, 'Microsleeps\');
+filepath_eeg = fullfile(Paths.Preprocessed, 'Interpolated\');
 
 
+EEG = pop_loadset('filename',  [filename, '_ICAd_Interped.set'], 'filepath', fullfile(filepath_eeg, Task));
 
-EEG = pop_loadset('filename',  [filename, '.set'], 'filepath', fullfile(filepath, 'SET', Task));
+% EEG = pop_reref(EEG, []);
 
-EEG = pop_reref(EEG, []);
-
-load(fullfile(filepath, 'Scoring', Task, [filename, '.mat']), 'Windows')
+load(fullfile(filepath_microsleeps, 'Scoring', Task, [filename, '_Microsleeps.mat']), 'Windows')
 ViewMicrosleeps(EEG, Windows)
