@@ -4,7 +4,7 @@ clear
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Targets = {'LAT', 'PVT'};
-Refresh = false;
+Refresh = true;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 EEG_Parameters
@@ -39,28 +39,29 @@ for Indx_T = 1:numel(Targets)
         EEG = pop_loadset('filepath', Source, 'filename', Filename_Source);
         
         Data = struct();
+        ChosenChannels = struct();
         
         % select best channel available
-        Data.EEG.O1 = EEG.data(GetBestElectrode(EEG, EEG_Channels.O1), :);
-        Data.EEG.O2 =  EEG.data(GetBestElectrode(EEG, EEG_Channels.O2), :);
-        Data.EEG.M1 =  EEG.data(GetBestElectrode(EEG, EEG_Channels.M1), :);
-        Data.EEG.M2 =  EEG.data(GetBestElectrode(EEG, EEG_Channels.M2), :);
-        Data.EEG.EOG1 =  EEG.data(GetBestElectrode(EEG, EEG_Channels.EOG1), :);
-        Data.EEG.EOG2 =  EEG.data(GetBestElectrode(EEG, EEG_Channels.EOG2), :);
+        Channels =  GetBestElectrode(EEG, [EEG_Channels.O1', EEG_Channels.O2']);
+        Data.EEG.O1 = EEG.data(Channels(1), :);
+        Data.EEG.O2  = EEG.data(Channels(2), :);
+        ChosenChannels.O = {EEG.chanlocs(Channels).labels};
         
-        % back up if there are no eye channels
-        if isempty(Data.EEG.EOG1) || isempty(Data.EEG.EOG2)
-            Data.EEG.EOG1 =  EEG.data(GetBestElectrode(EEG, EEG_Channels.EOG1v2), :);
-            Data.EEG.EOG2 =  EEG.data(GetBestElectrode(EEG, EEG_Channels.EOG2v2), :);
-            
-            if isempty(Data.EEG.EOG1) || isempty(Data.EEG.EOG2)
-                error(['No eye channels left for ', Filename_Source])
-            end
-        end
+        Channels =  GetBestElectrode(EEG, [EEG_Channels.M1', EEG_Channels.M2']);
+        Data.EEG.M1 = EEG.data(Channels(1), :);
+        Data.EEG.M2  = EEG.data(Channels(2), :);
+        ChosenChannels.M = {EEG.chanlocs(Channels).labels};
+        
+        Channels =  GetBestElectrode(EEG, [EEG_Channels.EOG1', EEG_Channels.EOG2']);
+        Data.EEG.EOG1 = EEG.data(Channels(1), :);
+        Data.EEG.EOG2  = EEG.data(Channels(2), :);
+        ChosenChannels.EOG = {EEG.chanlocs(Channels).labels};
+        
+        
         
         Data.srate = EEG.srate;
         
-        save(fullfile(Destination, Filename_Destination), 'Data')
+        save(fullfile(Destination, Filename_Destination), 'Data', 'ChosenChannels')
         
         disp(['***********', 'Finished ', Filename_Destination, '***********'])
     end
