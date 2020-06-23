@@ -1,4 +1,4 @@
-function SaveScoring(Destination, Name, ScoringData, sp1, sp2)
+function SaveScoring(Destination, FolderName, FileName, ScoringData, sp1, sp2)
 % Saves the matrix ScoringData such that:
 % row 1: EMG
 % row 2: EOG1
@@ -9,30 +9,33 @@ function SaveScoring(Destination, Name, ScoringData, sp1, sp2)
 % if you have different inputs, you'll need to change the header template
 
 % limit filename size
-if length(Name) > 15 % there is a limit to the size of the filename, I'm just guessing that 15 characters is ok
-    Name = Name(1:15);
-    warning(['had to shorten name to: ', Name])
+if length(FileName) > 15 % there is a limit to the size of the filename, I'm just guessing that 15 characters is ok
+    FileName = FileName(1:15);
+    warning(['had to shorten name to: ', FileName])
 end
 
 % Create folder for sleepscoring file, with software for scoring it
-Destination = fullfile(Destination, Name);
-copyfile(fullfile(cd, 'ScoringFunctions', 'ScoringProgramTemplate/'), Destination)
+Destination = fullfile(Destination, FolderName);
+
+Template_Location = [extractBefore(mfilename('fullpath'), 'SaveScoring'), 'ScoringProgramTemplate'];
+
+copyfile(Template_Location, Destination)
 
 % rename header file
-movefile(fullfile(Destination, 'Template_Header.HDR'), fullfile(Destination, [Name, '.HDR'])) % fancy?
+movefile(fullfile(Destination, 'Template_Header.HDR'), fullfile(Destination, [FileName, '.HDR'])) % fancy?
 
 % save eeg data
-fid = fopen(fullfile(Destination, [Name, '.r09']), 'w');
+fid = fopen(fullfile(Destination, [FileName, '.r09']), 'w');
 fwrite(fid, ScoringData, 'short')
 fclose(fid);
 
 % save sp1
-fid = fopen(fullfile(Destination, [Name, '.sp1']), 'w');
+fid = fopen(fullfile(Destination, [FileName, '.sp1']), 'w');
 fwrite(fid, sp1, 'float')
 fclose(fid);
 
 % save sp2
-fid = fopen(fullfile(Destination, [Name, '.sp2']), 'w');
+fid = fopen(fullfile(Destination, [FileName, '.sp2']), 'w');
 fwrite(fid, sp2, 'float')
 fclose(fid);
 

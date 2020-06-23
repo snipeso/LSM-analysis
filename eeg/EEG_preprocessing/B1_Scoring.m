@@ -9,6 +9,7 @@ Refresh = false;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+EEG_Parameters
 addpath(fullfile(Paths.Analysis, 'functions', 'eeg', 'ScoringFunctions'))
 
 % Consider only relevant subfolders
@@ -52,8 +53,9 @@ parfor Indx_D = 1:size(Folders.Datasets,1) % loop through participants
         Filename_SET = Content(SET, :);
         
         % set up destination location
-        Destination = fullfile(Paths.Preprocessed, Destination_Format, 'Scoring', Task);
-        Filename_Core = join([Folders.Datasets{Indx_D}, Levels(:)', Destination_Format], '_');
+        Destination = fullfile(Paths.Preprocessed, 'Scoring', 'Old_Scoring', Task);
+        Filename_Core = join([Folders.Datasets{Indx_D}, Levels(:)'], '_');
+        Filename_Core = Filename_Core{1};
 
         % create destination folder
         if ~exist(Destination, 'dir')
@@ -71,7 +73,7 @@ parfor Indx_D = 1:size(Folders.Datasets,1) % loop through participants
         %%% process the data
         
         % load file
-        EEG = LoadEEGLAB(Filepath, Sleep_Channels()); % loads a .set, selects relevant channels
+        EEG = LoadEEGLAB(Path, Sleep_Channels()); % loads a .set, selects relevant channels
         
         % filter and downsample the data
         EEG = FilterScoring(EEG);
@@ -83,7 +85,8 @@ parfor Indx_D = 1:size(Folders.Datasets,1) % loop through participants
         [sp1, sp2] = SpectrumScoring(ScoringData(Parameters(5).SpChannel, :), Parameters(5).fs);
         
         %%% Save
-        SaveScoring(Destination, Filename_Core, ScoringData, double(sp1), double(sp2));
+        Filename_Short = [Folders.Datasets{Indx_D}, '_', num2str(Indx_F)];
+        SaveScoring(Destination, Filename_Core, Filename_Short, ScoringData, double(sp1), double(sp2));
     end
 end
 
