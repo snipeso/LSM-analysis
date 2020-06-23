@@ -16,18 +16,9 @@ if size(Channels, 1) == 1 || size(Channels, 2) == 1
         return
     end
     
-    
-    for Indx_Ch = Channels
-        if ismember(Indx_Ch, EEG_Channels)
-            Index1 = find(strcmp(EEG_Channels, Indx_Ch)); % TODO: eventually make more succint
-            
-            if Indx_Ch ~= Channels(1)
-                disp(['Using ch ', Indx_Ch, ' instead of ', Channels(1), ' for ' EEG.filename])
-            end
-            return
-        end
-    end
-    
+    First = find(ismember(Channels, EEG_Channels), 1, 'first');
+    Index1 = find(strcmp(EEG_Channels,  Channels(First)));
+
 elseif size(Channels, 2) == 2 % check if there's 2 columns
     
     % check if there's a channel for both columns
