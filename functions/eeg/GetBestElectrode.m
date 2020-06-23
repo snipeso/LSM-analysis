@@ -49,7 +49,10 @@ elseif size(Channels, 2) == 2 % check if there's 2 columns
     % get the indexes in the channel structure
     Index1 = find(strcmp(EEG_Channels,  Channels(First1, 1)));
     Index2 = find(strcmp(EEG_Channels,  Channels(First2, 2)));
-
+    if First1 ~= 1 || First2 ~= 1
+        disp(['Using ch ', EEG_Channels{Index1}, ' & ', EEG_Channels{Index2}, ' instead of ', Channels(1), ' for ' EEG.filename])
+    end
+    
 else
     error('wrong size of matrix')
 end
