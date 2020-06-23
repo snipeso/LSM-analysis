@@ -8,7 +8,8 @@ if ~exist(Path, 'dir')
     mkdir(Path)
 end
 
-Hilbert_Short = log(Hilbert(:, round(StartTime*oldfs):round(EndTime*oldfs), :));
+% Hilbert_Short = log(Hilbert(:, round(StartTime*oldfs):round(EndTime*oldfs), :));
+Hilbert_Short = Hilbert(:, round(StartTime*oldfs):round(EndTime*oldfs), :);
 Points = size(Hilbert_Short, 2);
 Gap = (1/newfs)*Slowdown;
 
@@ -27,7 +28,8 @@ end
 % color limits
 CLims = zeros(numel(BandNames), 2);
 for Indx_B = 1:numel(BandNames)
-     All = log(Hilbert( :, :, Indx_B));
+%      All = log(Hilbert( :, :, Indx_B));
+All = Hilbert( :, :, Indx_B);
     CLims(Indx_B, :) = [quantile(All(:), .005), quantile(All(:), .995)];
 end
 CLims = [min(CLims(:, 1)), max(CLims(:, 2))];
@@ -44,7 +46,7 @@ for Indx_F = 1:Frames
             'gridscale', 200)
         title(BandNames{Indx_B}, 'FontSize', 14)
     end
-    
+    set(gcf,'color','w')
     drawnow
     frame = getframe(1);
     im = frame2im(frame);
