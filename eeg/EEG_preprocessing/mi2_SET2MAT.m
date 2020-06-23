@@ -41,12 +41,9 @@ for Indx_T = 1:numel(Targets)
         Data = struct();
         
         % select best channel available
-        Data.EEG.O1 = EEG.data(GetBestElectrode(EEG, EEG_Channels.O1), :);
-        Data.EEG.O2 =  EEG.data(GetBestElectrode(EEG, EEG_Channels.O2), :);
-        Data.EEG.M1 =  EEG.data(GetBestElectrode(EEG, EEG_Channels.M1), :);
-        Data.EEG.M2 =  EEG.data(GetBestElectrode(EEG, EEG_Channels.M2), :);
-        Data.EEG.EOG1 =  EEG.data(GetBestElectrode(EEG, EEG_Channels.EOG1), :);
-        Data.EEG.EOG2 =  EEG.data(GetBestElectrode(EEG, EEG_Channels.EOG2), :);
+        [Data.EEG.O1, Data.EEG.O2] =  EEG.data(GetBestElectrode(EEG, [EEG_Channels.O1', EEG_Channels.O2']), :);
+        [Data.EEG.M1, Data.EEG.M2] =  EEG.data(GetBestElectrode(EEG, [EEG_Channels.M1', EEG_Channels.M2']), :);
+        [Data.EEG.EOG1, Data.EEG.EOG2] =  EEG.data(GetBestElectrode(EEG, [EEG_Channels.EOG1', EEG_Channels.EOG2']), :);
         
         % back up if there are no eye channels
         if isempty(Data.EEG.EOG1) || isempty(Data.EEG.EOG2)
