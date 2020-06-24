@@ -1,6 +1,6 @@
 clear
 clc
-close all
+% close all
 
 PVT_Parameters
 
@@ -32,7 +32,7 @@ MeanRTs = nan(numel(Participants), numel(Sessions));
 MedianRTs = nan(numel(Participants), numel(Sessions));
 stdRTs = nan(numel(Participants), numel(Sessions));
 
-figure( 'units','normalized','outerposition',[0 0 .7 .7])
+
 for Indx_P = 1:numel(Participants)
     for Indx_S = 1:numel(Sessions)
         
@@ -48,11 +48,36 @@ for Indx_P = 1:numel(Participants)
         stdRTs(Indx_P, Indx_S) = std(RTs);
     end
 end
+figure( 'units','normalized','outerposition',[0 0 .7 .7])
 PlotFlames(AllAnswers, Sessions, SessionLabels, Participants, 'rt')
 title('Reaction Time Distributions')
 ylabel('RT (s)')
 ylim([0.1, 1])
 saveas(gcf,fullfile(Paths.Figures, [Task, '_RTs_Flames.jpg']))
+
+AllAnswers.speed =  num2cell(1./(cell2mat(AllAnswers.rt)));
+figure( 'units','normalized','outerposition',[0 0 .7 .7])
+PlotFlames(AllAnswers, Sessions, SessionLabels, Participants, 'speed')
+title('Speed Distributions')
+ylabel('Speed (s-1)')
+ylim([-5 5])
+saveas(gcf,fullfile(Paths.Figures, [Task, '_speed_Flames.jpg']))
+
+AllAnswers.speed2 =  num2cell(1./(1+cell2mat(AllAnswers.rt)));
+figure( 'units','normalized','outerposition',[0 0 .7 .7])
+PlotFlames(AllAnswers, Sessions, SessionLabels, Participants, 'speed2')
+title('Speed Distributions')
+ylabel('Speed (s-1)')
+ylim([0 1])
+saveas(gcf,fullfile(Paths.Figures, [Task, '_speed2_Flames.jpg']))
+
+AllAnswers.logrt =  num2cell(real(log(1000*cell2mat(AllAnswers.rt))));
+figure( 'units','normalized','outerposition',[0 0 .7 .7])
+PlotFlames(AllAnswers, Sessions, SessionLabels, Participants, 'logrt')
+ylim([4 9])
+title('LogRT Distributions')
+ylabel('Log RT')
+saveas(gcf,fullfile(Paths.Figures, [Task, '_logRT_Flames.jpg']))
 
 
 %plot means
