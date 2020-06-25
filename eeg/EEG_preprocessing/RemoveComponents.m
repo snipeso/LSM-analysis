@@ -45,6 +45,7 @@ eegplot(NewEEG.data(:, 100*EEG.srate:300*EEG.srate), 'srate', NewEEG.srate, ...
     'winlength', 20, 'position', [0 0 Pix(3) Pix(4)/2])
 
 if CheckOutput
+    pause(5)
     x = input(['Is ', Filename_Destination, ' ok? (y/n/s) '], 's');
 else
     x = 'y';
