@@ -6,6 +6,7 @@ clear
 Targets = {'LAT'};
 Data_Type = 'Wake';
 Refresh = false;
+CheckOutput = true;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 EEG_Parameters
@@ -64,14 +65,28 @@ for Indx_T = 1:numel(Targets)
         % remove bad components
         EEG = pop_subcomp(EEG, badcomps);
         
+        eegplot(EEG.data(:, 100*EEG.srate:300*EEG.srate), 'srate', EEG.srate, 'winlength', 20)
         
-        % save new dataset
-        pop_saveset(EEG, 'filename', Filename_Destination, ...
-            'filepath', Destination, ...
-            'check', 'on', ...
-            'savemode', 'onefile', ...
-            'version', '7.3');
         
-        disp(['***********', 'Finished ', Filename_Destination, '***********'])
+        if CheckOutput
+            x = input(['Is ', Filename_Destination, ' ok? (y/n) '], 's');
+        else
+            x = 'y';
+        end
+        
+        if strcmpi(x, 'y')
+            
+            % save new dataset
+            pop_saveset(EEG, 'filename', Filename_Destination, ...
+                'filepath', Destination, ...
+                'check', 'on', ...
+                'savemode', 'onefile', ...
+                'version', '7.3');
+            
+            disp(['***********', 'Finished ', Filename_Destination, '***********'])
+        else
+            disp(['***********', 'Skipping ', Filename_Destination, '***********'])
+        end
+        close all
     end
 end

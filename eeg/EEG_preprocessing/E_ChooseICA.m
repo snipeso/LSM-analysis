@@ -7,7 +7,8 @@ close all
 
 Target = 'LAT';
 Refresh = false;
-Filename = ['P03_LAT_Session2Beam1_ICA_Components.set'];
+% Filename = ['P03_LAT_Session2Beam1_ICA_Components.set'];
+Filename = [];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 EEG_Parameters
