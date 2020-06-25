@@ -53,7 +53,6 @@ for Indx_T = 1:numel(Targets)
         load(fullfile(Source_Components, Filename_Components), 'badcomps')
         
         % remove channels from Data that aren't in EEG
-        
         Data = pop_select(Data, 'channel', labels2indexes({EEG.chanlocs.labels}, Data.chanlocs));
         
         % rereference to average
