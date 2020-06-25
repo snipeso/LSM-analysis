@@ -63,7 +63,7 @@ if strcmpi(x, 'y')
     disp(['***********', 'Finished ', Filename_Destination, '***********'])
     close all
     Break = true;
-elseif strmpi(x, 'n')
+elseif strcmpi(x, 'n')
     RemoveComponents
 else
     Break = false;
