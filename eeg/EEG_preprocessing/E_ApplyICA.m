@@ -4,8 +4,8 @@ clear
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Targets = {'LAT'};
-Data = 'Wake';
-Refresh = true;
+Data_Type = 'Wake';
+Refresh = false;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 EEG_Parameters
@@ -16,7 +16,7 @@ for Indx_T = 1:numel(Targets)
     % get files and paths
     Source_ComponentData = fullfile(Paths.Preprocessed, 'ICA', 'Components', Target);
     Source_Components = fullfile(Paths.Preprocessed, 'ICA', 'BadComponents', Target);
-    Source_Data = fullfile(Paths.Preprocessed, Data, 'SET', Target);
+    Source_Data = fullfile(Paths.Preprocessed, Data_Type, 'SET', Target);
     Destination = fullfile(Paths.Preprocessed, 'ICA', 'Deblinked', Target);
     
     if ~exist(Destination, 'dir')
@@ -30,9 +30,9 @@ for Indx_T = 1:numel(Targets)
         
         % get filenames
         Filename_ComponentData = Files{Indx_F};
-        Filename_Data = replace(Filename_ComponentData, 'ICA_Components', Data);
-        Filename_Components = replace(Filename_Data, '.set', '.mat');
-        Filename_Destination = [extractBefore(Filename_Data, Data), 'Deblinked.set'];
+        Filename_Data = replace(Filename_ComponentData, 'ICA_Components', Data_Type);
+        Filename_Components = replace(Filename_ComponentData, '.set', '.mat');
+        Filename_Destination = [extractBefore(Filename_Data, Data_Type), 'Deblinked.set'];
         
         % skip if file already exists
         if ~Refresh && exist(fullfile(Destination, Filename_Destination), 'file')
