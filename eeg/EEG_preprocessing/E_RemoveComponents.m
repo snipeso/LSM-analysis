@@ -1,6 +1,7 @@
 
 
 clear
+eeglab
 close all
 clc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -72,8 +73,9 @@ for Indx_F = 1:numel(Files) % loop through files in source folder
     % rereference to average
     Data = pop_reref(Data, []);
     
-    RemoveComponents(Data,EEG, Filename_Comps, Source_Comps, ...
-        Filename_Destination, Destination, CheckOutput)
-    
-    break
+    RemoveComponents
+    if Break
+        break
+    end
+
 end
