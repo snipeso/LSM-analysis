@@ -2,6 +2,8 @@ clear
 clc
 close all
 
+wp_Parameters
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Scaling = 'log'; % either 'log' or 'norm'
