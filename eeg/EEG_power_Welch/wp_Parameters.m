@@ -19,6 +19,13 @@ Freqs = [1:FreqRes:30];
 Window = 4; % window for epochs when looking at general power;
 
 
+saveFreqs = struct();
+saveFreqs.Delta = [1 4];
+saveFreqs.Theta = [4.5 7.5];
+saveFreqs.Alpha = [8.5 12.5];
+saveFreqs.Beta = [14 25];
+saveFreqFields = fieldnames(saveFreqs);
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Do stuff
 
