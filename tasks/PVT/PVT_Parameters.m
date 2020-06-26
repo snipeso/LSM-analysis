@@ -1,6 +1,10 @@
 % get general parameters (script in main folder of LSM-analysis)
 run(fullfile(extractBefore(mfilename('fullpath'), 'tasks'), 'General_Parameters'))
 
+Paths.Datasets ='D:\LSM\data';
+Paths.Preprocessed = 'C:\Users\schlaf\Desktop\LSMData';
+
+
 % Locations
 Paths.Responses = fullfile(Paths.Analysis, 'tasks', 'data');
 
