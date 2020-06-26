@@ -11,6 +11,8 @@ Paths.Analysis = extractBefore(Paths.Analysis, 'General_Parameters');
 Paths.Figures = fullfile(Paths.Analysis, 'figures');
 Paths.Preprocessing = fullfile(Paths.Analysis, 'EEG_preprocessing');
 
+
+
 % add location of subfunctions
 addpath(fullfile(Paths.Analysis, 'functions','general'))
 addpath(fullfile(Paths.Analysis, 'functions','plots'))
@@ -68,10 +70,9 @@ Colors.PVT(3, :);
 Colors.PVT(4, :);   
 ];
 
-Colors.Tasks = [
-Colors.LAT(3, :); % LAT
-Colors.PVT(3, :);
-];
+
+Colors.Tasks.LAT = Colors.LAT(3, :);
+Colors.Tasks.PVT = Colors.PVT(3, :);
 
 % Sessions
 allSessions = struct(); % labels used in saving data

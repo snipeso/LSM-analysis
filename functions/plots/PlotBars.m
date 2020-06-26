@@ -1,8 +1,9 @@
-function PlotBars(Data, Errors, xLabels)
+function PlotBars(Data, Errors, xLabels, Color1)
 % PValues is a cell array with 2 elements, the first contains a list of pvalues
 % for the major segments
 
-Colors = plasma(size(Data, 2)+1);
+Colors = ColorGradient(Color1, size(Data, 2), 'light');
+
 
 h = bar(Data, 'grouped', 'EdgeColor', 'none', 'FaceColor', 'flat');
 

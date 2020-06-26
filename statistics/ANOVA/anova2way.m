@@ -7,9 +7,11 @@ Stats_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-DataPath = fullfile(Paths.Analysis, 'Statistics', 'ANOVA', 'Data'); % for statistics
 
-Task = 'LATandPVT';
+Task = 'PVT';
+FigureFolder = 'NeuroMeets';
+
+DataPath = fullfile(Paths.Analysis, 'statistics', 'ANOVA', 'Data', Task); % for statistics
 
 % Data type
 
@@ -17,9 +19,9 @@ Task = 'LATandPVT';
 % YLabel = '%';
 % Loggify = false; % msybe?
 % 
-% Type = 'theta';
-% YLabel = 'Power (log)';
-% Loggify = true;
+Type = 'Theta';
+YLabel = 'Power (log)';
+Loggify = true;
 % 
 % Type = 'meanRTs';
 % YLabel = 'RTs (log(s))';
@@ -30,9 +32,9 @@ Task = 'LATandPVT';
 % Loggify = false;
 
 % 
-Type = 'miDuration';
-YLabel = 'Seconds (log)';
-Loggify = false;
+% Type = 'miDuration';
+% YLabel = 'Seconds (log)';
+% Loggify = false;
 
 
 
@@ -61,12 +63,12 @@ end
 Groups = repmat([1 2 3], 10, 1);
 Levenetest([ClassicMatrix(:), Groups(:); SopoMatrix(:), 3+Groups(:)],.05)
 % 
-% % % z-score
-% for Indx_P = 1:numel(Participants)
-%     All = zscore([ClassicMatrix(Indx_P, :), SopoMatrix(Indx_P, :)]);
-%     ClassicMatrix(Indx_P, :) = All(1:size(ClassicMatrix, 2));
-%     SopoMatrix(Indx_P, :) = All(size(ClassicMatrix, 2)+1:end);
-% end
+% z-score
+for Indx_P = 1:numel(Participants)
+    All = zscore([ClassicMatrix(Indx_P, :), SopoMatrix(Indx_P, :)]);
+    ClassicMatrix(Indx_P, :) = All(1:size(ClassicMatrix, 2));
+    SopoMatrix(Indx_P, :) = All(size(ClassicMatrix, 2)+1:end);
+end
 
 SopMeans = nanmean(SopoMatrix);
 SopSEM = std(SopoMatrix)./sqrt(size(SopoMatrix, 1));
@@ -124,7 +126,7 @@ C_S1vS2= SxC.pValue(strcmp(SxC.Condition, 'C')&strcmp(SxC.Session_1, 'S1')& strc
 % plot barplots
 figure('units','normalized','outerposition',[0 0 .4 .4])
 subplot(1, 3, 1)
-PlotBars([ClassicMeans; SopMeans]', [ClassicSEM; SopSEM]', {'BL', 'S1', 'S2'})
+PlotBars([ClassicMeans; SopMeans]', [ClassicSEM; SopSEM]', {'BL', 'S1', 'S2'}, Colors.Tasks.(Task))
 legend({'Classic', 'Soporific'}, 'Location', 'southeast','AutoUpdate','off')
 title([Task, ' ', Type])
 ylabel(YLabel)
@@ -211,7 +213,7 @@ title(['Hedges g'])
 ylim([-3 7])
 
 
-saveas(gcf,fullfile(Paths.Figures, 'ESRSPoster', [Type, '_Stats_', Task, '_timeXcondition.svg']))
+saveas(gcf,fullfile(Paths.Figures, FigureFolder, [Type, '_Stats_', Task, '_timeXcondition.svg']))
 
 % plot all values
 % All =[ClassicMatrix(:); SopoMatrix(:)];
