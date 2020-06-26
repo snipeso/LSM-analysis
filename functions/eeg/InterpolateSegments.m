@@ -3,7 +3,7 @@ function [EEGnew, badchans] = InterpolateSegments(EEG, Cuts_Filepath, EEG_Channe
 % set size.
 
 EEGnew = EEG;
-notEEG = [EEG_Channels.EMG, EEG_Channels.face, EEG_Channels.neck, EEG_Channels.mastoids];
+notEEG = EEG_Channels.notEEG;
 
 ChanLabels = {EEG.chanlocs.labels};
 
@@ -70,7 +70,11 @@ end
 % provide new indexes of manually marked bad channels
 RemoveChannels = string(unique(badchans));
 [~, badchans] = intersect(ChanLabels, RemoveChannels);
+badchans = unique(badchans); % this is a bit redundant, because all the bad channels were removed before the ICA
 
+if ~isempty(badchans)
+    A =1;
+end
 
 if exist('PlotData', 'var') && PlotData
      eegplot(EEG.data, 'srate', EEG.srate, 'winlength', 30, 'data2', EEGnew.data)

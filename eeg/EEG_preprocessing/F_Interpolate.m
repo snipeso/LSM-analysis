@@ -17,15 +17,19 @@ SpotCheck = true;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 EEG_Parameters
 
+% get final channels
+load('StandardChanlocs128.mat', 'StandardChanlocs')
+StandardChanlocs(EEG_Channels.notEEG) = [];
+
 
 for Indx_T = 1:numel(Targets)
     
     Target = Targets{Indx_T};
     
     % get files and paths
-    Source_EEG = fullfile(Paths.Preprocessed, 'Deblinked', Target); %TODO: change
+    Source_EEG = fullfile(Paths.Preprocessed, 'ICA', 'Deblinked', Target);
     Source_Cuts = fullfile(Paths.Preprocessed, 'Cleaning', 'Cuts', Target);
-    Destination = fullfile(Paths.Preprocessed, 'Interpolated', Target);
+    Destination = fullfile(Paths.Preprocessed, 'Interpolated', 'SET', Target);
     
     if ~exist(Destination, 'dir')
         mkdir(Destination)
@@ -38,8 +42,8 @@ for Indx_T = 1:numel(Targets)
         
         % get filenames
         Filename_Source_EEG = Files{Indx_F};
-        Filename_Cuts =  [extractBefore(Filename_Source_EEG,'_ICAd.set'), '_Cuts.mat'];
-        Filename_Destination = [extractBefore(Filename_Source_EEG,'.set'), '_Interped.set'];
+        Filename_Cuts =  [extractBefore(Filename_Source_EEG,'_Deblinked.set'), '_Cleaning_Cuts.mat'];
+        Filename_Destination = [extractBefore(Filename_Source_EEG,'_Deblinked.set'), '_Clean.set'];
         
         % skip filtering if file already exists
         if ~Refresh && exist(fullfile(Destination, Filename_Destination), 'file')
@@ -58,12 +62,10 @@ for Indx_T = 1:numel(Targets)
           
         
         % interpolate bad channels
-        EEGtemp = pop_select(EEGnew, 'nochannel', unique([badchans, notEEG])); % NOTE: this also takes out the not EEG channels and interpolates them; this is fine, we ignore it, but you have to remove them because otherwise they contribute to the interpolation
-        EEGtemp = pop_interp(EEGtemp, EEG.chanlocs);
+        RemoveChannels =  labels2indexes(unique([badchans, EEG_Channels.notEEG]), EEGnew.chanlocs);
+        EEGnew = pop_select(EEGnew, 'nochannel', RemoveChannels); % NOTE: this also takes out the not EEG channels and interpolates them; this is fine, we ignore it, but you have to remove them because otherwise they contribute to the interpolation
+        EEGnew = pop_interp(EEGnew, StandardChanlocs);
         
-        % replace only bad channels, and not "not EEG" channels
-        badchans = badchans(~ismember(badchans, notEEG));
-        EEGnew.data(badchans, :) = EEGtemp.data(badchans, :);
         
         
         pop_saveset(EEGnew,  'filename', Filename_Destination, ...
@@ -72,10 +74,6 @@ for Indx_T = 1:numel(Targets)
             'savemode', 'onefile', ...
             'version', '7.3');
         
-        % randomly plot normal eeg with interpolated eeg on top
-        if SpotCheck && randi(SpotCheckFrequency) == 1
-            eegplot(EEG.data, 'srate', EEG.srate, 'data2', EEGnew.data)
-        end
         
         clear badchans cutData filename filepath TMPREJ
     end
