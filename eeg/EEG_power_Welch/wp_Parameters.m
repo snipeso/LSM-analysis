@@ -1,11 +1,22 @@
 
 % get general parameters (script in main folder of LSM-analysis)
-run(fullfile(extractBefore(mfilename('fullpath'), 'EEG_power_Welch'), 'General_Parameters'))
+run(fullfile(extractBefore(mfilename('fullpath'), 'eeg'), 'General_Parameters'))
+addpath(fullfile(Paths.Analysis, 'functions','eeg'))
 
-% Locations
-Paths.wp = fullfile(Paths.Analysis, 'WelchPower');
+%%% locations
+% Paths.Preprocessed = 'C:\Users\colas\Desktop\FakeDataPreprocessedEEG'; % Sophia laptop
+
+% Paths.Preprocessed = 'L:\Somnus-Data\Data01\LSM\Data\Preprocessed'; % Work desktop
+
+Paths.Preprocessed = 'C:\Users\schlaf\Desktop\LSMData'; % the Brick
+
+
 
 % Parameters
 FreqRes = 0.25;
 Freqs = [1:FreqRes:30];
 Window = 4; % window for epochs when looking at general power;
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Do stuff

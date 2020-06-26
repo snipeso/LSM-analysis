@@ -13,9 +13,6 @@ addpath(fullfile(Paths.Analysis, 'functions','eeg'))
 Paths.Datasets ='D:\LSM\data';
 Paths.Preprocessed = 'C:\Users\schlaf\Desktop\LSMData';
 
-
-Paths.Logs = fullfile(Paths.Preprocessed, 'Logs');
-
 Folders = struct();
 
 Folders.Template = 'PXX';

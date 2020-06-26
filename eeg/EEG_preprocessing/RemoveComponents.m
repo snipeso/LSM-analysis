@@ -37,14 +37,23 @@ NewEEG = pop_subcomp(NewEEG, badcomps);
 % low-pass filter
 NewEEG = pop_eegfiltnew(NewEEG, [], 40); % for whatever reason, sometimes ICA removal introduced high frequency noise
 
-% show
-Pix = get(0,'screensize');
-eegplot(Data.data(:, 100*EEG.srate:300*EEG.srate), 'spacing', 20, 'srate', NewEEG.srate, ...
-    'winlength', 20, 'position', [0 Pix(4)/2 Pix(3) Pix(4)/2])
-eegplot(NewEEG.data(:, 100*EEG.srate:300*EEG.srate),'spacing', 20, 'srate', NewEEG.srate, ...
-    'winlength', 20, 'position', [0 0 Pix(3) Pix(4)/2])
+
+
 
 if CheckOutput
+    % % show
+% Pix = get(0,'screensize');
+% eegplot(Data.data(:, 100*EEG.srate:300*EEG.srate), 'spacing', 20, 'srate', NewEEG.srate, ...
+%     'winlength', 20, 'position', [0 Pix(4)/2 Pix(3) Pix(4)/2])
+% eegplot(NewEEG.data(:, 100*EEG.srate:300*EEG.srate),'spacing', 20, 'srate', NewEEG.srate, ...
+%     'winlength', 20, 'position', [0 0 Pix(3) Pix(4)/2])
+
+% show
+Pix = get(0,'screensize');
+eegplot(Data.data(:, 200*EEG.srate:400*EEG.srate), 'spacing', 20, 'srate', NewEEG.srate, ...
+    'winlength', 20, 'position', [0 0 Pix(3) Pix(4)])
+eegplot(NewEEG.data(:, 200*EEG.srate:400*EEG.srate),'spacing', 20, 'srate', NewEEG.srate, ...
+    'winlength', 20, 'position', [0 0 Pix(3) Pix(4)])
     pause(5)
     x = input(['Is ', Filename_Destination, ' ok? (y/n/s) '], 's');
 else

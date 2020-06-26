@@ -6,7 +6,7 @@ close all
 clc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Target = 'LAT';
+Target = 'PVT';
 Refresh = false;
 Data_Type = 'Wake';
 % Filename = ['P03_LAT_Session2Beam1_ICA_Components.set'];
