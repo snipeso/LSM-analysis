@@ -25,3 +25,4 @@ Window = 4; % window for epochs when looking at general power;
 if ~exist(Paths.Summary, 'dir')
     mkdir(Paths.Summary)
 end
+
