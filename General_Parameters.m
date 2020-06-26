@@ -25,7 +25,41 @@ if ~exist('topoplot', 'file')
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% Labels
+%%% Labels & Colors
+
+% Colors
+Colors = struct();
+Colormap = struct();
+Colormap.Linear = flip(colorcet('L17'));
+Colormap.Divergent = colormap(rdbu);
+
+% LAT v PVT
+% TV v Music v LAT v    
+% S1 vs S2 vs S3
+% Comp v Beam
+
+Colors.LAT = [
+   10, 3, 155;
+   117, 0, 168;
+   187, 53, 134;
+   229, 108, 91;
+   250, 157, 58;
+   252, 200, 37;
+   59, 104, 0;
+]./255; % RGB to sRGB
+
+Colors.PVT = [
+70, 9, 92;
+50, 98, 141;
+30, 155, 137;
+137, 213, 70;
+119, 49, 49
+]/255;
+
+Colors.Tasks = [
+Colors.LAT(3, :); % LAT
+Colors.PVT(3, :);
+];
 
 % Sessions
 allSessions = struct(); % labels used in saving data
@@ -34,6 +68,7 @@ allSessionLabels = struct(); % labels used to display in plots
 % Labels for task battery
 allSessions.BAT = {'Baseline', 'Session1', 'Session2'};
 allSessionLabels.BAT = {'BL', 'S1', 'S2'};
+Colors.BAT = {[0 0 0], [.3 .3 .3], [.7 .7 .7]};
 
 % Labels for LAT "beamer" condition; a.k.a. "soporific"
 allSessions.Beam = {'BaselineBeam', 'Session1Beam', 'Session2Beam1'};
@@ -118,6 +153,8 @@ EEG_Triggers.LAT.StartRight = 'S 11';
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% Do stuff
 
 if ~exist(Paths.Figures, 'dir')
     mkdir(Paths.Figures)

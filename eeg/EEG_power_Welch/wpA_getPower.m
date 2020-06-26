@@ -19,8 +19,8 @@ for Indx_T = 1:numel(Tasks)
     
     % get files and paths
     Source = fullfile(Paths.Preprocessed, 'Interpolated', 'SET', Task);
-     Source_Cuts = fullfile(Paths.Preprocessed, 'Cleaning', 'Cuts', Task);
-    Destination= fullfile(Paths.Preprocessed, 'Power', 'WelchPower', Task);
+    Source_Cuts = fullfile(Paths.Preprocessed, 'Cleaning', 'Cuts', Task);
+    Destination= fullfile(Paths.WelchPower, Task);
     
     if ~exist(Destination, 'dir')
         mkdir(Destination)
@@ -68,7 +68,7 @@ for Indx_T = 1:numel(Tasks)
         
         % get power for all the epochs
         Power = WelchSpectrum(EEG, Freqs, Edges);
-
+        
         parsave(fullfile(Destination, Filename), Power)
         disp(['*************finished ',Filename '*************'])
         
