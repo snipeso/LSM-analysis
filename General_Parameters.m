@@ -11,6 +11,8 @@ Paths.Analysis = extractBefore(Paths.Analysis, 'General_Parameters');
 Paths.Figures = fullfile(Paths.Analysis, 'figures');
 Paths.Preprocessing = fullfile(Paths.Analysis, 'EEG_preprocessing');
 
+
+
 % add location of subfunctions
 addpath(fullfile(Paths.Analysis, 'functions','general'))
 addpath(fullfile(Paths.Analysis, 'functions','plots'))
@@ -25,7 +27,52 @@ if ~exist('topoplot', 'file')
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% Labels
+%%% Labels & Colors
+
+% Colors
+Colors = struct();
+Colormap = struct();
+Colormap.Linear = flip(colorcet('L17'));
+% Colormap.Divergent = colormap(rdbu);
+
+% LAT v PVT
+% TV v Music v LAT v    
+% S1 vs S2 vs S3
+% Comp v Beam
+
+Colors.LAT = [
+   10, 3, 155; % BL
+   117, 0, 168; % pre
+   187, 53, 134; % S1
+   229, 108, 91; % S2-1
+   250, 157, 58; %S2-2
+   252, 200, 37; % S2-3
+   59, 104, 0; % post
+]./255; % RGB to sRGB
+
+Colors.LATBeam = [
+Colors.LAT(1, :);   
+Colors.LAT(3, :); 
+Colors.LAT(5, :);   
+];
+
+Colors.PVT = [
+70, 9, 92;
+50, 98, 141;
+30, 155, 137;
+137, 213, 70;
+119, 49, 49
+]/255;
+
+Colors.PVTBeam = [
+Colors.PVT(1, :);   
+Colors.PVT(3, :); 
+Colors.PVT(4, :);   
+];
+
+
+Colors.Tasks.LAT = Colors.LAT(3, :);
+Colors.Tasks.PVT = Colors.PVT(3, :);
 
 % Sessions
 allSessions = struct(); % labels used in saving data
@@ -34,22 +81,29 @@ allSessionLabels = struct(); % labels used to display in plots
 % Labels for task battery
 allSessions.BAT = {'Baseline', 'Session1', 'Session2'};
 allSessionLabels.BAT = {'BL', 'S1', 'S2'};
+Colors.BAT = {[0 0 0], [.3 .3 .3], [.7 .7 .7]};
 
 % Labels for LAT "beamer" condition; a.k.a. "soporific"
-allSessions.Beam = {'BaselineBeam', 'Session1Beam', 'Session2Beam1'};
-allSessionLabels.Beam = {'S-BL', 'S-S1', 'S-S2'};
+allSessions.LATBeam = {'BaselineBeam', 'Session1Beam', 'Session2Beam1'};
+allSessionLabels.LATBeam = {'S-BL', 'S-S1', 'S-S2'};
 
 % Labels for LAT "computer" condition, a.k.a. "classic"
-allSessions.Comp =  {'BaselineComp', 'Session1Comp', 'Session2Comp'};
-allSessionLabels.Comp = {'C-BL', 'C-S1', 'C-S2'};
+allSessions.LATComp =  {'BaselineComp', 'Session1Comp', 'Session2Comp'};
+allSessionLabels.LATComp = {'C-BL', 'C-S1', 'C-S2'};
 
 % Labels for PVT beamer (comp is same as LAT)
 allSessions.PVTBeam = {'BaselineBeam', 'Session1Beam', 'Session2Beam'};
-allSessionLabels.PVTBeam = allSessionLabels.Beam;
+allSessionLabels.PVTBeam = allSessionLabels.LATBeam;
+
+allSessions.PVTComp =  allSessions.LATComp;
+allSessionLabels.PVTComp = allSessionLabels.LATComp;
+
 
 % Labels for all of LAT beamer conditions
-allSessions.LAT = {'BaselineBeam', 'MainPre', 'Session1Beam', 'Session2Beam1', 'Session2Beam2', 'Session2Beam3', 'MainPost'};
-allSessionLabels.LAT = {'BL', 'Pre', 'S1', 'S2-1', 'S2-2', 'S2-3', 'Post'};
+allSessions.LATAllBeam = {'BaselineBeam', 'MainPre', 'Session1Beam', 'Session2Beam1', 'Session2Beam2', 'Session2Beam3', 'MainPost'};
+allSessionLabels.LATAllBeam = {'BL', 'Pre', 'S1', 'S2-1', 'S2-2', 'S2-3', 'Post'};
+
+
 
 % Labels for only LAT beamer conditions
 allSessions.SD3 = {'Session2Beam1', 'Session2Beam2', 'Session2Beam3'};
@@ -118,6 +172,8 @@ EEG_Triggers.LAT.StartRight = 'S 11';
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% Do stuff
 
 if ~exist(Paths.Figures, 'dir')
     mkdir(Paths.Figures)

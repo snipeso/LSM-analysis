@@ -16,6 +16,7 @@ CheckOutput = true;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 EEG_Parameters
 
+
 % get files and paths
 Source_Comps = fullfile(Paths.Preprocessed, 'ICA', 'Components', Target);
 Source_Data = fullfile(Paths.Preprocessed, Data_Type, 'SET', Target);

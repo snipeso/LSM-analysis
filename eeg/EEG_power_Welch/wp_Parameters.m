@@ -10,7 +10,8 @@ addpath(fullfile(Paths.Analysis, 'functions','eeg'))
 
 Paths.Preprocessed = 'C:\Users\schlaf\Desktop\LSMData'; % the Brick
 
-
+Paths.Summary = fullfile(mfilename('fullpath'), 'SummaryData');
+Paths.WelchPower = fullfile(Paths.Preprocessed, 'Power', 'WelchPower');
 
 % Parameters
 FreqRes = 0.25;
@@ -18,5 +19,17 @@ Freqs = [1:FreqRes:30];
 Window = 4; % window for epochs when looking at general power;
 
 
+saveFreqs = struct();
+saveFreqs.Delta = [1 4];
+saveFreqs.Theta = [4.5 7.5];
+saveFreqs.Alpha = [8.5 12.5];
+saveFreqs.Beta = [14 25];
+saveFreqFields = fieldnames(saveFreqs);
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Do stuff
+
+if ~exist(Paths.Summary, 'dir')
+    mkdir(Paths.Summary)
+end
+

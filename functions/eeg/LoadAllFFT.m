@@ -14,7 +14,6 @@ for Indx_F = 1:numel(Files)
     allFFT(Indx_F).FFT = Power.FFT;
     allFFT(Indx_F).Freqs = Power.Freqs;
     allFFT(Indx_F).Chanlocs = Power.Chanlocs;
-    allFFT(Indx_F).Blocks = Power.Blocks;
     allFFT(Indx_F).Filename = File;
     Categories(:, Indx_F) = split(File, '_'); 
 end

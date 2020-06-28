@@ -6,20 +6,21 @@ close all
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Targets = {'LAT'};
+Tasks = {'LAT', 'PVT'};
 Refresh = false;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 wp_Parameters
 
-for Indx_T = 1:numel(Targets)
+for Indx_T = 1:numel(Tasks)
     
-    Target = Targets{Indx_T};
+    Task = Tasks{Indx_T};
     
     % get files and paths
-    Source = fullfile(Paths.Preprocessed, 'Clean', Task);
-    Destination= fullfile(Paths.Preprocessed, 'Power', 'WelchPower', Task);
+    Source = fullfile(Paths.Preprocessed, 'Interpolated', 'SET', Task);
+    Source_Cuts = fullfile(Paths.Preprocessed, 'Cleaning', 'Cuts', Task);
+    Destination= fullfile(Paths.WelchPower, Task);
     
     if ~exist(Destination, 'dir')
         mkdir(Destination)
@@ -30,10 +31,10 @@ for Indx_T = 1:numel(Targets)
     
     parfor Indx_F = 1:numel(Files)
         File = Files{Indx_F};
-        Filename = [extractBefore(File, '.set'), '_wp.mat'];
+        Filename = [extractBefore(File, '_Clean.set'), '_wp.mat'];
         
         % skip if already done
-        if ~Refresh && exist(fullfile(Paths.powerdata, Filename), 'file')
+        if ~Refresh && exist(fullfile(Destination, Filename), 'file')
             disp(['**************already did ',Filename, '*************'])
             continue
         end
@@ -44,17 +45,16 @@ for Indx_T = 1:numel(Targets)
         
         %%% Set as nan all noise
         % remove nonEEG channels
-        EEG = pop_select(EEG, 'nochannel', notEEG);
         [Channels, Points] = size(EEG.data);
         fs = EEG.srate;
         
         % remove start and stop
-        StartPoint = EEG.event(strcmpi({EEG.event.type}, StartMain)).latency;
-        EndPoint =  EEG.event(strcmpi({EEG.event.type}, EndMain)).latency;
+        StartPoint = EEG.event(strcmpi({EEG.event.type}, EEG_Triggers.Start)).latency;
+        EndPoint =  EEG.event(strcmpi({EEG.event.type},  EEG_Triggers.End)).latency;
         EEG.data(:, [1:round(StartPoint),  round(EndPoint):end]) = nan;
         
         % set to nan all cut data
-        Cuts_Filepath = fullfile(Paths.Cuts, [extractBefore(File, '_Clean'), '_wp.mat']);
+        Cuts_Filepath = fullfile(Source_Cuts, [extractBefore(File, '_Clean'), '_Cleaning_Cuts.mat']);
         EEG = nanNoise(EEG, Cuts_Filepath);
         
         
@@ -68,8 +68,8 @@ for Indx_T = 1:numel(Targets)
         
         % get power for all the epochs
         Power = WelchSpectrum(EEG, Freqs, Edges);
-
-        parsave(fullfile(Paths.powerdata, Filename), Power)
+        
+        parsave(fullfile(Destination, Filename), Power)
         disp(['*************finished ',Filename '*************'])
         
     end
