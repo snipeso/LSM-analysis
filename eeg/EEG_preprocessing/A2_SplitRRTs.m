@@ -50,7 +50,8 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
         end
         
         
-Content = contains(string(ls(Path)), '.set');
+        Content = ls(Paths_Fixation);
+        SET = contains(string(Content), '.set');
         Filename.SET = Content(SET, :);
         
         % if not going to refresh and file already split, skip
@@ -85,7 +86,7 @@ Content = contains(string(ls(Path)), '.set');
                 'savemode', 'onefile', ...
                 'version', '7.3');
         catch
-            warning(['couldnt make fixation file for ', Filename.SET]) % TODO: add to log
+             warning(['couldnt make fixation file for ', Filename.SET]) % TODO: add to log
         end
         
         try
@@ -164,9 +165,9 @@ Content = ls(Path);
 SET = contains(string(Content), '.set');
 
 if ~any(SET)
-    warning([Paths_Fixation, ' is missing EEG files'])
+    warning([Path, ' is missing EEG files'])
 elseif nnz(SET) > 1
-    warning([Paths_Fixation, ' has more than one eeg file'])
+    warning([Path, ' has more than one eeg file'])
 else
     IsPresent = true;
 end

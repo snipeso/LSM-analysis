@@ -5,10 +5,10 @@ function T = CheckData(DataPath, TemplateFolder, Ignore_Folders)
 OtherIgnoreFolders = {'CSVs'};
 
 % make path for CSV destination
-CSVFolder = fullfile(DataPath, 'CSVs');
-if ~exist(CSVFolder, 'dir')
-    mkdir(CSVFolder)
-end
+% CSVFolder = fullfile(DataPath, 'CSVs');
+% if ~exist(CSVFolder, 'dir')
+%     mkdir(CSVFolder)
+% end
 
 
 %%% get all expected subfolders
@@ -87,4 +87,4 @@ end
 
 % save as csv
 T = struct2table(AllFiles);
-writetable(T, [CSVFolder, 'AllFiles.csv'])
+% writetable(T, [CSVFolder, 'AllFiles.csv'])
