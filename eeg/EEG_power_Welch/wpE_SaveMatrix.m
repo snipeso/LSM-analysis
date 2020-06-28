@@ -8,7 +8,7 @@ close all
 wp_Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Task = 'LAT';
+Task = 'PVT';
 % Session = 'Beam';
 % Title = 'Soporific';
 
@@ -22,7 +22,7 @@ Refresh = false;
 
 Sessions = allSessions.([Task,Session]);
 SessionLabels = allSessionLabels.([Task, Session]);
-Paths.ANOVA = fullfile(Paths.Analysis, 'statistics', 'ANOVA', 'Data',Task);
+Paths.ANOVA = fullfile(Paths.Analysis, 'statistics','Data',Task);
 
 if ~exist(Paths.ANOVA, 'dir')
     mkdir(Paths.ANOVA)
@@ -66,7 +66,7 @@ for Indx_F = 1:numel(saveFreqFields) % loop through frequency bands
             
         end
     end
-    Filename = [Task, '_', saveFreqFields{Indx_F}, '_', Title, '.mat'];
+    Filename = [Task, '_', saveFreqFields{Indx_F}, '_', Title, '.mat']
     save(fullfile(Paths.ANOVA, Filename), 'Matrix')
 end
 

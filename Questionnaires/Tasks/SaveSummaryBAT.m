@@ -6,16 +6,16 @@ Q_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Task = 'PVT';
+Task = 'LAT';
 filename = [Task, '_All.csv'];
 
-Session = 'Comp';
-Title = 'Classic';
+% Session = 'Comp';
+% Title = 'Classic';
 
 
 % % main beamer tasks
-% Session = 'Beam';
-% Title = 'Soporific';
+Session = 'Beam';
+Title = 'Soporific';
 
 % sleep dep sessions
 % Sessions = allSessions.SD3;

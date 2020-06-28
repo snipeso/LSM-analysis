@@ -1,6 +1,6 @@
 clear
 clc
-% close all
+close all
 
 
 Stats_Parameters
@@ -8,7 +8,7 @@ Stats_Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-Task = 'LAT';
+Task = 'PVT';
 FigureFolder = 'NeuroMeets';
 
 DataPath = fullfile(Paths.Analysis, 'statistics', 'Data', Task); % for statistics
@@ -18,10 +18,10 @@ DataPath = fullfile(Paths.Analysis, 'statistics', 'Data', Task); % for statistic
 % Type = 'Misses';
 % YLabel = '%';
 % Loggify = false; % msybe?
-% 
-Type = 'Theta';
-YLabel = 'Power (log)';
-Loggify = true;
+
+% Type = 'Theta';
+% YLabel = 'Power (log)';
+% Loggify = true;
 
 % Type = 'meanRTs';
 % YLabel = 'RTs (log(s))';
@@ -42,37 +42,41 @@ MES = 'eta2';
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+Figure_Path = fullfile(Paths.Figures, FigureFolder);
+if ~exist(fullfile(Figure_Path), 'dir')
+    mkdir(Figure_Path)
+end
 
 
-% load(fullfile(DataPath, [Task, '_', Type, '_Classic.mat']))
-% ClassicMatrix = Matrix;
-% if Loggify
-%     
-%     ClassicMatrix = log(ClassicMatrix+1);
-% end
-% 
-% load(fullfile(DataPath, [Task, '_', Type, '_Soporific.mat']))
-% SopoMatrix = Matrix;
-% 
-% if Loggify
-%     SopoMatrix = log(SopoMatrix+1);
-% end
-
-load(fullfile(DataPath, ['LAT_', Type, '_Soporific.mat']))
+load(fullfile(DataPath, [Task, '_', Type, '_Classic.mat']))
 ClassicMatrix = Matrix;
 if Loggify
     
     ClassicMatrix = log(ClassicMatrix+1);
 end
 
-DataPath = fullfile(Paths.Analysis, 'statistics', 'ANOVA', 'Data', 'PVT'); % for statistics
-
-load(fullfile(DataPath, ['PVT_', Type, '_Soporific.mat']))
+load(fullfile(DataPath, [Task, '_', Type, '_Soporific.mat']))
 SopoMatrix = Matrix;
 
 if Loggify
     SopoMatrix = log(SopoMatrix+1);
 end
+% 
+% load(fullfile(DataPath, ['LAT_', Type, '_Soporific.mat']))
+% ClassicMatrix = Matrix;
+% if Loggify
+%     
+%     ClassicMatrix = log(ClassicMatrix+1);
+% end
+% 
+% DataPath = fullfile(Paths.Analysis, 'statistics', 'ANOVA', 'Data', 'PVT'); % for statistics
+% 
+% load(fullfile(DataPath, ['PVT_', Type, '_Soporific.mat']))
+% SopoMatrix = Matrix;
+% 
+% if Loggify
+%     SopoMatrix = log(SopoMatrix+1);
+% end
 
 
 
@@ -229,7 +233,7 @@ title(['Hedges g'])
 ylim([-3 7])
 
 
-saveas(gcf,fullfile(Paths.Figures, FigureFolder, [Type, '_Stats_', Task, '_timeXcondition.svg']))
+saveas(gcf,fullfile(Figure_Path, [Type, '_Stats_', Task, '_timeXcondition.svg']))
 
 % plot all values
 % All =[ClassicMatrix(:); SopoMatrix(:)];
@@ -247,7 +251,7 @@ figure('units','normalized','outerposition',[0 0 .4 .4])
 PlotScales(ClassicMatrix, SopoMatrix, {'BL', 'S1', 'S2'}, {'Class', 'Sopo'})
 ylabel(YLabel)
 title([Task, ' ', Type, ' All Means'])
-saveas(gcf,fullfile(Paths.Figures, FigureFolder, [Type, '_', Task, '_timeANDcondition.svg']))
+saveas(gcf,fullfile(Figure_Path, [Type, '_', Task, '_timeANDcondition.svg']))
 
 clc
 

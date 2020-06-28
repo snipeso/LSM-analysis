@@ -24,9 +24,9 @@ SessionLabels = allSessionLabels.LAT;
 
 %%% only do desired files
 Files = {
-'LAT_Alpha_Classic.mat'    
-
-};
+    'LAT_Alpha_Classic.mat'
+    
+    };
 
 Labels = extractBetween(Files, 'LAT_', '_Beam.mat');
 %  Labels = extractBetween(Files, 'LAT_', '_Comp.mat');
@@ -53,6 +53,13 @@ for Indx_F = 1:numel(Files)
             Matrix(:,NormCol) = [];
         case 'zscore'
             Matrix = zscore(Matrix, 0, 2);
+            
+            for Indx_P = 1:numel(Participants)
+                All = zscore([ClassicMatrix(Indx_P, :), SopoMatrix(Indx_P, :)]);
+                ClassicMatrix(Indx_P, :) = All(1:size(ClassicMatrix, 2));
+                SopoMatrix(Indx_P, :) = All(size(ClassicMatrix, 2)+1:end);
+            end
+            
     end
     Matrix2(:, Indx_F) = reshape(Matrix, [], 1);
     
