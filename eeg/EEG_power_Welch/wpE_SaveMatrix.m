@@ -8,9 +8,9 @@ close all
 wp_Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Task = 'PVT';
-Session = 'Beam';
-Title = 'Soporific';
+Task = 'LAT';
+% Session = 'Beam';
+% Title = 'Soporific';
 
 Session = 'Comp';
 Title = 'Classic';

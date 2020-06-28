@@ -6,8 +6,19 @@ Paths.Responses = fullfile(Paths.Analysis, 'tasks', 'data');
 
 Paths.Figures = fullfile(Paths.Figures, 'LAT');
 
+%%% locations
+% Paths.Datasets = 'D:\LSM\data';
+% Paths.Preprocessed = 'C:\Users\colas\Desktop\FakeDataPreprocessedEEG';
+
+% Paths.Datasets = 'L:\Somnus-Data\Data01\LSM\Data\Raw';
+% Paths.Preprocessed = 'L:\Somnus-Data\Data01\LSM\Data\Preprocessed';
+% 
+Paths.Datasets ='D:\LSM\data';
+Paths.Preprocessed = 'C:\Users\schlaf\Desktop\LSMData';
+
+
 % add location of subfunctions
-addpath(fullfile(Paths.Analysis, 'tasks', 'functions_tasks'))
+addpath(fullfile(Paths.Analysis,  'functions', 'tasks'))
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

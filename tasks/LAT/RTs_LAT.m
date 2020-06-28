@@ -8,24 +8,24 @@ LAT_Parameters
 
 Task = 'LAT';
 
-% Sessions = allSessions.LAT;
-% SessionLabels = allSessionLabels.LAT;
-% Title = 'Beam';
-
-Sessions = allSessions.Comp;
-SessionLabels = allSessionLabels.Comp;
-Title = 'Classic';
-
-% main beamer tasks
-% Sessions = allSessions.Beam;
-% SessionLabels = allSessionLabels.Beam;
+% 
+% Session = 'Beam';
 % Title = 'Soporific';
 
-% Destination = fullfile(Paths.Analysis, 'Regression', 'SummaryData', [Task, Title]);
-Destination = fullfile(Paths.Analysis, 'Statistics', Task, 'Data'); % for statistics
+Session = 'Comp';
+Title = 'Classic';
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Sessions = allSessions.([Task,Session]);
+SessionLabels = allSessionLabels.([Task, Session]);
+Destination= fullfile(Paths.Analysis, 'statistics', 'ANOVA', 'Data',Task);
+
+if ~exist(Destination, 'dir')
+    mkdir(Destination)
+end
+
 
 MeanRTs = nan(numel(Participants), numel(Sessions));
 MedianRTs = nan(numel(Participants), numel(Sessions));
@@ -56,7 +56,7 @@ saveas(gcf,fullfile(Paths.Figures, [Task, '_RTs_Flames.jpg']))
 
 %plot means
 figure
-PlotConfettiSpaghetti(MeanRTs, Sessions, SessionLabels, [0.2, 0.6], 'Reaction Time Means', '')
+PlotConfettiSpaghetti(MeanRTs,  SessionLabels, [0.2, 0.6], 'Reaction Time Means', '')
 ylabel('RT (s)')
 saveas(gcf,fullfile(Paths.Figures, [Task, '_meanRTs.svg']))
 
@@ -67,14 +67,14 @@ save(fullfile(Destination, Filename), 'Matrix')
 
 %plot standard deviations
 figure
-PlotConfettiSpaghetti(stdRTs, Sessions, SessionLabels, [0 .2], 'Reaction Time Standard Deviations', '')
+PlotConfettiSpaghetti(stdRTs,  SessionLabels, [0 .2], 'Reaction Time Standard Deviations', '')
 ylabel('RT SD (s)')
 saveas(gcf,fullfile(Paths.Figures, [Task, '_stdRTs.svg']))
 
 
 %plot medians
 figure
-PlotConfettiSpaghetti(MedianRTs, Sessions, SessionLabels, [0.2, 0.6], 'Reaction Time Medians', '')
+PlotConfettiSpaghetti(MedianRTs,  SessionLabels, [0.2, 0.6], 'Reaction Time Medians', '')
 ylabel('RT (s)')
 saveas(gcf,fullfile(Paths.Figures, [Task, '_medianRTs.svg']))
 

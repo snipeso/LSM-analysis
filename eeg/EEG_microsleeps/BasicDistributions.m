@@ -11,35 +11,27 @@ Microsleeps_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Task = 'LAT';
+Task = 'PVT';
 
 % Computer tasks
-Sessions = allSessions.Comp;
-SessionLabels = allSessionLabels.Comp;
+% Session = 'Beam';
+% Title = 'Soporific';
+% Save = true;
+
+Session = 'Comp';
 Title = 'Classic';
 Save = true;
 
-% all beamer tasks
-% Sessions = allSessions.LAT;
-% SessionLabels = allSessionLabels.LAT;
-% Title = 'ProjectorAll';
-% Save = false;
-
-% main beamer tasks
-% Sessions = allSessions.Beam;
-% SessionLabels = allSessionLabels.Beam;
-% Title = 'Soporific';
-% Save = true; % saves matrix for statistics later
-
-Destination = fullfile(Paths.Analysis, 'Statistics', 'ANOVA', 'Data'); % for statistics
-
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-if strcmp(Task, 'PVT')
-    Sessions(strcmp(Sessions, 'Session2Beam1')) = {'Session2Beam'};
+Sessions = allSessions.([Task,Session]);
+SessionLabels = allSessionLabels.([Task, Session]);
+Destination= fullfile(Paths.Analysis, 'statistics', 'ANOVA', 'Data',Task);
+
+if ~exist(Destination, 'dir')
+    mkdir(Destination)
 end
+
 
 Source = fullfile(Paths.Preprocessed, 'Microsleeps\', 'Scoring', Task);
 
@@ -49,7 +41,7 @@ DurationMicrosleeps = nan(numel(Participants), numel(Sessions));
 
 for Indx_P = 1:numel(Participants)
     for Indx_S = 1:numel(Sessions)
-        Filename = [Participants{Indx_P}, '_', Task, '_', Sessions{Indx_S}, '_Microsleeps.mat'];
+        Filename = [Participants{Indx_P}, '_', Task, '_', Sessions{Indx_S}, '_Microsleeps_Cleaned.mat'];
         
         if ~exist(fullfile(Source, Filename), 'file')
             disp(['****** skipping ', Filename, ' ***********'])

@@ -13,16 +13,16 @@ Task = 'LAT';
 % Title = 'Beam';
 
 % main beamer tasks
-Sessions = allSessions.Beam;
-SessionLabels = allSessionLabels.Beam;
-Title = 'Soporific';
+% Sessions = allSessions.LATBeam;
+% SessionLabels = allSessionLabels.LATBeam;
+% Title = 'Soporific';
 
-% Sessions = allSessions.Comp;
-% SessionLabels = allSessionLabels.Comp;
-% Title = 'Classic';
+Sessions = allSessions.LATComp;
+SessionLabels = allSessionLabels.LATComp;
+Title = 'Classic';
 
 % Destination = fullfile(Paths.Analysis, 'Regression', 'SummaryData', [Task, Title]);
-Destination = fullfile(Paths.Analysis, 'Statistics', 'ANOVA', 'Data'); % for statistics
+Destination = fullfile(Paths.Analysis, 'Statistics', 'ANOVA', 'Data', Task); % for statistics
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -81,12 +81,12 @@ saveas(gcf,fullfile(Paths.Figures, [Task, '_TallyIndividuals.svg']))
 figure( 'units','normalized','outerposition',[0 0 .5 .5])
 subplot(1, 2, 1)
 Hits = squeeze(Responses(:, :, 1));
-PlotConfettiSpaghetti(Hits, Sessions, SessionLabels, [0 100], '% Hits', [])
+PlotConfettiSpaghetti(Hits,  SessionLabels, [0 100], '% Hits', [])
 
 
 subplot(1, 2, 2)
 Misses =  squeeze(Responses(:, :, 3));
-PlotConfettiSpaghetti(Misses, Sessions, SessionLabels, [0 100], '% Misses', [])
+PlotConfettiSpaghetti(Misses, SessionLabels, [0 100], '% Misses', [])
 saveas(gcf,fullfile(Paths.Figures, [Task, '_PrcntHitsMisses.svg']))
 
 % save matrix
