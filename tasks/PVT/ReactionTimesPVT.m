@@ -18,8 +18,8 @@ Task = 'PVT';
 % SessionLabels = allSessionLabels.PVTBeam;
 % Title = 'Soporific';
 
-Sessions = allSessions.Comp;
-SessionLabels = allSessionLabels.Comp;
+Sessions = allSessions.PVTComp;
+SessionLabels = allSessionLabels.PVTComp;
 Title = 'Classic';
 
 % Destination = fullfile(Paths.Analysis, 'Regression', 'SummaryData', [Task, Title]);
