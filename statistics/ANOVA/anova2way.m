@@ -8,10 +8,10 @@ Stats_Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-Task = 'PVT';
+Task = 'LAT';
 FigureFolder = 'NeuroMeets';
 
-DataPath = fullfile(Paths.Analysis, 'statistics', 'ANOVA', 'Data', Task); % for statistics
+DataPath = fullfile(Paths.Analysis, 'statistics', 'Data', Task); % for statistics
 
 % Data type
 
@@ -22,7 +22,7 @@ DataPath = fullfile(Paths.Analysis, 'statistics', 'ANOVA', 'Data', Task); % for 
 Type = 'Theta';
 YLabel = 'Power (log)';
 Loggify = true;
-% 
+
 % Type = 'meanRTs';
 % YLabel = 'RTs (log(s))';
 % Loggify = false;
@@ -32,8 +32,8 @@ Loggify = true;
 % Loggify = false;
 
 % 
-% Type = 'miDuration';
-% YLabel = 'Seconds (log)';
+% Type = 'miDuration'; % miDuration, % miStart miTot
+% YLabel = 'Seconds';
 % Loggify = false;
 
 
@@ -44,14 +44,30 @@ MES = 'eta2';
 
 
 
-load(fullfile(DataPath, [Task, '_', Type, '_Classic.mat']))
+% load(fullfile(DataPath, [Task, '_', Type, '_Classic.mat']))
+% ClassicMatrix = Matrix;
+% if Loggify
+%     
+%     ClassicMatrix = log(ClassicMatrix+1);
+% end
+% 
+% load(fullfile(DataPath, [Task, '_', Type, '_Soporific.mat']))
+% SopoMatrix = Matrix;
+% 
+% if Loggify
+%     SopoMatrix = log(SopoMatrix+1);
+% end
+
+load(fullfile(DataPath, ['LAT_', Type, '_Soporific.mat']))
 ClassicMatrix = Matrix;
 if Loggify
     
     ClassicMatrix = log(ClassicMatrix+1);
 end
 
-load(fullfile(DataPath, [Task, '_', Type, '_Soporific.mat']))
+DataPath = fullfile(Paths.Analysis, 'statistics', 'ANOVA', 'Data', 'PVT'); % for statistics
+
+load(fullfile(DataPath, ['PVT_', Type, '_Soporific.mat']))
 SopoMatrix = Matrix;
 
 if Loggify
@@ -59,9 +75,11 @@ if Loggify
 end
 
 
+
 % levene test on variance (maybe should be done after?)
 Groups = repmat([1 2 3], 10, 1);
 Levenetest([ClassicMatrix(:), Groups(:); SopoMatrix(:), 3+Groups(:)],.05)
+pause(1)
 % 
 % z-score
 for Indx_P = 1:numel(Participants)
@@ -131,8 +149,6 @@ legend({'Classic', 'Soporific'}, 'Location', 'southeast','AutoUpdate','off')
 title([Task, ' ', Type])
 ylabel(YLabel)
 
-Colors = plasma(3); % TODO, make this only once, and not in plotbars
-
 % plot significance
 % (if I'm ever inspired, I'll make this automated; for now its manual)
 comparisons = {
@@ -140,12 +156,12 @@ comparisons = {
     [1.9, 2.1], S1_SvC, [0 0 0];
     [2.9, 3.1], S2_SvC, [0 0 0];
     
-    [.9, 1.9], C_BLvS1, Colors(1, :);
-    [1.1, 2.1], S_BLvS1, Colors(2, :);
-    [.9, 2.9], C_BLvS2, Colors(1, :);
-    [1.1, 3.1], S_BLvS2,  Colors(2, :);
-    [1.9, 2.9], C_S1vS2, Colors(1, :);
-    [2.1, 3.1], S_S1vS2, Colors(2, :)};
+    [.9, 1.9], C_BLvS1,[0 0 0];
+    [1.1, 2.1], S_BLvS1, [0 0 0];
+    [.9, 2.9], C_BLvS2, [0 0 0];
+    [1.1, 3.1], S_BLvS2, [0 0 0];
+    [1.9, 2.9], C_S1vS2,[0 0 0];
+    [2.1, 3.1], S_S1vS2,[0 0 0]};
 
 comparisons([comparisons{:, 2}]>=0.1, :) = [];
 if size(comparisons, 1) > 0
@@ -208,7 +224,7 @@ HedgesCI(2, Indx, :) = statsHedges.hedgesgCi;
 end
 
 subplot(1, 3, 3)
-PlotBars(Hedges(:, 1:2), HedgesCI(:, 1:2, :), {'BLvsS1','S1vsS2'})
+PlotBars(Hedges(:, 1:2), HedgesCI(:, 1:2, :), {'BLvsS1','S1vsS2'},  Colors.Tasks.(Task) )
 title(['Hedges g'])
 ylim([-3 7])
 
@@ -231,7 +247,7 @@ figure('units','normalized','outerposition',[0 0 .4 .4])
 PlotScales(ClassicMatrix, SopoMatrix, {'BL', 'S1', 'S2'}, {'Class', 'Sopo'})
 ylabel(YLabel)
 title([Task, ' ', Type, ' All Means'])
-saveas(gcf,fullfile(Paths.Figures, 'ESRSPoster', [Type, '_', Task, '_timeANDcondition.svg']))
+saveas(gcf,fullfile(Paths.Figures, FigureFolder, [Type, '_', Task, '_timeANDcondition.svg']))
 
 clc
 

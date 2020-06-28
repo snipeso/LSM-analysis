@@ -9,29 +9,33 @@ Q_Parameters
 Task = 'LAT';
 filename = [Task, '_All.csv'];
 % 
-% Sessions = allSessions.Comp;
-% SessionLabels = allSessionLabels.Comp;
-% Title = 'Classic';
+Session = 'Comp';
+Title = 'Classic';
+
 
 % % main beamer tasks
-% Sessions = allSessions.Beam;
-% SessionLabels = allSessionLabels.Beam;
+% Session = 'Beam';
 % Title = 'Soporific';
 
 % sleep dep sessions
-Sessions = allSessions.SD3;
-SessionLabels = allSessionLabels.SD3;
-Title = 'SD3';
+% Sessions = allSessions.SD3;
+% SessionLabels = allSessionLabels.SD3;
+% Title = 'SD3';
 
 % Destination = fullfile(Paths.Analysis, 'Regression', 'SummaryData', [Task, Title]);
-Destination = fullfile(Paths.Analysis, 'Statistics', 'ANOVA', 'Data'); % for statistics
+Destination = fullfile(Paths.Analysis, 'statistics', 'ANOVA', 'Data', Task); % for statistics
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-if strcmp(Title, 'Soporific') && strcmp(Task, 'PVT')
-    Sessions = allSessions.PVTBeam;
-    SessionLabels = allSessionLabels.PVTBeam;
+Sessions = allSessions.([Task,Session]);
+SessionLabels = allSessionLabels.([Task, Session]);
+
+
+if ~exist(Destination, 'dir')
+    mkdir(Destination)
 end
+
+
 
 qIDs = {'BAT_1', 'BAT_3_0', 'BAT_3', ...
     'BAT_3_1', 'BAT_4', 'BAT_4_1', ...

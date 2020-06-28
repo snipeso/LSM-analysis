@@ -18,7 +18,7 @@ Paths.Preprocessed = 'C:\Users\colas\Desktop\FakeDataPreprocessedEEG';
 
 
 % add location of subfunctions
-addpath(fullfile(Paths.Analysis, 'tasks', 'functions_tasks'))
+addpath(fullfile(Paths.Analysis,  'functions', 'tasks'))
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

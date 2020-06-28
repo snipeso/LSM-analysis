@@ -14,16 +14,16 @@ Task = 'PVT';
 % Title = 'Beam';
 
 % main beamer tasks
-% Sessions = allSessions.PVTBeam;
-% SessionLabels = allSessionLabels.PVTBeam;
-% Title = 'Soporific';
+Sessions = allSessions.PVTBeam;
+SessionLabels = allSessionLabels.PVTBeam;
+Title = 'Soporific';
 
 Sessions = allSessions.PVTComp;
 SessionLabels = allSessionLabels.PVTComp;
 Title = 'Classic';
 
 % Destination = fullfile(Paths.Analysis, 'Regression', 'SummaryData', [Task, Title]);
-Destination = fullfile(Paths.Analysis, 'Statistics', 'ANOVA', 'Data'); % for statistics
+Destination = fullfile(Paths.Analysis, 'Statistics', 'ANOVA', 'Data', Task); % for statistics
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
