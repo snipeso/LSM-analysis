@@ -1,5 +1,9 @@
 function AllAnswers = importTask(DatasetPaths, Task, Destination)
 
+if ~exist(Destination, 'dir')
+    mkdir(Destination)
+end
+
 % find all paths
 [Subfolders, Datasets] = AllFolderPaths(DatasetPaths, 'PXX', false, {'CSVs', 'Lazy', 'P00'});
 
@@ -75,4 +79,4 @@ end
 
 
 % save
-save(fullfile(Destination, [Task, 'Answers.mat']), 'AllAnswers')
+save(fullfile(Destination, [Task, 'AllAnswers.mat']), 'AllAnswers')

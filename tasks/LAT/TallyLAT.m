@@ -1,6 +1,6 @@
 clear
 clc
-close all
+% close all
 
 LAT_Parameters
 
@@ -13,16 +13,16 @@ Task = 'LAT';
 % Title = 'Beam';
 
 % main beamer tasks
-% Sessions = allSessions.LATBeam;
-% SessionLabels = allSessionLabels.LATBeam;
-% Title = 'Soporific';
+Sessions = allSessions.LATBeam;
+SessionLabels = allSessionLabels.LATBeam;
+Title = 'Soporific';
 
-Sessions = allSessions.LATComp;
-SessionLabels = allSessionLabels.LATComp;
-Title = 'Classic';
+% Sessions = allSessions.LATComp;
+% SessionLabels = allSessionLabels.LATComp;
+% Title = 'Classic';
 
 % Destination = fullfile(Paths.Analysis, 'Regression', 'SummaryData', [Task, Title]);
-Destination = fullfile(Paths.Analysis, 'Statistics', 'ANOVA', 'Data', Task); % for statistics
+Destination = fullfile(Paths.Analysis, 'Statistics', 'Data', Task); % for statistics
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -59,6 +59,7 @@ for Indx_P = 1:numel(Participants)
     end
 end
 
+Tot = sum(Responses, 3);
 
 % plot average bars
 figure
@@ -80,12 +81,12 @@ saveas(gcf,fullfile(Paths.Figures, [Task, '_TallyIndividuals.svg']))
 % plot spaghetti plot
 figure( 'units','normalized','outerposition',[0 0 .5 .5])
 subplot(1, 2, 1)
-Hits = squeeze(Responses(:, :, 1));
+Hits = 100*(squeeze(Responses(:, :, 1))./Tot);
 PlotConfettiSpaghetti(Hits,  SessionLabels, [0 100], '% Hits', [])
 
 
 subplot(1, 2, 2)
-Misses =  squeeze(Responses(:, :, 3));
+Misses = 100*(squeeze(Responses(:, :, 3))./Tot);
 PlotConfettiSpaghetti(Misses, SessionLabels, [0 100], '% Misses', [])
 saveas(gcf,fullfile(Paths.Figures, [Task, '_PrcntHitsMisses.svg']))
 

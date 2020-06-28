@@ -6,7 +6,6 @@ Paths.Preprocessed = 'C:\Users\schlaf\Desktop\LSMData';
 
 
 % Locations
-Paths.Responses = fullfile(Paths.Analysis, 'tasks', 'data');
 
 Paths.Figures = fullfile(Paths.Figures, 'PVT');
 %%% locations
@@ -19,23 +18,25 @@ Paths.Preprocessed = 'C:\Users\colas\Desktop\FakeDataPreprocessedEEG';
 % Paths.Datasets ='D:\LSM\data';
 % Paths.Preprocessed = 'C:\Users\schlaf\Desktop\LSMData';
 
+Paths.Responses = fullfile(Paths.Preprocessed, 'Tasks', 'AllAnswers');
+
 
 % add location of subfunctions
-addpath(fullfile(Paths.Analysis, 'tasks', 'functions_tasks'))
+addpath(fullfile(Paths.Analysis,  'functions', 'tasks'))
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%% Do stuff 
 
 % get response times
-PVTResponses = 'PVTResponses.mat';
+PVTResponses = 'PVTAllAnswers.mat';
 if exist(fullfile(Paths.Responses, PVTResponses), 'file')
     load(fullfile(Paths.Responses, PVTResponses), 'AllAnswers')
 else
     if ~exist(Paths.Responses, 'dir')
         mkdir(Paths.Responses)
     end
-    AllAnswers = importTask(Paths.Datasets, 'PVT', cd); % needs to have access to raw data folder
+    AllAnswers = importTask(Paths.Datasets, 'PVT', Paths.Responses); % needs to have access to raw data folder
 end
 
 % create figure folder

@@ -1,6 +1,6 @@
 clear
 clc
-% close all
+close all
 
 PVT_Parameters
 
@@ -23,7 +23,7 @@ SessionLabels = allSessionLabels.PVTComp;
 Title = 'Classic';
 
 % Destination = fullfile(Paths.Analysis, 'Regression', 'SummaryData', [Task, Title]);
-Destination = fullfile(Paths.Analysis, 'Statistics', 'ANOVA', 'Data', Task); % for statistics
+Destination = fullfile(Paths.Analysis, 'Statistics', 'Data', Task); % for statistics
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

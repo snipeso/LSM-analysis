@@ -9,18 +9,18 @@ LAT_Parameters
 Task = 'LAT';
 
 % 
-% Session = 'Beam';
-% Title = 'Soporific';
+Session = 'Beam';
+Title = 'Soporific';
 
-Session = 'Comp';
-Title = 'Classic';
+% Session = 'Comp';
+% Title = 'Classic';
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Sessions = allSessions.([Task,Session]);
 SessionLabels = allSessionLabels.([Task, Session]);
-Destination= fullfile(Paths.Analysis, 'statistics', 'ANOVA', 'Data',Task);
+Destination= fullfile(Paths.Analysis, 'statistics', 'Data',Task);
 
 if ~exist(Destination, 'dir')
     mkdir(Destination)
