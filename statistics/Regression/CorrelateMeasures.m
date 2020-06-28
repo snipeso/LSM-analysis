@@ -25,9 +25,10 @@ Conditions = {'Classic', 'Soporific'};
 
 SessionLabels = allSessionLabels.Basic; % TODO: eventually make this info saved in the matrices
 
-Normalize = 'zscore';
+Normalize = 'zscore'; %'zscore';
 
-Title = 'All Measures ';
+Title = 'All Measures';
+ScatterGroup = 'Session';
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -63,7 +64,7 @@ for Indx_M = 1:numel(Measures)
         end
     end
     
-
+    
     
     
     All_Measures_T.Participant = T.Participant; % NOTE: this is just a mindless way of making sure the labels are correct
@@ -72,7 +73,7 @@ for Indx_M = 1:numel(Measures)
     All_Measures_T.Condition = T.Condition;
     
     AllData =  T.(Measures{Indx_M});
-        % z-score
+    % z-score
     switch Normalize
         case 'zscore'
             for Indx_P = 1:numel(Participants)
@@ -105,3 +106,40 @@ figure('units','normalized','outerposition',[0 0 1 1])
 [~,h] = fdr(P, 0.05);
 PlotCorr(R, h, Measures)
 title([Title, ' R values of all parameters, fdr corrected'])
+
+
+Tot_Comparisons = (numel(Measures)^2 - numel(Measures))/2;
+
+figure('units','normalized','outerposition',[0 0 1 1])
+Indx = 1;
+for Indx_X = 1:numel(Measures)
+    for Indx_Y = Indx_X+1:numel(Measures)
+        
+        if Indx > 3*5
+            figure('units','normalized','outerposition',[0 0 1 1])
+            Indx = 1;
+        end
+        subplot(3, 5, Indx)
+        PlotConfetti(All_Measures_M(:, Indx_X), All_Measures_M(:, Indx_Y), All_Measures_T.(ScatterGroup))
+        xlabel(Measures{Indx_X})
+        ylabel(Measures{Indx_Y})
+        title(['R=', num2str(R(Indx_X, Indx_Y), '%.2f'), ' p=', num2str(P(Indx_X, Indx_Y), '%.2f')])
+        Indx = Indx+1;
+    end
+    
+end
+
+figure('units','normalized','outerposition',[0 0 1, .5])
+ bar(R(:, 2))
+ xticklabels(Measures)
+ ylim([-1 1])
+ title('theta Rs')
+ 
+ 
+
+figure('units','normalized','outerposition',[0 0 1, .5])
+ bar(R(:, 5))
+ xticklabels(Measures)
+ ylim([-1 1])
+ title('miDuration Rs')
+% TODO: plot bars of R for microsleeps and theta to show relative values

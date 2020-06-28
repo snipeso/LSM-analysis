@@ -24,7 +24,7 @@ if exist('ColorGroup', 'var')
 else
     Colors = palehsv(Tot_Peeps + 1);
     Colors(end, :) = [];
-
+    
 end
 
 
@@ -43,8 +43,9 @@ xticks(1:numel(SessionLabels))
 xticklabels(SessionLabels)
 
 if ~isempty(YLims)
-ylim(YLims)
+    ylim(YLims)
 end
+
 if exist('Labels', 'var') && ~isempty(Labels)
     yticks(linspace(0, 100, numel(Labels)))
     yticklabels(Labels)
