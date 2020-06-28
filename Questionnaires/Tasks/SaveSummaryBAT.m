@@ -6,9 +6,9 @@ Q_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Task = 'LAT';
+Task = 'PVT';
 filename = [Task, '_All.csv'];
-% 
+
 Session = 'Comp';
 Title = 'Classic';
 
@@ -22,8 +22,7 @@ Title = 'Classic';
 % SessionLabels = allSessionLabels.SD3;
 % Title = 'SD3';
 
-% Destination = fullfile(Paths.Analysis, 'Regression', 'SummaryData', [Task, Title]);
-Destination = fullfile(Paths.Analysis, 'statistics', 'ANOVA', 'Data', Task); % for statistics
+Destination = fullfile(Paths.Analysis, 'statistics', 'Data', Task); % for statistics
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

@@ -98,6 +98,9 @@ allSessionLabels.PVTBeam = allSessionLabels.LATBeam;
 allSessions.PVTComp =  allSessions.LATComp;
 allSessionLabels.PVTComp = allSessionLabels.LATComp;
 
+allSessions.Basic =  {'Baseline', 'Session1', 'Session2'};
+allSessionLabels.Basic = {'BL', 'S1', 'S2'};
+
 
 % Labels for all of LAT beamer conditions
 allSessions.LATAllBeam = {'BaselineBeam', 'MainPre', 'Session1Beam', 'Session2Beam1', 'Session2Beam2', 'Session2Beam3', 'MainPost'};

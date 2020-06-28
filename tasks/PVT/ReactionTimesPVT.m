@@ -14,9 +14,9 @@ Task = 'PVT';
 % Title = 'Beam';
 
 % main beamer tasks
-Sessions = allSessions.PVTBeam;
-SessionLabels = allSessionLabels.PVTBeam;
-Title = 'Soporific';
+% Sessions = allSessions.PVTBeam;
+% SessionLabels = allSessionLabels.PVTBeam;
+% Title = 'Soporific';
 
 Sessions = allSessions.PVTComp;
 SessionLabels = allSessionLabels.PVTComp;

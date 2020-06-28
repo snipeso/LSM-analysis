@@ -6,7 +6,12 @@ close all
 
 Q_Parameters
 
+
 Figure_Path = fullfile(Paths.Figures, 'BAT');
+
+if ~exist(Figure_Path, 'dir')
+    mkdir(Figure_Path)
+end
 
 filenames = {'LAT_All.csv', 'PVT_All.csv', 'Music_All.csv', 'Game_All.csv', ...
     'Match2Sample_All.csv', 'SpFT_All.csv'};
@@ -25,8 +30,8 @@ for Indx_T = 1:numel(filenames)
     
     % use appropriate session names
     if contains(filenames{Indx_T}, 'LAT' )|| contains(filenames{Indx_T}, 'PVT' )
-        Sessions = allSessions.Comp;
-        SessionLabels = allSessionLabels.Comp;
+        Sessions = allSessions.PVTComp;
+        SessionLabels = allSessionLabels.PVTComp;
     else
         Sessions = allSessions.Basic;
         SessionLabels = allSessionLabels.Basic;
@@ -60,7 +65,7 @@ for Indx_T = 1:numel(filenames)
         end
         
         subplot(2, 3, Indx_T)
-        PlotConfettiSpaghetti(AnsAll, Sessions, SessionLabels, [0 100], Task, strsplit(num2str(0:20:100)))
+        PlotConfettiSpaghetti(AnsAll, SessionLabels, [0 100], Task, strsplit(num2str(0:20:100)))
         
         if Indx_T == numel(filenames)
             FigureName =  [Titles{Indx_Q},  '_BAT.svg'];
