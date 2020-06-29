@@ -6,9 +6,9 @@ wp_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Scaling = 'log'; % either 'log' or 'norm' or 'scoref'
+Scaling = 'zscore'; % either 'log' or 'norm' or 'scoref'
 % Scaling = 'none';
-Task = 'PVT';
+Task = 'LAT';
 Session = 'Beam';
 Title = 'Soporific';
 
@@ -41,27 +41,29 @@ TotChannels = size(Chanlocs, 2);
 TitleTag = [Task, '_', Scaling, '_', Title];
 % 
 % apply scaling TODO
+
+% restructure data
+
 switch Scaling
     case 'log'
         for Indx_F = 1:size(allFFT, 2)
             allFFT(Indx_F).FFT = log(allFFT(Indx_F).FFT + 1);
         end
+        PowerStruct = GetPowerStruct(allFFT, Categories, Sessions, Participants);
+
         YLabel = 'Log Power Density';
     case 'none'
        YLabel = 'Power Density';
-    case 'zscoref'
-        for Indx_P = 1:numel(Participants)
-            
-            for Indx_F = 1:numel(Freqs)
-                zscore
-            end
+    case 'zscore'
+                for Indx_F = 1:size(allFFT, 2)
+            allFFT(Indx_F).FFT = log(allFFT(Indx_F).FFT + 1);
         end
+        PowerStruct = GetPowerStruct(allFFT, Categories, Sessions, Participants);
+        PowerStruct = ZScoreFFT(PowerStruct);
         YLabel = 'Power Density (normed)';
 end
 
 
-% restructure data
-PowerStruct = GetPowerStruct(allFFT, Categories, Sessions, Participants);
 
 % get limits per participant
 Quantiles = nan(numel(Participants), numel(Sessions), 2);

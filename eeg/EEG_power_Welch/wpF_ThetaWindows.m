@@ -1,7 +1,7 @@
 
 %%% get data
 % LoadWelchData
-% close all
+close all
 
 % plot for each recording the peak frequency
 
@@ -14,6 +14,13 @@ Title = 'HotSpot';
 PaleColors = flipud(palejet(numel(PlotFreq)));
 Colors = flipud(jet(numel(PlotFreq)));
 
+Delta = dsearchn(PlotFreq', round(saveFreqs.Delta)');
+Theta= dsearchn(PlotFreq', round(saveFreqs.Theta)');
+Alpha= dsearchn(PlotFreq', round(saveFreqs.Alpha)');
+Beta = dsearchn(PlotFreq', round(saveFreqs.Beta)');
+
+TallyColors = Colors([Delta(1), Theta(2), Alpha(2), Beta(2)], :);
+
 for Indx_H = 1
     if Indx_H == 1
         finalChanIndx = ChanIndx;
@@ -24,9 +31,10 @@ for Indx_H = 1
     end
     
     F1 = figure( 'units','normalized','outerposition',[0 0 1 1]);
-     F2 = figure( 'units','normalized','outerposition',[0 0 1 1]);
+    F2 = figure( 'units','normalized','outerposition',[0 0 1 .5]);
     
     for Indx_P = 1:numel(Participants)
+        Tally = zeros(numel(Sessions), size(TallyColors, 1));
         for Indx_S = 1:numel(Sessions)
             if isempty(PowerStruct(Indx_P).(Sessions{Indx_S}))
                 continue
@@ -34,7 +42,7 @@ for Indx_H = 1
             
             A = PowerStruct(Indx_P).(Sessions{Indx_S});
             A = squeeze(nanmean(A(finalChanIndx, FreqsIndx, :), 1));
-           
+            
             figure(F1)
             subplot(numel(Participants), numel(Sessions), numel(Sessions) * (Indx_P - 1) + Indx_S )
             hold on
@@ -48,13 +56,18 @@ for Indx_H = 1
             
             title([Participants{Indx_P}, ' ', Title, ' ', Sessions{Indx_S}])
             
-            figure(F2)
-            subplot(numel(Participants), numel(Sessions), numel(Sessions) * (Indx_P - 1) + Indx_S )
-            histogram(Indx, 'BinLimits', [1 10], 'NumBins',numel(PlotFreq))
-            xticklabels(PlotFreq)
+            Tally(Indx_S, 1) = nnz(Indx<=Delta(2));
+            Tally(Indx_S, 2) = nnz(Indx>Theta(1) & Indx<=Theta(2));
+            Tally(Indx_S, 3) = nnz(Indx>Alpha(1) & Indx<=Alpha(2));
+            Tally(Indx_S, 4) = nnz(Indx>Beta(1) & Indx<=Beta(2));
+            
         end
+        figure(F2)
+        subplot(1, numel(Participants), Indx_P)
+        Tally = 100.*(Tally./sum(Tally, 2));
+        PlotStacks(Tally, TallyColors)
         
     end
     figure(F1)
-   legend(string(num2cell(PlotFreq)))
+    legend(string(num2cell(PlotFreq)))
 end
