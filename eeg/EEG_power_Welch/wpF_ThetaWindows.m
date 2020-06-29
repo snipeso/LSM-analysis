@@ -5,7 +5,7 @@ close all
 
 % plot for each recording the peak frequency
 
-PlotFreq = 4:12;
+PlotFreq = 1:20;
 FreqsIndx =  dsearchn( Freqs', PlotFreq');
 
 ChanIndx = ismember( str2double({Chanlocs.labels}), EEG_Channels.Hotspot);
@@ -47,9 +47,9 @@ for Indx_H = 1
             subplot(numel(Participants), numel(Sessions), numel(Sessions) * (Indx_P - 1) + Indx_S )
             hold on
             for Indx_F = 1:numel(FreqsIndx)
-                A(Indx_F, :) = ( A(Indx_F, :) - nanmean( A(Indx_F, :)))./nanstd( A(Indx_F, :));
+%                 A(Indx_F, :) = ( A(Indx_F, :) - nanmean( A(Indx_F, :)))./nanstd( A(Indx_F, :));
                 scatter(1:size(A, 2), A(Indx_F, :), 10, PaleColors(Indx_F, :), 'filled')
-                
+                ylim([0 10])
             end
             [Max, Indx] = max(A);
             scatter(1:size(A, 2), Max, 10, Colors(Indx, :), 'filled', 'MarkerEdgeColor', 'k')
