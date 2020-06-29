@@ -10,13 +10,8 @@ Colors = { [0.25098  0.66667  0.20784], ...
 meanMatrix = squeeze(nanmean(Matrix, 1));
 prcntMatrix = 100*(meanMatrix./sum(meanMatrix, 2));
 
-h = bar(prcntMatrix, 'stacked');
+PlotStacks(prcntMatrix, Colors)
 
-for Indx = 1:3
-    h(Indx).EdgeColor = 'none';
-    h(Indx).FaceColor = 'flat';
-    h(Indx).CData = Colors{Indx};
-end
 xlim([0, numel(Sessions) + 1])
 xticks(1:numel(Sessions))
 xticklabels(SessionLabels)

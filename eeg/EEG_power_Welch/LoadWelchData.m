@@ -6,8 +6,8 @@ wp_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Scaling = 'log'; % either 'log' or 'norm'
-Scaling = 'none';
+Scaling = 'log'; % either 'log' or 'norm' or 'scoref'
+% Scaling = 'none';
 Task = 'PVT';
 Session = 'Beam';
 Title = 'Soporific';
@@ -49,7 +49,14 @@ switch Scaling
         YLabel = 'Log Power Density';
     case 'none'
        YLabel = 'Power Density';
- 
+    case 'zscoref'
+        for Indx_P = 1:numel(Participants)
+            
+            for Indx_F = 1:numel(Freqs)
+                zscore
+            end
+        end
+        YLabel = 'Power Density (normed)';
 end
 
 

@@ -66,7 +66,7 @@ for Indx_F = 1:numel(saveFreqFields) % loop through frequency bands
             
         end
     end
-    Filename = [Task, '_', saveFreqFields{Indx_F}, '_', Title, '.mat']
+    Filename = [Task, '_', saveFreqFields{Indx_F}, '_', Title, '.mat'];
     save(fullfile(Paths.ANOVA, Filename), 'Matrix')
 end
 

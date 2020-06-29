@@ -1,15 +1,11 @@
 CLimsInd = [min(Quantiles(:, :, 1),[],  2), max(Quantiles(:, :, 2),[],  2)];
 
 
-plotChannels = [3:7, 9:13, 15, 16, 18:20, 24, 106, 111, 112, 117, 118, 123, 124]; % hotspot
-
-
 % plot time x freq of recordings TODO: move?
 
-
 YLimFreq = [4 14];
-ChanIndx = ismember( str2double({Chanlocs.labels}), plotChannels);
-NotChanIndx =  ~ismember( str2double({Chanlocs.labels}), plotChannels); % not hotspot
+ChanIndx = ismember( str2double({Chanlocs.labels}), EEG_Channels.Hotspot);
+NotChanIndx =  ~ismember( str2double({Chanlocs.labels}), EEG_Channels.Hotspot); % not hotspot
 Title = 'HotSpot';
 
 for Indx_H = 1:2
