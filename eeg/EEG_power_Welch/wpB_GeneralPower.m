@@ -7,18 +7,20 @@ LoadWelchData
 plotChannels = EEG_Channels.Hotspot; % hotspot
 ChanIndx = ismember( str2double({Chanlocs.labels}), plotChannels);
 Title = 'HotSpot';
-Averaged_FFT = zeros(numel(Sessions), numel(Freqs));
+Averaged_FFT = zeros(numel(Sessions), numel(Freqs), 2);
 
-figure('units','normalized','outerposition',[0 0 .5 .5])
+P_Colors = palehsv(numel(Participants)+1);
+figure('units','normalized','outerposition',[0 0 1 1])
 for Indx_H = 1:2
     if Indx_H == 2
         ChanIndx = ~ismember( str2double({Chanlocs.labels}), plotChannels); % not hotspot
         Title =  'Not HotSpot';
     end
     
-    subplot(1, 2, Indx_H)
-    hold on
+    
     for Indx_S = 1:numel(Sessions)
+        subplot(numel(Sessions), 2, (Indx_S*2-1)+Indx_H-1)
+        hold on
         All_Averages = nan(numel(Participants), numel(Freqs));
         
         for Indx_P = 1:numel(Participants)
@@ -26,10 +28,30 @@ for Indx_H = 1:2
                 continue
             end
             All_Averages(Indx_P, :) = nanmean(nanmean(PowerStruct(Indx_P).(Sessions{Indx_S})(ChanIndx, :, :), 1), 3);
+            plot(Freqs, All_Averages(Indx_P, :), 'LineWidth', 2, 'Color', P_Colors(Indx_P, :) )
         end
-        Mean = nanmean(All_Averages, 1);
-        plot(Freqs, Mean, 'LineWidth', 2, 'Color', Colors(Indx_S, :))
-        Averaged_FFT(Indx_S, :) = Mean;
+         legend(Sessions)
+    title([Task, ' Power in ', Title])
+    ylim(YLims)
+    xlim([1, 20])
+    xlabel('Frequency (Hz)')
+    ylabel('Power Density')
+        Averaged_FFT(Indx_S, :, Indx_H) = nanmean(All_Averages, 1);
+    end
+   
+end
+
+figure('units','normalized','outerposition',[0 0 .5 .5])
+for Indx_H = 1:2
+    if Indx_H == 2
+        Title =  'Not HotSpot';
+    end
+    
+    subplot(1, 2, Indx_H)
+    hold on
+    for Indx_S =1:numel(Sessions)
+        
+        plot(Freqs,  squeeze(Averaged_FFT(Indx_S, :, Indx_H)), 'LineWidth', 2, 'Color', Colors(Indx_S, :))
     end
     legend(Sessions)
     title([Task, ' Power in ', Title])
@@ -68,7 +90,7 @@ for Indx_S = 1:numel(Sessions)
     for Indx_F = 1:numel(FreqsIndx)
         
         AllValues = AllTopoplots(:, Indx_F, :);
-
+        
         subplot(numel(Sessions), numel(FreqsIndx), Indx)
         topoplot(AllTopoplots(:, Indx_F, Indx_S), Chanlocs, 'maplimits', [min(AllValues(:)), max(AllValues(:))], 'style', 'map', 'headrad', 'rim')
         

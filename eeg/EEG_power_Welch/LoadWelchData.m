@@ -6,7 +6,8 @@ wp_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Scaling = 'log'; % either 'log' or 'norm'
+% Scaling = 'log'; % either 'log' or 'norm'
+Scaling = 'none';
 Task = 'PVT';
 Session = 'Beam';
 Title = 'Soporific';

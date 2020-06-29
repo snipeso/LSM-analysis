@@ -1,6 +1,6 @@
 
 %%% get data
-% LoadWelchData
+LoadWelchData
 
 
 chAverages = nan(TotChannels, numel(Sessions));
