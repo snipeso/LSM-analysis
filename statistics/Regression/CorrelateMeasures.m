@@ -77,10 +77,12 @@ for Indx_M = 1:numel(Measures)
     switch Normalize
         case 'zscore'
             for Indx_P = 1:numel(Participants)
-                Indexes =  strcmp(All_Measures_T.Participant, Participants{Indx_P});
-                
-                All = zscore(AllData(Indexes));
-                AllData(Indexes) = All;
+                %                 Indexes =  strcmp(All_Measures_T.Participant, Participants{Indx_P});
+                for Indx_S = 1:numel(SessionLabels)
+                    Indexes =  strcmp(All_Measures_T.Participant, Participants{Indx_P}) & strcmp(All_Measures_T.Session, SessionLabels{Indx_S});
+                    All = zscore(AllData(Indexes));
+                    AllData(Indexes) = All;
+                end
             end
     end
     
@@ -130,16 +132,16 @@ for Indx_X = 1:numel(Measures)
 end
 
 figure('units','normalized','outerposition',[0 0 1, .5])
- bar(R(:, 2))
- xticklabels(Measures)
- ylim([-1 1])
- title('theta Rs')
- 
- 
+bar(R(:, 2))
+xticklabels(Measures)
+ylim([-1 1])
+title('theta Rs')
+
+
 
 figure('units','normalized','outerposition',[0 0 1, .5])
- bar(R(:, 5))
- xticklabels(Measures)
- ylim([-1 1])
- title('miDuration Rs')
+bar(R(:, 5))
+xticklabels(Measures)
+ylim([-1 1])
+title('miDuration Rs')
 % TODO: plot bars of R for microsleeps and theta to show relative values
