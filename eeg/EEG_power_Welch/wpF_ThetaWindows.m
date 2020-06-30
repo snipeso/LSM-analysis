@@ -1,6 +1,6 @@
 
 %%% get data
-% LoadWelchData
+LoadWelchData
 close all
 
 % plot for each recording the peak frequency

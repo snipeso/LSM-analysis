@@ -6,11 +6,15 @@ wp_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Scaling = 'zscore'; % either 'log' or 'norm' or 'scoref'
+Scaling = 'log'; % either 'log' or 'norm' or 'scoref'
 % Scaling = 'none';
 Task = 'LAT';
 Session = 'Beam';
 Title = 'Soporific';
+
+% Session = 'Comp';
+% Title = 'Classic';
+
 
 Refresh = false;
 
@@ -55,9 +59,9 @@ switch Scaling
     case 'none'
        YLabel = 'Power Density';
     case 'zscore'
-                for Indx_F = 1:size(allFFT, 2)
-            allFFT(Indx_F).FFT = log(allFFT(Indx_F).FFT + 1);
-        end
+%                 for Indx_F = 1:size(allFFT, 2)
+%             allFFT(Indx_F).FFT = log(allFFT(Indx_F).FFT + 1);
+%         end
         PowerStruct = GetPowerStruct(allFFT, Categories, Sessions, Participants);
         PowerStruct = ZScoreFFT(PowerStruct);
         YLabel = 'Power Density (normed)';

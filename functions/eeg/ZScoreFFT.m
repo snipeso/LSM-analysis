@@ -18,9 +18,12 @@ for Indx_P = 1:size(PowerStruct, 2)
         N = N + nnz(~isnan(reshape(FFT(:, 1, :), 1, []))); % number of data points per frequency
     end
     
-    % calculate mean and std for every frequency
+
+%     % calculate mean and std for every frequency
     MEAN = SUM/N;
     SD =   sqrt((SUMSQ - N.*(MEAN.^2))./(N - 1));
+    
+
     
     % zscore each session
     for Indx_S = 1:numel(Sessions)
