@@ -14,7 +14,7 @@ Plot = true;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Microsleep_Parameters
+Microsleeps_Parameters
 
 for Indx_T = 1:numel(Tasks)
     

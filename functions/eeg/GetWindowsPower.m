@@ -9,8 +9,10 @@ WelchWindow = 2;
 fs = EEG.srate;
 
 % convert time to points
-NotWindows = round(NotWindows./fs);
-Windows = round(Windows./fs);
+NotWindows = round(NotWindows.*fs);
+Windows = round(Windows.*fs);
+
+SpecialChannels = labels2indexes(SpecialChannels, EEG.chanlocs);
 
 % nan out not windows
 for Indx_nW = 1:size(NotWindows,1)
@@ -29,7 +31,7 @@ for Indx_W = 1:size(Windows, 1)
         Ch = EEG.data(Indx_Ch, Windows(Indx_W, 1):Windows(Indx_W, 2));
         
         if sum(isnan(Ch)) > 0.5*numel(Ch)
-            FFT(Indx_Ch, :, Indx_E) = nan;
+            FFT(Indx_Ch, :, Indx_W) = nan;
         else
             Ch(isnan(Ch)) = [];
             if numel(Ch) < WelchWindow*fs*2
@@ -66,14 +68,9 @@ if ToPlot
     
     figure
     subplot(1, 2, 1)
-    hold on
-    for Indx_W = 1:size(Windows, 1)
-        plot(Freqs, nanmean(WindowsPower.FFT(SpecialChannels, :, Indx_W), 1), 'Color', [.7 .7 .7])
-    end
-    plot(Freqs, nanmean(nanmean(WindowsPower.FFT(SpecialChannels, :, :), 1), 3), 'Color', 'r', 'LineWidth', 3)
-    
-    plot(Freqs, nanmean(nanmean(NotWindowsPower.FFT(SpecialChannels, :, :), 1), 3), 'Color', 'k', 'LineWidth', 3)
-    
+    PlotWindowPower(squeeze(nanmean(WindowsPower.FFT(SpecialChannels, :, :), 1)),...
+        squeeze(nanmean(NotWindowsPower.FFT(SpecialChannels, :, :), 1)), Freqs)
+
     % plot topography of microwindows vs non microwindows for delta, theta and
     % alpha
     
