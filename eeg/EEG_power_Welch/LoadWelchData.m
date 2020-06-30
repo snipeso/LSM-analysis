@@ -6,7 +6,7 @@ wp_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Scaling = 'log'; % either 'log' or 'norm' or 'scoref'
+Scaling = 'zscore'; % either 'log' or 'norm' or 'scoref'
 % Scaling = 'none';
 Task = 'LAT';
 Session = 'Beam';
