@@ -1,4 +1,4 @@
-function [WindowsPower, NotWindowsPower] = GetWindowsPower(EEG, Freqs, Windows, NotWindows, SpecialChannels, ToPlot)
+function [WindowsPower, NotWindowsPower] = GetWindowsPower(EEG, Freqs, Windows, NotWindows)
 % gets average power of data provided in windows.
 % notwindows is data that doesn't get considered by either windows or not
 % windows.
@@ -11,8 +11,6 @@ fs = EEG.srate;
 % convert time to points
 NotWindows = round(NotWindows.*fs);
 Windows = round(Windows.*fs);
-
-SpecialChannels = labels2indexes(SpecialChannels, EEG.chanlocs);
 
 % nan out not windows
 for Indx_nW = 1:size(NotWindows,1)
@@ -60,18 +58,5 @@ WindowsPower.FFT = FFT; % matrix ch x freq x epoch
 WindowsPower.Edges = Windows; % n x 2 matrix of times of start and stops of windows
 WindowsPower.Freqs = Freqs;
 WindowsPower.Chanlocs = EEG.chanlocs;
-
-
-% optional: plot specialchannels in butterfly plot
-
-if ToPlot
-    
-    figure
-    subplot(1, 2, 1)
-    PlotWindowPower(squeeze(nanmean(WindowsPower.FFT(SpecialChannels, :, :), 1)),...
-        squeeze(nanmean(NotWindowsPower.FFT(SpecialChannels, :, :), 1)), Freqs)
-
-    % plot topography of microwindows vs non microwindows for delta, theta and
-    % alpha
     
 end

@@ -6,15 +6,22 @@ clear
 clc
 close all
 
+Microsleeps_Parameters
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Tasks = {'LAT', 'PVT'};
 Refresh = false;
 Plot = true;
+Figure_Folder = fullfile(Paths.Figures, 'Microsleeps', 'AllFiles');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Microsleeps_Parameters
+if ~exist(Figure_Folder, 'dir')
+    mkdir(Figure_Folder)
+end
+
+
 
 for Indx_T = 1:numel(Tasks)
     
@@ -44,10 +51,10 @@ for Indx_T = 1:numel(Tasks)
         if ~Refresh && exist(fullfile(Destination, Filename_Destination), 'file')
             disp(['**************already did ',Filename_Destination, '*************'])
             continue
-            elseif ~exist(fullfile(Source_Cuts, Filename_Cuts), 'file')
+        elseif ~exist(fullfile(Source_Cuts, Filename_Cuts), 'file')
             disp(['***********', 'No cuts for ', Filename_Destination, '***********'])
             continue
-            elseif ~exist(fullfile(Source_Microsleeps, Filename_Microsleeps), 'file')
+        elseif ~exist(fullfile(Source_Microsleeps, Filename_Microsleeps), 'file')
             disp(['***********', 'No microsleeps for ', Filename_Destination, '***********'])
             continue
         end
@@ -73,30 +80,35 @@ for Indx_T = 1:numel(Tasks)
         %%% get microsleep windows
         load(fullfile(Source_Microsleeps, Filename_Microsleeps), 'Windows')
         
-       
+        
         
         % shift windows in time
         Windows = Windows + 2; % TEMP: figure out if this is ok
-         % remove windows that aren't inside size limits
+        % remove windows that aren't inside size limits
         Time = diff(Windows, 1, 2);
         ShortWindows = Windows(Time<minMicrosleep | Time>maxMicrosleep, :);
         Windows(Time<minMicrosleep | Time>maxMicrosleep, :) = [];
         
         %%% get power
-        [MicrosleepsPower, NotMicrosleepsPower] = GetWindowsPower(EEG, Freqs, Windows, ShortWindows, EEG_Channels.Hotspot, Plot);
+        [MicrosleepsPower, NotMicrosleepsPower] = GetWindowsPower(EEG, Freqs, Windows, ShortWindows);
         
+        
+        if Plot
+            try
+                SpecialChannels = labels2indexes(EEG_Channels.Hotspot, EEG.chanlocs);
+                figure('units','normalized','outerposition',[0 0 .7 .5])
+                subplot(2, 4, [1, 2, 5 6])
+                PlotWindowPower(squeeze(nanmean(MicrosleepsPower.FFT(SpecialChannels, :, :), 1)),...
+                    squeeze(nanmean( NotMicrosleepsPower.FFT(SpecialChannels, :, :), 1)), Freqs, Colors)
+                title(replace(Core, '_', ' '))
+                PlotTopoPower(squeeze(nanmean(MicrosleepsPower.FFT, 3)), Freqs, FreqRes, EEG.chanlocs, [2 4], [3,4,7,8], Colormap.Linear)
+            catch
+                warning(['Could not plot ',Core ])
+            end
+        end
         save(fullfile(Destination, Filename_Destination), 'MicrosleepsPower', 'NotMicrosleepsPower')
         
-%         % divide data into little epochs
-%         Epochs = Points/(fs*Window);
-%         Starts = floor(linspace(1, Points - fs*Window, Epochs));
-%         Ends = floor(Starts + fs*Window);
-%         Edges = [Starts(:), Ends(:)];
-%         
-%         % get power for all the epochs
-%         Power = WelchSpectrum(EEG, Freqs, Edges);
         
-        save(fullfile(Destination, Filename_Destination), 'Power')
         disp(['*************finished ',Filename_Destination '*************'])
         
     end
