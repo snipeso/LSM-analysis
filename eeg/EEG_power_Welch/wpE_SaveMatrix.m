@@ -62,7 +62,7 @@ for Indx_F = 1:numel(saveFreqFields) % loop through frequency bands
                 continue
             end
             Power = PowerStruct(Indx_P).(Sessions{Indx_S})(ChanIndx, FreqIndx(1):FreqIndx(2), :);
-            Matrix(Indx_P, Indx_S) = sum(nanmean(nanmean(Power, 3), 1))*FreqRes; % calculates the integral
+            Matrix(Indx_P, Indx_S) = nansum(nanmean(nanmean(Power, 3), 1))*FreqRes; % calculates the integral
             
         end
     end

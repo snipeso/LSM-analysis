@@ -55,6 +55,7 @@ Colors.LAT(1, :);
 Colors.LAT(3, :); 
 Colors.LAT(5, :);   
 ];
+Colors.LATComp = Colors.LATBeam; % TODO: make pale
 
 Colors.PVT = [
 70, 9, 92;
@@ -69,10 +70,16 @@ Colors.PVT(1, :);
 Colors.PVT(3, :); 
 Colors.PVT(4, :);   
 ];
-
+Colors.PVTComp = Colors.PVTBeam;
 
 Colors.Tasks.LAT = Colors.LAT(3, :);
 Colors.Tasks.PVT = Colors.PVT(3, :);
+
+Colors.Generic.Red = [235 95 106]/255;
+Colors.Generic.Pale1 = [243 238 193]/255;
+Colors.Generic.Pale2 = [244 178 119]/255;
+Colors.Generic.Dark1 = [24 41 166]/255;
+Colors.Generic.Dark2 = [145 26 150]/255;
 
 % Sessions
 allSessions = struct(); % labels used in saving data
@@ -173,6 +180,14 @@ EEG_Triggers.Quit = 'S  9';
 EEG_Triggers.LAT.StartLeft = 'S 10';
 EEG_Triggers.LAT.StartRight = 'S 11';
 
+
+
+saveFreqs = struct();
+saveFreqs.Delta = [1 4];
+saveFreqs.Theta = [4.5 7.5];
+saveFreqs.Alpha = [8.5 12.5];
+saveFreqs.Beta = [14 25];
+saveFreqFields = fieldnames(saveFreqs);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
