@@ -12,7 +12,7 @@ clear
 
 Targets = {'LAT', 'PVT'}; % specify folder for analysis
 Refresh = false;
-SpotCheck = true;
+SpotCheck = false;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 EEG_Parameters

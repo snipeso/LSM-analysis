@@ -6,10 +6,10 @@ close all
 clc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Target = 'PVT';
+Target = 'LAT';
 Refresh = false;
 Data_Type = 'Wake';
-% Filename = ['P03_LAT_Session2Beam1_ICA_Components.set'];
+% Filename = ['P09_LAT_Session1Beam_ICA_Components.set'];
 Filename = [];
 CheckOutput = true;
 
