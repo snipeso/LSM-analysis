@@ -13,6 +13,7 @@ Paths.Preprocessed = 'C:\Users\colas\Desktop\FakeDataPreprocessedEEG';
 % Paths.Preprocessed = 'C:\Users\schlaf\Desktop\LSMData';
 
 Paths.WelchPowerMicrosleeps = fullfile(Paths.Preprocessed, 'Power', 'WelchPowerMicrosleeps');
+Paths.Summary = fullfile(extractBefore(mfilename('fullpath'), 'EEG_Microsleeps'), 'EEG_Microsleeps', 'SummaryData');
 
 % Parameters
 FreqRes = 0.25;
@@ -21,8 +22,14 @@ Window = 4; % window for epochs when looking at general power;
 minMicrosleep = 3;
 maxMicrosleep = 15;
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Do stuff
 
 if ~exist(Paths.WelchPowerMicrosleeps, 'dir')
     mkdir(Paths.WelchPowerMicrosleeps)
 end
+
+if ~exist(Paths.Summary, 'dir')
+    mkdir(Paths.Summary)
+end
+

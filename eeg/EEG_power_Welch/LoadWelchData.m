@@ -30,7 +30,7 @@ Colormap = Colormap.Linear;
 %%% Get data
 FFT_Path = fullfile(Paths.Summary, [Task, '_FFT.mat']);
 if ~exist(FFT_Path, 'file') || Refresh
-    [allFFT, Categories] = LoadAllFFT(fullfile(Paths.WelchPower, Task));
+    [allFFT, Categories] = LoadAllFFT(fullfile(Paths.WelchPower, Task), 'Power');
     save(FFT_Path, 'allFFT', 'Categories')
 else
     load(FFT_Path, 'allFFT', 'Categories')

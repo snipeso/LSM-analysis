@@ -1,4 +1,4 @@
-function [allFFT, Categories] = LoadAllFFT(Path)
+function [allFFT, Categories] = LoadAllFFT(Path, VariableName)
 % loads all power spectrums in given path, using filenames to determine
 % categories.
 
@@ -10,7 +10,9 @@ Categories = cell([numel(split(Files{1}, '_')) , numel(Files)]);
 
 for Indx_F = 1:numel(Files)
     File = Files{Indx_F};
-    load(fullfile(Path, File), 'Power')
+    m = matfile(fullfile(Path, File), 'Writable', false);
+    Power =  m.(VariableName);
+
     allFFT(Indx_F).FFT = Power.FFT;
     allFFT(Indx_F).Freqs = Power.Freqs;
     allFFT(Indx_F).Chanlocs = Power.Chanlocs;

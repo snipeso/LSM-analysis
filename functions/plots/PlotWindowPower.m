@@ -8,7 +8,7 @@ plot(Freqs, log(nanmean(FFT1, 2)), 'Color', Colors.Generic.Red, 'LineWidth', 3)
 
 plot(Freqs, log(nanmean(FFT2, 2)), 'Color', Colors.Generic.Dark1, 'LineWidth', 3)
 
-plot(Freqs, log(nanmean([FFT2,FFT1], 2)), ':', 'Color', Colors.Generic.Pale1, 'LineWidth', 2)
+plot(Freqs, log(nanmean([FFT2,FFT1], 2)), ':', 'Color', Colors.Generic.Dark2, 'LineWidth', 2)
 
 
 xlim([1 20])

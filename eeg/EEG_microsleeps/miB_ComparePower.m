@@ -6,6 +6,9 @@
 % load all microsleep data into 1 strucutre (do whatever is in Welch), and
 % only refresh if asked
 
+LoadWelchMicrosleeps
+
+
 
 
 % Power spectrum of all microsleeps together, vs "non-microsleep" data
