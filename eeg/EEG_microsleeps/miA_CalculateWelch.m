@@ -11,7 +11,7 @@ Microsleeps_Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Tasks = {'LAT', 'PVT'};
-Refresh = false;
+Refresh = true;
 Plot = true;
 Figure_Folder = fullfile(Paths.Figures, 'Microsleeps', 'AllFiles');
 
@@ -102,7 +102,9 @@ for Indx_T = 1:numel(Tasks)
                     squeeze(nanmean( NotMicrosleepsPower.FFT(SpecialChannels, :, :), 1)), Freqs, Colors)
                 title(replace(Core, '_', ' '))
                 PlotTopoPower(squeeze(nanmean(MicrosleepsPower.FFT, 3)), Freqs, FreqRes, EEG.chanlocs, [2 4], [3,4,7,8], Colormap.Linear)
+            saveas(gcf,fullfile(Figure_Folder, [Core, '_MicrosleepPower.svg']))
             catch
+                close
                 warning(['Could not plot ',Core ])
             end
         end
