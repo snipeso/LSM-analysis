@@ -12,6 +12,7 @@ Paths.Preprocessed = 'C:\Users\colas\Desktop\FakeDataPreprocessedEEG'; % Sophia 
 
 Paths.Summary = fullfile(mfilename('fullpath'), 'SummaryData');
 Paths.WelchPower = fullfile(Paths.Preprocessed, 'Power', 'WelchPower');
+Paths.Figures = fullfile(Paths.Figures, 'Welch');
 
 % Parameters
 FreqRes = 0.25;
@@ -26,3 +27,6 @@ if ~exist(Paths.Summary, 'dir')
     mkdir(Paths.Summary)
 end
 
+if ~exist(Paths.Figures, 'dir')
+    mkdir(Paths.Figures)
+end

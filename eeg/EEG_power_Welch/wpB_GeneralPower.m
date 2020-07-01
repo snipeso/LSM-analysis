@@ -30,7 +30,6 @@ for Indx_H = 1:2
             All_Averages(Indx_P, :) = nanmean(nanmean(PowerStruct(Indx_P).(Sessions{Indx_S})(ChanIndx, :, :), 1), 3);
             plot(Freqs, All_Averages(Indx_P, :), 'LineWidth', 2, 'Color', P_Colors(Indx_P, :) )
         end
-         legend(Sessions)
     title([Task, ' Power in ', Title])
     ylim(YLims)
     xlim([1, 20])
@@ -40,8 +39,12 @@ for Indx_H = 1:2
     end
    
 end
+legend(Participants)
+saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_Power_Individuals.svg']))
+
 
 figure('units','normalized','outerposition',[0 0 .5 .5])
+Title =  'HotSpot';
 for Indx_H = 1:2
     if Indx_H == 2
         Title =  'Not HotSpot';
@@ -51,7 +54,7 @@ for Indx_H = 1:2
     hold on
     for Indx_S =1:numel(Sessions)
         
-        plot(Freqs,  squeeze(Averaged_FFT(Indx_S, :, Indx_H)), 'LineWidth', 2, 'Color', Colors(Indx_S, :))
+        plot(Freqs,  squeeze(Averaged_FFT(Indx_S, :, Indx_H)), 'LineWidth', 2, 'Color', Colors.(Task)(Indx_S, :))
     end
     legend(Sessions)
     title([Task, ' Power in ', Title])
@@ -99,7 +102,7 @@ for Indx_S = 1:numel(Sessions)
         
     end
 end
-colormap(Colormap)
+colormap(Colormap.Linear)
 saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_PowerTopo.svg']))
 
 

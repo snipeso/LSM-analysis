@@ -10,9 +10,6 @@ saveFreqs.Beta = [14 25];
 saveFreqFields = fieldnames(saveFreqs);
 
 
-
-Max = 0;
-Diffs = zeros(numel(Chanlocs), 4);
 figure('units','normalized','outerposition',[0 0 .7 .5])
 for Indx_F = 1:numel(saveFreqFields) % loop through frequency bands
     FreqLims = saveFreqs.(saveFreqFields{Indx_F});
@@ -23,8 +20,11 @@ for Indx_F = 1:numel(saveFreqFields) % loop through frequency bands
     
     
     MinMax = [min([Power1(:); Power2(:)]), max([Power1(:); Power2(:)])];
-    
-    CLims = [MinMax(1) - (abs(diff(MinMax))), MinMax(2)];
+    if any(FFT1(:)<0) || any(FFT2(:)<0)
+        CLims = [-max(abs(MinMax)), max(abs(MinMax))];
+    else
+        CLims = [MinMax(1) - (abs(diff(MinMax))), MinMax(2)];
+    end
     
     % plot first row
     subplot(3, 4, Indx_F)
@@ -40,20 +40,25 @@ for Indx_F = 1:numel(saveFreqFields) % loop through frequency bands
     colorbar % TODO once debugged, remove
     
     % third row; differences
-%     Diff = 100.*((Power1-Power2)./Power2);
-     Diff = (Power1-Power2);
-      Diffs(:, Indx_F) = Diff(:);
-
-end
-
-Max = max(abs([quantile(Diffs(:), .01), quantile(Diffs(:), .99)]));
-CLims = [-Max Max];
-
-for Indx_F = 1:numel(saveFreqFields)
+    
+    
+    
+    %
+    if any(FFT1(:)<0) || any(FFT2(:)<0) % use absolute difference if this is not a lognormal distribution
+        Diff = (Power1-Power2);
+        CLabel = 'Diff';
+    else % use percent change for log normal distribution
+        Diff = 100.*((Power1-Power2)./Power2);
+        CLabel = '%';
+    end
+    Max = max(abs([quantile(Diff(:), .01), quantile(Diff(:), .99)]));
+    CLims = [-Max Max];
     subplot(3, 4, 8+Indx_F)
-    topoplot(Diffs(:, Indx_F), Chanlocs, 'maplimits', CLims, ...
+    topoplot(Diff, Chanlocs, 'maplimits', CLims, ...
         'style', 'map', 'headrad', 'rim', 'gridscale', 150);
-colorbar
+    h = colorbar;
+    ylabel(h, CLabel)
 end
+
 
 colormap(Colormap)

@@ -6,15 +6,14 @@ wp_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Scaling = 'zscore'; % either 'log' or 'norm' or 'scoref'
-Scaling = 'log';
-Task = 'LAT';
+Scaling = 'zscore'; % either 'log' or 'norm' or 'scoref'
+% Scaling = 'log';
+Task = 'PVT';
 Session = 'Beam';
 Title = 'Soporific';
 
 % Session = 'Comp';
 % Title = 'Classic';
-
 
 Refresh = false;
 
@@ -23,9 +22,6 @@ Refresh = false;
 
 Sessions = allSessions.([Task,Session]);
 SessionLabels = allSessionLabels.([Task, Session]);
-Colors = Colors.([Task, Session]);
-Colormap = Colormap.Linear;
-
 
 %%% Get data
 FFT_Path = fullfile(Paths.Summary, [Task, '_FFT.mat']);

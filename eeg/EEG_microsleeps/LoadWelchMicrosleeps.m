@@ -6,8 +6,8 @@ Microsleeps_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Scaling = 'zscore'; % either 'log' or 'norm' or 'scoref'
-% Scaling = 'none';
+% Scaling = 'zscore'; % either 'log' or 'norm' or 'scoref'
+Scaling = 'none';
 % Scaling = 'zscore';
 Tasks = {'LAT', 'PVT'};
 Sessions = {'Baseline', 'Session1', 'Session2'};
@@ -104,8 +104,8 @@ for Indx_P = 1:numel(Participants)
         A_mi = PowerStruct_mi(Indx_P).(Sessions{Indx_S});
         A =  PowerStruct(Indx_P).(Sessions{Indx_S});
         A = [A(:); A_mi(:)];
-        Quantiles(Indx_P, Indx_S, 1) =  quantile(A(:), .01);
-        Quantiles(Indx_P, Indx_S, 2) =  quantile(A(:), .99);
+        Quantiles(Indx_P, Indx_S, 1) =  quantile(A(:), .05);
+        Quantiles(Indx_P, Indx_S, 2) =  quantile(A(:), .95);
     end
 end
 

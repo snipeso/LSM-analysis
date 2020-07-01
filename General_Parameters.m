@@ -81,6 +81,7 @@ Colors.Generic.Pale1 = [243 238 193]/255;
 Colors.Generic.Pale2 = [244 178 119]/255;
 Colors.Generic.Dark1 = [24 41 166]/255;
 Colors.Generic.Dark2 = [145 26 150]/255;
+Colors.Sessions = [Colors.Generic.Dark1; Colors.Generic.Red; Colors.Generic.Pale2 ];
 
 % Sessions
 allSessions = struct(); % labels used in saving data
