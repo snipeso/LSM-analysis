@@ -8,12 +8,12 @@ Microsleeps_Parameters
 
 % Scaling = 'zscore'; % either 'log' or 'norm' or 'scoref'
 % Scaling = 'none';
-Scaling = 'zscore';
+Scaling = 'log';
 Tasks = {'PVT', 'LAT'};
 Sessions = {'Baseline', 'Session1', 'Session2'};
 Conditions = {'Beam', 'Comp'};
 Title = 'AllTasks';
-Refresh = true;
+Refresh = false;
 
 FontName = 'Tw Cen MT'; % use something else for papers
 

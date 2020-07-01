@@ -6,7 +6,7 @@
 % load all microsleep data into 1 strucutre (do whatever is in Welch), and
 % only refresh if asked
 
-% LoadWelchMicrosleeps
+LoadWelchMicrosleeps
 
 Microsleeps = [];
 EE = []; % reference to armageddon movie where EE stands for "everyone else"
@@ -49,7 +49,7 @@ PlotPowerSpectrumDiff(ALLSession_mi, ALLSession_All, Freqs,YLims,  YLabel, Sessi
 saveas(gcf,fullfile(Paths.Figures, [ Title,'_', Scaling, '_MicrosleepPowerPooled_Sessions.svg']))
 
 PlotPowerSpectrumDiff(ALLSession_EE, ALLSession_All, Freqs, YLims, YLabel, Sessions, ...
-    Colors.Sessions, FontName, ['Microsleeps by Session'])
+    Colors.Sessions, FontName, ['Not Microsleeps by Session'])
 saveas(gcf,fullfile(Paths.Figures, [ Title,'_', Scaling, '_NotMicrosleepPowerPooled_Sessions.svg']))
 
 
@@ -106,7 +106,7 @@ PlotPowerSpectrumDiff(ALLSession_mi, ALLSession_All, Freqs, YLims, YLabel, Sessi
 saveas(gcf,fullfile(Paths.Figures, [ Title,'_', Scaling, '_MicrosleepPower_Sessions.svg']))
 
 PlotPowerSpectrumDiff(ALLSession_EE, ALLSession_All, Freqs, YLims, YLabel, Sessions, ...
-    Colors.Sessions, FontName, ['Microsleeps by Session'])
+    Colors.Sessions, FontName, ['Not Microsleeps by Session'])
 saveas(gcf,fullfile(Paths.Figures, [ Title,'_', Scaling, '_NotMicrosleepPower_Sessions.svg']))
 
 
