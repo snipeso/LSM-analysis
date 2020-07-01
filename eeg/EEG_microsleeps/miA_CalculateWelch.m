@@ -23,7 +23,7 @@ end
 
 
 
-for Indx_T = 1:numel(Tasks)
+parfor Indx_T = 1:numel(Tasks)
     
     Task = Tasks{Indx_T};
     
@@ -78,7 +78,8 @@ for Indx_T = 1:numel(Tasks)
         EEG = nanNoise(EEG, Cuts_Filepath);
         
         %%% get microsleep windows
-        load(fullfile(Source_Microsleeps, Filename_Microsleeps), 'Windows')
+        Windows = LoadWindows(fullfile(Source_Microsleeps, Filename_Microsleeps));
+        
         
         
         
@@ -108,11 +109,19 @@ for Indx_T = 1:numel(Tasks)
                 warning(['Could not plot ',Core ])
             end
         end
-        save(fullfile(Destination, Filename_Destination), 'MicrosleepsPower', 'NotMicrosleepsPower')
-        
+        SavePower(fullfile(Destination, Filename_Destination), MicrosleepsPower, NotMicrosleepsPower)
+         
         
         disp(['*************finished ',Filename_Destination '*************'])
         
     end
 end
 
+function Windows = LoadWindows(Source)
+load(Source, 'Windows')
+end
+
+function SavePower(Destination, MicrosleepsPower, NotMicrosleepsPower)
+save(Destination, 'MicrosleepsPower', 'NotMicrosleepsPower')
+       
+end
