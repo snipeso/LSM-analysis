@@ -86,11 +86,11 @@ for Indx_T = 1:numel(Tasks)
         Windows = Windows + 2; % TEMP: figure out if this is ok
         % remove windows that aren't inside size limits
         Time = diff(Windows, 1, 2);
-        ShortWindows = Windows(Time<minMicrosleep | Time>maxMicrosleep, :);
+        ShortWindows = Windows(Time<minMicrosleep, :);
         Windows(Time<minMicrosleep | Time>maxMicrosleep, :) = [];
         
         %%% get power
-        [MicrosleepsPower, NotMicrosleepsPower] = GetWindowsPower(EEG, Freqs, Windows, ShortWindows);
+        [MicrosleepsPower, NotMicrosleepsPower] = GetWindowsPower(EEG, Freqs, Windows, ShortWindows, Window);
         
         
         if Plot

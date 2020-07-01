@@ -19,7 +19,7 @@ Paths.Figures = fullfile(Paths.Figures, 'Microsleeps');
 % Parameters
 FreqRes = 0.25;
 Freqs = [1:FreqRes:30];
-Window = 4; % window for epochs when looking at general power;
+Window = 3; % window for epochs when looking at general power;
 minMicrosleep = 3;
 maxMicrosleep = 15;
 

@@ -1,9 +1,8 @@
-function [WindowsPower, NotWindowsPower] = GetWindowsPower(EEG, Freqs, Windows, NotWindows)
+function [WindowsPower, NotWindowsPower] = GetWindowsPower(EEG, Freqs, Windows, NotWindows, WelchWindow)
 % gets average power of data provided in windows.
 % notwindows is data that doesn't get considered by either windows or not
 % windows.
 
-WelchWindow = 2;
 
 [Channels, Points] = size(EEG.data);
 fs = EEG.srate;
@@ -21,28 +20,25 @@ end
 
 
 % for windows > 6 seconds, run 4s window, and average
-FFT = nan(Channels, numel(Freqs), size(Windows, 1));
+EEG1 = EEG;
 EEG2 = EEG;
+EEG1.data(:, :, :) = nan;
 
 for Indx_W = 1:size(Windows, 1)
-    for Indx_Ch = 1:Channels
-        Ch = EEG.data(Indx_Ch, Windows(Indx_W, 1):Windows(Indx_W, 2));
-        
-        if sum(isnan(Ch)) > 0.5*numel(Ch)
-            FFT(Indx_Ch, :, Indx_W) = nan;
-        else
-            Ch(isnan(Ch)) = [];
-            if numel(Ch) < WelchWindow*fs*2
-                [FFT(Indx_Ch, :, Indx_W), ~] = pwelch(Ch, [], [], Freqs, fs);
-            else
-                [FFT(Indx_Ch, :, Indx_W), ~] = pwelch(Ch, fs*WelchWindow, [], Freqs, fs);
-            end
-        end
-    end
+    
+    % save eeg file with only windows included
+    EEG1.data(:, Windows(Indx_W, 1):Windows(Indx_W, 2)) = EEG.data(:, Windows(Indx_W, 1):Windows(Indx_W, 2));
+    
     % for non-window data, set to nan all the windows, and a little extra
     EEG2.data(:, Windows(Indx_W, 1)-2*fs:Windows(Indx_W, 2)+2*fs) = nan;
 end
 
+% run windowing on all data not in windows, with 5s padding.
+Epochs = Points/(fs*WelchWindow);
+Starts = floor(linspace(1, Points - fs*WelchWindow, Epochs));
+Ends = floor(Starts + fs*WelchWindow);
+Edges = [Starts(:), Ends(:)];
+WindowsPower = WelchSpectrum(EEG1, Freqs, Edges);
 
 % run windowing on all data not in windows, with 5s padding.
 Epochs = Points/(fs*WelchWindow);
@@ -53,10 +49,4 @@ NotWindowsPower = WelchSpectrum(EEG2, Freqs, Edges);
 
 % output how much % of data is in the windows vs non windows data TODO
 
-% save structure as:
-WindowsPower.FFT = FFT; % matrix ch x freq x epoch
-WindowsPower.Edges = Windows; % n x 2 matrix of times of start and stops of windows
-WindowsPower.Freqs = Freqs;
-WindowsPower.Chanlocs = EEG.chanlocs;
-    
 end
