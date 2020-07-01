@@ -23,7 +23,7 @@ end
 
 
 
-parfor Indx_T = 1:numel(Tasks)
+for Indx_T = 1:numel(Tasks)
     
     Task = Tasks{Indx_T};
     
@@ -40,7 +40,7 @@ parfor Indx_T = 1:numel(Tasks)
     Files = deblank(cellstr(ls(Source_Data)));
     Files(~contains(Files, '.set')) = [];
     
-    for Indx_F = 1:numel(Files)
+    parfor Indx_F = 1:numel(Files)
         File = Files{Indx_F};
         Core = extractBefore(File, '_Clean');
         Filename_Destination = [Core, '_wp_mi.mat'];
