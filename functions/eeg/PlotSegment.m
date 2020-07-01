@@ -1,10 +1,10 @@
-function PlotSegment(EEG, Start, Stop, Channels, Color)
+function PlotSegment(EEG, Start, Stop, Channels, ProtoChannel, Color)
 % channels is a cell array of lists of channel numbers
 
 Freqs = 1:0.5:30;
 plotFreqs = [2:2:15, 20];
 fs = EEG.srate;
-Colormap = colorcet('L17');
+Colormap = flipud(colorcet('L17'));
 
 if ~exist('Color', 'var')
     Color = 'r';
@@ -12,13 +12,12 @@ end
 
  Data = EEG.data(:, round(Start*EEG.srate):round(Stop*EEG.srate));
     
- figure('units','normalized','outerposition',[0 0 .3 .3])
-Amps = nanmean(abs(Data), 2);
-[~, ProtoChannel] = max(Amps);
+ figure('units','normalized','outerposition',[0 0 .6 .3])
+ProtoChannel = labels2indexes(ProtoChannel, EEG.chanlocs);
 
 hold on
 plot(Data', 'Color', [.7 .7 .7])
-plot(Data(ProtoChannel, :), 'Color', Color, 'LineWidth', 3)
+plot(Data(ProtoChannel, :), 'Color', Color, 'LineWidth', 2)
  set(gca,'visible','off')
 set(gca,'xtick',[])
  %%% plot power
