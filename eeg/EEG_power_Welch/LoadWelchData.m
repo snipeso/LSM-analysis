@@ -6,8 +6,8 @@ wp_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Scaling = 'zscore'; % either 'log' or 'norm' or 'scoref'
-% Scaling = 'none';
+% Scaling = 'zscore'; % either 'log' or 'norm' or 'scoref'
+Scaling = 'log';
 Task = 'LAT';
 Session = 'Beam';
 Title = 'Soporific';

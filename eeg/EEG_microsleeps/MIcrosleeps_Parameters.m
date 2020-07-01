@@ -14,6 +14,7 @@ Paths.Preprocessed = 'C:\Users\colas\Desktop\FakeDataPreprocessedEEG';
 
 Paths.WelchPowerMicrosleeps = fullfile(Paths.Preprocessed, 'Power', 'WelchPowerMicrosleeps');
 Paths.Summary = fullfile(extractBefore(mfilename('fullpath'), 'EEG_Microsleeps'), 'EEG_Microsleeps', 'SummaryData');
+Paths.Figures = fullfile(Paths.Figures, 'Microsleeps');
 
 % Parameters
 FreqRes = 0.25;
@@ -31,5 +32,9 @@ end
 
 if ~exist(Paths.Summary, 'dir')
     mkdir(Paths.Summary)
+end
+
+if ~exist(Paths.Figures, 'dir')
+    mkdir(Paths.Figures)
 end
 

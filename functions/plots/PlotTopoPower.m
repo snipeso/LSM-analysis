@@ -14,7 +14,7 @@ saveFreqFields = fieldnames(saveFreqs);
 for Indx_F = 1:numel(saveFreqFields) % loop through frequency bands
     FreqLims = saveFreqs.(saveFreqFields{Indx_F});
     FreqIndx =  dsearchn(Freqs', FreqLims');
-    Power = log(nansum(FFT(:,  FreqIndx(1):FreqIndx(2)),2).*FreqRes); % integral of power
+    Power = nansum(FFT(:,  FreqIndx(1):FreqIndx(2)),2).*FreqRes; % integral of power
     subplot(PlotDim(1), PlotDim(2), PlotLoc(Indx_F))
     topoplot(Power, Chanlocs, 'maplimits', 'maxmin', ...
         'style', 'map', 'headrad', 'rim', 'gridscale', 150);

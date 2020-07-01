@@ -33,6 +33,7 @@ end
 Colors = struct();
 Colormap = struct();
 Colormap.Linear = flip(colorcet('L17'));
+Colormap.Divergent = rdbu;
 % Colormap.Divergent = colormap(rdbu);
 
 % LAT v PVT
