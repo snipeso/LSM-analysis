@@ -8,7 +8,7 @@ Stats_Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-Task = 'PVT';
+Task = 'LAT';
 FigureFolder = 'NeuroMeets';
 
 DataPath = fullfile(Paths.Analysis, 'statistics', 'Data', Task); % for statistics
@@ -32,9 +32,9 @@ DataPath = fullfile(Paths.Analysis, 'statistics', 'Data', Task); % for statistic
 % Loggify = false;
 
 % 
-% Type = 'miDuration'; % miDuration, % miStart miTot
-% YLabel = 'Seconds';
-% Loggify = false;
+Type = 'miDuration'; % miDuration, % miStart miTot
+YLabel = 'Seconds';
+Loggify = false;
 
 
 
@@ -61,22 +61,7 @@ SopoMatrix = Matrix;
 if Loggify
     SopoMatrix = log(SopoMatrix+1);
 end
-% 
-% load(fullfile(DataPath, ['LAT_', Type, '_Soporific.mat']))
-% ClassicMatrix = Matrix;
-% if Loggify
-%     
-%     ClassicMatrix = log(ClassicMatrix+1);
-% end
-% 
-% DataPath = fullfile(Paths.Analysis, 'statistics', 'ANOVA', 'Data', 'PVT'); % for statistics
-% 
-% load(fullfile(DataPath, ['PVT_', Type, '_Soporific.mat']))
-% SopoMatrix = Matrix;
-% 
-% if Loggify
-%     SopoMatrix = log(SopoMatrix+1);
-% end
+
 
 
 
@@ -85,12 +70,12 @@ Groups = repmat([1 2 3], 10, 1);
 Levenetest([ClassicMatrix(:), Groups(:); SopoMatrix(:), 3+Groups(:)],.05)
 pause(1)
 % 
-% z-score
-for Indx_P = 1:numel(Participants)
-    All = zscore([ClassicMatrix(Indx_P, :), SopoMatrix(Indx_P, :)]);
-    ClassicMatrix(Indx_P, :) = All(1:size(ClassicMatrix, 2));
-    SopoMatrix(Indx_P, :) = All(size(ClassicMatrix, 2)+1:end);
-end
+% % z-score
+% for Indx_P = 1:numel(Participants)
+%     All = zscore([ClassicMatrix(Indx_P, :), SopoMatrix(Indx_P, :)]);
+%     ClassicMatrix(Indx_P, :) = All(1:size(ClassicMatrix, 2));
+%     SopoMatrix(Indx_P, :) = All(size(ClassicMatrix, 2)+1:end);
+% end
 
 SopMeans = nanmean(SopoMatrix);
 SopSEM = std(SopoMatrix)./sqrt(size(SopoMatrix, 1));

@@ -7,14 +7,13 @@ Microsleeps_Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Scaling = 'zscore'; % either 'log' or 'norm' or 'scoref'
-Scaling = 'none';
-% Scaling = 'zscore';
-Tasks = {'LAT', 'PVT'};
+% Scaling = 'none';
+Scaling = 'zscore';
+Tasks = {'PVT', 'LAT'};
 Sessions = {'Baseline', 'Session1', 'Session2'};
 Conditions = {'Beam', 'Comp'};
-
-Title = 'MergeAll';
-Refresh = false;
+Title = 'AllTasks';
+Refresh = true;
 
 FontName = 'Tw Cen MT'; % use something else for papers
 
@@ -60,6 +59,8 @@ if ~exist(FFT_Path_mi, 'file') || Refresh
         allFFT = [allFFT, allFFT_temp];
         Categories = [Categories, tempCategories]; %#ok<AGROW>
     end
+    allFFT_mi(1) = [];
+     allFFT(1) = [];
     save(FFT_Path_mi, 'allFFT_mi', 'Categories_mi')
     save(FFT_Path, 'allFFT', 'Categories', '-v7.3')
 else
@@ -98,16 +99,19 @@ switch Scaling
 end
 
 % get limits per participant
-Quantiles = nan(numel(Participants), numel(Sessions), 2);
+Quantiles_Big = nan(numel(Participants), numel(Sessions), 2);
+Quantiles_Small =  nan(numel(Participants), numel(Sessions), 2);
 for Indx_P = 1:numel(Participants)
     for Indx_S = 1:numel(Sessions)
         A_mi = PowerStruct_mi(Indx_P).(Sessions{Indx_S});
         A =  PowerStruct(Indx_P).(Sessions{Indx_S});
         A = [A(:); A_mi(:)];
-        Quantiles(Indx_P, Indx_S, 1) =  quantile(A(:), .05);
-        Quantiles(Indx_P, Indx_S, 2) =  quantile(A(:), .95);
+        Quantiles_Big(Indx_P, Indx_S, :) =  [quantile(A(:), .01),  quantile(A(:), .99)];
+ Quantiles_Small(Indx_P, Indx_S, :) =  [quantile(A(:), .05),  quantile(A(:), .95)];
+
     end
 end
 
-YLims = squeeze(nanmean(nanmean(Quantiles(:, :, :), 2),1));
+YLims = squeeze(nanmean(nanmean(Quantiles_Big(:, :, :), 2),1));
 
+YLims_Small = squeeze(nanmean(nanmean(Quantiles_Small(:, :, :), 2),1));
