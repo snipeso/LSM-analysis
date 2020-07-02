@@ -6,16 +6,14 @@ Microsleeps_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Scaling = 'zscore'; % either 'log' or 'norm' or 'scoref'
+Scaling = 'zscore'; % either 'log' or 'norm' or 'scoref'
 % Scaling = 'none';
-Scaling = 'log';
+% Scaling = 'log';
 Tasks = {'PVT', 'LAT'};
 Sessions = {'Baseline', 'Session1', 'Session2'};
 Conditions = {'Beam', 'Comp'};
-Title = 'AllTasks';
+Title = 'AllTasks2';
 Refresh = false;
-
-FontName = 'Tw Cen MT'; % use something else for papers
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -61,7 +59,7 @@ if ~exist(FFT_Path_mi, 'file') || Refresh
     end
     allFFT_mi(1) = [];
      allFFT(1) = [];
-    save(FFT_Path_mi, 'allFFT_mi', 'Categories_mi')
+    save(FFT_Path_mi, 'allFFT_mi', 'Categories_mi',  '-v7.3')
     save(FFT_Path, 'allFFT', 'Categories', '-v7.3')
 else
     load(FFT_Path_mi, 'allFFT_mi', 'Categories_mi')

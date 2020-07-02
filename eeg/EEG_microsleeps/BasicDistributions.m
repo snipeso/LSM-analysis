@@ -11,7 +11,7 @@ Microsleeps_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Task = 'PVT';
+Task = 'LAT';
 
 % Computer tasks
 % Session = 'Beam';
@@ -20,13 +20,13 @@ Task = 'PVT';
 
 Session = 'Comp';
 Title = 'Classic';
-Save = false;
+Save = true;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Sessions = allSessions.([Task,Session]);
 SessionLabels = allSessionLabels.([Task, Session]);
-Destination= fullfile(Paths.Analysis, 'statistics', 'ANOVA', 'Data',Task);
+Destination= fullfile(Paths.Analysis, 'statistics','Data',Task);
 
 if ~exist(Destination, 'dir')
     mkdir(Destination)
