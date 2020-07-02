@@ -105,7 +105,7 @@ for Indx_C = 1:numel(Conditions) % do both conditions
     end
     
     figure
-    TotMicrosleeps = AllMatrix(1).DurationMicrosleeps + AllMatrix(2).DurationMicrosleeps;
+    TotMicrosleeps = AllMatrix(1).TotMicrosleeps + AllMatrix(2).TotMicrosleeps;
     PlotConfettiSpaghetti(TotMicrosleeps, SessionLabels, [],  ['All Tasks', Title,' Total microsleeps'])
     ylabel('#')
     Matrix = TotMicrosleeps;
