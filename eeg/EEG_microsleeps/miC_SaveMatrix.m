@@ -46,7 +46,7 @@ if ~exist(FFT_Path_mi, 'file') || Refresh
         tempCategories = replace(tempCategories, 'Session2Beam1', 'Session2Beam');
         
         allFFT_mi = [allFFT_mi, allFFT_mi_temp];
-        Categories_mi = [Categories_mi, tempCategories]; %#ok<AGROW>
+        Categories_mi = [Categories_mi, tempCategories];
         
         % get not microsleeps
         [allFFT_temp, tempCategories] = ...
@@ -56,7 +56,7 @@ if ~exist(FFT_Path_mi, 'file') || Refresh
         
         
         allFFT = [allFFT, allFFT_temp];
-        Categories = [Categories, tempCategories]; %#ok<AGROW>
+        Categories = [Categories, tempCategories];
     end
     allFFT_mi(1) = [];
     allFFT(1) = [];

@@ -10,7 +10,7 @@ Microsleeps_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Tasks = {'LAT', 'PVT'};
+Tasks = {'PVT'};
 Refresh = true;
 Plot = true;
 Figure_Folder = fullfile(Paths.Figures, 'Microsleeps', 'AllFiles');
@@ -84,11 +84,11 @@ for Indx_T = 1:numel(Tasks)
         
         
         % shift windows in time
-        Windows = Windows + 2; % TEMP: figure out if this is ok
+%         Windows = Windows + 2; % TEMP: figure out if this is ok
         % remove windows that aren't inside size limits
         Time = diff(Windows, 1, 2);
         ShortWindows = Windows(Time<minMicrosleep, :);
-        Windows(Time<minMicrosleep | Time>maxMicrosleep, :) = [];
+        Windows(Time<minMicrosleep, :) = [];
         
         %%% get power
         [MicrosleepsPower, NotMicrosleepsPower] = GetWindowsPower(EEG, Freqs, Windows, ShortWindows, Window);
