@@ -9,8 +9,6 @@ Paths.Analysis = extractBefore(Paths.Analysis, 'General_Parameters');
 
 % get related paths
 Paths.Figures = fullfile(Paths.Analysis, 'figures');
-Paths.Preprocessing = fullfile(Paths.Analysis, 'EEG_preprocessing');
-
 
 
 % add location of subfunctions
@@ -29,16 +27,13 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Labels & Colors
 
-
 FontName = 'Tw Cen MT'; % use something else for papers
-
 
 % Colors
 Colors = struct();
 Colormap = struct();
 Colormap.Linear = flip(colorcet('L17'));
 Colormap.Divergent = rdbu;
-% Colormap.Divergent = colormap(rdbu);
 
 % LAT v PVT
 % TV v Music v LAT v    
@@ -60,7 +55,8 @@ Colors.LAT(1, :);
 Colors.LAT(3, :); 
 Colors.LAT(5, :);   
 ];
-Colors.LATComp = Colors.LATBeam; % TODO: make pale
+
+Colors.LATComp = makePale(Colors.LATBeam); % TODO: make pale
 
 Colors.PVT = [
 70, 9, 92;
@@ -75,10 +71,10 @@ Colors.PVT(1, :);
 Colors.PVT(3, :); 
 Colors.PVT(4, :);   
 ];
-Colors.PVTComp = Colors.PVTBeam;
+Colors.PVTComp = makePale(Colors.PVTBeam);
 
-Colors.Tasks.LAT = Colors.LAT(3, :);
-Colors.Tasks.PVT = Colors.PVT(3, :);
+Colors.Tasks.LAT = Colors.LATBeam;
+Colors.Tasks.PVT = Colors.PVTBeam;
 
 Colors.Generic.Red = [235 95 106]/255;
 Colors.Generic.Pale1 = [243 238 193]/255;
@@ -198,11 +194,4 @@ saveFreqs.Beta = [14 25];
 saveFreqFields = fieldnames(saveFreqs);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%%% Do stuff
-
-if ~exist(Paths.Figures, 'dir')
-    mkdir(Paths.Figures)
-end
-
 
