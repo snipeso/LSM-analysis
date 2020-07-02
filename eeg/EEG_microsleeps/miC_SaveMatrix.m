@@ -22,9 +22,14 @@ Refresh = true;
 % Colormap = Colormap.Linear;
 
 Paths.ANOVA = fullfile(Paths.Analysis, 'statistics','Data',Title);
+Paths.Summary =  fullfile(Paths.Summary, 'statistics');
 
 if ~exist(Paths.ANOVA, 'dir')
     mkdir(Paths.ANOVA)
+end
+
+if ~exist(Paths.Summary, 'dir')
+    mkdir(Paths.Summary)
 end
 
 %%% Get data
