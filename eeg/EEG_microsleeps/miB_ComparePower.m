@@ -7,7 +7,8 @@
 % only refresh if asked
 
 LoadWelchMicrosleeps
-
+% YLims_Big = [-4 3];
+% YLims_Small = [-3, 2];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Pool all microsleeps
 
@@ -87,7 +88,7 @@ for Indx_S = 1:numel(Sessions)
         EE = cat(2, EE, EE_FFT);
         
         % save session separately
-        Session_mi = cat(2, Session_mi, nanmean(mi_FFT, 2)); %?
+        Session_mi = cat(2, Session_mi, nanmean(mi_FFT, 2)); 
         Session_EE = cat(2, Session_EE, nanmean(EE_FFT, 2));
         Session_All = cat(2, Session_All, nanmean(all_FFT, 2));
         
