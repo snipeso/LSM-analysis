@@ -25,6 +25,8 @@ FFT_Path = fullfile(Paths.Summary, [Title, '_FFT.mat']);
 
 if ~exist(FFT_Path_mi, 'file') || Refresh
     
+    disp(['*************Creating ', Title, '******************'])
+    
     % structure for microsleeps
     allFFT_mi =  struct('FFT', [], 'Freqs', [], 'Chanlocs', [], 'Filename', []);
     Categories_mi = [];
@@ -72,6 +74,7 @@ if ~exist(FFT_Path_mi, 'file') || Refresh
     save(FFT_Path_mi, 'allFFT_mi', 'Categories_mi',  '-v7.3')
     save(FFT_Path, 'allFFT', 'Categories', '-v7.3')
 else
+    disp(['*************Loading ', Title, '******************'])
     load(FFT_Path_mi, 'allFFT_mi', 'Categories_mi')
     load(FFT_Path, 'allFFT', 'Categories')
 end
@@ -89,7 +92,6 @@ switch Scaling
         for Indx_F = 1:size(allFFT_mi, 2)
             allFFT_mi(Indx_F).FFT = log(allFFT_mi(Indx_F).FFT); 
             allFFT(Indx_F).FFT = log(allFFT(Indx_F).FFT);
-
         end
         
         PowerStruct_mi = GetPowerStruct(allFFT_mi, Categories_mi, Sessions, Participants);

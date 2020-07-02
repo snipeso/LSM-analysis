@@ -8,55 +8,58 @@
 
 LoadWelchMicrosleeps
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Pool all microsleeps
+
 Microsleeps = [];
 EE = []; % reference to armageddon movie where EE stands for "everyone else"
 
 ALLSession_mi = [];
 ALLSession_EE = [];
 ALLSession_All = [];
+
 for Indx_S = 1:numel(Sessions)
-    mi_FFT = cat(3, PowerStruct_mi.(Sessions{Indx_S}));
-    mi_FFT = squeeze(nanmean(mi_FFT(Hotspot, :, :), 1));
-    Microsleeps = cat(2, Microsleeps, mi_FFT);
     
+    mi_FFT = cat(3, PowerStruct_mi.(Sessions{Indx_S})); % concatenate all microsleep epochs
+    mi_FFT = squeeze(nanmean(mi_FFT(Hotspot, :, :), 1)); % average hotspot channels
+    Microsleeps = cat(2, Microsleeps, mi_FFT); % save average to whole set of microsleeps
     
     EE_FFT = cat(3, PowerStruct.(Sessions{Indx_S}));
     EE_FFT = squeeze(nanmean(EE_FFT(Hotspot, :, :), 1));
     EE = cat(2, EE, EE_FFT);
     
-    % plot individual sessions
     ALLSession_mi = cat(2, ALLSession_mi, nanmean(mi_FFT, 2));
     ALLSession_EE = cat(2, ALLSession_EE, nanmean(EE_FFT, 2));
+    
+    % save all epochs together
     ALLSession_All = cat(2, ALLSession_All, nanmean(cat(2, mi_FFT, EE_FFT), 2));
     
-    PlotMicrosleeps(mi_FFT, EE_FFT, Freqs, YLims, YLabel, Colors, FontName)
-    title([Sessions{Indx_S}, ' Microsleep Power'])
-    saveas(gcf,fullfile(Paths.Figures, [ Title,'_', Scaling,'_', Sessions{Indx_S}, '_MicrosleepPowerPooled.svg']))
+    % plot individual sessions
+    PlotMicrosleeps(mi_FFT, EE_FFT, Freqs, YLims_Big, YLabel, Colors, FontName)
+    title([Sessions{Indx_S}, ' Microsleep Power Pooled'])
+    saveas(gcf,fullfile(Paths.Figures, [Title,'_', Scaling,'_', Sessions{Indx_S}, '_MicrosleepPowerPooled.svg']))
     
 end
 
-PlotMicrosleeps(Microsleeps, EE,Freqs, YLims, YLabel, Colors, FontName)
-saveas(gcf,fullfile(Paths.Figures, [ Title,'_', Scaling, '_MicrosleepPowerPooled.svg']))
+PlotMicrosleeps(Microsleeps, EE,Freqs, YLims_Big, YLabel, Colors, FontName)
+saveas(gcf,fullfile(Paths.Figures, [ Title,'_', Scaling, '_All_MicrosleepPowerPooled.svg']))
 
 
+% plot change of spectrum by session
+PlotPowerSpectrumDiff(ALLSession_mi, ALLSession_All, Freqs, YLims_Small,  YLabel, Sessions, ...
+    Colors.Sessions, FontName, ['Microsleeps by Session Pooled'])
+saveas(gcf,fullfile(Paths.Figures, [ Title,'_', Scaling, '_MicrosleepPowerPooled_Means.svg']))
+
+PlotPowerSpectrumDiff(ALLSession_EE, ALLSession_All, Freqs, YLims_Small, YLabel, Sessions, ...
+    Colors.Sessions, FontName, ['Not Microsleeps by Session Pooled'])
+saveas(gcf,fullfile(Paths.Figures, [ Title,'_', Scaling, '_NotMicrosleepPowerPooled_Means.svg']))
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% plot averages per participant by session
 
-% plot change by session
-
-PlotPowerSpectrumDiff(ALLSession_mi, ALLSession_All, Freqs,YLims,  YLabel, Sessions, ...
-    Colors.Sessions, FontName, ['Microsleeps by Session'])
-saveas(gcf,fullfile(Paths.Figures, [ Title,'_', Scaling, '_MicrosleepPowerPooled_Sessions.svg']))
-
-PlotPowerSpectrumDiff(ALLSession_EE, ALLSession_All, Freqs, YLims, YLabel, Sessions, ...
-    Colors.Sessions, FontName, ['Not Microsleeps by Session'])
-saveas(gcf,fullfile(Paths.Figures, [ Title,'_', Scaling, '_NotMicrosleepPowerPooled_Sessions.svg']))
-
-
-
-%%% plot averages per participant
 Microsleeps = [];
-EE = []; % reference to armageddon movie where EE stands for "everyone else"
+EE = [];
 
 ALLSession_mi = nan(numel(Freqs), numel(Sessions));
 ALLSession_EE = nan(numel(Freqs), numel(Sessions));
@@ -68,60 +71,67 @@ for Indx_S = 1:numel(Sessions)
     Session_All = [];
     
     for Indx_P = 1:numel(Participants)
+        
+        % get all epochs
         mi_FFT = PowerStruct_mi(Indx_P).(Sessions{Indx_S});
         EE_FFT = PowerStruct(Indx_P).(Sessions{Indx_S});
         all_FFT = cat(3, mi_FFT, EE_FFT);
-
         
+        % average hotspot channel and then epochs
         mi_FFT = squeeze(nanmean(nanmean(mi_FFT(Hotspot, :, :), 1), 3))';
-         EE_FFT = squeeze(nanmean(nanmean(EE_FFT(Hotspot, :, :), 1), 3))';
-         all_FFT = squeeze(nanmean(nanmean(all_FFT(Hotspot, :, :), 1), 3))';
+        EE_FFT = squeeze(nanmean(nanmean(EE_FFT(Hotspot, :, :), 1), 3))';
+        all_FFT = squeeze(nanmean(nanmean(all_FFT(Hotspot, :, :), 1), 3))';
         
-         Microsleeps = cat(2, Microsleeps, mi_FFT);
+        % save average to whole
+        Microsleeps = cat(2, Microsleeps, mi_FFT);
         EE = cat(2, EE, EE_FFT);
         
-        
-        Session_mi = cat(2, Session_mi, nanmean(mi_FFT, 2));
+        % save session separately
+        Session_mi = cat(2, Session_mi, nanmean(mi_FFT, 2)); %?
         Session_EE = cat(2, Session_EE, nanmean(EE_FFT, 2));
-         Session_All = cat(2, Session_All, nanmean(all_FFT, 2));
+        Session_All = cat(2, Session_All, nanmean(all_FFT, 2));
         
     end
-    
 
-    
-    PlotMicrosleeps(Session_mi, Session_EE, Freqs, YLims, YLabel, Colors, FontName)
+    % plot session microsleeps, using session averages per participant
+    PlotMicrosleeps(Session_mi, Session_EE, Freqs, YLims_Big, YLabel, Colors, FontName)
     title([Sessions{Indx_S}, ' Microsleep Power'])
+    saveas(gcf,fullfile(Paths.Figures, [Title,'_', Scaling,'_', Sessions{Indx_S}, '_MicrosleepPower.svg']))
+    
     
     ALLSession_mi(:, Indx_S) =  nanmean( Session_mi, 2);
-    ALLSession_EE(:, Indx_S)=nanmean(Session_EE, 2);
-    ALLSession_All(:, Indx_S) =nanmean(Session_All, 2);
+    ALLSession_EE(:, Indx_S) = nanmean(Session_EE, 2);
+    ALLSession_All(:, Indx_S) = nanmean(Session_All, 2);
     
 end
 
-PlotMicrosleeps(Microsleeps, EE,Freqs, YLims, YLabel, Colors, FontName)
+PlotMicrosleeps(Microsleeps, EE,Freqs, YLims_Big, YLabel, Colors, FontName)
 saveas(gcf,fullfile(Paths.Figures, [ Title,'_', Scaling, '_MicrosleepPower.svg']))
 
-PlotPowerSpectrumDiff(ALLSession_mi, ALLSession_All, Freqs, YLims, YLabel, Sessions, ...
+PlotPowerSpectrumDiff(ALLSession_mi, ALLSession_All, Freqs, YLims_Small, YLabel, Sessions, ...
     Colors.Sessions, FontName, ['Microsleeps by Session'])
-saveas(gcf,fullfile(Paths.Figures, [ Title,'_', Scaling, '_MicrosleepPower_Sessions.svg']))
+saveas(gcf,fullfile(Paths.Figures, [ Title,'_', Scaling, '_MicrosleepPower_Means.svg']))
 
-PlotPowerSpectrumDiff(ALLSession_EE, ALLSession_All, Freqs, YLims, YLabel, Sessions, ...
+PlotPowerSpectrumDiff(ALLSession_EE, ALLSession_All, Freqs, YLims_Small, YLabel, Sessions, ...
     Colors.Sessions, FontName, ['Not Microsleeps by Session'])
-saveas(gcf,fullfile(Paths.Figures, [ Title,'_', Scaling, '_NotMicrosleepPower_Sessions.svg']))
+saveas(gcf,fullfile(Paths.Figures, [ Title,'_', Scaling, '_NotMicrosleepPower_Means.svg']))
 
 
-
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Plot topographies
 
 Microsleeps = [];
-EE = []; % reference to armageddon movie where EE stands for "everyone else"
+EE = [];
+ALLSession_All = nan(TotChannels, numel(Freqs), numel(Sessions));
+
 for Indx_S = 1:numel(Sessions)
     mi_FFT = cat(3, PowerStruct_mi.(Sessions{Indx_S}));
     Microsleeps = cat(3, Microsleeps, mi_FFT);
     
-    
     EE_FFT = cat(3, PowerStruct.(Sessions{Indx_S}));
     EE = cat(3, EE, EE_FFT);
+    
+     ALLSession_All(:, :, Indx_S) =  squeeze(nanmean(cat(3, mi_FFT, EE_FFT), 3));
     
     % plot individual sessions
     PlotTopoPowerChange(squeeze(nanmean(mi_FFT, 3)), squeeze(nanmean(EE_FFT, 3)), ...
@@ -133,6 +143,9 @@ end
 
 PlotTopoPowerChange(squeeze(nanmean(Microsleeps, 3)), squeeze(nanmean(EE, 3)), ...
     Freqs, FreqRes, Chanlocs, Colormap.Divergent, FontName)
-
 saveas(gcf,fullfile(Paths.Figures, [ Title,'_', Scaling, '_MicrosleepPowerTopo.svg']))
+
+PlotTopoPowerChange(squeeze(ALLSession_All(:, :, 3)),squeeze(ALLSession_All(:, :, 1)), ...
+    Freqs, FreqRes, Chanlocs, Colormap.Divergent, FontName)
+saveas(gcf,fullfile(Paths.Figures, [ Title,'_', Scaling, '_SessionTopo.svg']))
 
