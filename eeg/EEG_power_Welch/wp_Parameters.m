@@ -4,7 +4,7 @@ run(fullfile(extractBefore(mfilename('fullpath'), 'eeg'), 'General_Parameters'))
 addpath(fullfile(Paths.Analysis, 'functions','eeg'))
 
 %%% locations
-Paths.Preprocessed = 'C:\Users\colas\Desktop\FakeDataPreprocessedEEG'; % Sophia laptop
+Paths.Preprocessed = 'C:\Users\colas\Desktop\LSMData'; % Sophia laptop
 
 % Paths.Preprocessed = 'L:\Somnus-Data\Data01\LSM\Data\Preprocessed'; % Work desktop
 

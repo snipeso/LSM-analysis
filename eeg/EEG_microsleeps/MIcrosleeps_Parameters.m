@@ -4,11 +4,11 @@ addpath(fullfile(Paths.Analysis, 'functions','eeg'))
 
 %%% locations
 Paths.Datasets = 'D:\LSM\data';
-Paths.Preprocessed = 'C:\Users\colas\Desktop\FakeDataPreprocessedEEG';
+Paths.Preprocessed = 'C:\Users\colas\Desktop\LSMData';
 
 % Paths.Datasets = 'L:\Somnus-Data\Data01\LSM\Data\Raw';
 % Paths.Preprocessed = 'L:\Somnus-Data\Data01\LSM\Data\Preprocessed';
-% % 
+
 % Paths.Datasets ='D:\LSM\data';
 % Paths.Preprocessed = 'C:\Users\schlaf\Desktop\LSMData';
 
@@ -19,9 +19,8 @@ Paths.Figures = fullfile(Paths.Figures, 'Microsleeps');
 % Parameters
 FreqRes = 0.25;
 Freqs = [1:FreqRes:30];
-Window = 3; % window for epochs when looking at general power;
+WelchWindow = 3; % window for epochs when looking at general power;
 minMicrosleep = 3;
-maxMicrosleep = 15;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Do stuff
