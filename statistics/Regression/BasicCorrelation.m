@@ -4,16 +4,17 @@ close all
 
 Regression_Parameters
 
-Task ='LAT';
-% Task = 'LATComp';
+Tasks = {'LAT', 'PVT'};
+Conditions = {'Beam', 'Comp'};
+ConditionTitles = {'Soporific', 'Classic'};
+
 Correction = 'zscore'; % 'change', 'zscore' 'none'
 
 NormCol = 2;
 DataPath = fullfile(Paths.Analysis, 'statistics', 'Data', Task); % for statistics
 
-
-Sessions = allSessions.LAT;
-SessionLabels = allSessionLabels.LAT;
+Sessions = allSessions.([Task,Condition]);
+SessionLabels = allSessionLabels.([Task, Condition]);
 
 % Sessions = allSessions.Comp;
 % SessionLabels = allSessionLabels.Comp;

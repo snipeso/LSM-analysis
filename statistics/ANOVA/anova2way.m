@@ -8,7 +8,7 @@ Stats_Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-Task1 = 'LAT';
+Task1 = 'PVT';
 
 DataPath = fullfile(Paths.Analysis, 'statistics', 'Data', Task1); % for statistics
 
@@ -40,18 +40,21 @@ Task = Task1;
 %     false, true % zscore
 %     ];
 
-Types = {'KSS', 'Motivation', 'Effortful', 'Focused'};
-YLabel = 'VAS Score';
+% Types = {'KSS', 'Motivation', 'Effortful', 'Focused'};
+% YLabel = 'VAS Score';
+% Normalizations = [
+%     false, false; % loggify
+%     false, true % zscore
+%     ];
+
+
+Types = {'miTot', 'miDuration', 'miStart'};
+YLabel = 'Seconds';
 Normalizations = [
     false, false; % loggify
     false, true % zscore
     ];
 
-
-% Type = 'miTot'; % miDuration, % miStart miTot
-% YLabel = 'Seconds';
-% Loggify = false;
-% ZScore = true;
 
 
 MES = 'eta2';

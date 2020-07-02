@@ -25,12 +25,16 @@ Conditions = {'Classic', 'Soporific'};
 
 SessionLabels = allSessionLabels.Basic; % TODO: eventually make this info saved in the matrices
 
-Normalize = 'zscore'; %'zscore';
-
+Normalize = 'zscoreS&P'; %'zscoreS&P' 'zscoreP', 'none'
 Title = 'All Measures';
-ScatterGroup = 'Session';
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Paths.Figures = fullfile(Paths.Figures, 'Regression');
+if ~exist(Paths.Figures, 'dir')
+    mkdir(Paths.Figures)
+end
 
 All_Measures_T = table();
 Participant_Labels = repmat(Participants, 1, numel(SessionLabels))';
@@ -75,15 +79,26 @@ for Indx_M = 1:numel(Measures)
     AllData =  T.(Measures{Indx_M});
     % z-score
     switch Normalize
-        case 'zscore'
+        case 'zscoreS&P'
+            ScatterGroup = 'Condition';
             for Indx_P = 1:numel(Participants)
-                %                 Indexes =  strcmp(All_Measures_T.Participant, Participants{Indx_P});
                 for Indx_S = 1:numel(SessionLabels)
                     Indexes =  strcmp(All_Measures_T.Participant, Participants{Indx_P}) & strcmp(All_Measures_T.Session, SessionLabels{Indx_S});
                     All = zscore(AllData(Indexes));
                     AllData(Indexes) = All;
                 end
             end
+        case 'zscoreP'
+            ScatterGroup = 'Session';
+            for Indx_P = 1:numel(Participants)
+                
+                Indexes =  strcmp(All_Measures_T.Participant, Participants{Indx_P});
+                All = zscore(AllData(Indexes));
+                AllData(Indexes) = All;
+                
+            end
+        otherwise
+            ScatterGroup = 'Participant';
     end
     
     
@@ -95,34 +110,40 @@ end
 
 
 
-[R,P] = corrcoef( All_Measures_M, 'Rows','pairwise');
-figure('units','normalized','outerposition',[0 0 1 1])
-PlotCorr(R, [], Measures)
-title([Title, ' R values of all parameters'])
+[R,P, CI_Low, CI_Up] = corrcoef( All_Measures_M, 'Rows','pairwise');
+figure('units','normalized','outerposition',[0 0 .4 .7])
+PlotCorr(R, [], Measures, Colormap.Divergent, FontName)
+title([Title, ' R values of all parameters ', Normalize])
+saveas(gcf,fullfile(Paths.Figures, ['CorrelateAll_', Normalize, '_uncorrected.svg']))
 
-figure('units','normalized','outerposition',[0 0 1 1])
-PlotCorr(R, P, Measures)
-title([Title, ' R values of all parameters, 0.05 corrected'])
+figure('units','normalized','outerposition',[0 0 .4 .7])
+PlotCorr(R, P, Measures, Colormap.Divergent, FontName)
+title([Title, ' R values of all parameters, p<.05 corrected ', Normalize])
+saveas(gcf,fullfile(Paths.Figures, ['CorrelateAll_', Normalize, '_Pcorrected.svg']))
 
-figure('units','normalized','outerposition',[0 0 1 1])
+figure('units','normalized','outerposition',[0 0 .4 .7])
 [~,h] = fdr(P, 0.05);
-PlotCorr(R, h, Measures)
-title([Title, ' R values of all parameters, fdr corrected'])
-
+PlotCorr(R, h, Measures, Colormap.Divergent, FontName)
+title([Title, ' R values of all parameters, fdr corrected  ', Normalize])
+saveas(gcf,fullfile(Paths.Figures, ['CorrelateAll_', Normalize, '_FDRcorrected.svg']))
 
 Tot_Comparisons = (numel(Measures)^2 - numel(Measures))/2;
 
 figure('units','normalized','outerposition',[0 0 1 1])
+FigIndx = 1;
 Indx = 1;
 for Indx_X = 1:numel(Measures)
     for Indx_Y = Indx_X+1:numel(Measures)
         
-        if Indx > 3*5
+        if Indx > 3*5 % loop through subplots until run out, then start new figure
+            saveas(gcf,fullfile(Paths.Figures, ['ScatterAll', num2str(FigIndx), '_' Normalize, '.svg']))
             figure('units','normalized','outerposition',[0 0 1 1])
             Indx = 1;
+            FigIndx = FigIndx + 1;
         end
         subplot(3, 5, Indx)
-        PlotConfetti(All_Measures_M(:, Indx_X), All_Measures_M(:, Indx_Y), All_Measures_T.(ScatterGroup))
+        PlotConfetti(All_Measures_M(:, Indx_X), All_Measures_M(:, Indx_Y), ...
+            All_Measures_T.(ScatterGroup), [], FontName)
         xlabel(Measures{Indx_X})
         ylabel(Measures{Indx_Y})
         title(['R=', num2str(R(Indx_X, Indx_Y), '%.2f'), ' p=', num2str(P(Indx_X, Indx_Y), '%.2f')])
@@ -130,18 +151,28 @@ for Indx_X = 1:numel(Measures)
     end
     
 end
+saveas(gcf,fullfile(Paths.Figures, ['ScatterAll', num2str(FigIndx), '_' Normalize, '.svg']))
+
+ThetaIndx = find(strcmpi(Measures, 'Theta'));
+miDurIndx = find(strcmpi(Measures, 'miDuration'));
 
 figure('units','normalized','outerposition',[0 0 1, .5])
-bar(R(:, 2))
-xticklabels(Measures)
+Errors = cat(3, CI_Low(:,  [ThetaIndx, miDurIndx]), CI_Up(:,  [ThetaIndx, miDurIndx]));
+PlotBars(R(:, [ThetaIndx, miDurIndx]), [], Measures, cat(1,Colors.Generic.Red, Colors.Generic.Dark1))
 ylim([-1 1])
-title('theta Rs')
+ylabel('R')
+title(['Theta vs Microsleep Duration R values ', Normalize])
+legend({'Theta', 'Microsleep Duration'})
+set(gca, 'FontName', FontName, 'FontSize', 14)
+saveas(gcf,fullfile(Paths.Figures, ['R_Theta_v_MiDur_' Normalize, '.svg']))
 
 
+figure('units','normalized','outerposition',[0 0 .4 .7])
+PlotConfetti(All_Measures_M(:, ThetaIndx), All_Measures_M(:, miDurIndx), ...
+    All_Measures_T.(ScatterGroup),  makePale(hsv), FontName, 40)
+xlabel('Theta')
+ylabel('Microsleep Duration')
 
-figure('units','normalized','outerposition',[0 0 1, .5])
-bar(R(:, 5))
-xticklabels(Measures)
-ylim([-1 1])
-title('miDuration Rs')
-% TODO: plot bars of R for microsleeps and theta to show relative values
+title(['Correlation Between Theta and Microsleeps (R=', num2str(R(ThetaIndx, miDurIndx), '%.2f'),...
+    ' p=', num2str(P(ThetaIndx, miDurIndx), '%.2f'), ' ', Normalize, ')'], 'FontSize', 16)
+saveas(gcf,fullfile(Paths.Figures, ['Corr_Theta_v_MiDur_' Normalize, '.svg']))
