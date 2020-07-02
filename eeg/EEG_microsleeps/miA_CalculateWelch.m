@@ -82,7 +82,7 @@ for Indx_T = 1:numel(Tasks) % loop throuh all tasks
         Windows = LoadWindows(fullfile(Source_Microsleeps, Filename_Microsleeps));
         
         % shift windows in time
-        %         Windows = Windows + 2; % TEMP: figure out if this is ok
+        Windows = Windows + 2; % TEMP: figure out if this is ok
         
         % remove windows that are too small
         Time = diff(Windows, 1, 2);

@@ -2,17 +2,17 @@
 run(fullfile(extractBefore(mfilename('fullpath'), 'eeg'), 'General_Parameters'))
 addpath(fullfile(Paths.Analysis, 'functions','eeg'))
 
-%%% locations
-Paths.Datasets = 'D:\LSM\data';
-Paths.Preprocessed = 'C:\Users\colas\Desktop\LSMData';
+% %%% locations
+% Paths.Datasets = 'D:\LSM\data';
+% Paths.Preprocessed = 'C:\Users\colas\Desktop\LSMData';
 
 % Paths.Datasets = 'L:\Somnus-Data\Data01\LSM\Data\Raw';
 % Paths.Preprocessed = 'L:\Somnus-Data\Data01\LSM\Data\Preprocessed';
 
-% Paths.Datasets ='D:\LSM\data';
-% Paths.Preprocessed = 'C:\Users\schlaf\Desktop\LSMData';
+Paths.Datasets ='D:\LSM\data';
+Paths.Preprocessed = 'C:\Users\schlaf\Desktop\LSMData';
 
-Paths.WelchPowerMicrosleeps = fullfile(Paths.Preprocessed, 'Power', 'WelchPowerMicrosleeps');
+Paths.WelchPowerMicrosleeps = fullfile(Paths.Preprocessed, 'Power', 'WelchPowerMicrosleeps2');
 Paths.Summary = fullfile(extractBefore(mfilename('fullpath'), 'EEG_Microsleeps'), 'SummaryData');
 Paths.Figures = fullfile(Paths.Figures, 'Microsleeps');
 
