@@ -13,7 +13,7 @@ Microsleeps_Parameters
 Tasks = {'PVT', 'LAT'};
 Refresh = true;
 Plot = true;
-Figure_Folder = fullfile(Paths.Figures, 'Microsleeps', 'AllFiles');
+Figure_Folder = fullfile(Paths.Figures, 'AllFiles');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

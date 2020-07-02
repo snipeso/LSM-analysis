@@ -13,7 +13,7 @@ Paths.Preprocessed = 'C:\Users\colas\Desktop\LSMData';
 % Paths.Preprocessed = 'C:\Users\schlaf\Desktop\LSMData';
 
 Paths.WelchPowerMicrosleeps = fullfile(Paths.Preprocessed, 'Power', 'WelchPowerMicrosleeps');
-Paths.Summary = fullfile(extractBefore(mfilename('fullpath'), 'EEG_Microsleeps'), 'EEG_Microsleeps', 'SummaryData');
+Paths.Summary = fullfile(extractBefore(mfilename('fullpath'), 'EEG_Microsleeps'), 'SummaryData');
 Paths.Figures = fullfile(Paths.Figures, 'Microsleeps');
 
 % Parameters

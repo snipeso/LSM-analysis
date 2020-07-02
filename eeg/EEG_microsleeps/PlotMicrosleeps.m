@@ -5,7 +5,10 @@ PlotWindowPower(Microsleeps, EE, Freqs, Colors)
 ax = gca;
 ax.FontSize = 14;
 ax.FontName = FontName;
+
+if exist('YLims', 'var') && ~isempty(YLims)
 ylim(YLims)
+end
 ylabel(YLabel)
 xlabel('Frequency (Hz)')
 xticks(0:2:20)
