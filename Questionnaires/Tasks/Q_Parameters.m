@@ -5,7 +5,7 @@ run(fullfile(extractBefore(mfilename('fullpath'), 'questionnaires'), 'General_Pa
 
 %%% locations
 Paths.Datasets = 'D:\LSM\data';
-Paths.Preprocessed = 'C:\Users\colas\Desktop\FakeDataPreprocessedEEG';
+Paths.Preprocessed = 'C:\Users\colas\Desktop\LSMData';
 
 % Paths.Datasets = 'L:\Somnus-Data\Data01\LSM\Data\Raw';
 % Paths.Preprocessed = 'L:\Somnus-Data\Data01\LSM\Data\Preprocessed';
