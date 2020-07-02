@@ -18,28 +18,34 @@ Task = Task1;
 
 
 % Data type
-% Type = 'Misses';
+% Types = {'Hits', 'Misses'};
 % YLabel = '%';
-% Loggify = false; % msybe?
-% ZScore = true;
+% Normalizations = [
+%     false, false; % loggify
+%     false, true % zscore
+%     ];
 
-Types = {'Delta', 'Theta', 'Alpha', 'Beta'};
-YLabel = 'Power Density';
+% Types = {'Delta', 'Theta', 'Alpha', 'Beta'};
+% YLabel = 'Power Density';
+% Normalizations = [
+%     false, false; % loggify
+%     false, true % zscore
+%     ];
+
+
+% Types = {'meanRTs'};
+% YLabel = 'Seconds';
+% Normalizations = [
+%     false, false; % loggify
+%     false, true % zscore
+%     ];
+
+Types = {'KSS', 'Motivation', 'Effortful', 'Focused'};
+YLabel = 'VAS Score';
 Normalizations = [
     false, false; % loggify
     false, true % zscore
     ];
-
-
-% Type = 'meanRTs';
-% YLabel = 'RTs (log(s))';
-% Loggify = false;
-% ZScore = true;
-
-% Type = 'KSS';
-% YLabel = 'VAS Score';
-% Loggify = false;
-% ZScore = true;
 
 
 % Type = 'miTot'; % miDuration, % miStart miTot
@@ -62,6 +68,7 @@ for Indx_T = 1:numel(Types)
         Type = Types{Indx_T};
         Loggify = Normalizations(1, Indx_N);
         ZScore = Normalizations(2, Indx_N);
+        ParticipantsLeft = Participants;
         
         TitleTag = [Task, '_', Type];
         
@@ -90,9 +97,18 @@ for Indx_T = 1:numel(Types)
             end
         end
         
+        % handle nans
+        Nans = any(isnan(ClassicMatrix), 2) | any(isnan(SopoMatrix), 2);
+        if any(Nans)
+            
+            ParticipantsLeft(Nans) = [];
+            ClassicMatrix(Nans, :) = [];
+            SopoMatrix(Nans, :) = [];
+        end
+        
         % z-score
         if ZScore
-            for Indx_P = 1:numel(Participants)
+            for Indx_P = 1:numel(ParticipantsLeft)
                 All = zscore([ClassicMatrix(Indx_P, :), SopoMatrix(Indx_P, :)]);
                 ClassicMatrix(Indx_P, :) = All(1:size(ClassicMatrix, 2));
                 SopoMatrix(Indx_P, :) = All(size(ClassicMatrix, 2)+1:end);
@@ -103,7 +119,7 @@ for Indx_T = 1:numel(Types)
         end
         
         % levene test on variance (maybe should be done after?)
-        Groups = repmat([1 2 3], 10, 1);
+        Groups = repmat([1 2 3], numel(ParticipantsLeft), 1);
         Levenetest([ClassicMatrix(:), Groups(:); SopoMatrix(:), 3+Groups(:)],.05)
         pause(2)
         
@@ -118,8 +134,8 @@ for Indx_T = 1:numel(Types)
         %%% create table for MATLAB anova (used as basis for multiple comparisons)
         
         % convert to table
-        Soporific = mat2table(SopoMatrix, Participants, {'s4', 's5', 's6'}, 'Participant', [], Type);
-        Classic = mat2table(ClassicMatrix, Participants, {'s1', 's2', 's3'}, 'Participant', [], Type);
+        Soporific = mat2table(SopoMatrix, ParticipantsLeft, {'s4', 's5', 's6'}, 'Participant', [], Type);
+        Classic = mat2table(ClassicMatrix, ParticipantsLeft, {'s1', 's2', 's3'}, 'Participant', [], Type);
         
         % create design tables
         Between = [Classic, Soporific(:, 2:end)];
@@ -197,11 +213,11 @@ for Indx_T = 1:numel(Types)
         % uses the MES toolbox, so data needs to be restructured
         
         
-        ClassicTable = mat2table(ClassicMatrix, Participants, [1:size(ClassicMatrix, 2)]', ...
+        ClassicTable = mat2table(ClassicMatrix, ParticipantsLeft, [1:size(ClassicMatrix, 2)]', ...
             'Participant', 'Session', 'Data');
         ClassicTable.Condition = zeros(size(ClassicTable.Session));
         
-        SopoTable = mat2table(SopoMatrix, Participants, [1:size(SopoMatrix, 2)]', ...
+        SopoTable = mat2table(SopoMatrix, ParticipantsLeft, [1:size(SopoMatrix, 2)]', ...
             'Participant', 'Session', 'Data');
         SopoTable.Condition = ones(size(SopoTable.Session));
         
