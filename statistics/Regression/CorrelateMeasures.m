@@ -25,7 +25,7 @@ Conditions = {'Classic', 'Soporific'};
 
 SessionLabels = allSessionLabels.Basic; % TODO: eventually make this info saved in the matrices
 
-Normalize = 'zscoreS&P'; %'zscoreS&P' 'zscoreP', 'none'
+Normalize = ''; %'zscoreS&P' 'zscoreP', 'none'
 Title = 'All Measures';
 
 
@@ -156,9 +156,10 @@ saveas(gcf,fullfile(Paths.Figures, ['ScatterAll', num2str(FigIndx), '_' Normaliz
 ThetaIndx = find(strcmpi(Measures, 'Theta'));
 miDurIndx = find(strcmpi(Measures, 'miDuration'));
 
+% plot bars of R values for theta vs microsleeps
 figure('units','normalized','outerposition',[0 0 1, .5])
 Errors = cat(3, CI_Low(:,  [ThetaIndx, miDurIndx]), CI_Up(:,  [ThetaIndx, miDurIndx]));
-PlotBars(R(:, [ThetaIndx, miDurIndx]), [], Measures, cat(1,Colors.Generic.Red, Colors.Generic.Dark1))
+PlotBars(R(:, [ThetaIndx, miDurIndx]), Errors, Measures, cat(1,Colors.Generic.Red, Colors.Generic.Dark1))
 ylim([-1 1])
 ylabel('R')
 title(['Theta vs Microsleep Duration R values ', Normalize])
@@ -167,6 +168,7 @@ set(gca, 'FontName', FontName, 'FontSize', 14)
 saveas(gcf,fullfile(Paths.Figures, ['R_Theta_v_MiDur_' Normalize, '.svg']))
 
 
+%%% plot scatter of theta vs microsleeps
 figure('units','normalized','outerposition',[0 0 .4 .7])
 PlotConfetti(All_Measures_M(:, ThetaIndx), All_Measures_M(:, miDurIndx), ...
     All_Measures_T.(ScatterGroup),  makePale(hsv), FontName, 40)
@@ -176,3 +178,5 @@ ylabel('Microsleep Duration')
 title(['Correlation Between Theta and Microsleeps (R=', num2str(R(ThetaIndx, miDurIndx), '%.2f'),...
     ' p=', num2str(P(ThetaIndx, miDurIndx), '%.2f'), ' ', Normalize, ')'], 'FontSize', 16)
 saveas(gcf,fullfile(Paths.Figures, ['Corr_Theta_v_MiDur_' Normalize, '.svg']))
+
+

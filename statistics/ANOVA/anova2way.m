@@ -8,7 +8,7 @@ Stats_Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-Task1 = 'PVT';
+Task1 = 'LAT';
 
 DataPath = fullfile(Paths.Analysis, 'statistics', 'Data', Task1); % for statistics
 
@@ -54,7 +54,6 @@ Normalizations = [
     false, false; % loggify
     false, true % zscore
     ];
-
 
 
 MES = 'eta2';
