@@ -34,18 +34,5 @@ for Indx_B = 1:numel(BandNames)
             
     end
     
-    
-    %     t = linspace(0, EEG.pnts/EEG.srate, EEG.pnts);
-    %     figure
-    %     plot(t, mat2gray(EEG.data(11, :)))
-    %     hold on
-    %     plot(t, mat2gray(EEG_filt.data(11, :)))
-    %     plot(t, mat2gray(Hilbert.(BandNames{Indx_B}) (11, :)))
-    %     plot(t, mat2gray(Hilbert.([BandNames{Indx_B}, '_phase'])(11, :)))
-    %     legend({'raw', 'filt', 'power', 'phase'})
-    %
-    %
-    %     A = 1;
-    
 end
 
