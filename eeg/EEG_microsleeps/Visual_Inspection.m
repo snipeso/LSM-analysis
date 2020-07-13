@@ -1,12 +1,14 @@
 Microsleeps_Parameters
 
 Task = 'PVT';
-filename = ['P04_', Task,'_Session2Beam'];
+filename = ['P02_', Task,'_Session2Beam'];
 filepath_microsleeps = fullfile(Paths.Preprocessed, 'Microsleeps', 'Scoring', Task);
 
-filepath_eeg = fullfile('C:\Users\colas\Desktop\LSMData', 'Interpolated',  'Set', Task);
+filepath_eeg = fullfile('C:\Users\colas\Desktop\LSMData', 'Microsleeps',  'SET', Task);
+% filepath_eeg = fullfile('C:\Users\colas\Desktop\LSMData', 'Interpolated',  'SET', Task);
 
-EEG = pop_loadset('filename',  [filename, '_Clean.set'], 'filepath', filepath_eeg);
+% EEG = pop_loadset('filename',  [filename, '_Clean.set'], 'filepath', filepath_eeg);
+EEG = pop_loadset('filename',  [filename, '_Microsleeps.set'], 'filepath', filepath_eeg);
 
 % EEG = pop_reref(EEG, []);
 
