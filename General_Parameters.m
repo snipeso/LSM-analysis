@@ -73,8 +73,7 @@ Colors.PVT(4, :);
 ];
 Colors.PVTComp = makePale(Colors.PVTBeam);
 
-Colors.Tasks.LAT = Colors.LATBeam;
-Colors.Tasks.PVT = Colors.PVTBeam;
+
 
 Colors.Generic.Red = [235 95 106]/255;
 Colors.Generic.Pale1 = [243 238 193]/255;
@@ -82,6 +81,10 @@ Colors.Generic.Pale2 = [244 178 119]/255;
 Colors.Generic.Dark1 = [24 41 166]/255;
 Colors.Generic.Dark2 = [145 26 150]/255;
 Colors.Sessions = [Colors.Generic.Dark1; Colors.Generic.Red; Colors.Generic.Pale2 ];
+
+Colors.Tasks.LAT = Colors.LATBeam(2, :);
+Colors.Tasks.PVT = Colors.PVTBeam(2, :);
+Colors.Tasks.AllTasks = Colors.Generic.Red;
 
 % Sessions
 allSessions = struct(); % labels used in saving data

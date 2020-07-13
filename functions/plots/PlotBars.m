@@ -1,14 +1,12 @@
-function PlotBars(Data, Errors, xLabels, Color1)
+function PlotBars(Data, Errors, xLabels, Colors)
 % PValues is a cell array with 2 elements, the first contains a list of pvalues
 % for the major segments
-
-Colors = ColorGradient(Color1, size(Data, 2), 'light');
 
 
 h = bar(Data, 'grouped', 'EdgeColor', 'none', 'FaceColor', 'flat');
 
 for Indx = 1:size(Data, 2)
-   h(Indx).CData = Colors(Indx, :);
+    h(Indx).CData = Colors(Indx, :);
 end
 
 hold on
@@ -21,18 +19,22 @@ nbars = size(Data, 2);
 groupwidth = min(0.8, nbars/(nbars + 1.5));
 % Set the position of each error bar in the centre of the main bar
 
-% Based on barweb.m by Bolu Ajiboye from MATLAB File Exchange
-for i = 1:nbars
-    % Calculate center of each bar
-    x = (1:ngroups) - groupwidth/2 + (2*i-1) * groupwidth / (2*nbars);
-    if ndims(Errors) == 2
-    errorbar(x, Data(:,i), Errors(:,i), 'k', 'linestyle', 'none', 'LineWidth', 2);
-    elseif ndims(Errors) == 3
-        errorbar(x, Data(:,i), abs(Data(:,i)-Errors(:,i, 1)), abs(Errors(:,i, 2)-Data(:,i)), 'k', 'linestyle', 'none', 'LineWidth', 2);
-    end
+if ~isempty(Errors)
     
+    % Based on barweb.m by Bolu Ajiboye from MATLAB File Exchange
+    for Indx = 1:nbars
+        % Calculate center of each bar
+        x = (1:ngroups) - groupwidth/2 + (2*Indx-1) * groupwidth / (2*nbars);
+        
+        if ndims(Errors) == 2
+            errorbar(x, Data(:,Indx), Errors(:,Indx), 'k', 'linestyle', 'none', 'LineWidth', 2);
+        elseif ndims(Errors) == 3
+            errorbar(x, Data(:,Indx), abs(Data(:,Indx)-Errors(:,Indx, 1)), abs(Errors(:,Indx, 2)-Data(:,Indx)), 'k', 'linestyle', 'none', 'LineWidth', 2);
+        end
+        
+    end
 end
-
+box off
 xticklabels(xLabels)
 
 
