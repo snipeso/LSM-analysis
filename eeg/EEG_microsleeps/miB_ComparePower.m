@@ -123,6 +123,8 @@ saveas(gcf,fullfile(Paths.Figures, [ Title,'_', Scaling, '_NotMicrosleepPower_Me
 
 Microsleeps = [];
 EE = [];
+
+All = struct();
 ALLSession_All = nan(TotChannels, numel(Freqs), numel(Sessions));
 
 for Indx_S = 1:numel(Sessions)
@@ -132,21 +134,21 @@ for Indx_S = 1:numel(Sessions)
     EE_FFT = cat(3, PowerStruct.(Sessions{Indx_S}));
     EE = cat(3, EE, EE_FFT);
     
-     ALLSession_All(:, :, Indx_S) =  squeeze(nanmean(cat(3, mi_FFT, EE_FFT), 3));
+    All.(Sessions{Indx_S}) = cat(3, mi_FFT, EE_FFT);
     
     % plot individual sessions
-    PlotTopoPowerChange(squeeze(nanmean(mi_FFT, 3)), squeeze(nanmean(EE_FFT, 3)), ...
+    PlotTopoPowerChange(mi_FFT, EE_FFT, ...
         Freqs, FreqRes, Chanlocs, Colormap.Divergent, FontName)
     title(Sessions{Indx_S})
     saveas(gcf,fullfile(Paths.Figures, [ Title,'_', Scaling, '_',Sessions{Indx_S} '_MicrosleepPowerTopo.svg']))
     
 end
 
-PlotTopoPowerChange(squeeze(nanmean(Microsleeps, 3)), squeeze(nanmean(EE, 3)), ...
+PlotTopoPowerChange(Microsleeps, EE, ...
     Freqs, FreqRes, Chanlocs, Colormap.Divergent, FontName)
 saveas(gcf,fullfile(Paths.Figures, [ Title,'_', Scaling, '_MicrosleepPowerTopo.svg']))
 
-PlotTopoPowerChange(squeeze(ALLSession_All(:, :, 3)),squeeze(ALLSession_All(:, :, 1)), ...
+PlotTopoPowerChange(All.Session2,All.Baseline, ...
     Freqs, FreqRes, Chanlocs, Colormap.Divergent, FontName)
 saveas(gcf,fullfile(Paths.Figures, [ Title,'_', Scaling, '_SessionTopo.svg']))
 

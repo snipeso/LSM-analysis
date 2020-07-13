@@ -6,13 +6,13 @@ Microsleeps_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Scaling = 'zscore'; % either 'log' or 'norm' or 'scoref'
-% Scaling = 'none';
+% Scaling = 'zscore'; % either 'log' or 'norm' or 'scoref'
+Scaling = 'none';
 % Scaling = 'log';
-Tasks = {'PVT'};
+Tasks = {'PVT' , 'LAT'};
 Sessions = {'Baseline', 'Session1', 'Session2'};
 Conditions = {'Beam', 'Comp'};
-Title = 'PVT';
+Title = 'AllTasks';
 Refresh = false;
 
 

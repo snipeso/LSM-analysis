@@ -6,7 +6,7 @@ clear
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Targets = {'LAT', 'PVT'};
-Refresh = false;
+Refresh = true;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 EEG_Parameters
@@ -39,14 +39,15 @@ for Indx_T = 1:numel(Targets)
         
         load(fullfile(Source, Filename), 'MSE_scoring', 'MSE_fs')
         
-        [StartPoints, EndPoints] = data2windows(MSE_scoring');
+        MSE = [zeros(22, 1); MSE_scoring; zeros(22, 1)];
+        [StartPoints, EndPoints] = data2windows(MSE');
         
-        Windows = [StartPoints'/MSE_fs, EndPoints'/MSE_fs] + 4.9; % convert to time, compensate for alogrithm shift
+        Windows = [StartPoints'/MSE_fs, EndPoints'/MSE_fs]; 
         
         % save windows
         save(fullfile(Destination, Filename), 'Windows')
         
         disp(['***********', 'Finished ', Filename, '***********'])
-        
+        clear MSE_scoring
     end
 end
