@@ -1,4 +1,5 @@
-function MakePowerGIF(Path, Filename, Hilbert, BandNames, Chanlocs, StartTime, EndTime, oldfs, newfs, Slowdown, Colormap)
+function MakePowerGIF(Path, Filename, Hilbert, BandNames, Chanlocs,...
+    StartTime, EndTime, oldfs, newfs, Slowdown, Colormap, FontName)
 
 Filepath = fullfile(Path, [Filename, num2str(StartTime), '-', num2str(EndTime), '.gif']);
 
@@ -13,7 +14,7 @@ Hilbert_Short = Hilbert(:, round(StartTime*oldfs):round(EndTime*oldfs), :);
 Points = size(Hilbert_Short, 2);
 Gap = (1/newfs)*Slowdown;
 
-figure('units','normalized','outerposition',[0 0 1 .5])
+figure('units','normalized','outerposition',[0 0 .6 .3])
 set(gcf,'color','w')
 
 Frames = (Points/oldfs)*newfs;
@@ -28,8 +29,8 @@ end
 % color limits
 CLims = zeros(numel(BandNames), 2);
 for Indx_B = 1:numel(BandNames)
-%      All = log(Hilbert( :, :, Indx_B));
-All = Hilbert( :, :, Indx_B);
+    
+    All = Hilbert( :, :, Indx_B);
     CLims(Indx_B, :) = [quantile(All(:), .005), quantile(All(:), .995)];
 end
 CLims = [min(CLims(:, 1)), max(CLims(:, 2))];
@@ -43,8 +44,8 @@ for Indx_F = 1:Frames
         subplot(1, numel(BandNames), Indx_B)
         topoplot(squeeze(MeanFrame(:, :, Indx_B)), Chanlocs, 'maplimits', CLims, ...
             'style', 'map', 'headrad', 'rim', 'colormap', colormap(Colormap), ...
-            'gridscale', 200)
-        title(BandNames{Indx_B}, 'FontSize', 14)
+            'gridscale', 150)
+        title(BandNames{Indx_B}, 'FontSize', 14, 'FontName', FontName)
     end
     set(gcf,'color','w')
     drawnow
