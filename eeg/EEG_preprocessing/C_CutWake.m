@@ -19,9 +19,9 @@ clc
 close all
 EEG_Parameters
 
-Filename = 'P09_LAT_Session1Beam_Cleaning.set'; % choose this if you want to clean a specific file
-% Filename = []; % choose this if you want to randomly select a file to clean from the list
-Folder = 'LAT';
+% Filename = 'P09_LAT_Session1Beam_Cleaning.set'; % choose this if you want to clean a specific file
+Filename = []; % choose this if you want to randomly select a file to clean from the list
+Folder = 'PVT';
 
 Source = fullfile(Paths.Preprocessed, 'Cleaning', 'SET', Folder);
 Destination = fullfile(Paths.Preprocessed, 'Cleaning', 'Cuts', Folder);
