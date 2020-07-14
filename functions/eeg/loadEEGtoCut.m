@@ -19,7 +19,7 @@ if isempty(FilteredFilename) % randomly choose a file that hasn't been cut yet
     AllCuts = extractBefore(cellstr(AllCuts), Extention);
     
     Uncut = AllEEG;
-    Uncut(contains( AllEEG,intersect(AllEEG, AllCuts))) = [];
+    Uncut(contains(AllEEG, intersect(AllEEG, AllCuts))) = [];
     
     if isempty(Uncut)
         disp(['You are finished with ', Source, ...
@@ -52,10 +52,12 @@ m.filepath = Source;
 m.srate = EEG.srate;
 
 Triggers = {EEG.event.type};
+
+try
 Start = strcmp(Triggers, EEG_Triggers.Start);
 End = strcmp(Triggers, EEG_Triggers.End);
 m.StartPoint = EEG.event(Start).latency;
 m.EndPoint = EEG.event(End).latency;
-    
+end
 
 EEG.CutFilepath = CutFilepath;
