@@ -7,7 +7,7 @@ close all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Tasks = { 'Standing', 'Fixation', 'MWT'};
-Refresh = true;
+Refresh = false;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -49,10 +49,10 @@ for Indx_T = 1:numel(Tasks)
         fs = EEG.srate;
         
         try
-        % remove start and stop
-        StartPoint = EEG.event(strcmpi({EEG.event.type}, EEG_Triggers.Start)).latency;
-        EndPoint =  EEG.event(strcmpi({EEG.event.type},  EEG_Triggers.End)).latency;
-        EEG.data(:, [1:round(StartPoint),  round(EndPoint):end]) = nan;
+            % remove start and stop
+            StartPoint = EEG.event(strcmpi({EEG.event.type}, EEG_Triggers.Start)).latency;
+            EndPoint =  EEG.event(strcmpi({EEG.event.type},  EEG_Triggers.End)).latency;
+            EEG.data(:, [1:round(StartPoint),  round(EndPoint):end]) = nan;
         end
         
         % set to nan all cut data
