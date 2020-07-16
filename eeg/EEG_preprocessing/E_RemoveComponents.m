@@ -4,9 +4,10 @@ clear
 eeglab
 close all
 clc
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Target = 'LAT';
+Target = 'Fixation';
 Refresh = false;
 Data_Type = 'Wake';
 % Filename = ['P09_LAT_Session1Beam_ICA_Components.set'];

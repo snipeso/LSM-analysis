@@ -6,7 +6,7 @@ close all
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Tasks = {'LAT', 'PVT'};
+Tasks = { 'Fixation'};
 Refresh = false;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -48,10 +48,12 @@ for Indx_T = 1:numel(Tasks)
         [Channels, Points] = size(EEG.data);
         fs = EEG.srate;
         
-        % remove start and stop
-        StartPoint = EEG.event(strcmpi({EEG.event.type}, EEG_Triggers.Start)).latency;
-        EndPoint =  EEG.event(strcmpi({EEG.event.type},  EEG_Triggers.End)).latency;
-        EEG.data(:, [1:round(StartPoint),  round(EndPoint):end]) = nan;
+        try
+            % remove start and stop
+            StartPoint = EEG.event(strcmpi({EEG.event.type}, EEG_Triggers.Start)).latency;
+            EndPoint =  EEG.event(strcmpi({EEG.event.type},  EEG_Triggers.End)).latency;
+            EEG.data(:, [1:round(StartPoint),  round(EndPoint):end]) = nan;
+        end
         
         % set to nan all cut data
         Cuts_Filepath = fullfile(Source_Cuts, [extractBefore(File, '_Clean'), '_Cleaning_Cuts.mat']);

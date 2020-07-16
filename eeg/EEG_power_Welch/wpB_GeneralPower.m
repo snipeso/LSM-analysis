@@ -9,7 +9,7 @@ ChanIndx = ismember( str2double({Chanlocs.labels}), plotChannels);
 Title = 'HotSpot';
 Averaged_FFT = zeros(numel(Sessions), numel(Freqs), 2);
 
-P_Colors = palehsv(numel(Participants)+1);
+P_Colors = Colors.Participants;
 figure('units','normalized','outerposition',[0 0 1 1])
 for Indx_H = 1:2
     if Indx_H == 2
@@ -122,7 +122,7 @@ for Indx_H = 1:2
     figure( 'units','normalized','outerposition',[0 0 1 1])
     for Indx_F = 1:numel(FreqsIndx)
         subplot(2, 2, Indx_F)
-        PlotPowerFlames(PowerStruct, ChanIndx, FreqsIndx(Indx_F), Sessions, SessionLabels)
+        PlotPowerFlames(PowerStruct, ChanIndx, FreqsIndx(Indx_F), Sessions, SessionLabels, Colors.Participants)
         title([Title, ' ', num2str(plotFreqs(Indx_F)), 'Hz Distribution'])
         ylabel(YLabel)
         %         ylim(YLimsInd)

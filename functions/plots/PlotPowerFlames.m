@@ -1,11 +1,11 @@
-function PlotPowerFlames(PowerStruct, plotChannels, plotFreqs, Sessions, SessionLabels)
+function PlotPowerFlames(PowerStruct, plotChannels, plotFreqs, Sessions, SessionLabels, Colors)
 
 Participants = 1:size(PowerStruct, 2);
-
-Colors = [linspace(0, (numel(Participants) -1)/numel(Participants), numel(Participants))', ...
-    ones(numel(Participants), 1), ...
-    ones(numel(Participants), 1)];
-Colors = hsv2rgb(Colors);
+% 
+% Colors = [linspace(0, (numel(Participants) -1)/numel(Participants), numel(Participants))', ...
+%     ones(numel(Participants), 1), ...
+%     ones(numel(Participants), 1)];
+% Colors = hsv2rgb(Colors);
 
 hold on
 for Indx_P = 1:numel(Participants)

@@ -24,6 +24,15 @@ if ~exist('topoplot', 'file')
     close all
 end
 
+
+
+% All participants to include in the analysis
+% Participants = {'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07', 'P08', 'P09', 'P11'};
+Participants = { 'P02', 'P03', 'P04', 'P05', 'P06', 'P07', 'P08', 'P09', 'P10', 'P11', 'P12'};
+% Participants = {'P02', 'P03', 'P04', 'P05', 'P06', 'P07', 'P08', 'P09', 'P11'};
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Labels & Colors
 
@@ -34,6 +43,9 @@ Colors = struct();
 Colormap = struct();
 Colormap.Linear = flip(colorcet('L17'));
 Colormap.Divergent = rdbu;
+Colormap.Rainbow = hsv;
+% Colormap.Rainbow = flip(colorcet('R1'));
+
 
 % LAT v PVT
 % TV v Music v LAT v    
@@ -58,6 +70,8 @@ Colors.LAT(5, :);
 
 Colors.LATComp = makePale(Colors.LATBeam); % TODO: make pale
 
+
+
 Colors.PVT = [
 70, 9, 92;
 50, 98, 141;
@@ -65,6 +79,9 @@ Colors.PVT = [
 137, 213, 70;
 119, 49, 49
 ]/255;
+
+Colors.Standing = Colors.PVT;
+Colors.Fixation = Colors.PVT;
 
 Colors.PVTBeam = [
 Colors.PVT(1, :);   
@@ -85,6 +102,11 @@ Colors.Sessions = [Colors.Generic.Dark1; Colors.Generic.Red; Colors.Generic.Pale
 Colors.Tasks.LAT = Colors.LATBeam(2, :);
 Colors.Tasks.PVT = Colors.PVTBeam(2, :);
 Colors.Tasks.AllTasks = Colors.Generic.Red;
+
+
+Colors.DarkParticipants = Colormap.Rainbow(floor(linspace(1, size(Colormap.Rainbow, 1), numel(Participants))), :);
+Colors.Participants = makePale(Colors.DarkParticipants);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Sessions
 allSessions = struct(); % labels used in saving data
@@ -140,10 +162,17 @@ allSessionLabels.RRT = {'BL-Pre', 'BL-Post' ...
     '15:00', '17:30', '20:30', ...
     '23:00', '2:40', 'Post'};
 
-% All participants to include in the analysis
-% Participants = {'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07', 'P08', 'P09', 'P11'};
-Participants = {'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07', 'P08', 'P09', 'P10', 'P11', 'P12'};
-% Participants = {'P02', 'P03', 'P04', 'P05', 'P06', 'P07', 'P08', 'P09', 'P11'};
+% Labels for temp standing
+allSessions.Standing = {
+    'Main1',  'Main8'};
+allSessionLabels.Standing = {'4:30','2:40'};
+
+% Labels for msin fixation
+allSessions.Fixation = {
+    'Main1', 'Main2',  'Main7', 'Main8'};
+allSessionLabels.Fixation = {
+    '4:30', '7:30',  '23:00', '2:40'};
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -198,4 +227,5 @@ saveFreqs.Beta = [14 25];
 saveFreqFields = fieldnames(saveFreqs);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
