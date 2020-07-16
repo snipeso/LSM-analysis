@@ -28,8 +28,10 @@ for Indx_P = 1:size(PowerStruct, 2)
     % zscore each session
     for Indx_S = 1:numel(Sessions)
         for Indx_F = 1:numel(SUM)
+            if ~isempty(PowerStruct(Indx_P).(Sessions{Indx_S}))
             PowerStruct(Indx_P).(Sessions{Indx_S})(:, Indx_F, :) = ...
                 (PowerStruct(Indx_P).(Sessions{Indx_S})(:, Indx_F, :)-MEAN(Indx_F))./SD(Indx_F);
+            end
         end
     end
 end

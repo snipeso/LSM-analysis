@@ -8,12 +8,16 @@ wp_Parameters
 
 Scaling = 'zscore'; % either 'log' or 'norm' or 'scoref'
 % Scaling = 'log';
-Task = 'PVT';
-Session = 'Beam';
-Title = 'Soporific';
+% Task = 'PVT';
+% Session = 'Beam';
+% Title = 'Soporific';
 
 % Session = 'Comp';
 % Title = 'Classic';
+
+Task = 'Fixation';
+Session = '';
+Title = 'Main';
 
 Refresh = false;
 
