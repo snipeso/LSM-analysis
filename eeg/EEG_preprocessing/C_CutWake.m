@@ -21,7 +21,7 @@ EEG_Parameters
 
 % Filename = 'P09_LAT_Session1Beam_Cleaning.set'; % choose this if you want to clean a specific file
 Filename = []; % choose this if you want to randomly select a file to clean from the list
-Folder = 'Standing';
+Folder = 'Fixation';
 
 Source = fullfile(Paths.Preprocessed, 'Cleaning', 'SET', Folder);
 Destination = fullfile(Paths.Preprocessed, 'Cleaning', 'Cuts', Folder);
@@ -45,7 +45,7 @@ m = matfile(EEG.CutFilepath,'Writable',true); % create cuts file, load it to cur
 Threshold = [];
 Color = [1, 1, 0]; % Color for AutoCut
 showPlots = false;
-AutoCut(EEG, Color, [], showPlots)
+% AutoCut(EEG, Color, [], showPlots)
 
 %TODO: Autoremove EMG
 % RemoveCuts(EEG, [1, 1, 0]) % removes autocut data

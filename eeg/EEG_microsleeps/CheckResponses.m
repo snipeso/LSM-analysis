@@ -7,7 +7,7 @@ clc
 Microsleeps_Parameters
 
 
-Task = 'PVT';
+Task = 'LAT';
 Condition = 'Beam';
 Sessions = {'Baseline', 'Session1', 'Session2'};
 

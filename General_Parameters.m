@@ -142,8 +142,8 @@ allSessionLabels.RRT = {'BL-Pre', 'BL-Post' ...
 
 % All participants to include in the analysis
 % Participants = {'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07', 'P08', 'P09', 'P11'};
-% Participants = {'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07', 'P08', 'P09', 'P10', 'P11', 'P12'};
-Participants = {'P02', 'P03', 'P04', 'P05', 'P06', 'P07', 'P08', 'P09', 'P11'};
+Participants = {'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07', 'P08', 'P09', 'P10', 'P11', 'P12'};
+% Participants = {'P02', 'P03', 'P04', 'P05', 'P06', 'P07', 'P08', 'P09', 'P11'};
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -160,14 +160,15 @@ EEG_Channels.notEEG = [EEG_Channels.mastoids, EEG_Channels.EMG, ...
     EEG_Channels.face, EEG_Channels.ears, EEG_Channels.neck];
 EEG_Channels.O1 = [70, 65, 66, 69, 71, 74, 59, 60, 67]; % first is preferred o1, the others are decreasing next best options
 EEG_Channels.O2 = [83, 90, 84, 89, 76, 82, 91, 85, 77];
-EEG_Channels.M1 = [56,  57, 63,  50, 64];
-EEG_Channels.M2 = [49, 100, 99, 101, 95];
+EEG_Channels.M1 = [  57,56, 63,  50, 64];
+EEG_Channels.M2 = [ 100, 49, 99, 101, 95];
 
 EEG_Channels.EOG1 = [  1, 125,   8, 125,   2, 125,  1, 120,  1,  32];
 EEG_Channels.EOG2 = [128,  32, 128,  25, 128,  26, 43,  32, 38, 121];
 
 
 EEG_Channels.Hotspot = [3:7, 9:13, 15, 16, 18:20, 24, 106, 111, 112, 117, 118, 123, 124];
+EEG_Channels.Backspot = [EEG_Channels.O1, EEG_Channels.O2];
 
 %%% EEG triggers
 

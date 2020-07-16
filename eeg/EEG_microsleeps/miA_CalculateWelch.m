@@ -95,7 +95,7 @@ for Indx_T = 1:numel(Tasks) % loop throuh all tasks
         
         if Plot
             try
-                SpecialChannels = labels2indexes(EEG_Channels.Hotspot, EEG.chanlocs);
+                SpecialChannels = labels2indexes(EEG_Channels.Backspot, EEG.chanlocs);
                 figure('units','normalized','outerposition',[0 0 .7 .5])
                 subplot(2, 4, [1, 2, 5 6])
                 

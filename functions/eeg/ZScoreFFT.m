@@ -11,11 +11,15 @@ for Indx_P = 1:size(PowerStruct, 2)
     N = 0;
     
     A = [];
-    for Indx_S = 1 %:numel(Sessions)
+    for Indx_S = 1:numel(Sessions)
         FFT = PowerStruct(Indx_P).(Sessions{Indx_S})(:, :, :);
         SUM = SUM + squeeze(nansum(nansum(FFT, 1), 3));
         SUMSQ = SUMSQ + squeeze(nansum(nansum(FFT.^2, 1), 3));
+        try
         N = N + nnz(~isnan(reshape(FFT(:, 1, :), 1, []))); % number of data points per frequency
+        catch
+            a=1
+        end
     end
     
 

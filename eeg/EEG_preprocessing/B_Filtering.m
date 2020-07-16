@@ -13,7 +13,7 @@ Tasks = {'MWT', 'Fixation', 'Standing', 'LAT', 'PVT'}; % which tasks to convert 
 % options: 'LAT', 'PVT', 'SpFT', 'Game', 'Music', 'MWT', 'Sleep',
 % 'Fixation', 'Oddball', 'Standing', 'Questionnaire'
 
-Destination_Formats = {'ICA', 'Wake'}; % chooses which filtering to do
+Destination_Formats = {'Cleaning', 'Microsleeps'}; % chooses which filtering to do
 % options: 'Scoring', 'Cleaning', 'ICA', 'Wake' 'Microsleeps'
 
 Refresh = false; % redo files that are already in destination folder

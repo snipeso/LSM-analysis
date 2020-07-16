@@ -6,6 +6,9 @@ Starts = convertFS(m.TMPREJ(:, 1), m.srate, EEG.srate);
 Ends =  convertFS(m.TMPREJ(:, 2), m.srate, EEG.srate);
 
 for Indx_N = 1:numel(Starts)
+    if Ends(Indx_N) > size(EEG.data, 2)
+        Ends(Indx_N) = size(EEG.data, 2);
+    end
    EEG.data(:, Starts(Indx_N):Ends(Indx_N)) = nan;
 end
 end

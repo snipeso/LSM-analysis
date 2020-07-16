@@ -9,7 +9,7 @@ clear
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Targets = {'LAT', 'PVT', 'Standing', 'Fixation', 'MWT'};
-Refresh = false;
+Refresh = true;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 EEG_Parameters
@@ -50,6 +50,7 @@ for Indx_T = 1:numel(Targets)
         
         % load dataset
         EEG = pop_loadset('filepath', Source_EEG, 'filename', Filename_Source);
+        EEG = eeg_checkset(EEG);
         
         % interpolate bad segments
         [EEG, badchans] = InterpolateSegments(EEG, Cuts_Filepath, EEG_Channels);
@@ -57,9 +58,6 @@ for Indx_T = 1:numel(Targets)
         % remove bad channels
         EEG = pop_select(EEG, 'nochannel', badchans);
         
-        % set to 0 all 
-        EEG = nanNoise(EEG, Cuts_Filepath);
-        EEG.data(isnan(EEG.data)) = 0;
         
         % save
         pop_saveset(EEG,  'filename', Filename_Destination, ...
