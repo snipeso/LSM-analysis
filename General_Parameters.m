@@ -43,8 +43,8 @@ Colors = struct();
 Colormap = struct();
 Colormap.Linear = flip(colorcet('L17'));
 Colormap.Divergent = rdbu;
-Colormap.Rainbow = hsv;
-% Colormap.Rainbow = flip(colorcet('R1'));
+Colormap.Rainbow = unirainbow;
+Colormap.PaleRainbow = paleunirainbow;
 
 
 % LAT v PVT
@@ -105,7 +105,9 @@ Colors.Tasks.AllTasks = Colors.Generic.Red;
 
 
 Colors.DarkParticipants = Colormap.Rainbow(floor(linspace(1, size(Colormap.Rainbow, 1), numel(Participants))), :);
-Colors.Participants = makePale(Colors.DarkParticipants);
+Colors.Participants = Colormap.PaleRainbow(floor(linspace(1, size(Colormap.Rainbow, 1), numel(Participants))), :);
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Sessions

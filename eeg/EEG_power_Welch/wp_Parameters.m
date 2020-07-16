@@ -4,11 +4,11 @@ run(fullfile(extractBefore(mfilename('fullpath'), 'eeg'), 'General_Parameters'))
 addpath(fullfile(Paths.Analysis, 'functions','eeg'))
 
 %%% locations
-% Paths.Preprocessed = 'C:\Users\colas\Desktop\LSMData'; % Sophia laptop
+Paths.Preprocessed = 'C:\Users\colas\Desktop\LSMData'; % Sophia laptop
 
 % Paths.Preprocessed = 'L:\Somnus-Data\Data01\LSM\Data\Preprocessed'; % Work desktop
 
-Paths.Preprocessed = 'C:\Users\schlaf\Desktop\LSMData'; % the Brick
+% Paths.Preprocessed = 'C:\Users\schlaf\Desktop\LSMData'; % the Brick
 
 Paths.Summary = fullfile(mfilename('fullpath'), 'SummaryData');
 Paths.WelchPower = fullfile(Paths.Preprocessed, 'Power', 'WelchPower');

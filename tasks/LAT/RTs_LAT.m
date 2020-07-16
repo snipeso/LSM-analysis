@@ -48,7 +48,7 @@ for Indx_C = 1:numel(Conditions)
         end
     end
     
-    PlotFlames(AllAnswers, Sessions, SessionLabels, Participants, 'rt')
+    PlotFlames(AllAnswers, Sessions, SessionLabels, Participants, 'rt', Colors.DarkParticipants)
     title('Reaction Time Distributions')
     ylabel('RT (s)')
     ylim([0.1, 1])
@@ -57,7 +57,7 @@ for Indx_C = 1:numel(Conditions)
     
     %plot means
     figure
-    PlotConfettiSpaghetti(MeanRTs,  SessionLabels, [0.2, 0.6], 'Reaction Time Means', '')
+    PlotConfettiSpaghetti(MeanRTs,  SessionLabels, [0.2, 0.6], 'Reaction Time Means', '', [], Colors.Participants)
     ylabel('RT (s)')
     saveas(gcf,fullfile(Paths.Figures, [Task, '_meanRTs.svg']))
     
@@ -68,14 +68,14 @@ for Indx_C = 1:numel(Conditions)
     
     %plot standard deviations
     figure
-    PlotConfettiSpaghetti(stdRTs,  SessionLabels, [0 .2], 'Reaction Time Standard Deviations', '')
+    PlotConfettiSpaghetti(stdRTs,  SessionLabels, [0 .2], 'Reaction Time Standard Deviations', '',[], Colors.Participants)
     ylabel('RT SD (s)')
     saveas(gcf,fullfile(Paths.Figures, [Task, '_stdRTs.svg']))
     
     
     %plot medians
     figure
-    PlotConfettiSpaghetti(MedianRTs,  SessionLabels, [0.2, 0.6], 'Reaction Time Medians', '')
+    PlotConfettiSpaghetti(MedianRTs,  SessionLabels, [0.2, 0.6], 'Reaction Time Medians', '',[], Colors.Participants)
     ylabel('RT (s)')
     saveas(gcf,fullfile(Paths.Figures, [Task, '_medianRTs.svg']))
 end

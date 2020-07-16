@@ -1,13 +1,13 @@
-function PlotFlames(Answers, Sessions, SessionLabels, Participants, ColName)
+function PlotFlames(Answers, Sessions, SessionLabels, Participants, ColName, Colors)
 % Takes a table from tasks, and plots overlapping violin plots of the
 % answer densities for each participant; usually used for reaction times. 
 % Good for emphasizing distribution shapes and identifying particular
 % outlier sessions.
-
-Colors = [linspace(0, (numel(Participants) -1)/numel(Participants), numel(Participants))', ...
-    ones(numel(Participants), 1), ...
-    ones(numel(Participants), 1)];
-Colors = hsv2rgb(Colors);
+% 
+% Colors = [linspace(0, (numel(Participants) -1)/numel(Participants), numel(Participants))', ...
+%     ones(numel(Participants), 1), ...
+%     ones(numel(Participants), 1)];
+% Colors = hsv2rgb(Colors);
 
 hold on
 for Indx_P = 1:numel(Participants)

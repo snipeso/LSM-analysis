@@ -1,4 +1,4 @@
-function PlotConfettiSpaghetti(Matrix, SessionLabels, YLims, Title, Labels, ColorGroups)
+function PlotConfettiSpaghetti(Matrix, SessionLabels, YLims, Title, Labels, ColorGroups, Colors)
 % PlotConfettiSpaghetti(Matrix, SessionLabels, YLims, Title, Labels, ColorGroups)
 % plots a speghetti plot based on the matrix, with sessions on the x axis.
 % A faded color indicates participants; either a unique color per person,
@@ -8,13 +8,12 @@ function PlotConfettiSpaghetti(Matrix, SessionLabels, YLims, Title, Labels, Colo
 Tot_Peeps = size(Matrix, 1); % number of participants
 
 % select background colors for participants
-if exist('ColorGroup', 'var')
+if exist('ColorGroup', 'var') && ~isempty(ColorGroups)
     
     % get one color per group
     Groups = unique(ColorGroups);
     Tot_Groups = numel(Groups);
-    Unique_Colors = palehsv(Tot_Groups + 1);
-    Unique_Colors(end, :) = [];
+    Unique_Colors = Colors( floor(linspace(1, size(Colors, 1), Tot_Groups)), :);
     
     % for each participant, assign group color
     Colors = zeros(Tot_Peeps, 3);
@@ -22,21 +21,19 @@ if exist('ColorGroup', 'var')
         Colors(ismember(ColorGroups, Groups(Indx_G)), :) = Unique_Colors(Indx_G, :);
     end
 else
-    Colors = palehsv(Tot_Peeps + 1);
-    Colors(end, :) = [];
-    
+    Colors = Colors( floor(linspace(1, size(Colors, 1), Tot_Peeps)), :);
 end
 
 
 % plot each participant
 hold on
 for Indx_P = 1:Tot_Peeps
-    plot(Matrix(Indx_P, :), 'o-', 'LineWidth', 1, ...
+    plot(Matrix(Indx_P, :), 'o-', 'LineWidth', .7, ...
         'MarkerFaceColor', Colors(Indx_P, :), 'Color', Colors(Indx_P, :))
 end
 
 % plot mean
-plot(nanmean(Matrix, 1), 'o-', 'LineWidth', 2, 'Color', 'k',  'MarkerFaceColor', 'k')
+plot(nanmean(Matrix, 1), 'o-', 'LineWidth', 2.5, 'Color', 'k',  'MarkerFaceColor', 'k')
 
 xlim([0.5, numel(SessionLabels) + .5])
 xticks(1:numel(SessionLabels))
