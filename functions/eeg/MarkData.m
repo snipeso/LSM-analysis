@@ -22,12 +22,14 @@ else
     Data2 = [];
 end
 
+Pix = get(0,'screensize');
+
 if ismember('TMPREJ', {Content.name})
     eegplot(EEG.data, 'srate', EEG.srate, 'spacing', 50, 'winlength', 60, ...
     'command', 'm.TMPREJ = TMPREJ', 'color', Colors, 'butlabel', 'Save', ...
-    'winrej', m.TMPREJ, 'data2', Data2)
+    'winrej', m.TMPREJ, 'data2', Data2, 'position', [0 0 Pix(3) Pix(4)])
 else
     eegplot(EEG.data, 'srate', EEG.srate, 'spacing', 50, 'winlength', 60, ...
-        'command', 'm.TMPREJ = TMPREJ', 'color', Colors, 'butlabel', 'Save', 'data2', Data2)
+        'command', 'm.TMPREJ = TMPREJ', 'color', Colors, 'butlabel', 'Save', 'data2', Data2, 'position', [0 0 Pix(3) Pix(4)])
 end
 % TODO, mark with data2 little cuts, immersed in NANs

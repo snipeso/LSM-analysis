@@ -21,7 +21,7 @@ EEG_Parameters
 
 % Filename = 'P09_LAT_Session1Beam_Cleaning.set'; % choose this if you want to clean a specific file
 Filename = []; % choose this if you want to randomly select a file to clean from the list
-Folder = 'PVT';
+Folder = 'Standing';
 
 Source = fullfile(Paths.Preprocessed, 'Cleaning', 'SET', Folder);
 Destination = fullfile(Paths.Preprocessed, 'Cleaning', 'Cuts', Folder);
@@ -68,8 +68,8 @@ MarkData(EEG)
 
 % Ch = [];
 
-rmCh(EEG.CutFilepath, Ch) % remove channel or list of channels
-restoreCh(EEG.CutFilepath, Ch) % restore removed channels
+% rmCh(EEG.CutFilepath, Ch) % remove channel or list of channels
+% restoreCh(EEG.CutFilepath, Ch) % restore removed channels
 
 % function to plot a given dataset, with prev markings if exist, save the markings to a file
 
@@ -81,8 +81,8 @@ restoreCh(EEG.CutFilepath, Ch) % restore removed channels
 %%% MarkData() it will highlight the section in red.
 
 % remove channels entirely
-CutSnippet(EEG, StartTime, EndTime, Channel)
-RestoreSnippet(EEG, StartTime, EndTime, Channel)
+% CutSnippet(EEG, StartTime, EndTime, Channel)
+% RestoreSnippet(EEG, StartTime, EndTime, Channel)
 
 
 
