@@ -10,7 +10,7 @@ clear
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Targets = {'LAT', 'PVT'}; % specify folder for analysis
+Targets = {'LAT', 'PVT', 'MWT', 'Standing', 'Fixation'}; % specify folder for analysis
 Refresh = false;
 SpotCheck = false;
 
