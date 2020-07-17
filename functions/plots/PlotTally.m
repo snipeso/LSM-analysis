@@ -1,10 +1,8 @@
-function PlotTally(Matrix, Sessions, SessionLabels, Legend)
+function PlotTally(Matrix,  SessionLabels, Legend, Format)
 % plots stacked bar plots of responses
 % Matrix is a participant x session x responses matrix
 
-Colors = { [0.25098  0.66667  0.20784], ...
-    [0.98039  0.63529  0.02353], ...
-    [0.72157  0.14118  0.12941]};
+Colors = Format.Colors.Tally;
 
 % normalize responses
 meanMatrix = squeeze(nanmean(Matrix, 1));
@@ -12,13 +10,16 @@ prcntMatrix = 100*(meanMatrix./sum(meanMatrix, 2));
 
 PlotStacks(prcntMatrix, Colors)
 
-xlim([0, numel(Sessions) + 1])
-xticks(1:numel(Sessions))
+xlim([0, numel(SessionLabels) + 1])
+xticks(1:numel(SessionLabels))
 xticklabels(SessionLabels)
 ylabel('% of Responses')
 ylim([0, 100])
 
+set(gca, 'FontName', Format.FontName)
 
-if exist('Legend', 'var')
+if exist('Legend', 'var') && ~isempty(Legend)
     legend(Legend)
 end
+
+axis square

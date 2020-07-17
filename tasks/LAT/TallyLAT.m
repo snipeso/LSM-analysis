@@ -1,6 +1,6 @@
 clear
 clc
-% close all
+close all
 
 LAT_Parameters
 
@@ -12,6 +12,7 @@ Conditions = {'Beam', 'Comp'};
 Titles = {'Soporific', 'Classic'};
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 
 % fix empty column entries
@@ -27,7 +28,9 @@ end
 for Indx_C = 1:numel(Conditions)
     Condition = Conditions{Indx_C};
     
+    
     Title = Titles{Indx_C};
+    TitleTag = [Task, '_', Title];
     
     Sessions = allSessions.([Task,Condition]);
     SessionLabels = allSessionLabels.([Task, Condition]);
@@ -62,33 +65,39 @@ for Indx_C = 1:numel(Conditions)
     Tot = sum(Responses, 3);
     
     % plot average bars
-    figure
-    PlotTally(Responses, Sessions, SessionLabels, {'Correct', 'Late', 'Missing'})
-    title([Task, ' Tally'])
-    saveas(gcf,fullfile(Paths.Figures, [Task, '_TallyAll.svg']))
+    figure( 'units','normalized','outerposition',[0 0 .25, .4])
+    PlotTally(Responses, SessionLabels, {'Correct', 'Late', 'Missing'}, Format)
+    title([replace(TitleTag, '_', ' '), ' Tally'])
+    
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_TallyAll.svg']))
     
     % plot individuals
     figure( 'units','normalized','outerposition',[0 0 1 .5])
     for Indx_P = 1:numel(Participants)
         subplot(1, numel(Participants), Indx_P)
-        PlotTally(Responses(Indx_P, :, :), Sessions, SessionLabels)
+        PlotTally(Responses(Indx_P, :, :), SessionLabels, {}, Format)
         set(gca,'xtick',[], 'ytick', [], 'ylabel', [])
-        title([Participants{Indx_P}])
+        title([Participants{Indx_P}, ' ' replace(TitleTag, '_', ' '),])
     end
-    saveas(gcf,fullfile(Paths.Figures, [Task, '_TallyIndividuals.svg']))
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_TallyIndividuals.svg']))
     
     
     % plot spaghetti plot
     figure( 'units','normalized','outerposition',[0 0 .5 .5])
     subplot(1, 2, 1)
     Hits = 100*(squeeze(Responses(:, :, 1))./Tot);
-    PlotConfettiSpaghetti(Hits,  SessionLabels, [0 100], '% Hits', [])
-    
+    PlotConfettiSpaghetti(Hits,  SessionLabels, [0 100], [], [], Format)
+    axis square
+    title([replace(TitleTag, '_', ' '), ' % Hits'])
+     set(gca, 'FontSize', 12)
     
     subplot(1, 2, 2)
     Misses = 100*(squeeze(Responses(:, :, 3))./Tot);
-    PlotConfettiSpaghetti(Misses, SessionLabels, [0 100], '% Misses', [])
-    saveas(gcf,fullfile(Paths.Figures, [Task, '_PrcntHitsMisses.svg']))
+    PlotConfettiSpaghetti(Misses, SessionLabels, [0 100], [], [], Format)
+    title([replace(TitleTag, '_', ' '), ' % Misses'])
+     set(gca, 'FontSize', 12)
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_PrcntHitsMisses.svg']))
+    axis square
     
     % save matrix
     Filename = [Task, '_', 'Hits' '_', Title, '.mat'];

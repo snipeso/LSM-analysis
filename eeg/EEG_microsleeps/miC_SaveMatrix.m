@@ -112,7 +112,7 @@ for Indx_C = 1:numel(Conditions)
     end
     
     % run for microsleeps
-        for Indx_F = 1:numel(saveFreqFields) % loop through frequency bands
+    for Indx_F = 1:numel(saveFreqFields) % loop through frequency bands
         FreqLims = saveFreqs.(saveFreqFields{Indx_F});
         FreqIndx =  dsearchn(Freqs', FreqLims');
         

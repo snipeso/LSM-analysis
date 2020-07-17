@@ -3,7 +3,7 @@ run(fullfile(extractBefore(mfilename('fullpath'), 'tasks'), 'General_Parameters'
 
 % Locations
 
-Paths.Figures = fullfile(Paths.Figures, 'LAT');
+Paths.Figures = fullfile(Paths.Figures, 'Tasks', 'LAT');
 
 %%% locations
 Paths.Datasets = 'D:\LSM\data';

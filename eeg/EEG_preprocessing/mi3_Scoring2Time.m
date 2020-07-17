@@ -43,9 +43,10 @@ for Indx_T = 1:numel(Targets)
         [StartPoints, EndPoints] = data2windows(MSE');
         
         Windows = [StartPoints'/MSE_fs, EndPoints'/MSE_fs]; 
+        TotTime = length(MSE)/MSE_fs;
         
         % save windows
-        save(fullfile(Destination, Filename), 'Windows')
+        save(fullfile(Destination, Filename), 'Windows', 'TotTime')
         
         disp(['***********', 'Finished ', Filename, '***********'])
         clear MSE_scoring

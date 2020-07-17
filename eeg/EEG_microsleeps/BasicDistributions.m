@@ -37,6 +37,7 @@ for Indx_C = 1:numel(Conditions) % do both conditions
         FirstMicrosleep = nan(numel(Participants), numel(Sessions));
         TotMicrosleeps = nan(numel(Participants), numel(Sessions));
         DurationMicrosleeps = nan(numel(Participants), numel(Sessions));
+        AllTotTime = nan(numel(Participants), numel(Sessions));
         
         for Indx_P = 1:numel(Participants)
             for Indx_S = 1:numel(Sessions)
@@ -48,8 +49,9 @@ for Indx_C = 1:numel(Conditions) % do both conditions
                     continue
                 end
                 
-                load(fullfile(Source, Filename), 'Windows')
+                load(fullfile(Source, Filename), 'Windows', 'TotTime')
                 
+                AllTotTime(Indx_P, Indx_S) = TotTime;
                 if isempty(Windows)
                     FirstMicrosleep(Indx_P, Indx_S) = 800; % placeholder value to indicate they never microslept;
                     TotMicrosleeps(Indx_P, Indx_S) = 0;
@@ -57,7 +59,7 @@ for Indx_C = 1:numel(Conditions) % do both conditions
                 else
                     FirstMicrosleep(Indx_P, Indx_S) = Windows(1, 1);
                     TotMicrosleeps(Indx_P, Indx_S) = size(Windows, 1);
-                    DurationMicrosleeps(Indx_P, Indx_S) = sum(diff(Windows, 1, 2));
+                    DurationMicrosleeps(Indx_P, Indx_S) =sum(diff(Windows, 1, 2));
                     disp([Participants{Indx_P}, Sessions{Indx_S}])
                     disp(Windows)
                 end
@@ -65,66 +67,91 @@ for Indx_C = 1:numel(Conditions) % do both conditions
         end
         
         %%% plot and save
-        figure
-        PlotConfettiSpaghetti(FirstMicrosleep, SessionLabels, [0 800], [Task, Title, ' Time to First Microsleep'])
-        ylabel('Delay (s)')
         Matrix = FirstMicrosleep;
         if Save
             Filename = [Task, '_', 'miStart', '_', Title, '.mat'];
             save(fullfile(Destination, Filename), 'Matrix')
         end
         
-        figure
-        PlotConfettiSpaghetti(TotMicrosleeps, SessionLabels, [], [Task, Title, ' Total microsleeps'])
-        ylabel('#')
-        Matrix = TotMicrosleeps;
+        figure('units','normalized','outerposition',[0 0 .75 .45])
+        subplot(1, 3, 1)
+        PlotConfettiSpaghetti(FirstMicrosleep, SessionLabels, [0 800], [], [], Format)
+        title([Task, Title, ' time to first microsleep'])
+        set(gca, 'FontSize', 12)
+        ylabel('Delay (s)')
+        
+        
+        
+        AllMatrix(Indx_T).TotTime = AllTotTime;
+        AllMatrix(Indx_T).TotMicrosleeps = TotMicrosleeps;
+        AllMatrix(Indx_T).DurationMicrosleeps = DurationMicrosleeps;
+        
+        MicrosleepRate = TotMicrosleeps./(AllTotTime./60);
+        
+        Matrix = MicrosleepRate;
         if Save
             Filename = [Task, '_', 'miTot', '_', Title, '.mat'];
             save(fullfile(Destination, Filename), 'Matrix')
         end
-        AllMatrix(Indx_T).TotMicrosleeps = Matrix;
         
-        figure
-        PlotConfettiSpaghetti(DurationMicrosleeps, SessionLabels, [], [Task, Title,' Total duration microsleeps'])
-        ylabel('Duration (s)')
+        subplot(1, 3, 2)
+        PlotConfettiSpaghetti(MicrosleepRate, SessionLabels, [0 5], [], [], Format)
+        title([ 'Number of microsleeps'])
+        ylabel('Microsleep rate (#/min)')
+         set(gca, 'FontSize', 12)
+        
+        
+        DurationMicrosleeps = 100*(DurationMicrosleeps./AllTotTime);
+        subplot(1, 3, 3)
+        PlotConfettiSpaghetti(DurationMicrosleeps, SessionLabels, [0 50], [], [], Format)
+        title(['Duration microsleeps'])
+        ylabel('Duration (%)')
         Matrix = DurationMicrosleeps;
         if Save
             Filename = [Task, '_', 'miDuration', '_', Title, '.mat'];
             save(fullfile(Destination, Filename), 'Matrix')
         end
-        AllMatrix(Indx_T).DurationMicrosleeps = Matrix;
+         set(gca, 'FontSize', 12)
+        
+        saveas(gcf,fullfile(Paths.Figures, [Task,'_', Title, '_Stats.svg']))
+        
     end
     
     
     %%% combine
-    
     Destination= fullfile(Paths.Analysis, 'statistics','Data', 'AllTasks');
     
     if ~exist(Destination, 'dir')
         mkdir(Destination)
     end
     
-    figure
-    TotMicrosleeps = AllMatrix(1).TotMicrosleeps + AllMatrix(2).TotMicrosleeps;
-    PlotConfettiSpaghetti(TotMicrosleeps, SessionLabels, [],  ['All Tasks', Title,' Total microsleeps'])
-    ylabel('#')
-    Matrix = TotMicrosleeps;
+    figure('units','normalized','outerposition',[0 0 .5 .45])
+    subplot(1, 2, 1)
+    MicrosleepsRate = (AllMatrix(1).TotMicrosleeps + AllMatrix(2).TotMicrosleeps)./((AllMatrix(1).TotTime+ AllMatrix(2).TotTime)./60);
+    PlotConfettiSpaghetti(MicrosleepsRate, SessionLabels, [0 5], [], [], Format )
+    title(['All Tasks', Title,' Total microsleeps'])
+    ylabel('Rate (#/min)')
+     set(gca, 'FontSize', 12)
+    Matrix = MicrosleepsRate;
     if Save
         Filename = ['AllTasks_', 'miTot', '_', Title, '.mat'];
         save(fullfile(Destination, Filename), 'Matrix')
     end
     AllMatrix(Indx_T).TotMicrosleeps;
     
-    figure
-    DurationMicrosleeps = AllMatrix(1).DurationMicrosleeps + AllMatrix(2).DurationMicrosleeps;
-    PlotConfettiSpaghetti(DurationMicrosleeps, SessionLabels, [], ['All Tasks', Title,'Total duration microsleeps'])
-    ylabel('Duration (s)')
+    subplot(1, 2, 2)
+    DurationMicrosleeps = 100*((AllMatrix(1).DurationMicrosleeps + AllMatrix(2).DurationMicrosleeps)./(AllMatrix(1).TotTime+ AllMatrix(2).TotTime));
+    
+    PlotConfettiSpaghetti(DurationMicrosleeps, SessionLabels, [0 50], [], [], Format)
+    title(['AllTasks ', Title, ' duration microsleeps'])
+    ylabel('%')
+     set(gca, 'FontSize', 12)
     Matrix = DurationMicrosleeps;
     if Save
         Filename = [ 'AllTasks_', 'miDuration', '_', Title, '.mat'];
         save(fullfile(Destination, Filename), 'Matrix')
     end
-    
+    saveas(gcf,fullfile(Paths.Figures, ['AllTasks_', Title, '_Stats.svg']))
     
 end
 
