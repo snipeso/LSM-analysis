@@ -1,3 +1,4 @@
+close all
 CLimsInd = [min(Quantiles(:, :, 1),[],  2), max(Quantiles(:, :, 2),[],  2)];
 
 
@@ -27,32 +28,36 @@ for Indx_H = 1:2
             A = PowerStruct(Indx_P).(Sessions{Indx_S});
             subplot(numel(Participants), numel(Sessions), numel(Sessions) * (Indx_P - 1) + Indx_S )
             
-            PlotSessionFreqs(squeeze(nanmean(A(finalChanIndx, :, :), 1)), YLimFreq, CLimsInd(Indx_P, :), Freqs )
-            title([Participants{Indx_P}, ' ', Title, ' ', Sessions{Indx_S}])
+            PlotSessionFreqs(squeeze(nanmean(A(finalChanIndx, :, :), 1)), ...
+                YLimFreq, CLimsInd(Indx_P, :), Freqs, Format)
+            title([Participants{Indx_P}, ' ', Title, ' ', Sessions{Indx_S},' ', replace(TitleTag, '_',' ')])
         end
         
     end
-    saveas(gcf,fullfile(Paths.Figures, [TitleTag,'_', Title, '_LAT_TimeFreq.svg']))
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag,'_', Title, '_TimeFreq.svg']))
 end
 
 
 YLimFreq = [2 20];
 
 for Indx_P = 1:numel(Participants)
-    figure( 'units','normalized','outerposition',[0 0 .5 .5])
+    figure( 'units','normalized','outerposition',[0 0 1 .5])
     
     for Indx_S = 1:numel(Sessions)
         subplot(2,numel(Sessions), Indx_S)
         A = PowerStruct(Indx_P).(Sessions{Indx_S});
-        PlotSessionFreqs(squeeze(nanmean(A(ChanIndx, :, :), 1)), YLimFreq, CLimsInd(Indx_P, :), Freqs )
-        title([Participants{Indx_P}, ' Hotspot ', SessionLabels{Indx_S}])
+        if isempty(A)
+            continue
+        end
+        PlotSessionFreqs(squeeze(nanmean(A(ChanIndx, :, :), 1)), YLimFreq, CLimsInd(Indx_P, :), Freqs, Format )
+        title([Participants{Indx_P}, ' Hotspot ', SessionLabels{Indx_S}, ' ',  replace(TitleTag, '_',' ')])
         colorbar
         subplot(2,numel(Sessions), numel(Sessions)+ Indx_S)
         A = PowerStruct(Indx_P).(Sessions{Indx_S});
-        PlotSessionFreqs(squeeze(nanmean(A(NotChanIndx, :, :), 1)), YLimFreq, CLimsInd(Indx_P, :), Freqs )
-        title([Participants{Indx_P}, ' NotHotspot ', SessionLabels{Indx_S}])
+        PlotSessionFreqs(squeeze(nanmean(A(NotChanIndx, :, :), 1)), YLimFreq, CLimsInd(Indx_P, :), Freqs, Format )
+        title([Participants{Indx_P}, ' NotHotspot ', SessionLabels{Indx_S}, ' ', replace(TitleTag, '_',' ')])
         colorbar
     end
     
-    saveas(gcf,fullfile(Paths.Figures, [TitleTag,'_', Participants{Indx_P}, '_LAT_TimeFreq.svg']))
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag,'_', Participants{Indx_P}, '_TimeFreq.svg']))
 end

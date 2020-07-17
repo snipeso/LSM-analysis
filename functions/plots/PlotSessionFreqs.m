@@ -1,4 +1,4 @@
-function PlotSessionFreqs(Matrix, YLims, CLims, Freqs)
+function PlotSessionFreqs(Matrix, YLims, CLims, Freqs, Format)
 Theta =  dsearchn( Freqs', 6.5);
 Alpha =  dsearchn( Freqs', 10);
 
@@ -15,19 +15,14 @@ set(gca,'YDir','normal')
 yticks(PlotTicksIndxes)
 yticklabels(PlotTicks)
 
-if any(Matrix(:)<0)
-    colormap(rdbu)
-    Max = max(CLims);
-    caxis([-Max, Max])
-else
-    colormap(viridis)
-    caxis(CLims)
-end
 
+colormap(Format.Colormap.Linear)
+caxis(CLims)
 
 xlim(XLims)
 
 ylim(YLims)
+set(gca, 'FontName', Format.FontName)
 
 plot([XLims], [Theta Theta], '--', 'Color' ,'r')
 plot([XLims], [Alpha Alpha], '--', 'Color' ,'w')

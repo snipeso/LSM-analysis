@@ -11,7 +11,8 @@ Max = 0;
 for Indx_X = 1:TotTopos
     subplot(TotTopos + 1, TotTopos, Indx_X)
     
-    topoplot(SessionMatrix(:, Indx_X), Chanlocs, 'maplimits', YLimsMain, 'style', 'map', 'headrad', 'rim', 'gridscale', 150)
+    topoplot(SessionMatrix(:, Indx_X), Chanlocs, 'maplimits', YLimsMain, ...
+        'style', 'map', 'headrad', 'rim', 'gridscale', 150);
     title(SessionLabels{Indx_X},  'FontSize', 9)
     set(gca, 'FontName', Format.FontName)
 
@@ -29,8 +30,9 @@ for Indx_X = 1:TotTopos
 
         
         Max = max(Max, max(abs(CohenD(:))));
-        topoplot(CohenD', Chanlocs, 'style', 'map', 'headrad', 'rim', 'gridscale', 150)
+        topoplot(CohenD', Chanlocs, 'style', 'map', 'headrad', 'rim', 'gridscale', 150);
         title([SessionLabels{Indx_Y} ' vs ' SessionLabels{Indx_X}], 'FontSize', 9)
+        set(gca, 'FontName', Format.FontName)
         if Indx_Y == Indx_X
             colorbar
             set(gca,'visible','off')

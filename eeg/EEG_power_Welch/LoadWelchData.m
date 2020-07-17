@@ -12,14 +12,14 @@ Task = 'PVT';
 % Condition = 'Beam';
 % Title = 'Soporific';
 
-Condition = 'Comp';
-Title = 'Classic';
+% Condition = 'Comp';
+% Title = 'Classic';
 
-% Task = 'Fixation';
-% Session = '';
-% Title = 'Main';
+Task = 'Fixation';
+Condition = '';
+Title = 'Main';
 
-Refresh = false;
+Refresh = true;
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
