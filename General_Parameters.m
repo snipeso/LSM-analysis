@@ -34,17 +34,17 @@ Participants = {'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07', 'P08', 'P09', '
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% Labels & Colors
+%%% Figure formatting
 
-FontName = 'Tw Cen MT'; % use something else for papers
+Format = struct();
+
+Format.FontName = 'Tw Cen MT'; % use something else for papers
 
 % Colors
-Colors = struct();
-Colormap = struct();
-Colormap.Linear = flip(colorcet('L17'));
-Colormap.Divergent = rdbu;
-Colormap.Rainbow = unirainbow;
-Colormap.PaleRainbow = paleunirainbow;
+Format.Colormap.Linear = flip(colorcet('L17'));
+Format.Colormap.Divergent = rdbu;
+Format.Colormap.Rainbow = unirainbow;
+Format.Colormap.PaleRainbow = paleunirainbow;
 
 
 % LAT v PVT
@@ -52,7 +52,7 @@ Colormap.PaleRainbow = paleunirainbow;
 % S1 vs S2 vs S3
 % Comp v Beam
 
-Colors.LAT = [
+Format.Colors.LAT = [
    10, 3, 155; % BL
    117, 0, 168; % pre
    187, 53, 134; % S1
@@ -62,17 +62,17 @@ Colors.LAT = [
    59, 104, 0; % post
 ]./255; % RGB to sRGB
 
-Colors.LATBeam = [
-Colors.LAT(1, :);   
-Colors.LAT(3, :); 
-Colors.LAT(5, :);   
+Format.Colors.LATBeam = [
+Format.Colors.LAT(1, :);   
+Format.Colors.LAT(3, :); 
+Format.Colors.LAT(5, :);   
 ];
 
-Colors.LATComp = makePale(Colors.LATBeam);
+Format.Colors.LATComp = makePale(Format.Colors.LATBeam);
 
 
 
-Colors.PVT = [
+Format.Colors.PVT = [
 70, 9, 92;
 50, 98, 141;
 30, 155, 137;
@@ -80,32 +80,34 @@ Colors.PVT = [
 119, 49, 49
 ]/255;
 
-Colors.Standing = Colors.PVT;
-Colors.Fixation = Colors.PVT;
+Format.Colors.Standing = Format.Colors.PVT;
+Format.Colors.Fixation = Format.Colors.PVT;
 
-Colors.PVTBeam = [
-Colors.PVT(1, :);   
-Colors.PVT(3, :); 
-Colors.PVT(4, :);   
+Format.Colors.PVTBeam = [
+Format.Colors.PVT(1, :);   
+Format.Colors.PVT(3, :); 
+Format.Colors.PVT(4, :);   
 ];
-Colors.PVTComp = makePale(Colors.PVTBeam);
+Format.Colors.PVTComp = makePale(Format.Colors.PVTBeam);
 
 
 
-Colors.Generic.Red = [235 95 106]/255;
-Colors.Generic.Pale1 = [243 238 193]/255;
-Colors.Generic.Pale2 = [244 178 119]/255;
-Colors.Generic.Dark1 = [24 41 166]/255;
-Colors.Generic.Dark2 = [145 26 150]/255;
-Colors.Sessions = [Colors.Generic.Dark1; Colors.Generic.Red; Colors.Generic.Pale2 ];
+Format.Colors.Generic.Red = [235 95 106]/255;
+Format.Colors.Generic.Pale1 = [243 238 193]/255;
+Format.Colors.Generic.Pale2 = [244 178 119]/255;
+Format.Colors.Generic.Dark1 = [24 41 166]/255;
+Format.Colors.Generic.Dark2 = [145 26 150]/255;
+Format.Colors.Sessions = [Format.Colors.Generic.Dark1; Format.Colors.Generic.Red; Format.Colors.Generic.Pale2 ];
 
-Colors.Tasks.LAT = Colors.LATBeam(2, :);
-Colors.Tasks.PVT = Colors.PVTBeam(2, :);
-Colors.Tasks.AllTasks = Colors.Generic.Red;
+Format.Colors.Tasks.LAT = Format.Colors.LATBeam(2, :);
+Format.Colors.Tasks.PVT = Format.Colors.PVTBeam(2, :);
+Format.Colors.Tasks.AllTasks = Format.Colors.Generic.Red;
 
 
-Colors.DarkParticipants = Colormap.Rainbow(floor(linspace(1, size(Colormap.Rainbow, 1), numel(Participants))), :);
-Colors.Participants = Colormap.PaleRainbow(floor(linspace(1, size(Colormap.Rainbow, 1), numel(Participants))), :);
+Format.Colors.DarkParticipants = Format.Colormap.Rainbow(floor(linspace(1, ...
+    size(Format.Colormap.Rainbow, 1), numel(Participants))), :);
+Format.Colors.Participants = Format.Colormap.PaleRainbow(floor(linspace(1, ...
+    size(Format.Colormap.Rainbow, 1), numel(Participants))), :);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

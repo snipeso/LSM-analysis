@@ -6,7 +6,7 @@ wp_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Scaling = 'zscore'; % either 'log' or 'norm' or 'scoref'
+Scaling = 'none'; % either 'log' or 'norm' or 'scoref'
 % Scaling = 'log';
 Task = 'PVT';
 Condition = 'Beam';
@@ -57,10 +57,11 @@ switch Scaling
         YLabel = 'Log Power Density';
     case 'none'
        YLabel = 'Power Density';
+       PowerStruct = GetPowerStruct(allFFT, Categories, Sessions, Participants);
     case 'zscore'
         PowerStruct = GetPowerStruct(allFFT, Categories, Sessions, Participants);
         PowerStruct = ZScoreFFT(PowerStruct);
-        YLabel = 'Power Density (normed)';
+        YLabel = 'Power Density (z scored)';
 end
 
 
