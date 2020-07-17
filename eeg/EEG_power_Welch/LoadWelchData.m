@@ -6,14 +6,14 @@ wp_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Scaling = 'none'; % either 'log' or 'norm' or 'scoref'
+Scaling = 'log'; % either 'log' or 'zcore' or 'scoref'
 % Scaling = 'log';
 Task = 'PVT';
-Condition = 'Beam';
-Title = 'Soporific';
+% Condition = 'Beam';
+% Title = 'Soporific';
 
-% Session = 'Comp';
-% Title = 'Classic';
+Condition = 'Comp';
+Title = 'Classic';
 
 % Task = 'Fixation';
 % Session = '';
@@ -26,6 +26,11 @@ Refresh = false;
 
 Sessions = allSessions.([Task,Condition]);
 SessionLabels = allSessionLabels.([Task, Condition]);
+
+Paths.Figures = fullfile(Paths.Figures, Task);
+if ~exist(Paths.Figures, 'dir')
+    mkdir(Paths.Figures)
+end
 
 %%% Get data
 FFT_Path = fullfile(Paths.Summary, [Task, '_FFT.mat']);
@@ -55,13 +60,16 @@ switch Scaling
         PowerStruct = GetPowerStruct(allFFT, Categories, Sessions, Participants);
 
         YLabel = 'Log Power Density';
+        disp('********* Log transforming *******')
     case 'none'
        YLabel = 'Power Density';
        PowerStruct = GetPowerStruct(allFFT, Categories, Sessions, Participants);
+        disp('********* No transforming *******')
     case 'zscore'
         PowerStruct = GetPowerStruct(allFFT, Categories, Sessions, Participants);
         PowerStruct = ZScoreFFT(PowerStruct);
         YLabel = 'Power Density (z scored)';
+         disp('********* ZScore transforming *******')
 end
 
 

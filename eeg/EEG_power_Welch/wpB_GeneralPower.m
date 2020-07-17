@@ -73,8 +73,7 @@ saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_Power.svg']))
 %%% plot topoplots
 plotFreqs = [1:2:12, 14:4:27];
 FreqsIndx =  dsearchn( Freqs', plotFreqs');
-Clims = [quantile(All_Averages(:), .005), quantile(All_Averages(:), .995)];
-
+% 
 % get topoplot averages
 AllTopoplots = zeros(numel(Participants), TotChannels, numel(FreqsIndx), numel(Sessions));
 for Indx_P = 1:numel(Participants)
@@ -197,17 +196,17 @@ for Indx_H = 1:2
         subplot(2, 2, Indx_F)
         PlotConfettiSpaghetti(All_Averages, SessionLabels, ...
             [], [], [], Format) % TODO, make same for all % [min(All_Averages(:)), max(All_Averages(:))]
-       title([Title, ' ', num2str(plotFreqs(Indx_F)), 'Hz Power'])
+        title([Title, ' ', replace(TitleTag, '_',' '), ' ', num2str(plotFreqs(Indx_F)), 'Hz Distribution'])
         ylabel(YLabel)
         Min = min(Min, min(All_Averages(:)));
         Max = max(Max, max(All_Averages(:)));
         
     end
     
-     for Indx_F = 1:numel(FreqsIndx)
-      subplot(2, 2, Indx_F)
-      ylim([Min, Max])
-     end
+    for Indx_F = 1:numel(FreqsIndx)
+        subplot(2, 2, Indx_F)
+        ylim([Min, Max])
+    end
     
     
     saveas(gcf,fullfile(Paths.Figures, [TitleTag,'_', Title, '_PowerChange.svg']))
