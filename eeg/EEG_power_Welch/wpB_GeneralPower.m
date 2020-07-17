@@ -120,7 +120,7 @@ end
 AllTopoplots = squeeze(nanmean(AllTopoplots, 1)); % average out participants
 
 % plot average
-figure( 'units','normalized','outerposition',[0 0 1 1])
+figure('units','normalized','outerposition',[0 0 1 1])
 Indx = 1;
 for Indx_S = 1:numel(Sessions)
     for Indx_F = 1:numel(FreqsIndx)

@@ -1,27 +1,23 @@
-function PlotScales(Matrix1, Matrix2, SessionLabels, MatrixLabels, ColorGroups)
+function PlotScales(Matrix1, Matrix2, SessionLabels, MatrixLabels, ColorGroups, Format)
 % plots data from 2 datasets compared across sessions. If you want to use
 % more than 2, then jut do PlotBars.
 
 Tot_Peeps = size(Matrix1, 1); % number of participants
-
+Colors = Format.Colors.Participants;
 % select background colors for participants
-if exist('ColorGroup', 'var')
-    
+if exist('ColorGroup', 'var') && ~isempty(ColorGroups)
+ 
     % get one color per group
     Groups = unique(ColorGroups);
     Tot_Groups = numel(Groups);
-    Unique_Colors = palehsv(Tot_Groups + 1);
-    Unique_Colors(end, :) = [];
+    Unique_Colors = Colors( floor(linspace(1, size(Colors, 1), Tot_Groups)), :);
+   
     
     % for each participant, assign group color
     Colors = zeros(Tot_Peeps, 3);
     for Indx_G = 1:Tot_Groups
         Colors(ismember(ColorGroups, Groups(Indx_G)), :) = Unique_Colors(Indx_G, :);
     end
-else
-    Colors = palehsv(Tot_Peeps + 1);
-    Colors(end, :) = [];
-    
 end
 
 
@@ -59,5 +55,8 @@ plot(1:numel(SessionLabels), Mean, ':', 'LineWidth', 2, 'Color', 'k',  'MarkerFa
 xlim([0.5, numel(SessionLabels) + .5])
 xticks(Xs(:))
 xticklabels(Labels)
+
+
+set(gca, 'FontName', Format.FontName)
 
 end

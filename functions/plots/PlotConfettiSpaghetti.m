@@ -21,8 +21,6 @@ if exist('ColorGroup', 'var') && ~isempty(ColorGroups)
     for Indx_G = 1:Tot_Groups
         Colors(ismember(ColorGroups, Groups(Indx_G)), :) = Unique_Colors(Indx_G, :);
     end
-else
-    Colors = Colors( floor(linspace(1, size(Colors, 1), Tot_Peeps)), :);
 end
 
 
