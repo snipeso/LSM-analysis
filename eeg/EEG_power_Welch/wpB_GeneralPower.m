@@ -53,8 +53,7 @@ for Indx_H = 1:2
     subplot(1, 2, Indx_H)
     hold on
     for Indx_S =1:numel(Sessions)
-        
-        plot(Freqs,  squeeze(Averaged_FFT(Indx_S, :, Indx_H)), 'LineWidth', 2, 'Color', Colors.(Task)(Indx_S, :))
+        plot(Freqs, squeeze(Averaged_FFT(Indx_S, :, Indx_H)), 'LineWidth', 2, 'Color', Colors.(Task)(Indx_S, :))
     end
     legend(Sessions)
     title([Task, ' Power in ', Title])

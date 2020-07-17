@@ -9,7 +9,7 @@ wp_Parameters
 Scaling = 'zscore'; % either 'log' or 'norm' or 'scoref'
 % Scaling = 'log';
 Task = 'PVT';
-Session = 'Beam';
+Condition = 'Beam';
 Title = 'Soporific';
 
 % Session = 'Comp';
@@ -19,20 +19,22 @@ Title = 'Soporific';
 % Session = '';
 % Title = 'Main';
 
-Refresh = true;
+Refresh = false;
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Sessions = allSessions.([Task,Session]);
-SessionLabels = allSessionLabels.([Task, Session]);
+Sessions = allSessions.([Task,Condition]);
+SessionLabels = allSessionLabels.([Task, Condition]);
 
 %%% Get data
 FFT_Path = fullfile(Paths.Summary, [Task, '_FFT.mat']);
 if ~exist(FFT_Path, 'file') || Refresh
+    disp('*************Creating allFFT********************')
     [allFFT, Categories] = LoadAllFFT(fullfile(Paths.WelchPower, Task), 'Power');
     save(FFT_Path, 'allFFT', 'Categories')
 else
+    disp('***************Loading allFFT*********************')
     load(FFT_Path, 'allFFT', 'Categories')
 end
 
@@ -42,12 +44,9 @@ TotChannels = size(Chanlocs, 2);
 
 
 
-TitleTag = [Task, '_', Scaling, '_', Title];
-% 
-% apply scaling TODO
+TitleTag = [Task, '_', Title, '_', Scaling];
 
-% restructure data
-
+% apply scaling
 switch Scaling
     case 'log'
         for Indx_F = 1:size(allFFT, 2)
@@ -59,9 +58,6 @@ switch Scaling
     case 'none'
        YLabel = 'Power Density';
     case 'zscore'
-%                 for Indx_F = 1:size(allFFT, 2)
-%             allFFT(Indx_F).FFT = log(allFFT(Indx_F).FFT + 1);
-%         end
         PowerStruct = GetPowerStruct(allFFT, Categories, Sessions, Participants);
         PowerStruct = ZScoreFFT(PowerStruct);
         YLabel = 'Power Density (normed)';
