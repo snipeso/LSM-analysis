@@ -12,7 +12,7 @@ Tasks = {'LAT', 'PVT'};
 Conditions = {'Beam', 'Comp'};
 ConditionTitles = {'Soporific', 'Classic'};
 
-Refresh = false;
+Refresh = true;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -30,12 +30,12 @@ for Indx_T = 1:numel(Tasks)
         
         Sessions = allSessions.([Task,Condition]);
         SessionLabels = allSessionLabels.([Task, Condition]);
-
+        
         
         %%% Get data
         FFT_Path = fullfile(Paths.Summary, [Task, '_FFT.mat']);
         if ~exist(FFT_Path, 'file') || Refresh
-            [allFFT, Categories] = LoadAllFFT(fullfile(Paths.WelchPower, Task));
+            [allFFT, Categories] = LoadAllFFT(fullfile(Paths.WelchPower, Task), 'Power');
             save(FFT_Path, 'allFFT', 'Categories')
         else
             load(FFT_Path, 'allFFT', 'Categories')
@@ -51,7 +51,7 @@ for Indx_T = 1:numel(Tasks)
         PowerStruct = GetPowerStruct(allFFT, Categories, Sessions, Participants);
         ChanIndx = ismember( str2double({Chanlocs.labels}), EEG_Channels.Hotspot);
         
-
+        
         for Indx_F = 1:numel(saveFreqFields) % loop through frequency bands
             FreqLims = saveFreqs.(saveFreqFields{Indx_F});
             FreqIndx =  dsearchn(Freqs', FreqLims');
@@ -74,3 +74,29 @@ for Indx_T = 1:numel(Tasks)
 end
 
 
+% save average
+Destination = fullfile(Paths.Analysis, 'statistics', 'Data', 'AllTasks');
+
+if ~exist(Destination, 'dir')
+    mkdir(Destination)
+end
+
+for Indx_C = 1:numel(Conditions)
+    Title = ConditionTitles{Indx_C};
+    
+    for Indx_F = 1:numel(saveFreqFields) % loop through frequency bands
+        AllTasks = [];
+        for Indx_T = 1:numel(Tasks)
+            Task = Tasks{Indx_T};
+            Source = fullfile(Paths.Analysis, 'statistics', 'Data', Task); % for statistics
+            Filename = [Task, '_', saveFreqFields{Indx_F}, '_', Title, '.mat'];
+            load(fullfile(Source, Filename), 'Matrix')
+            AllTasks = cat(3, AllTasks, Matrix);
+        end
+        
+        Matrix = nanmean(AllTasks, 3);
+        Filename = ['AllTasks_', saveFreqFields{Indx_F}, '_', Title, '.mat'];
+        save(fullfile(Destination, Filename), 'Matrix')
+    end
+    
+end
