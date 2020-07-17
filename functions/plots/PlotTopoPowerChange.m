@@ -1,4 +1,4 @@
-function PlotTopoPowerChange(FFT1, FFT2, Freqs, FreqRes, Chanlocs,Colormap, FontName)
+function PlotTopoPowerChange(FFT1, FFT2, Freqs, Chanlocs, Format)
 % FFT should be a Ch x Freq x measurement matrix
 
 
@@ -40,7 +40,7 @@ for Indx_F = 1:numel(saveFreqFields) % loop through frequency bands
     topoplot(Power1mean, Chanlocs, 'maplimits', CLims, ...
         'style', 'map', 'headrad', 'rim', 'gridscale', 150);
     colorbar % TODO once debugged, remove
-    title(saveFreqFields{Indx_F}, 'FontName', FontName, 'FontSize', 12)
+    title(saveFreqFields{Indx_F}, 'FontName', Format.FontName, 'FontSize', 12)
     
     % second row
     subplot(3, 4, 4+Indx_F)
@@ -67,4 +67,4 @@ for Indx_F = 1:numel(saveFreqFields) % loop through frequency bands
 end
 
 
-colormap(Colormap)
+colormap(Format.Colormap.Divergent)

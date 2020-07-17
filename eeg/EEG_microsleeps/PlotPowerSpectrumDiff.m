@@ -1,5 +1,7 @@
-function PlotPowerSpectrumDiff(Data1, Data2, Freqs, YLims, YLabel, Legend, Colors, FontName, Title)
+function PlotPowerSpectrumDiff(Data1, Data2, Freqs, YLims, YLabel, Legend, Format, Title)
 % freq x session
+
+Colors = Format.Colors.Sessions;
 
 figure
 hold on
@@ -14,7 +16,7 @@ end
 
 ax = gca;
 ax.FontSize = 14;
-ax.FontName = FontName;
+ax.FontName = Format.FontName;
 ylim(YLims)
 ylabel(YLabel)
 xlabel('Frequency (Hz)')
@@ -22,5 +24,5 @@ xticks(0:2:20)
 xlim([1,20])
 title(Title)
 hleg = legend(Legend);
-set(hleg,'FontSize', 14, 'FontName', FontName)
+set(hleg,'FontSize', 14, 'FontName', Format.FontName) % needed?
 legend boxoff

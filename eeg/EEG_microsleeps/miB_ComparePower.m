@@ -8,8 +8,6 @@
 
 LoadWelchMicrosleeps
 
-% YLims_Big = [-4 3];
-% YLims_Small = [-3, 2];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Pool all microsleeps
 
@@ -37,24 +35,24 @@ for Indx_S = 1:numel(Sessions)
     ALLSession_All = cat(2, ALLSession_All, nanmean(cat(2, mi_FFT, EE_FFT), 2));
     
     % plot individual sessions
-    PlotMicrosleeps(mi_FFT, EE_FFT, Freqs, YLims_Big, YLabel, Colors, FontName)
-    title([Sessions{Indx_S}, ' Microsleep Power Pooled'])
-    saveas(gcf,fullfile(Paths.Figures, [Title,'_', Scaling,'_', Sessions{Indx_S}, '_MicrosleepPowerPooled.svg']))
+    PlotMicrosleeps(mi_FFT, EE_FFT, Freqs, YLims_Big, YLabel, Format)
+    title([Sessions{Indx_S}, ' Microsleep Power Pooled ',replace(TitleTag, '_', ' ') ])
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_', Sessions{Indx_S}, '_MicrosleepPowerPooled.svg']))
     
 end
 
-PlotMicrosleeps(Microsleeps, EE,Freqs, YLims_Big, YLabel, Colors, FontName)
-saveas(gcf,fullfile(Paths.Figures, [ Title,'_', Scaling, '_All_MicrosleepPowerPooled.svg']))
+PlotMicrosleeps(Microsleeps, EE,Freqs, YLims_Big, YLabel, Format)
+saveas(gcf,fullfile(Paths.Figures, [ TitleTag, '_All_MicrosleepPowerPooled.svg']))
 
 
 % plot change of spectrum by session
-PlotPowerSpectrumDiff(ALLSession_mi, ALLSession_All, Freqs, YLims_Small,  YLabel, Sessions, ...
-    Colors.Sessions, FontName, ['Microsleeps by Session Pooled'])
+PlotPowerSpectrumDiff(ALLSession_mi, ALLSession_All, Freqs, YLims_Big,  YLabel, Sessions, ...
+  Format, [replace(TitleTag, '_', ' '), ' Microsleeps by Session Pooled'])
 saveas(gcf,fullfile(Paths.Figures, [ Title,'_', Scaling, '_MicrosleepPowerPooled_Means.svg']))
 
-PlotPowerSpectrumDiff(ALLSession_EE, ALLSession_All, Freqs, YLims_Small, YLabel, Sessions, ...
-    Colors.Sessions, FontName, ['Not Microsleeps by Session Pooled'])
-saveas(gcf,fullfile(Paths.Figures, [ Title,'_', Scaling, '_NotMicrosleepPowerPooled_Means.svg']))
+PlotPowerSpectrumDiff(ALLSession_EE, ALLSession_All, Freqs, YLims_Big, YLabel, Sessions, ...
+   Format, [replace(TitleTag, '_', ' '), ' Not Microsleeps by Session Pooled'])
+saveas(gcf, fullfile(Paths.Figures, [ TitleTag, '_NotMicrosleepPowerPooled_Means.svg']))
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -84,9 +82,6 @@ for Indx_S = 1:numel(Sessions)
         EE_FFT = squeeze(nanmean(nanmean(EE_FFT(Hotspot, :, :), 1), 3))';
         all_FFT = squeeze(nanmean(nanmean(all_FFT(Hotspot, :, :), 1), 3))';
         
-        % save average to whole
-        Microsleeps = cat(2, Microsleeps, mi_FFT);
-        EE = cat(2, EE, EE_FFT);
         
         % save session separately
         Session_mi = cat(2, Session_mi, nanmean(mi_FFT, 2)); 
@@ -96,27 +91,30 @@ for Indx_S = 1:numel(Sessions)
     end
 
     % plot session microsleeps, using session averages per participant
-    PlotMicrosleeps(Session_mi, Session_EE, Freqs, YLims_Big, YLabel, Colors, FontName)
-    title([Sessions{Indx_S}, ' Microsleep Power'])
-    saveas(gcf,fullfile(Paths.Figures, [Title,'_', Scaling,'_', Sessions{Indx_S}, '_MicrosleepPower.svg']))
+    PlotMicrosleeps(Session_mi, Session_EE, Freqs, YLims_Big, YLabel, Format)
+    title([Sessions{Indx_S}, ' Microsleep Power ', replace(TitleTag, '_', ' ')])
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_', Sessions{Indx_S}, '_MicrosleepPower.svg']))
     
-    
+    % save averages together
+     Microsleeps = cat(2, Microsleeps, Session_mi);
+     EE = cat(2, EE, Session_EE);
+     
     ALLSession_mi(:, Indx_S) =  nanmean( Session_mi, 2);
     ALLSession_EE(:, Indx_S) = nanmean(Session_EE, 2);
     ALLSession_All(:, Indx_S) = nanmean(Session_All, 2);
     
 end
 
-PlotMicrosleeps(Microsleeps, EE,Freqs, YLims_Big, YLabel, Colors, FontName)
-saveas(gcf,fullfile(Paths.Figures, [ Title,'_', Scaling, '_MicrosleepPower.svg']))
+PlotMicrosleeps(Microsleeps, EE,Freqs, YLims_Big, YLabel, Format)
+saveas(gcf,fullfile(Paths.Figures, [ TitleTag, '_MicrosleepPower.svg']))
 
 PlotPowerSpectrumDiff(ALLSession_mi, ALLSession_All, Freqs, YLims_Small, YLabel, Sessions, ...
-    Colors.Sessions, FontName, ['Microsleeps by Session'])
-saveas(gcf,fullfile(Paths.Figures, [ Title,'_', Scaling, '_MicrosleepPower_Means.svg']))
+    Format, ['Microsleeps by Session ', replace(TitleTag, '_', ' ')])
+saveas(gcf,fullfile(Paths.Figures, [ TitleTag, '_MicrosleepPower_Means.svg']))
 
 PlotPowerSpectrumDiff(ALLSession_EE, ALLSession_All, Freqs, YLims_Small, YLabel, Sessions, ...
-    Colors.Sessions, FontName, ['Not Microsleeps by Session'])
-saveas(gcf,fullfile(Paths.Figures, [ Title,'_', Scaling, '_NotMicrosleepPower_Means.svg']))
+   Format, ['NotMicrosleeps by Session ', replace(TitleTag, '_', ' ')])
+saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_NotMicrosleepPower_Means.svg']))
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -138,18 +136,15 @@ for Indx_S = 1:numel(Sessions)
     All.(Sessions{Indx_S}) = cat(3, mi_FFT, EE_FFT);
     
     % plot individual sessions
-    PlotTopoPowerChange(mi_FFT, EE_FFT, ...
-        Freqs, FreqRes, Chanlocs, Colormap.Divergent, FontName)
+    PlotTopoPowerChange(mi_FFT, EE_FFT, Freqs, Chanlocs, Format)
     title(Sessions{Indx_S})
-    saveas(gcf,fullfile(Paths.Figures, [ Title,'_', Scaling, '_',Sessions{Indx_S} '_MicrosleepPowerTopo.svg']))
+    saveas(gcf,fullfile(Paths.Figures, [ TitleTag, '_',Sessions{Indx_S} '_MicrosleepPowerTopo.svg']))
     
 end
 
-PlotTopoPowerChange(Microsleeps, EE, ...
-    Freqs, FreqRes, Chanlocs, Colormap.Divergent, FontName)
-saveas(gcf,fullfile(Paths.Figures, [ Title,'_', Scaling, '_MicrosleepPowerTopo.svg']))
+PlotTopoPowerChange(Microsleeps, EE, Freqs, Chanlocs, Format)
+saveas(gcf,fullfile(Paths.Figures, [ TitleTag, '_MicrosleepTopographies.svg']))
 
-PlotTopoPowerChange(All.Session2,All.Baseline, ...
-    Freqs, FreqRes, Chanlocs, Colormap.Divergent, FontName)
-saveas(gcf,fullfile(Paths.Figures, [ Title,'_', Scaling, '_SessionTopo.svg']))
+PlotTopoPowerChange(All.Session2,All.Baseline, Freqs,  Chanlocs,Format)
+saveas(gcf,fullfile(Paths.Figures, [ TitleTag, '_SessionsTopographies.svg']))
 
