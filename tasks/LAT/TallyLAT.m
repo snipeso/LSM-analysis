@@ -68,7 +68,7 @@ for Indx_C = 1:numel(Conditions)
     figure( 'units','normalized','outerposition',[0 0 .25, .4])
     PlotTally(Responses, SessionLabels, {'Correct', 'Late', 'Missing'}, Format)
     title([replace(TitleTag, '_', ' '), ' Tally'])
-    
+      set(gca, 'FontSize', 12)
     saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_TallyAll.svg']))
     
     % plot individuals

@@ -19,6 +19,7 @@ for Indx_C = 1:numel(Conditions)
     Condition = Conditions{Indx_C};
     
     Title = Titles{Indx_C};
+    TitleTag = [Task, '_', Title];
     
     Sessions = allSessions.([Task,Condition]);
     SessionLabels = allSessionLabels.([Task, Condition]);
@@ -32,7 +33,7 @@ for Indx_C = 1:numel(Conditions)
     MeanRTs = nan(numel(Participants), numel(Sessions));
     MedianRTs = nan(numel(Participants), numel(Sessions));
     stdRTs = nan(numel(Participants), numel(Sessions));
-    
+    Q1Q4 =  nan(numel(Participants), numel(Sessions));
     
     for Indx_P = 1:numel(Participants)
         for Indx_S = 1:numel(Sessions)
@@ -47,45 +48,35 @@ for Indx_C = 1:numel(Conditions)
             MeanRTs(Indx_P, Indx_S) = mean(RTs);
             MedianRTs(Indx_P, Indx_S) = median(RTs);
             stdRTs(Indx_P, Indx_S) = std(RTs);
+            Q1Q4(Indx_P, Indx_S) = quantile(RTs, .75)-quantile(RTs, .25);
         end
     end
+    
     figure( 'units','normalized','outerposition',[0 0 .7 .7])
-    PlotFlames(AllAnswers, Sessions, SessionLabels, Participants, 'rt')
-    title('Reaction Time Distributions')
+    PlotFlames(AllAnswers, Sessions, SessionLabels, Participants, 'rt', Format)
+    title([replace(TitleTag, '_', ' '), ' Reaction Time Distributions'])
     ylabel('RT (s)')
     ylim([0.1, 1])
-    saveas(gcf,fullfile(Paths.Figures, [Task, '_RTs_Flames.jpg']))
+    set(gca, 'FontSize', 12)
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_RTs_Flames.jpg']))
     
     AllAnswers.speed =  num2cell(1./(cell2mat(AllAnswers.rt)));
     figure( 'units','normalized','outerposition',[0 0 .7 .7])
-    PlotFlames(AllAnswers, Sessions, SessionLabels, Participants, 'speed')
-    title('Speed Distributions')
+    PlotFlames(AllAnswers, Sessions, SessionLabels, Participants, 'rt', Format)
+    title([replace(TitleTag, '_', ' '), ' Speed Distributions'])
     ylabel('Speed (s-1)')
     ylim([-5 5])
-    saveas(gcf,fullfile(Paths.Figures, [Task, '_speed_Flames.jpg']))
-    
-    AllAnswers.speed2 =  num2cell(1./(1+cell2mat(AllAnswers.rt)));
-    figure( 'units','normalized','outerposition',[0 0 .7 .7])
-    PlotFlames(AllAnswers, Sessions, SessionLabels, Participants, 'speed2')
-    title('Speed Distributions')
-    ylabel('Speed (s-1)')
-    ylim([0 1])
-    saveas(gcf,fullfile(Paths.Figures, [Task, '_speed2_Flames.jpg']))
-    
-    AllAnswers.logrt =  num2cell(real(log(1000*cell2mat(AllAnswers.rt))));
-    figure( 'units','normalized','outerposition',[0 0 .7 .7])
-    PlotFlames(AllAnswers, Sessions, SessionLabels, Participants, 'logrt')
-    ylim([4 9])
-    title('LogRT Distributions')
-    ylabel('Log RT')
-    saveas(gcf,fullfile(Paths.Figures, [Task, '_logRT_Flames.jpg']))
+    set(gca, 'FontSize', 12)
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_speed_Flames.jpg']))
     
     
     %plot means
     figure
-    PlotConfettiSpaghetti(MeanRTs,SessionLabels, [0.2, 0.6], 'Reaction Time Means', '')
+    PlotConfettiSpaghetti(MeanRTs,  SessionLabels, [0.2, 0.6], [], [], Format)
+    title([replace(TitleTag, '_', ' '), ' Reaction Time Means'])
     ylabel('RT (s)')
-    saveas(gcf,fullfile(Paths.Figures, [Task, '_meanRTs.svg']))
+    set(gca, 'FontSize', 12)
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_meanRTs.svg']))
     
     % save matrix
     Filename = [Task, '_', 'meanRTs' '_', Title, '.mat'];
@@ -94,16 +85,28 @@ for Indx_C = 1:numel(Conditions)
     
     %plot standard deviations
     figure
-    PlotConfettiSpaghetti(stdRTs,  SessionLabels, [0 .2], 'Reaction Time Standard Deviations', '')
+    PlotConfettiSpaghetti(stdRTs,  SessionLabels, [0 .2], [],[], Format)
+    title([replace(TitleTag, '_', ' '), 'Reaction Time Standard Deviations'])
     ylabel('RT SD (s)')
-    saveas(gcf,fullfile(Paths.Figures, [Task, '_stdRTs.svg']))
+    set(gca, 'FontSize', 12)
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_stdRTs.svg']))
     
     
     %plot medians
     figure
-    PlotConfettiSpaghetti(MedianRTs, SessionLabels, [0.2, 0.6], 'Reaction Time Medians', '')
+    PlotConfettiSpaghetti(MedianRTs,  SessionLabels, [0.2, 0.6], [],[], Format)
     ylabel('RT (s)')
-    saveas(gcf,fullfile(Paths.Figures, [Task, '_medianRTs.svg']))
+    title([replace(TitleTag, '_', ' '),'Reaction Time Medians'])
+    set(gca, 'FontSize', 12)
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_medianRTs.svg']))
+    
+    % plot interquartile range
+    figure
+    PlotConfettiSpaghetti(Q1Q4,  SessionLabels, [0, 0.2], [],[], Format)
+    ylabel('RT (s)')
+    title([replace(TitleTag, '_', ' '),' Interquartile Range'])
+    set(gca, 'FontSize', 12)
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_InterQRange.svg']))
     
 end
 
