@@ -149,9 +149,9 @@ EEMeans = squeeze(nanmean(EE(:, :, :, :), 4));
 PlotTopoPowerChange(MicrosleepsMeans, EEMeans, Freqs, Chanlocs, Format)
 saveas(gcf,fullfile(Paths.Figures, [ TitleTag, '_MicrosleepTopographies.svg']))
 
-BL =  squeeze(Microsleeps(:, :, :, 1));
+BL =  squeeze(All(:, :, :, 1));
 
-SD2 =  squeeze(Microsleeps(:, :, :, end));
+SD2 =  squeeze(All(:, :, :, end));
 
 PlotTopoPowerChange(SD2, BL, Freqs,  Chanlocs,Format)
 saveas(gcf,fullfile(Paths.Figures, [ TitleTag, '_SessionsTopographies.svg']))
