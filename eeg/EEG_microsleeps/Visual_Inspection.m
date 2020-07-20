@@ -1,9 +1,9 @@
 % Microsleeps_Parameters
 
 Paths.Datasets ='D:\LSM\data';
-Paths.Preprocessed = 'C:\Users\schlaf\Desktop\LSMData';
+Paths.Preprocessed = 'C:\Users\colas\Desktop\LSMData';
 Task = 'PVT';
-filename = ['P02_', Task,'_Session2Beam'];
+filename = ['P12_', Task,'_Session2Beam'];
 filepath_microsleeps = fullfile(Paths.Preprocessed, 'Microsleeps', 'Scoring', Task);
 
 filepath_eeg = fullfile('C:\Users\colas\Desktop\LSMData', 'Microsleeps',  'SET', Task);

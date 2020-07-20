@@ -1,4 +1,4 @@
-function PlotCorr(CorrMatrix, pMatrix, Labels, Colormap, FontName)
+function PlotCorr(CorrMatrix, pMatrix, Labels, Format)
 alpha = 0.05;
 
 
@@ -29,7 +29,7 @@ end
 
 
 image(CorrMatrix, 'CDataMapping', 'scaled')
-colormap(Colormap)
+colormap(Format.Colormap.Divergent)
 caxis([-1 1])
 xticks(1:numel(Labels))
 xlim([.5, numel(Labels)+.5])
@@ -40,5 +40,5 @@ axis square
 yticks(1:numel(Labels))
 yticklabels(Labels)
 ylim([.5, numel(Labels)+.5])
-set(gca,'TickLength',[0 0], 'FontName', FontName, 'FontSize', 12, 'ydir','reverse')
+set(gca,'TickLength',[0 0], 'FontName', Format.FontName, 'FontSize', 12, 'ydir','reverse')
 colorbar

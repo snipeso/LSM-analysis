@@ -37,6 +37,3 @@ end
 box off
 xticklabels(xLabels)
 
-
-
-

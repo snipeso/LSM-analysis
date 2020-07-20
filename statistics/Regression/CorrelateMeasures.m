@@ -112,18 +112,18 @@ end
 
 [R,P, CI_Low, CI_Up] = corrcoef( All_Measures_M, 'Rows','pairwise');
 figure('units','normalized','outerposition',[0 0 .4 .7])
-PlotCorr(R, [], Measures, Colormap.Divergent, FontName)
+PlotCorr(R, [], Measures, Format)
 title([Title, ' R values of all parameters ', Normalize])
 saveas(gcf,fullfile(Paths.Figures, ['CorrelateAll_', Normalize, '_uncorrected.svg']))
 
 figure('units','normalized','outerposition',[0 0 .4 .7])
-PlotCorr(R, P, Measures, Colormap.Divergent, FontName)
+PlotCorr(R, P, Measures, Format)
 title([Title, ' R values of all parameters, p<.05 corrected ', Normalize])
 saveas(gcf,fullfile(Paths.Figures, ['CorrelateAll_', Normalize, '_Pcorrected.svg']))
 
 figure('units','normalized','outerposition',[0 0 .4 .7])
 [~,h] = fdr(P, 0.05);
-PlotCorr(R, h, Measures, Colormap.Divergent, FontName)
+PlotCorr(R, h, Measures, Format)
 title([Title, ' R values of all parameters, fdr corrected  ', Normalize])
 saveas(gcf,fullfile(Paths.Figures, ['CorrelateAll_', Normalize, '_FDRcorrected.svg']))
 
@@ -143,7 +143,7 @@ for Indx_X = 1:numel(Measures)
         end
         subplot(3, 5, Indx)
         PlotConfetti(All_Measures_M(:, Indx_X), All_Measures_M(:, Indx_Y), ...
-            All_Measures_T.(ScatterGroup), [], FontName)
+            All_Measures_T.(ScatterGroup), Format)
         xlabel(Measures{Indx_X})
         ylabel(Measures{Indx_Y})
         title(['R=', num2str(R(Indx_X, Indx_Y), '%.2f'), ' p=', num2str(P(Indx_X, Indx_Y), '%.2f')])
@@ -159,24 +159,25 @@ miDurIndx = find(strcmpi(Measures, 'miDuration'));
 % plot bars of R values for theta vs microsleeps
 figure('units','normalized','outerposition',[0 0 1, .5])
 Errors = cat(3, CI_Low(:,  [ThetaIndx, miDurIndx]), CI_Up(:,  [ThetaIndx, miDurIndx]));
-PlotBars(R(:, [ThetaIndx, miDurIndx]), Errors, Measures, cat(1,Colors.Generic.Red, Colors.Generic.Dark1))
+PlotBars(R(:, [ThetaIndx, miDurIndx]), Errors, Measures, cat(1,Format.Colors.Generic.Red, Format.Colors.Generic.Dark1))
 ylim([-1 1])
 ylabel('R')
 title(['Theta vs Microsleep Duration R values ', Normalize])
 legend({'Theta', 'Microsleep Duration'})
-set(gca, 'FontName', FontName, 'FontSize', 14)
+set(gca, 'FontName', Format.FontName, 'FontSize', 14)
 saveas(gcf,fullfile(Paths.Figures, ['R_Theta_v_MiDur_' Normalize, '.svg']))
 
 
 %%% plot scatter of theta vs microsleeps
 figure('units','normalized','outerposition',[0 0 .4 .7])
 PlotConfetti(All_Measures_M(:, ThetaIndx), All_Measures_M(:, miDurIndx), ...
-    All_Measures_T.(ScatterGroup),  makePale(hsv), FontName, 40)
+    All_Measures_T.(ScatterGroup), Format, 40)
 xlabel('Theta')
 ylabel('Microsleep Duration')
 
 title(['Correlation Between Theta and Microsleeps (R=', num2str(R(ThetaIndx, miDurIndx), '%.2f'),...
-    ' p=', num2str(P(ThetaIndx, miDurIndx), '%.2f'), ' ', Normalize, ')'], 'FontSize', 16)
+    ' p=', num2str(P(ThetaIndx, miDurIndx), '%.2f'), ' ', Normalize, ')'])
+set(gca, 'FontName', Format.FontName, 'FontSize', 16)
 saveas(gcf,fullfile(Paths.Figures, ['Corr_Theta_v_MiDur_' Normalize, '.svg']))
 
 

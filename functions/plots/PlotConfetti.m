@@ -1,4 +1,4 @@
-function PlotConfetti(X, Y, C, Colormap, FontName, SpotSize)
+function PlotConfetti(X, Y, C, Format, SpotSize)
 
 Tot_Peeps = numel(X); % number of participants
 
@@ -7,16 +7,8 @@ Tot_Peeps = numel(X); % number of participants
 Groups = unique(C);
 Tot_Groups = numel(Groups);
 
-Colormap = makePale(colorcet('R1'));
-if ~exist('Colormap', 'var') || isempty(Colormap)
-    %     Unique_Colors = palehsv(Tot_Groups + 1);
-    %     Unique_Colors(end, :) = [];
-    
-    
-    
-end
-hsv=rgb2hsv(Colormap);
-Unique_Colors=interp1(linspace(0,1,size(Colormap,1)),hsv,linspace(0,1,Tot_Groups+1));
+hsv=rgb2hsv(Format.Colormap.Rainbow);
+Unique_Colors=interp1(linspace(0,1,size(Format.Colormap.Rainbow,1)),hsv,linspace(0,1,Tot_Groups+1));
 Unique_Colors=hsv2rgb(Unique_Colors);
 Unique_Colors(end, :) = [];
 
@@ -32,7 +24,7 @@ if ~exist('SpotSize', 'var') || isempty(SpotSize)
     SpotSize = 10;
 end
 scatter(X, Y, SpotSize, Colors, 'filled')
-set(gca,'TickLength',[0 0], 'FontName', FontName, 'FontSize', 12)
+set(gca,'TickLength',[0 0], 'FontName', Format.FontName, 'FontSize', 12)
 ylim([min(Y), max(Y)])
 xlim([min(X), max(X)])
 L = lsline;

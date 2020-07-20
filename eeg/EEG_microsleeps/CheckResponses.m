@@ -8,7 +8,7 @@ Microsleeps_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Task = 'LAT';
+Task = 'PVT';
 Condition = 'Beam';
 Sessions = {'Baseline', 'Session1', 'Session2'};
 SessionLabels = {'BL', 'S1', 'S2'};
@@ -104,6 +104,7 @@ figure('units','normalized','outerposition',[0 0 .5 .5])
 PlotScales(RestHits, MicroHits, SessionLabels, {'OtherHits', 'miHits'}, [], Format)
 title(['% Responses in microsleeps in ', replace(TitleTag, '_', ' ')], 'FontSize', 14)
 ylabel('% Hits')
+set(gca, 'FontSize', 13)
 saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_miHits.svg']))
 
 Filename = [Task, '_RTs_Micro.mat'];
@@ -118,6 +119,7 @@ figure('units','normalized','outerposition',[0 0 .5 .5])
 PlotScales(RTs(:, :, 1), RTs(:, :, 2), SessionLabels, {'RestRTs', 'MicroRTs'},  [], Format)
 title(['Reaction times in microsleeps in ', replace(TitleTag, '_', ' ')], 'FontSize', 14)
 ylabel('RTs (s)')
+set(gca, 'FontSize', 13)
 saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_miRTs.svg']))
 
 
