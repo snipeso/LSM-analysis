@@ -15,6 +15,8 @@ run(fullfile(extractBefore(mfilename('fullpath'), 'statistics'), 'General_Parame
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Tasks = {'PVT', 'LAT'};
+% TaskName = Tasks{1};
+TaskName = 'AllTasks';
 
 Measures = {'Delta'; 'Theta'; 'Alpha'; 'Beta';
     'miDuration'; 'miStart'; 'miTot';
@@ -25,11 +27,13 @@ Conditions = {'Classic', 'Soporific'};
 
 SessionLabels = allSessionLabels.Basic; % TODO: eventually make this info saved in the matrices
 
-Normalize = ''; %'zscoreS&P' 'zscoreP', 'none'
+Normalize = 'zscoreP'; %'zscoreS&P' 'zscoreP', 'none'
 Title = 'All Measures';
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 
 Paths.Figures = fullfile(Paths.Figures, 'Regression');
 if ~exist(Paths.Figures, 'dir')
@@ -88,6 +92,8 @@ for Indx_M = 1:numel(Measures)
                     AllData(Indexes) = All;
                 end
             end
+            
+            ScatterColors = [makePale(Format.Colors.Tasks.(TaskName)); Format.Colors.Tasks.(TaskName)];
         case 'zscoreP'
             ScatterGroup = 'Session';
             for Indx_P = 1:numel(Participants)
@@ -97,8 +103,11 @@ for Indx_M = 1:numel(Measures)
                 AllData(Indexes) = All;
                 
             end
+            
+            ScatterColors = Format.Colors.Sessions;
         otherwise
             ScatterGroup = 'Participant';
+            ScatterColors = [];
     end
     
     
@@ -108,76 +117,89 @@ for Indx_M = 1:numel(Measures)
 end
 
 
-
+TitleTag = [TaskName, '_', Normalize];
 
 [R,P, CI_Low, CI_Up] = corrcoef( All_Measures_M, 'Rows','pairwise');
 figure('units','normalized','outerposition',[0 0 .4 .7])
 PlotCorr(R, [], Measures, Format)
 title([Title, ' R values of all parameters ', Normalize])
-saveas(gcf,fullfile(Paths.Figures, ['CorrelateAll_', Normalize, '_uncorrected.svg']))
+saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_CorrelateAll_uncorrected.svg']))
 
 figure('units','normalized','outerposition',[0 0 .4 .7])
 PlotCorr(R, P, Measures, Format)
 title([Title, ' R values of all parameters, p<.05 corrected ', Normalize])
-saveas(gcf,fullfile(Paths.Figures, ['CorrelateAll_', Normalize, '_Pcorrected.svg']))
+saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_CorrelateAll_Pcorrected.svg']))
 
 figure('units','normalized','outerposition',[0 0 .4 .7])
 [~,h] = fdr(P, 0.05);
 PlotCorr(R, h, Measures, Format)
 title([Title, ' R values of all parameters, fdr corrected  ', Normalize])
-saveas(gcf,fullfile(Paths.Figures, ['CorrelateAll_', Normalize, '_FDRcorrected.svg']))
+saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_CorrelateAll_FDRcorrected.svg']))
 
-Tot_Comparisons = (numel(Measures)^2 - numel(Measures))/2;
-
-figure('units','normalized','outerposition',[0 0 1 1])
-FigIndx = 1;
-Indx = 1;
-for Indx_X = 1:numel(Measures)
-    for Indx_Y = Indx_X+1:numel(Measures)
-        
-        if Indx > 3*5 % loop through subplots until run out, then start new figure
-            saveas(gcf,fullfile(Paths.Figures, ['ScatterAll', num2str(FigIndx), '_' Normalize, '.svg']))
-            figure('units','normalized','outerposition',[0 0 1 1])
-            Indx = 1;
-            FigIndx = FigIndx + 1;
-        end
-        subplot(3, 5, Indx)
-        PlotConfetti(All_Measures_M(:, Indx_X), All_Measures_M(:, Indx_Y), ...
-            All_Measures_T.(ScatterGroup), Format)
-        xlabel(Measures{Indx_X})
-        ylabel(Measures{Indx_Y})
-        title(['R=', num2str(R(Indx_X, Indx_Y), '%.2f'), ' p=', num2str(P(Indx_X, Indx_Y), '%.2f')])
-        Indx = Indx+1;
-    end
-    
-end
-saveas(gcf,fullfile(Paths.Figures, ['ScatterAll', num2str(FigIndx), '_' Normalize, '.svg']))
 
 ThetaIndx = find(strcmpi(Measures, 'Theta'));
 miDurIndx = find(strcmpi(Measures, 'miDuration'));
 
+
 % plot bars of R values for theta vs microsleeps
 figure('units','normalized','outerposition',[0 0 1, .5])
 Errors = cat(3, CI_Low(:,  [ThetaIndx, miDurIndx]), CI_Up(:,  [ThetaIndx, miDurIndx]));
-PlotBars(R(:, [ThetaIndx, miDurIndx]), Errors, Measures, cat(1,Format.Colors.Generic.Red, Format.Colors.Generic.Dark1))
+PlotBars(R(:, [ThetaIndx, miDurIndx]), Errors, Measures, cat(1,Format.Colors.Generic.Red, Format.Colors.Generic.Pale3))
 ylim([-1 1])
 ylabel('R')
 title(['Theta vs Microsleep Duration R values ', Normalize])
-legend({'Theta', 'Microsleep Duration'})
+legend({'Theta', 'Microsleep Duration (%)'})
 set(gca, 'FontName', Format.FontName, 'FontSize', 14)
-saveas(gcf,fullfile(Paths.Figures, ['R_Theta_v_MiDur_' Normalize, '.svg']))
+saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_R_Theta_v_MiDur.svg']))
 
+PlotGroups = [true, false];
 
-%%% plot scatter of theta vs microsleeps
-figure('units','normalized','outerposition',[0 0 .4 .7])
-PlotConfetti(All_Measures_M(:, ThetaIndx), All_Measures_M(:, miDurIndx), ...
-    All_Measures_T.(ScatterGroup), Format, 40)
-xlabel('Theta')
-ylabel('Microsleep Duration')
-
-title(['Correlation Between Theta and Microsleeps (R=', num2str(R(ThetaIndx, miDurIndx), '%.2f'),...
-    ' p=', num2str(P(ThetaIndx, miDurIndx), '%.2f'), ' ', Normalize, ')'])
-set(gca, 'FontName', Format.FontName, 'FontSize', 16)
-saveas(gcf,fullfile(Paths.Figures, ['Corr_Theta_v_MiDur_' Normalize, '.svg']))
+for Plotting = PlotGroups
+    if Plotting
+        TitleTag = [TaskName, '_', Normalize, '_PlotGroups'];
+        ScatterColorsTemp = ScatterColors;
+    else
+        TitleTag = [TaskName, '_', Normalize];
+        ScatterColorsTemp = 0;
+    end
+    
+    figure('units','normalized','outerposition',[0 0 1 1])
+    FigIndx = 1;
+    Indx = 1;
+    for Indx_X = 1:numel(Measures)
+        for Indx_Y = Indx_X+1:numel(Measures)
+            
+            if Indx > 3*5 % loop through subplots until run out, then start new figure
+                saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_ScatterAll', num2str(FigIndx),'.svg']))
+                figure('units','normalized','outerposition',[0 0 1 1])
+                Indx = 1;
+                FigIndx = FigIndx + 1;
+            end
+            subplot(3, 5, Indx)
+            PlotConfetti(All_Measures_M(:, Indx_X), All_Measures_M(:, Indx_Y), ...
+                All_Measures_T.(ScatterGroup), Format, [], ScatterColorsTemp)
+            xlabel(Measures{Indx_X})
+            ylabel(Measures{Indx_Y})
+            title(['R=', num2str(R(Indx_X, Indx_Y), '%.2f'), ' p=', num2str(P(Indx_X, Indx_Y), '%.2f')])
+            Indx = Indx+1;
+        end
+        
+    end
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_ScatterAll', num2str(FigIndx), '.svg']))
+    
+    
+    
+    %%% plot scatter of theta vs microsleeps
+    figure('units','normalized','outerposition',[0 0 .4 .7])
+    PlotConfetti(All_Measures_M(:, ThetaIndx), All_Measures_M(:, miDurIndx), ...
+        All_Measures_T.(ScatterGroup), Format, 40, ScatterColorsTemp)
+    xlabel('Theta')
+    ylabel('Microsleep Duration (%)')
+    
+    title(['Correlation Theta and Microsleeps (R=', num2str(R(ThetaIndx, miDurIndx), '%.2f'),...
+        ' p=', num2str(P(ThetaIndx, miDurIndx), '%.2f'), ' ', Normalize, ')'])
+    set(gca, 'FontName', Format.FontName, 'FontSize', 16)
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_Corr_Theta_v_MiDur.svg']))
+end
 
 

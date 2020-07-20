@@ -70,8 +70,6 @@ Format.Colors.LAT(5, :);
 
 Format.Colors.LATComp = makePale(Format.Colors.LATBeam);
 
-
-
 Format.Colors.PVT = [
 70, 9, 92;
 50, 98, 141;
@@ -90,11 +88,10 @@ Format.Colors.PVT(4, :);
 ];
 Format.Colors.PVTComp = makePale(Format.Colors.PVTBeam);
 
-
-
 Format.Colors.Generic.Red = [235 95 106]/255;
 Format.Colors.Generic.Pale1 = [243 238 193]/255; % peach
 Format.Colors.Generic.Pale2 = [244 178 119]/255; % orange
+Format.Colors.Generic.Pale3 = [242, 208, 147]/255; % gold
 Format.Colors.Generic.Dark1 = [24 41 166]/255; % blue
 Format.Colors.Generic.Dark2 = [145 26 150]/255; % purple
 Format.Colors.Sessions = [Format.Colors.Generic.Dark1; Format.Colors.Generic.Red; Format.Colors.Generic.Pale2 ];
