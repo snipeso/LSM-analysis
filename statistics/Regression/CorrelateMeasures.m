@@ -21,7 +21,7 @@ TaskName = 'AllTasks';
 Measures = {'Delta'; 'Theta'; 'Alpha'; 'Beta';
     'miDuration'; 'miStart'; 'miTot';
     'meanRTs'; 'Hits'; 'Misses';
-    'KSS'; 'Motivation'; 'Focused'; 'Effortful'};
+    'KSS'; 'Motivation'; 'Focused'; 'Effortful'; 'Difficult'};
 
 Conditions = {'Classic', 'Soporific'};
 
@@ -145,6 +145,11 @@ miDurIndx = find(strcmpi(Measures, 'miDuration'));
 figure('units','normalized','outerposition',[0 0 1, .5])
 Errors = cat(3, CI_Low(:,  [ThetaIndx, miDurIndx]), CI_Up(:,  [ThetaIndx, miDurIndx]));
 PlotBars(R(:, [ThetaIndx, miDurIndx]), Errors, Measures, cat(1,Format.Colors.Generic.Red, Format.Colors.Generic.Pale3))
+y = R(ThetaIndx, miDurIndx);
+y = [y, y];
+hold on
+x = get(gca, 'xlim');
+plot(x, y, ':', 'Color', [.5 .5 .5])
 ylim([-1 1])
 ylabel('R')
 title(['Theta vs Microsleep Duration R values ', Normalize])

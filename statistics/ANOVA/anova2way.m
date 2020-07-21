@@ -8,40 +8,37 @@ Stats_Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-Task1 = 'LAT';
+Task1 = 'AllTasks';
 
 DataPath = fullfile(Paths.Analysis, 'statistics', 'Data', Task1); % for statistics
 
 Task = Task1;
-% Task = 'Microsleeps';
-% Colors.Tasks.(Task) = Colors.Generic.Red;
-
 
 % Data type
 % Types = {'Hits', 'Misses'};
-% YLabel = '%';
+% YLabels = {'%', '%'};
 % Normalizations = [
 %     false, false; % loggify
 %     false, true % zscore
 %     ];
 
 % Types = {'Delta', 'Theta', 'Alpha', 'Beta'};
-% YLabel = 'Power Density';
+% YLabels = repmat({'Power Density'}, 1, numel(Types));
 % Normalizations = [
-%     false, false; % loggify
-%     false, true % zscore
+%     false, true, false; % loggify
+%     false, false, true % zscore
 %     ];
 
 
 % Types = {'meanRTs'};
-% YLabel = 'Seconds';
+% YLabels = {'Seconds'};
 % Normalizations = [
 %     false, false; % loggify
 %     false, true % zscore
 %     ];
 
-% Types = {'KSS', 'Motivation', 'Effortful', 'Focused'};
-% YLabel = 'VAS Score';
+% Types = {'KSS', 'Motivation', 'Effortful', 'Focused', 'Difficult'};
+% YLabels = repmat({'VAS Score'}, 1, numel(Types));
 % Normalizations = [
 %     false, false; % loggify
 %     false, true % zscore
@@ -49,7 +46,7 @@ Task = Task1;
 
 
 Types = {'miTot', 'miDuration', 'miStart'};
-YLabel = 'Seconds';
+YLabels = {'Rate (#/min)', '%', 'Delay (s)'};
 Normalizations = [
     false, false; % loggify
     false, true % zscore
@@ -66,6 +63,7 @@ if ~exist(fullfile(Figure_Path), 'dir')
 end
 
 for Indx_T = 1:numel(Types)
+    YLabel = YLabels{Indx_T};
     for Indx_N = 1:size(Normalizations, 2)
         Type = Types{Indx_T};
         Loggify = Normalizations(1, Indx_N);
@@ -174,8 +172,8 @@ for Indx_T = 1:numel(Types)
         %%% plot pairwise plot
         % (if I'm ever inspired, I'll make this automated; for now its manual)
         
-        ColorPair = [   makePale(Colors.Tasks.(Task));
-            Colors.Tasks.(Task)];
+        ColorPair = [   makePale(Format.Colors.Tasks.(Task));
+            Format.Colors.Tasks.(Task)];
         
         % pairwise significance tests
         comparisons = {
@@ -201,7 +199,7 @@ for Indx_T = 1:numel(Types)
         title([Task, ' ', Type])
         ylabel(YLabelNew)
         box off
-        set(gca, 'FontName', FontName, 'FontSize',12)
+        set(gca, 'FontName', Format.FontName, 'FontSize',12)
         
         
         if size(comparisons, 1) > 0
@@ -237,7 +235,7 @@ for Indx_T = 1:numel(Types)
             'Color', 'k', 'LineStyle', 'none', 'LineWidth', 2 )
         
         xticks(1:3)
-        set(gca, 'FontName', FontName, 'FontSize',12)
+        set(gca, 'FontName', Format.FontName, 'FontSize',12)
         xticklabels({'Session', 'Condition', 'Interaction'})
         box off
         xlim([.5, 3.5])
@@ -276,19 +274,19 @@ for Indx_T = 1:numel(Types)
         subplot(1, 3, 3)
         PlotBars(Hedges(:, 1:2), HedgesCI(:, 1:2, :), {'BLvsS1','S1vsS2'},  ColorPair)
         title(['Hedges g'])
-        set(gca, 'FontName', FontName, 'FontSize',12)
+        set(gca, 'FontName', Format.FontName, 'FontSize',12)
         box off
-        ylim([-3 7])
+        ylim([-3 5])
         
         saveas(gcf,fullfile(Figure_Path, [TitleTag, '_anova2way.svg']))
         
         
         % plot all values in same plot
         figure('units','normalized','outerposition',[0 0 .55 .4])
-        PlotScales(ClassicMatrix, SopoMatrix, {'BL', 'S1', 'S2'}, {'Class', 'Sopo'})
+        PlotScales(ClassicMatrix, SopoMatrix, {'BL', 'S1', 'S2'}, {'Class', 'Sopo'}, [], Format)
         ylabel(YLabelNew)
         title([Task, ' ', Type, ' All Means'])
-        set(gca, 'FontName', FontName, 'FontSize',12)
+        set(gca, 'FontSize',12)
         box off
         saveas(gcf,fullfile(Figure_Path, [TitleTag, '_scales.svg']))
         
