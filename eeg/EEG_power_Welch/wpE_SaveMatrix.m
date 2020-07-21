@@ -12,7 +12,7 @@ Tasks = {'LAT', 'PVT'};
 Conditions = {'Beam', 'Comp'};
 ConditionTitles = {'Soporific', 'Classic'};
 
-Refresh = true;
+Refresh = false;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -49,8 +49,8 @@ for Indx_T = 1:numel(Tasks)
         
         % restructure data
         PowerStruct = GetPowerStruct(allFFT, Categories, Sessions, Participants);
-        ChanIndx = ismember( str2double({Chanlocs.labels}), EEG_Channels.Hotspot);
-        
+%         ChanIndx = ismember( str2double({Chanlocs.labels}), EEG_Channels.Hotspot);
+         ChanIndx = ismember( str2double({Chanlocs.labels}), EEG_Channels.Backspot); %%%%%%%%%%%%%
         
         for Indx_F = 1:numel(saveFreqFields) % loop through frequency bands
             FreqLims = saveFreqs.(saveFreqFields{Indx_F});
@@ -67,7 +67,7 @@ for Indx_T = 1:numel(Tasks)
                     
                 end
             end
-            Filename = [Task, '_', saveFreqFields{Indx_F}, '_', Title, '.mat'];
+            Filename = [Task, '_back', saveFreqFields{Indx_F}, '_', Title, '.mat'];
             save(fullfile(Destination, Filename), 'Matrix')
         end
     end
@@ -89,13 +89,13 @@ for Indx_C = 1:numel(Conditions)
         for Indx_T = 1:numel(Tasks)
             Task = Tasks{Indx_T};
             Source = fullfile(Paths.Analysis, 'statistics', 'Data', Task); % for statistics
-            Filename = [Task, '_', saveFreqFields{Indx_F}, '_', Title, '.mat'];
+            Filename = [Task, '_back', saveFreqFields{Indx_F}, '_', Title, '.mat'];
             load(fullfile(Source, Filename), 'Matrix')
             AllTasks = cat(3, AllTasks, Matrix);
         end
         
         Matrix = nanmean(AllTasks, 3);
-        Filename = ['AllTasks_', saveFreqFields{Indx_F}, '_', Title, '.mat'];
+        Filename = ['AllTasks_back', saveFreqFields{Indx_F}, '_', Title, '.mat'];
         save(fullfile(Destination, Filename), 'Matrix')
     end
     
