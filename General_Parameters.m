@@ -95,7 +95,7 @@ Format.Colors.Generic.Pale3 = [242, 208, 147]/255; % gold
 Format.Colors.Generic.Dark1 = [24 41 166]/255; % blue
 Format.Colors.Generic.Dark2 = [145 26 150]/255; % purple
 Format.Colors.Sessions = [Format.Colors.Generic.Dark1; Format.Colors.Generic.Red; Format.Colors.Generic.Pale2 ];
-Format.Colors.Tally = [34 168 136; 244, 204, 32; 228, 103, 90 ]/255; % correct, late, missed
+Format.Colors.Tally = [34 168 136; 244, 204, 32; 228, 103, 90; 125 125 125 ]/255; % correct, late, missed
 
 Format.Colors.Tasks.LAT = Format.Colors.LATBeam(2, :);
 Format.Colors.Tasks.PVT = Format.Colors.PVTBeam(2, :);

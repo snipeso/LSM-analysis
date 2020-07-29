@@ -3,8 +3,11 @@ function PlotStacks(Matrix, Colors)
 
 h = bar(Matrix, 'stacked');
 
+if iscell(Colors)
+    Colors = Colors(:);
+end
 
-for Indx = 1:3
+for Indx = 1:size(Colors, 1)
     h(Indx).EdgeColor = 'none';
     h(Indx).FaceColor = 'flat';
     if iscell(Colors)
