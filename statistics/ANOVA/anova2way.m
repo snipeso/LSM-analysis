@@ -15,13 +15,14 @@ DataPath = fullfile(Paths.Analysis, 'statistics', 'Data', Task1); % for statisti
 Task = Task1;
 
 % Data type
-% Types = {'Hits', 'Misses'};
-% YLabels = {'%', '%'};
-% Normalizations = [
-%     false, false; % loggify
-%     false, true % zscore
-%     ];
-% 
+Types = {'Hits', 'Misses', 'FA', 'Lapses-FA', 'Lapses'};
+YLabels = {'%', '%', '#', '#', '#'};
+Normalizations = [
+    false, false; % loggify
+    false, true % zscore
+    ];
+
+
 % Types = {'Delta', 'Theta', 'Alpha', 'Beta'};
 
 % Types = {'backDelta', 'backTheta', 'backAlpha', 'backBeta'};
@@ -32,12 +33,12 @@ Task = Task1;
 %     ];
 
 
-Types = {'meanRTs', 'medianRTs', 'stdRTs', 'Q1Q4RTs'};
-YLabels = repmat({'Seconds'}, 1, numel(Types));
-Normalizations = [
-    false, false; % loggify
-    false, true % zscore
-    ];
+% Types = {'meanRTs', 'medianRTs', 'stdRTs', 'Q1Q4RTs'};
+% YLabels = repmat({'Seconds'}, 1, numel(Types));
+% Normalizations = [
+%     false, false; % loggify
+%     false, true % zscore
+%     ];
 
 % Types = {'KSS', 'Motivation', 'Effortful', 'Focused', 'Difficult'};
 % YLabels = repmat({'VAS Score'}, 1, numel(Types));

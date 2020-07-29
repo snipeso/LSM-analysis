@@ -79,6 +79,10 @@ for Indx_C = 1:numel(Conditions)
     save(fullfile(Destination, Filename), 'Matrix')
     
     Filename = [Task, '_', 'Lapses-FA' '_', Title, '.mat'];
+    Matrix = squeeze(Responses(:, :, 3)) + squeeze(Responses(:, :, 4));
+    save(fullfile(Destination, Filename), 'Matrix')
+    
+        Filename = [Task, '_', 'Lapses' '_', Title, '.mat'];
     Matrix = squeeze(Responses(:, :, 3));
     save(fullfile(Destination, Filename), 'Matrix')
     
@@ -87,7 +91,7 @@ for Indx_C = 1:numel(Conditions)
     
     % plot average bars
     figure( 'units','normalized','outerposition',[0 0 .25, .4])
-    PlotTally(Responses, SessionLabels, {'Correct', 'Late', 'Missing', 'False Alarms'}, Format)
+    PlotTally(Responses, SessionLabels, {'Correct', 'Late', 'Missing'}, Format)
     title([replace(TitleTag, '_', ' '), ' Tally'])
     set(gca, 'FontSize', 12)
     saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_TallyAll.svg']))

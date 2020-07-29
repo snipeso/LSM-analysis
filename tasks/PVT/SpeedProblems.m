@@ -92,3 +92,12 @@ plot([.49 .49], [0, 10], 'LineWidth', 1.5, 'Color', [.4 .4 .4])
 plot([.49 .49], [0, 10], 'LineWidth', 1.5, 'Color', [.4 .4 .4])
 ylim([0, 10])
   xlabel('RT (s)')
+  
+  
+ SD(SD<.1) = [];
+ figure( 'units','normalized','outerposition',[0 0 .5 .5])
+ histogram(SD, 'NumBins', 1000, 'EdgeColor', [0 0 0], 'FaceColor', [0 0 0])
+  xlabel('RT (s)')
+    set(gca, 'FontName', Format.FontName, 'FontSize', 15)
+    box off
+    set(gca,'ytick',[])
