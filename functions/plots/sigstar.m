@@ -164,8 +164,10 @@ function varargout=sigstar(groups,stats, colors, nosort)
     %enough to need this and the user can define the order very easily at the command line. 
     if ~nosort
         [~,ind]=sort(xlocs(:,2)-xlocs(:,1),'ascend');
-        xlocs=xlocs(ind,:);groups=groups(ind);
+        xlocs=xlocs(ind,:);
+        groups=groups(ind);
         stats=stats(ind);
+        colors = colors(ind);
     end
 
 

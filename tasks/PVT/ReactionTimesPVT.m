@@ -62,7 +62,7 @@ for Indx_C = 1:numel(Conditions)
     
     AllAnswers.speed =  num2cell(1./(cell2mat(AllAnswers.rt)));
     figure( 'units','normalized','outerposition',[0 0 .7 .7])
-    PlotFlames(AllAnswers, Sessions, SessionLabels, Participants, 'rt', Format)
+    PlotFlames(AllAnswers, Sessions, SessionLabels, Participants, 'speed', Format)
     title([replace(TitleTag, '_', ' '), ' Speed Distributions'])
     ylabel('Speed (s-1)')
     ylim([-5 5])
@@ -91,6 +91,11 @@ for Indx_C = 1:numel(Conditions)
     set(gca, 'FontSize', 12)
     saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_stdRTs.svg']))
     
+        % save matrix
+    Filename = [Task, '_', 'stdRTs' '_', Title, '.mat'];
+    Matrix = stdRTs;
+    save(fullfile(Destination, Filename), 'Matrix')
+    
     
     %plot medians
     figure
@@ -100,6 +105,11 @@ for Indx_C = 1:numel(Conditions)
     set(gca, 'FontSize', 12)
     saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_medianRTs.svg']))
     
+        % save matrix
+    Filename = [Task, '_', 'medianRTs' '_', Title, '.mat'];
+    Matrix = MedianRTs;
+    save(fullfile(Destination, Filename), 'Matrix')
+    
     % plot interquartile range
     figure
     PlotConfettiSpaghetti(Q1Q4,  SessionLabels, [0, 0.2], [],[], Format)
@@ -107,6 +117,11 @@ for Indx_C = 1:numel(Conditions)
     title([replace(TitleTag, '_', ' '),' Interquartile Range'])
     set(gca, 'FontSize', 12)
     saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_InterQRange.svg']))
+    
+        % save matrix
+    Filename = [Task, '_', 'Q1Q4RTs' '_', Title, '.mat'];
+    Matrix = Q1Q4;
+    save(fullfile(Destination, Filename), 'Matrix')
     
 end
 

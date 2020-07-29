@@ -35,5 +35,6 @@ if ~isempty(Errors)
     end
 end
 box off
+xticks(1:numel(xLabels))
 xticklabels(xLabels)
 

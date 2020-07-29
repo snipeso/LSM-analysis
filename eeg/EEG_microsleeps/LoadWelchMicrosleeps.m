@@ -8,7 +8,7 @@ Microsleeps_Parameters
 
 % Scaling = 'zscore'; % either 'log' or 'norm' or 'scoref'
 % Scaling = 'none';
-Scaling = 'log';
+Scaling = 'zscore';
 Tasks = {'PVT' , 'LAT'};
 Sessions = {'Baseline', 'Session1', 'Session2'};
 Conditions = {'Beam', 'Comp'};
@@ -18,7 +18,7 @@ Refresh = false;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-TitleTag = [Title,'_', Scaling];
+TitleTag = [Title,'_', Scaling, '_Front'];
 
 %%% Get data
 
@@ -84,8 +84,8 @@ end
 Chanlocs = allFFT_mi(end).Chanlocs;
 Freqs = allFFT_mi(end).Freqs;
 TotChannels = size(Chanlocs, 2);
-% Hotspot = labels2indexes(EEG_Channels.Hotspot, Chanlocs);
-Hotspot = labels2indexes(EEG_Channels.Backspot, Chanlocs);
+Hotspot = labels2indexes(EEG_Channels.Hotspot, Chanlocs);
+% Hotspot = labels2indexes(EEG_Channels.Backspot, Chanlocs);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% restructure data and apply scaling

@@ -19,6 +19,7 @@ Tasks = {'PVT', 'LAT'};
 TaskName = 'AllTasks';
 
 Measures = {'Delta'; 'Theta'; 'Alpha'; 'Beta';
+    'backDelta'; 'backTheta'; 'backAlpha'; 'backBeta';
     'miDuration'; 'miStart'; 'miTot';
     'meanRTs'; 'Hits'; 'Misses';
     'KSS'; 'Motivation'; 'Focused'; 'Effortful'; 'Difficult'};
@@ -27,7 +28,7 @@ Conditions = {'Classic', 'Soporific'};
 
 SessionLabels = allSessionLabels.Basic; % TODO: eventually make this info saved in the matrices
 
-Normalize = 'zscoreP'; %'zscoreS&P' 'zscoreP', 'none'
+Normalize = 'zscoreS&P'; %'zscoreS&P' 'zscoreP', 'none'
 Title = 'All Measures';
 
 
@@ -150,12 +151,34 @@ y = [y, y];
 hold on
 x = get(gca, 'xlim');
 plot(x, y, ':', 'Color', [.5 .5 .5])
+plot(x, -y, ':', 'Color', [.5 .5 .5])
 ylim([-1 1])
 ylabel('R')
 title(['Theta vs Microsleep Duration R values ', Normalize])
 legend({'Theta', 'Microsleep Duration (%)'})
-set(gca, 'FontName', Format.FontName, 'FontSize', 14)
+set(gca, 'FontName', Format.FontName, 'FontSize', 13)
 saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_R_Theta_v_MiDur.svg']))
+
+% plot bars of R values for theta vs microsleeps
+
+KSSIndx = find(strcmpi(Measures, 'KSS'));
+RTIndx = find(strcmpi(Measures, 'meanRTs'));
+
+figure('units','normalized','outerposition',[0 0 1, .5])
+Errors = cat(3, CI_Low(:,  [KSSIndx,RTIndx]), CI_Up(:,  [KSSIndx, RTIndx]));
+PlotBars(R(:, [KSSIndx, RTIndx]), Errors, Measures, cat(1,Format.Colors.Generic.Red, Format.Colors.Generic.Pale3))
+y = R(KSSIndx, RTIndx);
+y = [y, y];
+hold on
+x = get(gca, 'xlim');
+plot(x, y, ':', 'Color', [.5 .5 .5])
+plot(x, -y, ':', 'Color', [.5 .5 .5])
+ylim([-1 1])
+ylabel('R')
+title(['Subjective Sleepiness vs Reaction Times R values ', Normalize])
+legend({'KSS', 'mean RT'})
+set(gca, 'FontName', Format.FontName, 'FontSize', 13)
+saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_R_KSS_v_RTs.svg']))
 
 PlotGroups = [true, false];
 

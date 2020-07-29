@@ -8,7 +8,7 @@ Stats_Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-Task1 = 'AllTasks';
+Task1 = 'PVT';
 
 DataPath = fullfile(Paths.Analysis, 'statistics', 'Data', Task1); % for statistics
 
@@ -21,8 +21,10 @@ Task = Task1;
 %     false, false; % loggify
 %     false, true % zscore
 %     ];
-
+% 
 % Types = {'Delta', 'Theta', 'Alpha', 'Beta'};
+
+% Types = {'backDelta', 'backTheta', 'backAlpha', 'backBeta'};
 % YLabels = repmat({'Power Density'}, 1, numel(Types));
 % Normalizations = [
 %     false, true, false; % loggify
@@ -30,12 +32,12 @@ Task = Task1;
 %     ];
 
 
-% Types = {'meanRTs'};
-% YLabels = {'Seconds'};
-% Normalizations = [
-%     false, false; % loggify
-%     false, true % zscore
-%     ];
+Types = {'meanRTs', 'medianRTs', 'stdRTs', 'Q1Q4RTs'};
+YLabels = repmat({'Seconds'}, 1, numel(Types));
+Normalizations = [
+    false, false; % loggify
+    false, true % zscore
+    ];
 
 % Types = {'KSS', 'Motivation', 'Effortful', 'Focused', 'Difficult'};
 % YLabels = repmat({'VAS Score'}, 1, numel(Types));
@@ -45,12 +47,12 @@ Task = Task1;
 %     ];
 
 
-Types = {'miTot', 'miDuration', 'miStart'};
-YLabels = {'Rate (#/min)', '%', 'Delay (s)'};
-Normalizations = [
-    false, false; % loggify
-    false, true % zscore
-    ];
+% Types = {'miTot', 'miDuration', 'miStart'};
+% YLabels = {'Rate (#/min)', '%', 'Delay (s)'};
+% Normalizations = [
+%     false, false; % loggify
+%     false, true % zscore
+%     ];
 
 
 MES = 'eta2';
@@ -203,7 +205,7 @@ for Indx_T = 1:numel(Types)
         
         
         if size(comparisons, 1) > 0
-            sigstar(comparisons(:, 1),[comparisons{:, 2}], comparisons(:, 3))
+            sigstar(comparisons(:, 1),[comparisons{:, 2}]', comparisons(:, 3))
         end
         
         
