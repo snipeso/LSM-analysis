@@ -31,6 +31,7 @@ for Indx_C = 1:numel(Conditions)
     MeanRTs = nan(numel(Participants), numel(Sessions));
     MedianRTs = nan(numel(Participants), numel(Sessions));
     stdRTs = nan(numel(Participants), numel(Sessions));
+     Q1Q4 = nan(numel(Participants), numel(Sessions));
     
     
     for Indx_P = 1:numel(Participants)
@@ -46,6 +47,8 @@ for Indx_C = 1:numel(Conditions)
             MeanRTs(Indx_P, Indx_S) = mean(RTs);
             MedianRTs(Indx_P, Indx_S) = median(RTs);
             stdRTs(Indx_P, Indx_S) = std(RTs);
+             Q1Q4(Indx_P, Indx_S) = quantile(RTs, .75)-quantile(RTs, .25);
+          
         end
     end
     figure( 'units','normalized','outerposition',[0 0 .7 .7])
@@ -86,6 +89,19 @@ for Indx_C = 1:numel(Conditions)
     title([replace(TitleTag, '_', ' '), ' Reaction Time Medians'])
     set(gca, 'FontSize', 12)
     saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_medianRTs.svg']))
+    
+        % plot interquartile range
+    figure
+    PlotConfettiSpaghetti(Q1Q4,  SessionLabels, [0, 0.2], [],[], Format)
+    ylabel('RT (s)')
+    title([replace(TitleTag, '_', ' '),' Interquartile Range'])
+    set(gca, 'FontSize', 12)
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_InterQRange.svg']))
+    
+    % save matrix
+    Filename = [Task, '_', 'Q1Q4RTs' '_', Title, '.mat'];
+    Matrix = Q1Q4;
+    save(fullfile(Destination, Filename), 'Matrix')
 end
 
 

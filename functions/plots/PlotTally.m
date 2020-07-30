@@ -19,7 +19,7 @@ ylim([0, 100])
 set(gca, 'FontName', Format.FontName)
 
 if exist('Legend', 'var') && ~isempty(Legend)
-    legend(Legend)
+    legend(Legend, 'Location', 'southeast')
 end
 
 axis square
