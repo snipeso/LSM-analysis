@@ -33,7 +33,11 @@ for Indx_C = 1:numel(Conditions)
     MeanRTs = nan(numel(Participants), numel(Sessions));
     MedianRTs = nan(numel(Participants), numel(Sessions));
     stdRTs = nan(numel(Participants), numel(Sessions));
-    Q1Q4 =  nan(numel(Participants), numel(Sessions));
+    Q1Q4 = nan(numel(Participants), numel(Sessions));
+    Top10  = nan(numel(Participants), numel(Sessions));
+    Bottom10  = nan(numel(Participants), numel(Sessions));
+    Top20  = nan(numel(Participants), numel(Sessions));
+    Bottom20  = nan(numel(Participants), numel(Sessions));
     
     for Indx_P = 1:numel(Participants)
         for Indx_S = 1:numel(Sessions)
@@ -49,6 +53,16 @@ for Indx_C = 1:numel(Conditions)
             MedianRTs(Indx_P, Indx_S) = median(RTs);
             stdRTs(Indx_P, Indx_S) = std(RTs);
             Q1Q4(Indx_P, Indx_S) = quantile(RTs, .75)-quantile(RTs, .25);
+            
+            RTs = sort(RTs);
+            Ten = round(.1*numel(RTs));
+            Top10(Indx_P, Indx_S) = mean(RTs(1:Ten));
+            Bottom10(Indx_P, Indx_S) = mean(RTs(end-Ten:end));
+            
+            Top20(Indx_P, Indx_S) = mean(RTs(1:Ten*2));
+            Bottom20(Indx_P, Indx_S) = mean(RTs(end-Ten*2:end));
+            
+            
         end
     end
     
@@ -91,7 +105,7 @@ for Indx_C = 1:numel(Conditions)
     set(gca, 'FontSize', 12)
     saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_stdRTs.svg']))
     
-        % save matrix
+    % save matrix
     Filename = [Task, '_', 'stdRTs' '_', Title, '.mat'];
     Matrix = stdRTs;
     save(fullfile(Destination, Filename), 'Matrix')
@@ -105,7 +119,7 @@ for Indx_C = 1:numel(Conditions)
     set(gca, 'FontSize', 12)
     saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_medianRTs.svg']))
     
-        % save matrix
+    % save matrix
     Filename = [Task, '_', 'medianRTs' '_', Title, '.mat'];
     Matrix = MedianRTs;
     save(fullfile(Destination, Filename), 'Matrix')
@@ -118,124 +132,66 @@ for Indx_C = 1:numel(Conditions)
     set(gca, 'FontSize', 12)
     saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_InterQRange.svg']))
     
-        % save matrix
+    % save matrix
     Filename = [Task, '_', 'Q1Q4RTs' '_', Title, '.mat'];
     Matrix = Q1Q4;
     save(fullfile(Destination, Filename), 'Matrix')
     
+    %%% plot tops and bottoms
+    figure
+    subplot(2, 2, 1)
+    PlotConfettiSpaghetti(Top10,  SessionLabels, [0.1, 0.5], [],[], Format)
+    ylabel('RT (s)')
+    title([replace(TitleTag, '_', ' '),' Fastest 10%'])
+    set(gca, 'FontSize', 12)
+    axis square
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_Top10.svg']))
+    
+    % save matrix
+    Filename = [Task, '_', 'Top10' '_', Title, '.mat'];
+    Matrix = Top10;
+    save(fullfile(Destination, Filename), 'Matrix')
+    
+    subplot(2, 2, 2)
+    PlotConfettiSpaghetti(Bottom10,  SessionLabels, [0.2, 2], [],[], Format)
+    ylabel('RT (s)')
+    title([replace(TitleTag, '_', ' '),' Slowest 10%'])
+    set(gca, 'FontSize', 12)
+    axis square
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_Bottom10.svg']))
+    
+    % save matrix
+    Filename = [Task, '_', 'Bottom10' '_', Title, '.mat'];
+    Matrix = Bottom10;
+    save(fullfile(Destination, Filename), 'Matrix')
+    
+        subplot(2, 2, 3)
+    PlotConfettiSpaghetti(Top20,  SessionLabels, [0.1, 0.5], [],[], Format)
+    ylabel('RT (s)')
+    title([replace(TitleTag, '_', ' '),' Fastest 20%'])
+    set(gca, 'FontSize', 12)
+    axis square
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_Top20.svg']))
+    
+    % save matrix
+    Filename = [Task, '_', 'Top20' '_', Title, '.mat'];
+    Matrix = Top20;
+    save(fullfile(Destination, Filename), 'Matrix')
+    
+        subplot(2, 2, 4)
+    PlotConfettiSpaghetti(Bottom20,  SessionLabels, [0.2, 2], [],[], Format)
+    ylabel('RT (s)')
+    title([replace(TitleTag, '_', ' '),' Slowest 20%'])
+    set(gca, 'FontSize', 12)
+    axis square
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_Bottom20.svg']))
+    
+    % save matrix
+    Filename = [Task, '_', 'Bottom20' '_', Title, '.mat'];
+    Matrix = Bottom20;
+    save(fullfile(Destination, Filename), 'Matrix')
+    
+    
 end
 
 %
-% figure
-% hold on
-% MeanRTs = nan(numel(Participants), numel(Sessions));
-% stdRTs = nan(numel(Participants), numel(Sessions));
-% MedianRTs = nan(numel(Participants), numel(Sessions));
-% Top10 =  nan(numel(Participants), numel(Sessions));
-% Colors = [linspace(0, (numel(Participants) -1)/numel(Participants), numel(Participants))', ...
-%     ones(numel(Participants), 1), ...
-%    ones(numel(Participants), 1)];
-% Colors = hsv2rgb(Colors);
-% for Indx_P = 1:numel(Participants)
-%     for Indx_S = 1:numel(Sessions)
-%
-%         RTs = cell2mat(AllAnswers.rt(strcmp(AllAnswers.Session, Sessions{Indx_S}) & ...
-%             strcmp(AllAnswers.Participant, Participants{Indx_P})));
-%         RTs(isnan(RTs)) = [];
-%         RTs(RTs < 0.1) = [];
-%
-%
-%         if size(RTs, 1) < 1
-%             continue
-%         end
-%         sortedRTs = sort(RTs);
-%         Top10(Indx_P, Indx_S) = mean(sortedRTs(end-round(numel(RTs)*.10):end));
-%          RTs(RTs > 1) = [];
-%         MeanRTs(Indx_P, Indx_S) = mean(RTs);
-%       MedianRTs(Indx_P, Indx_S) = median(RTs);
-%         stdRTs(Indx_P, Indx_S) = std(RTs);
-%         violin(RTs, 'x', [Indx_S, 0], 'facecolor', Colors(Indx_P, :), ...
-%             'edgecolor', [], 'facealpha', 0.1, 'mc', [], 'medc', []);
-%     end
-% end
-% title('PVT Reaction Time Distributions')
-% xlim([0, numel(Sessions) + 1])
-% xticks(1:numel(Sessions))
-% xticklabels(SessionLabels)
-% ylabel('RT (s)')
-% ylim([0.1, 1])
-%
-%
-% figure
-% hold on
-% Colors = [linspace(0, (numel(Participants) -1)/numel(Participants), numel(Participants))', ...
-%     ones(numel(Participants), 1)*0.2, ...
-%    ones(numel(Participants), 1)];
-% Colors = hsv2rgb(Colors);
-% for Indx_P = 1:numel(Participants)
-%     plot(MeanRTs(Indx_P, :), 'o-', 'LineWidth', 1, 'MarkerFaceColor', Colors(Indx_P, :), 'Color', Colors(Indx_P, :))
-% end
-%
-% plot(nanmean(MeanRTs, 1), 'o-', 'LineWidth', 2, 'Color', 'k',  'MarkerFaceColor', 'k')
-% title('PVT Reaction Time Means')
-% xlim([0, numel(Sessions) + 1])
-% xticks(1:numel(Sessions))
-% xticklabels(SessionLabels)
-% ylabel('RT (s)')
-% ylim([0.2, .6])
-%
-%
-% figure
-% hold on
-% Color = [0.7, 0.7, 0.7];
-% for Indx_P = 1:numel(Participants)
-%     plot(stdRTs(Indx_P, :), 'o-', 'LineWidth', 1, 'MarkerFaceColor', Colors(Indx_P, :), 'Color', Colors(Indx_P, :))
-% end
-%
-% plot(nanmean(stdRTs, 1), 'o-', 'LineWidth', 2, 'Color', 'k',  'MarkerFaceColor', 'k')
-% title('PVT Reaction Time Standard Deviations')
-% xlim([0, numel(Sessions) + 1])
-% xticks(1:numel(Sessions))
-% xticklabels(SessionLabels)
-% ylabel('RT SD (s)')
-% ylim([0, 0.15])
-%
-%
-% %plot medians
-% figure
-% hold on
-% Colors = [linspace(0, (numel(Participants) -1)/numel(Participants), numel(Participants))', ...
-%     ones(numel(Participants), 1)*0.2, ...
-%    ones(numel(Participants), 1)];
-% Colors = hsv2rgb(Colors);
-% for Indx_P = 1:numel(Participants)
-%     plot(MedianRTs(Indx_P, :), 'o-', 'LineWidth', 1, 'MarkerFaceColor', Colors(Indx_P, :), 'Color', Colors(Indx_P, :))
-% end
-%
-% plot(nanmean(MedianRTs, 1), 'o-', 'LineWidth', 2, 'Color', 'k',  'MarkerFaceColor', 'k')
-% title('Reaction Time Medians')
-% xlim([0, numel(Sessions) + 1])
-% xticks(1:numel(Sessions))
-% xticklabels(SessionLabels)
-% ylabel('RT (s)')
-% ylim([0.2, 0.6])
-%
-%
-% %plot top10
-% figure
-% hold on
-% Colors = [linspace(0, (numel(Participants) -1)/numel(Participants), numel(Participants))', ...
-%     ones(numel(Participants), 1)*0.2, ...
-%    ones(numel(Participants), 1)];
-% Colors = hsv2rgb(Colors);
-% for Indx_P = 1:numel(Participants)
-%     plot(Top10(Indx_P, :), 'o-', 'LineWidth', 1, 'MarkerFaceColor', Colors(Indx_P, :), 'Color', Colors(Indx_P, :))
-% end
-%
-% plot(nanmean(Top10, 1), 'o-', 'LineWidth', 2, 'Color', 'k',  'MarkerFaceColor', 'k')
-% title('Reaction Times Worst 10%')
-% xlim([0, numel(Sessions) + 1])
-% xticks(1:numel(Sessions))
-% xticklabels(SessionLabels)
-% ylabel('RT (s)')
-% % ylim([0.2, 0.6])
