@@ -1,9 +1,13 @@
-function PlotBars(Data, Errors, xLabels, Colors)
+function PlotBars(Data, Errors, Labels, Colors, Orientation)
 % PValues is a cell array with 2 elements, the first contains a list of pvalues
 % for the major segments
 
 
-h = bar(Data, 'grouped', 'EdgeColor', 'none', 'FaceColor', 'flat');
+if exist('Orientation', 'var') && strcmp(Orientation, 'horizontal')
+    h = barh(Data, 'grouped', 'EdgeColor', 'none', 'FaceColor', 'flat');
+else
+    h = bar(Data, 'grouped', 'EdgeColor', 'none', 'FaceColor', 'flat');
+end
 
 for Indx = 1:size(Data, 2)
     h(Indx).CData = Colors(Indx, :);
@@ -29,12 +33,28 @@ if ~isempty(Errors)
         if ndims(Errors) == 2
             errorbar(x, Data(:,Indx), Errors(:,Indx), 'k', 'linestyle', 'none', 'LineWidth', 2);
         elseif ndims(Errors) == 3
-            errorbar(x, Data(:,Indx), abs(Data(:,Indx)-Errors(:,Indx, 1)), abs(Errors(:,Indx, 2)-Data(:,Indx)), 'k', 'linestyle', 'none', 'LineWidth', 2);
+            if exist('Orientation', 'var') && strcmp(Orientation, 'horizontal')
+%                 errorbar(Data(:,Indx), x, abs(Data(:,Indx)-Errors(:,Indx, 1)), ...
+%                     abs(Errors(:,Indx, 2)-Data(:,Indx)), 'k', 'horizontal', 'linestyle', 'none', 'LineWidth', 2);
+
+                errorbar(Data(:,Indx), x, Data(:,Indx)-Errors(:,Indx, 1), ...
+                    Errors(:,Indx, 2)-Data(:,Indx), 'k', 'horizontal', 'linestyle', 'none', 'LineWidth', 2);
+
+
+            else
+                errorbar(x, Data(:,Indx), abs(Data(:,Indx)-Errors(:,Indx, 1)), ...
+                    abs(Errors(:,Indx, 2)-Data(:,Indx)), 'k', 'linestyle', 'none', 'LineWidth', 2); % TODO: CHECK!
+            end
         end
         
     end
 end
 box off
-xticks(1:numel(xLabels))
-xticklabels(xLabels)
 
+if exist('Orientation', 'var') && strcmp(Orientation, 'horizontal')
+    yticks(1:numel(Labels))
+    yticklabels(Labels)
+else
+    xticks(1:numel(Labels))
+    xticklabels(Labels)
+end

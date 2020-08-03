@@ -108,6 +108,7 @@ for Indx_C = 1:numel(Conditions)
     Matrix = Misses;
     save(fullfile(Destination, Filename), 'Matrix')
     
+     Late = 100*(squeeze(Responses(:, :, 2))./Tot);
     Filename = [Task, '_', 'Late' '_', Title, '.mat'];
     Matrix = Late;
     save(fullfile(Destination, Filename), 'Matrix')

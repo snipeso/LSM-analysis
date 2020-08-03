@@ -1,221 +1,127 @@
+
 clear
 clc
-close all
+% close all
 
 
 Stats_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-DataPath = fullfile(Paths.Analysis, 'Statistics', 'ANOVA', 'Data'); % for statistics
 
-Task = 'LAT';
-Sessions = 'SD3'; % either SD3 or Sessions
-SessionLabels = allSessionLabels.(Sessions);
-% Data type
+% Task = 'LAT';
+% Measures = {'Hits', 'Late', 'Misses',  'Q1Q4RTs', 'MeanRTs', 'KSS'};
 
-% Type = 'Misses';
-% YLabel = '%';
-% Loggify = false; % msybe?
-% 
-% Type = 'theta';
-% YLabel = 'Power (log)';
-% Loggify = true;
+Task = 'PVT';
+Measures = {'Lapses', 'MeanRTs', 'Bottom20', 'Q1Q4RTs', 'KSS'};
 
-% Type = 'meanRTs';
-% YLabel = 'RTs (log(s))';
-% Loggify = false;
 
-Type = 'KSS';
-YLabel = 'VAS Score';
-Loggify = false;
+DataPath = fullfile(Paths.Analysis, 'statistics', 'Data', Task); % for statistics
 
+
+
+Normalizations = [
+    false, false; % loggify
+    false, true % zscore
+    ];
 
 MES = 'eta2';
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
+Figure_Path = fullfile(Paths.Figures, 'anova1way');
 
-load(fullfile(DataPath, [Task, '_', Type, '_', Sessions, '.mat']))
-if Loggify
-    Matrix = log(Matrix);
+if ~exist(fullfile(Figure_Path), 'dir')
+    mkdir(Figure_Path)
 end
 
-% levene test on variance (maybe should be done after?)
-Groups = repmat(1:size(Matrix, 2), size(Matrix, 1), 1);
-Levenetest([Matrix(:), Groups(:)],.05)
-
-% % z-score
-for Indx_P = 1:numel(Participants)
-    Matrix(Indx_P, :) = zscore(Matrix(Indx_P, :));
-end
-
-Means = nanmean(Matrix);
-SEM = nanstd(Matrix)./sqrt(size(Matrix, 1));
-Table = mat2table(Matrix, Participants, SessionLabels, 'Participant', [], Type);
-
-
-Within = table();
-
-Within.Session = SessionLabels;
-% 
-% 
-% rm = fitrm(Table,[SessionLabels{1}, '-', SessionLabels{end},'~1'], 'WithinDesign',Within);
-% 
-% % test of sphericity
-% % M = mauchly(rm);
-% 
-% [ranovatbl, ~, c] = ranova(rm, 'WithinModel', 'Session*Condition');
-% SxC = multcompare(rm, 'Session', 'By', 'Condition');
-% CxS = multcompare(rm, 'Condition', 'By', 'Session');
-% 
-% %%% manually assemble p-values
-% 
-% BL_SvC = CxS.pValue(strcmp(CxS.Session, 'B')&strcmp(CxS.Condition_1, 'S')& strcmp(CxS.Condition_2, 'C'));
-% S1_SvC = CxS.pValue(strcmp(CxS.Session, 'S1')&strcmp(CxS.Condition_1, 'S')& strcmp(CxS.Condition_2, 'C'));
-% S2_SvC = CxS.pValue(strcmp(CxS.Session, 'S2')&strcmp(CxS.Condition_1, 'S')& strcmp(CxS.Condition_2, 'C'));
-% 
-% S_BLvS1 = SxC.pValue(strcmp(SxC.Condition, 'S')&strcmp(SxC.Session_1, 'B')& strcmp(SxC.Session_2, 'S1'));
-% S_BLvS2= SxC.pValue(strcmp(SxC.Condition, 'S')&strcmp(SxC.Session_1, 'B')& strcmp(SxC.Session_2, 'S2'));
-% S_S1vS2= SxC.pValue(strcmp(SxC.Condition, 'S')&strcmp(SxC.Session_1, 'S1')& strcmp(SxC.Session_2, 'S2'));
-% C_BLvS1= SxC.pValue(strcmp(SxC.Condition, 'C')&strcmp(SxC.Session_1, 'B')& strcmp(SxC.Session_2, 'S1'));
-% C_BLvS2= SxC.pValue(strcmp(SxC.Condition, 'C')&strcmp(SxC.Session_1, 'B')& strcmp(SxC.Session_2, 'S2'));
-% C_S1vS2= SxC.pValue(strcmp(SxC.Condition, 'C')&strcmp(SxC.Session_1, 'S1')& strcmp(SxC.Session_2, 'S2'));
-% 
-% % % within session comparisons
-% % BL_SvC = CxS.pValue(CxS.Session==0 & strcmp(CxS.Condition_1, 'S') & strcmp(CxS.Condition_2, 'C'));
-% % S1_SvC = CxS.pValue(CxS.Session==1 & strcmp(CxS.Condition_1, 'S')& strcmp(CxS.Condition_2, 'C'));
-% % S2_SvC = CxS.pValue(CxS.Session==2 &strcmp(CxS.Condition_1, 'S')& strcmp(CxS.Condition_2, 'C'));
-% % 
-% % % between session comparisons
-% % S_BLvS1 = SxC.pValue(strcmp(SxC.Condition, 'S')&SxC.Session_1==0& SxC.Session_2==1);
-% % S_BLvS2= SxC.pValue(strcmp(SxC.Condition, 'S')&SxC.Session_1==0& SxC.Session_2==2);
-% % S_S1vS2= SxC.pValue(strcmp(SxC.Condition, 'S')&SxC.Session_1==1& SxC.Session_2==2);
-% % C_BLvS1= SxC.pValue(strcmp(SxC.Condition, 'C')&SxC.Session_1==0& SxC.Session_2==1);
-% % C_BLvS2= SxC.pValue(strcmp(SxC.Condition, 'C')&SxC.Session_1==0& SxC.Session_2==2);
-% % C_S1vS2= SxC.pValue(strcmp(SxC.Condition, 'C')&SxC.Session_1==1& SxC.Session_2==2);
-% 
-% 
-% % plot barplots
-% figure('units','normalized','outerposition',[0 0 .4 .4])
-% subplot(1, 3, 1)
-% PlotBars([ClassicMeans; SopMeans]', [SEM; SopSEM]', {'BL', 'S1', 'S2'})
-% legend({'Classic', 'Soporific'}, 'Location', 'southeast','AutoUpdate','off')
-% title([Task, ' ', Type])
-% ylabel(YLabel)
-% 
-% Colors = plasma(3); % TODO, make this only once, and not in plotbars
-% 
-% % plot significance
-% % (if I'm ever inspired, I'll make this automated; for now its manual)
-% comparisons = {
-%     [.9, 1.1], BL_SvC, [0 0 0];
-%     [1.9, 2.1], S1_SvC, [0 0 0];
-%     [2.9, 3.1], S2_SvC, [0 0 0];
-%     
-%     [.9, 1.9], C_BLvS1, Colors(1, :);
-%     [1.1, 2.1], S_BLvS1, Colors(2, :);
-%     [.9, 2.9], C_BLvS2, Colors(1, :);
-%     [1.1, 3.1], S_BLvS2,  Colors(2, :);
-%     [1.9, 2.9], C_S1vS2, Colors(1, :);
-%     [2.1, 3.1], S_S1vS2, Colors(2, :)};
-% 
-% comparisons([comparisons{:, 2}]>=0.1, :) = [];
-% if size(comparisons, 1) > 0
-%     sigstar(comparisons(:, 1),[comparisons{:, 2}], comparisons(:, 3))
-% end
-
-
-%%% plot effect sizes (with CIs?) of Session vs Condition
-% uses the MES toolbox, so data needs to be restructured
-ClassicTable = mat2table(Matrix, Participants, [1:size(Matrix, 2)]', ...
-    'Participant', 'Session', 'Data');
-ClassicTable.Condition = zeros(size(ClassicTable.Session));
-
-Table = [ClassicTable];
-
-[stats, Table] = mes1way(Table.Data, MES, 'group', Table.Session, ...
-    'isDep',1, 'nBoot', 1000);
-
-% pairwise effect sizes
-Hedges = nan(2, 3);
-HedgesCI = nan(2, 3, 2);
-
-statsHedges = mes(Matrix(:, 2), Matrix(:, 1), 'hedgesg', 'isDep', 1, 'nBoot', 1000);
-Hedges(1, Indx) = statsHedges.hedgesg;
-HedgesCI(1, Indx, :) = statsHedges.hedgesgCi;
-
-statsHedges = mes(Matrix(:, 3), Matrix(:, 2), 'hedgesg', 'isDep', 1, 'nBoot', 1000);
-Hedges(2, Indx) = statsHedges.hedgesg;
-HedgesCI(2, Indx, :) = statsHedges.hedgesgCi;
-
-
-subplot(1, 3, 3)
-PlotBars(Hedges(:, 1:2), HedgesCI(:, 1:2, :), {'BLvsS1','S1vsS2'})
-title(['Hedges g'])
-ylim([-3 7])
-
-
-saveas(gcf,fullfile(Paths.Figures, 'ESRSPoster', [Type, '_Stats_', Task, '_timeXcondition.svg']))
-
-% plot all values
-% All =[ClassicMatrix(:); SopoMatrix(:)];
-% YLims = [min(All), max(All)];
-% figure('units','normalized','outerposition',[0 0 .4 .4])
-% subplot(1,2,1)
-% PlotConfettiSpaghetti(ClassicMatrix, {'BL', 'S1', 'S2'}, YLims, ['LAT Classic ', Type], [])
-%
-% subplot(1,2,2)
-% PlotConfettiSpaghetti(SopoMatrix, {'BL', 'S1', 'S2'}, [], ['LAT Soporific ', Type], [])
-% saveas(gcf,fullfile(Paths.Figures, 'ESRSPoster', [Type, '_Means_LAT_timeXcondition.svg']))
-
-% plot all values in same plot
-figure('units','normalized','outerposition',[0 0 .4 .4])
-PlotScales(Matrix, SopoMatrix, {'BL', 'S1', 'S2'}, {'Class', 'Sopo'})
-ylabel(YLabel)
-title([Task, ' ', Type, ' All Means'])
-saveas(gcf,fullfile(Paths.Figures, 'ESRSPoster', [Type, '_', Task, '_timeANDcondition.svg']))
-
-clc
-
-%%% write out F values
-disp(ranovatbl)
-disp('**************************************************************')
-disp(['for ', Type, '...'])
-Comparison = {'intercept','Session', 'Condition', 'Interaction' };
-for Indx = 2:4 % loop through session, condition and interaction
-    % correct for sphericity
-    MauchlyTest = mauchly(rm, c);
-    if MauchlyTest.W(Indx) <.05
-        Correction = 'GG';
-    else
-        Correction = '';
-        DFm = ranovatbl.DF(Indx*2-1);
-        DFr = ranovatbl.DF(Indx*2);
+for Indx_N = 1:size(Normalizations, 2)
+            Loggify = Normalizations(1, Indx_N);
+        ZScore = Normalizations(2, Indx_N);
+        
+    ES = nan(numel(Measures), 2);
+    CI = nan(numel(Measures), 2, 2);
+    Correction = '';
+    if Loggify
+        Correction = [Correction, ' log'];
     end
-
     
-        pValue = ranovatbl.(['pValue', Correction])(Indx*2-1);
-        F = ranovatbl.F(Indx*2-1);
-
-   
-    if pValue < .05
-        Negation = '';
-    else
-        Negation = 'NOT ';
+    if ZScore
+        Correction = [Correction, ' zscored'];
     end
-
-disp(join(['There is ', Negation, 'an effect of ', Comparison{Indx}, ...
-    '; F(', num2str(DFm), ', ', num2str(DFr), ') = ', num2str(F), ...
-    ', p = ', num2str(pValue), '', ', eta2 = ', num2str(stats.(MES)(Indx-1))]))
+    
+    for Indx_M = 1:numel(Measures)
+        
+        
+        Measure = Measures{Indx_M};
+        Loggify = Normalizations(1, Indx_N);
+        ZScore = Normalizations(2, Indx_N);
+        ParticipantsLeft = Participants;
+        
+        
+        
+        % load classic matrix
+        load(fullfile(DataPath, [Task, '_', Measure, '_Classic.mat']), 'Matrix')
+        ClassicMatrix = Matrix;
+        
+        if Loggify
+            if ~any(ClassicMatrix(:)<=0) % make sure all values are positive
+                
+                ClassicMatrix = log(ClassicMatrix); %TODO: figure out if this is OK
+                
+            end
+            
+        end
+        
+        % load soporific matrix
+        load(fullfile(DataPath, [Task, '_', Measure, '_Soporific.mat']), 'Matrix')
+        SopoMatrix = Matrix;
+        
+        if Loggify
+            if ~any(SopoMatrix(:)<=0) % make sure all values are positive
+                SopoMatrix = log(SopoMatrix);
+            end
+        end
+        
+        % handle nans
+        Nans = any(isnan(ClassicMatrix), 2) | any(isnan(SopoMatrix), 2);
+        if any(Nans)
+            
+            ParticipantsLeft(Nans) = [];
+            ClassicMatrix(Nans, :) = [];
+            SopoMatrix(Nans, :) = [];
+        end
+        
+        % z-score
+        if ZScore
+            for Indx_P = 1:numel(ParticipantsLeft)
+                All = zscore([ClassicMatrix(Indx_P, :), SopoMatrix(Indx_P, :)]);
+                ClassicMatrix(Indx_P, :) = All(1:size(ClassicMatrix, 2));
+                SopoMatrix(Indx_P, :) = All(size(ClassicMatrix, 2)+1:end);
+            end
+        end
+        
+        
+        [stats, Table] = mes1way(SopoMatrix, MES,'isDep',1, 'nBoot', 1000);
+        
+        ES(Indx_M, 1) = stats.(MES);
+        CI(Indx_M, 1, :) = stats.([MES, 'Ci']);
+        
+        [stats, Table] = mes1way(ClassicMatrix, MES,'isDep',1, 'nBoot', 1000);
+        ES(Indx_M, 2) = stats.(MES);
+        CI(Indx_M, 2, :) = stats.([MES, 'Ci']);
+        
+    end
+    figure
+    PlotBars(ES, CI, Measures, [Format.Colors.Generic.Red;Format.Colors.Generic.Dark1], 'horizontal')
+    xlim([0 1])
+    legend({ 'Soporific', 'Classic'})
+    set(gca, 'FontName', Format.FontName, 'FontSize', 12)
+    xlabel(['Effect Size (', MES, ')'])
+    title([Task, ' effect sizes', Correction])
+    
+    saveas(gcf,fullfile(Figure_Path, ['EffectSize', Correction, '.svg']))
 end
 
-Conditions = {'classic', 'soporific'};
-for Indx = 1:2
-disp(['Hedges g for BL vs S1 in condition ', Conditions{Indx},' is: ', ...
-    num2str(Hedges(1, Indx)), ' CI: ', num2str(HedgesCI(1, Indx, 1)), ' ', num2str(HedgesCI(1, Indx, 2)) ])
-disp(['Hedges g for S1 vs S2 in condition ', Conditions{Indx},' is: ', ...
-    num2str(Hedges(2, Indx)), ' CI: ', num2str(HedgesCI(2, Indx, 1)), ' ', num2str(HedgesCI(2, Indx, 2))  ])
-end
 
