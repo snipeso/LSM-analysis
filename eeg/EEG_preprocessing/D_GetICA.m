@@ -3,7 +3,7 @@ clc
 clear
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Targets = { 'Fixation', 'Standing'};
+Targets = { 'LAT'};
 Refresh = false;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -49,6 +49,7 @@ for Indx_T = 1:numel(Targets)
         end
         
         % remove bad channels
+        badchans(badchans<1 | badchans>128) = [];
         EEG = pop_select(EEG, 'nochannel', unique(badchans));
         
         % rereference to average
