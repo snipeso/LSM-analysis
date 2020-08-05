@@ -5,6 +5,7 @@ close all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Refresh = true;
+CheckPlots = true;
 
 Task = 'LAT';
 
@@ -33,7 +34,7 @@ Files(~contains(Files, '.set')) = [];
 
 
 
-for Indx_F = 1:numel(Files)
+parfor Indx_F = 1:numel(Files)
     
     File = Files{Indx_F};
     Filename = [extractBefore(File, '_Clean.set'), '_Tones.mat'];
@@ -47,8 +48,8 @@ for Indx_F = 1:numel(Files)
     % load EEG
     EEG = pop_loadset('filename', File, 'filepath', Source);
     
-        % get hilbert power bands and phase
-    [HilbertPower, Phase] = HilbertBands(EEG, Bands, BandNames, 'matrix');
+    % get hilbert power bands and phase
+    [HilbertPower, HilbertPhase] = HilbertBands(EEG, Bands, BandNames, 'matrix');
     
     %%% Set as nan all noise
     % remove nonEEG channels
@@ -56,46 +57,68 @@ for Indx_F = 1:numel(Files)
     fs = EEG.srate;
     Chanlocs = EEG.chanlocs;
     
-     AllTriggers =  {EEG.event.type};
-     AllTriggerTimes =  [EEG.event.latency];
-     ToneTrigerTimes = AllTriggerTimes(strcmp(AllTriggers, ToneTrigger));
-     
-     Starts = ToneTrigerTimes + round(fs*Start);
-     Sops = ToneTrigerTimes + round(fs*Stop);
+    AllTriggers =  {EEG.event.type};
+    AllTriggerTimes =  [EEG.event.latency];
+    ToneTrigerTimes = AllTriggerTimes(strcmp(AllTriggers, ToneTrigger));
+    
+    Starts = round(ToneTrigerTimes + fs*Start);
+    Stops = round(ToneTrigerTimes + fs*Stop);
     
     Cuts_Filepath = fullfile(Source_Cuts, [extractBefore(File, '_Clean'), '_Cleaning_Cuts.mat']);
     EEG = nanNoise(EEG, Cuts_Filepath);
     
-
+    TotWindow = round(fs*Stop) - round(fs*Start);
+    Data = zeros(Channels, TotWindow, numel(Starts));
+    Power = zeros(Channels,  TotWindow, numel(BandNames), numel(Starts));
+    Phase = Power;
+    Remove = [];
+    for Indx_E = 1:numel(Starts)
+        Epoch = EEG.data(:, Starts(Indx_E):Stops(Indx_E)-1);
+        if any(isnan(Epoch(:)))
+            Remove = cat(2, Remove, Indx_E);
+            continue
+        end
+        
+        Data(:, :, Indx_E) = Epoch;
+        Power(:, :, :, Indx_E) = HilbertPower(:, Starts(Indx_E):Stops(Indx_E)-1, :);
+        Phase(:, :, :, Indx_E) = HilbertPhase(:, Starts(Indx_E):Stops(Indx_E)-1, :);
+    end
+    Data(:, :, Remove) = [];
+    Power(:, :, :, Remove) = [];
+    Phase(:, :, :, Remove) = [];
     
-    % Get ERPs
-    EEG2 = pop_epoch(EEG, {ToneTrigger}, [Start, Stop]);
+    t = linspace(0, TotWindow/fs, TotWindow);
     
-    NanEpochs =  squeeze(any(any(isnan(EEG.data))));
-    EEG.data(:, :,NanEpochs) = [];
-    EEG.epoch(NanEpochs) = [];
-    EEG = eeg_checkset(EEG);
+    if CheckPlots
+        plotChannels = EEG_Channels.Hotspot; % hotspot
+        ChanIndx = ismember( str2double({Chanlocs.labels}), plotChannels);
+        figure('units','normalized','outerposition',[0 0 .25 1])
+        subplot(5, 1, 1)
+        plot(squeeze(nanmean(Data(ChanIndx, :, :), 1)))
+        hold on
+        plot(nanmean(nanmean(Data(ChanIndx, :, :), 1), 3), 'k', 'LineWidth', 2)
+        xlim([900, 1600])
+        ylim([-10 10])
+        title(File)
+        for Indx_B = 1:numel(BandNames)
+            subplot(5, 1, Indx_B+1)
+            plot(squeeze(nanmean(Power(ChanIndx, :, Indx_B,  :), 1)))
+            hold on
+            plot(nanmean(nanmean(Power(ChanIndx, :, Indx_B, :), 1), 4), 'k', 'LineWidth', 2)
+            xlim([900, 1600])
+            ylim([1 10])
+            title(BandNames(Indx_B))
+        end
+        
+        
+    end
     
-    % get real window times and trigger time
     
-    
-%         plotChannels = EEG_Channels.Hotspot; % hotspot
-%     ChanIndx = ismember( str2double({Chanlocs.labels}), plotChannels);
-    %         figure
-    %         plot(squeeze(nanmean(EEG.data(ChanIndx, :, :), 1)))
-    %         hold on
-    %          plot(nanmean(nanmean(EEG.data(ChanIndx, :, :), 1), 3), 'k', 'LineWidth', 2)
-    %          xlim([900, 1400])
-    %          title(File)
-    
-    ERPs = EEG.data;
-
-    
-    parsave(fullfile(Destination, Filename), ERPs, TimeFreq)
+    parsave(fullfile(Destination, Filename), Data, Power, Phase, t)
     disp(['*************finished ',Filename '*************'])
 end
 
 
-function parsave(fname, ERPs, TimeFreq)
-save(fname, 'ERPs', 'TimeFreq')
+function parsave(fname, Data, Power, Phase, t)
+save(fname, 'Data', 'Power', 'Phase', 't')
 end
