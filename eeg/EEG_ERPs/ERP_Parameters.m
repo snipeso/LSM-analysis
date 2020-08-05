@@ -13,7 +13,7 @@ Paths.Preprocessed = 'C:\Users\colas\Desktop\LSMData'; % Sophia laptop
 
 Paths.Summary = fullfile(mfilename('fullpath'), 'SummaryData');
 Paths.ERPs = fullfile(Paths.Preprocessed, 'ERPs');
-Paths.Figures = fullfile(Paths.Figures, 'Welch');
+Paths.Figures = fullfile(Paths.Figures, 'ERPs');
 
 % Parameters
 FreqRes = 0.25;
@@ -31,7 +31,8 @@ Bands = [
 ];
 
 BandNames = {'delta', 'theta', 'alpha', 'beta'};
-
+HilbertFS = 100;
+newfs = 250;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Do stuff

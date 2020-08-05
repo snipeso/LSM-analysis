@@ -5,7 +5,7 @@ close all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Refresh = true;
-CheckPlots = true;
+CheckPlots = false;
 
 Task = 'LAT';
 
@@ -31,10 +31,15 @@ Files = deblank(cellstr(ls(Source)));
 Files(~contains(Files, '.set')) = [];
 
 
+Paths.Figures = fullfile(Paths.Figures, 'Tones', Task, 'AllFiles');
+
+if ~exist(Paths.Figures, 'dir')
+    mkdir(Paths.Figures)
+end
 
 
 
-parfor Indx_F = 1:numel(Files)
+for Indx_F = 1:numel(Files)
     
     File = Files{Indx_F};
     Filename = [extractBefore(File, '_Clean.set'), '_Tones.mat'];
@@ -49,7 +54,9 @@ parfor Indx_F = 1:numel(Files)
     EEG = pop_loadset('filename', File, 'filepath', Source);
     
     % get hilbert power bands and phase
-    [HilbertPower, HilbertPhase] = HilbertBands(EEG, Bands, BandNames, 'matrix');
+    EEGds = pop_resample(EEG, HilbertFS);
+    EEG  = pop_resample(EEG, newfs);
+    [HilbertPower, HilbertPhase] = HilbertBands(EEGds, Bands, BandNames, 'matrix');
     
     %%% Set as nan all noise
     % remove nonEEG channels
@@ -59,35 +66,35 @@ parfor Indx_F = 1:numel(Files)
     
     AllTriggers =  {EEG.event.type};
     AllTriggerTimes =  [EEG.event.latency];
-    ToneTrigerTimes = AllTriggerTimes(strcmp(AllTriggers, ToneTrigger));
+    ToneTrigerTimes = AllTriggerTimes(strcmp(AllTriggers, ToneTrigger))/fs;
     
-    Starts = round(ToneTrigerTimes + fs*Start);
-    Stops = round(ToneTrigerTimes + fs*Stop);
+    Starts = ToneTrigerTimes + Start;
+    Stops = ToneTrigerTimes + Stop;
     
     Cuts_Filepath = fullfile(Source_Cuts, [extractBefore(File, '_Clean'), '_Cleaning_Cuts.mat']);
     EEG = nanNoise(EEG, Cuts_Filepath);
     
-    TotWindow = round(fs*Stop) - round(fs*Start);
+    TotWindow = round(fs*Stop - fs*Start);
+    TotWindowPower = round(HilbertFS*Stop - HilbertFS*Start);
+    
     Data = zeros(Channels, TotWindow, numel(Starts));
-    Power = zeros(Channels,  TotWindow, numel(BandNames), numel(Starts));
+    Power = zeros(Channels,  TotWindowPower, numel(BandNames), numel(Starts));
     Phase = Power;
     Remove = [];
     for Indx_E = 1:numel(Starts)
-        Epoch = EEG.data(:, Starts(Indx_E):Stops(Indx_E)-1);
+        Epoch = EEG.data(:, round(Starts(Indx_E)*fs:Stops(Indx_E)*fs-1));
         if any(isnan(Epoch(:)))
             Remove = cat(2, Remove, Indx_E);
             continue
         end
         
         Data(:, :, Indx_E) = Epoch;
-        Power(:, :, :, Indx_E) = HilbertPower(:, Starts(Indx_E):Stops(Indx_E)-1, :);
-        Phase(:, :, :, Indx_E) = HilbertPhase(:, Starts(Indx_E):Stops(Indx_E)-1, :);
+        Power(:, :, :, Indx_E) = HilbertPower(:, round(Starts(Indx_E)*HilbertFS:Stops(Indx_E)*HilbertFS-1), :);
+        Phase(:, :, :, Indx_E) = HilbertPhase(:, round(Starts(Indx_E)*HilbertFS:Stops(Indx_E)*HilbertFS-1), :);
     end
     Data(:, :, Remove) = [];
     Power(:, :, :, Remove) = [];
     Phase(:, :, :, Remove) = [];
-    
-    t = linspace(0, TotWindow/fs, TotWindow);
     
     if CheckPlots
         plotChannels = EEG_Channels.Hotspot; % hotspot
@@ -105,20 +112,20 @@ parfor Indx_F = 1:numel(Files)
             plot(squeeze(nanmean(Power(ChanIndx, :, Indx_B,  :), 1)))
             hold on
             plot(nanmean(nanmean(Power(ChanIndx, :, Indx_B, :), 1), 4), 'k', 'LineWidth', 2)
-            xlim([900, 1600])
+%             xlim([900, 1600])
             ylim([1 10])
             title(BandNames(Indx_B))
         end
         
-        
+        saveas(gcf,fullfile(Paths.Figures, [extractBefore(File, '.set'), '_ERPs.svg']))
     end
     
     
-    parsave(fullfile(Destination, Filename), Data, Power, Phase, t)
+    parsave(fullfile(Destination, Filename), Data, Power, Phase)
     disp(['*************finished ',Filename '*************'])
 end
 
 
-function parsave(fname, Data, Power, Phase, t)
-save(fname, 'Data', 'Power', 'Phase', 't')
+function parsave(fname, Data, Power, Phase)
+save(fname, 'Data', 'Power', 'Phase')
 end
