@@ -4,7 +4,7 @@ close all
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Refresh = true;
+Refresh = false;
 CheckPlots = false;
 
 Task = 'LAT';
@@ -82,15 +82,15 @@ for Indx_F = 1:numel(Files)
     Phase = Power;
     Remove = [];
     for Indx_E = 1:numel(Starts)
-        Epoch = EEG.data(:, round(Starts(Indx_E)*fs:Stops(Indx_E)*fs-1));
+        Epoch = EEG.data(:, round(Starts(Indx_E)*fs):round(Starts(Indx_E)*fs)+TotWindow-1);
         if any(isnan(Epoch(:)))
             Remove = cat(2, Remove, Indx_E);
             continue
         end
         
         Data(:, :, Indx_E) = Epoch;
-        Power(:, :, :, Indx_E) = HilbertPower(:, round(Starts(Indx_E)*HilbertFS:Stops(Indx_E)*HilbertFS-1), :);
-        Phase(:, :, :, Indx_E) = HilbertPhase(:, round(Starts(Indx_E)*HilbertFS:Stops(Indx_E)*HilbertFS-1), :);
+        Power(:, :, :, Indx_E) = HilbertPower(:, round(Starts(Indx_E)*HilbertFS):round(Starts(Indx_E)*HilbertFS)+TotWindowPower-1, :);
+        Phase(:, :, :, Indx_E) = HilbertPhase(:, round(Starts(Indx_E)*HilbertFS):round(Starts(Indx_E)*HilbertFS)+TotWindowPower-1, :);
     end
     Data(:, :, Remove) = [];
     Power(:, :, :, Remove) = [];
