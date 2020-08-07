@@ -9,14 +9,15 @@ ERP_Parameters
 
 Task = 'LAT';
 
-% Condition = 'AllBeam';
-% Title = 'AllBeam';
+Condition = 'AllBeam';
+Title = 'AllBeam';
 
 
-Condition = 'SD3';
-Title = 'SleepDep';
 
-Refresh = true;
+% Condition = 'SD3';
+% Title = 'SleepDep';
+
+Refresh = false;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

@@ -1,4 +1,4 @@
-function PlotERP(t, Data, Trigger, Channels, Dimention, Format)
+function PlotERP(t, Data, Trigger, Channels, Dimention, Colors, Category)
 
 
 Sessions = fieldnames(Data);
@@ -7,7 +7,17 @@ Points = size(Data(1).(Sessions{1}), 2);
 
 AllERPs = [];
 hold on
+
+if strcmp(Dimention, 'Custom')
+    Unique_Categories = unique(Category(1).(Sessions{1}));
+    CustomERPs = nan(Participants, Points, numel(Unique_Categories));
+end
+
 for Indx_S = 1:numel(Sessions)
+    if strcmp(Dimention, 'Sessions')
+        SessionERPs = nan(Participants, Points);
+    end
+    
     for Indx_P = 1:Participants
         
         tempData = Data(Indx_P).(Sessions{Indx_S});
@@ -17,20 +27,42 @@ for Indx_S = 1:numel(Sessions)
         switch Dimention
             case 'Participants'
                 ERP = nanmean(nanmean(tempData(Channels, :, :), 1), 3);
+                plot(t, ERP, 'Color', Colors(Indx_P, :), 'LineWidth', 2)
+            case 'Sessions'
+                ERP = nanmean(nanmean(tempData(Channels, :, :), 1), 3);
+                SessionERPs(Indx_P, :) = ERP;
+            case 'Custom'
                 
+                for Indx_C = 1:numel(Unique_Categories)
+                    Trials =  Category(Indx_P).(Sessions{Indx_S})== Unique_Categories(Indx_C);
+                    ERP = nanmean(nanmean(tempData(Channels, :,Trials), 1), 3);
+                    CustomERPs(Indx_P, :, Indx_C) = ERP;
+                end
                 
-                plot(t, ERP, 'Color', Format.Colors.Participants(Indx_P, :), 'LineWidth', 2)
         end
-        
-        
         AllERPs = cat(1, AllERPs, ERP);
-        
     end
+    
+    if strcmp(Dimention, 'Sessions')
+        plot(t, nanmean(SessionERPs, 1),'Color', Colors(Indx_S, :), 'LineWidth', 2)
+    end
+    
 end
 
-ERP = nanmean(AllERPs, 1); %CHECK
-plot(t, ERP, 'Color', 'k', 'LineWidth', 3)
-set(gca, 'FontName', Format.FontName)
+
+
+
+switch Dimention
+    case 'Participants'
+        ERP = nanmean(AllERPs, 1); %CHECK
+        plot(t, ERP, 'Color', 'k', 'LineWidth', 3)
+    case 'Custom'
+        for Indx_C = 1:numel(Unique_Categories)
+            plot(t, nanmean(CustomERPs(:, :, Indx_C), 1),'Color', Colors(Indx_C, :), 'LineWidth', 2)
+
+        end
+end
+
 plot([Trigger, Trigger], [min(AllERPs(:)), max(AllERPs(:))], 'Color', [.5 .5 .5])
 xlabel('Time (s)')
 ylim( [min(AllERPs(:)), max(AllERPs(:))])
