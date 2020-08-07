@@ -4,7 +4,7 @@ close all
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Refresh = false;
+Refresh = true;
 CheckPlots = false;
 
 Task = 'LAT';
@@ -66,10 +66,10 @@ for Indx_F = 1:numel(Files)
     
     AllTriggers =  {EEG.event.type};
     AllTriggerTimes =  [EEG.event.latency];
-    ToneTrigerTimes = AllTriggerTimes(strcmp(AllTriggers, ToneTrigger))/fs;
+    ToneTriggerTimes = AllTriggerTimes(strcmp(AllTriggers, ToneTrigger))/fs;
     
-    Starts = ToneTrigerTimes + Start;
-    Stops = ToneTrigerTimes + Stop;
+    Starts = ToneTriggerTimes + Start;
+    Stops = ToneTriggerTimes + Stop;
     
     Cuts_Filepath = fullfile(Source_Cuts, [extractBefore(File, '_Clean'), '_Cleaning_Cuts.mat']);
     EEG = nanNoise(EEG, Cuts_Filepath);
@@ -79,7 +79,7 @@ for Indx_F = 1:numel(Files)
     
     Data = zeros(Channels, TotWindow, numel(Starts));
     Power = zeros(Channels,  TotWindowPower, numel(BandNames), numel(Starts));
-    Phase = Power;
+    Phase = zeros(Channels, numel(BandNames), numel(Starts));
     Remove = [];
     for Indx_E = 1:numel(Starts)
         Epoch = EEG.data(:, round(Starts(Indx_E)*fs):round(Starts(Indx_E)*fs)+TotWindow-1);
@@ -90,11 +90,11 @@ for Indx_F = 1:numel(Files)
         
         Data(:, :, Indx_E) = Epoch;
         Power(:, :, :, Indx_E) = HilbertPower(:, round(Starts(Indx_E)*HilbertFS):round(Starts(Indx_E)*HilbertFS)+TotWindowPower-1, :);
-        Phase(:, :, :, Indx_E) = HilbertPhase(:, round(Starts(Indx_E)*HilbertFS):round(Starts(Indx_E)*HilbertFS)+TotWindowPower-1, :);
+        Phase(:, :, Indx_E) = HilbertPhase(:, round(ToneTriggerTimes(Indx_E)*HilbertFS), :);
     end
     Data(:, :, Remove) = [];
     Power(:, :, :, Remove) = [];
-    Phase(:, :, :, Remove) = [];
+    Phase(:, :, Remove) = [];
     
     if CheckPlots
         plotChannels = EEG_Channels.Hotspot; % hotspot
@@ -121,11 +121,14 @@ for Indx_F = 1:numel(Files)
     end
     
     
-    parsave(fullfile(Destination, Filename), Data, Power, Phase)
+    parsave(fullfile(Destination, Filename), Data, Power, Phase, Chanlocs)
     disp(['*************finished ',Filename '*************'])
 end
 
 
-function parsave(fname, Data, Power, Phase)
-save(fname, 'Data', 'Power', 'Phase')
+function parsave(fname, Data, Power, Phase, Chanlocs)
+save(fname, 'Data', 'Power', 'Phase', 'Chanlocs')
 end
+
+
+% Maybe todo: can just save phase at trigger?
