@@ -13,10 +13,10 @@ Task = 'LAT';
 % Title = 'AllBeam';
 
 
-Condition = 'Comp';
-Title = 'Classic';
+Condition = 'SD3';
+Title = 'SleepDep';
 
-Refresh = false;
+Refresh = true;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -55,7 +55,11 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
             m = matfile(fullfile(Path, File{1}),  'Writable', false );
             allData(Indx_P).(Sessions{Indx_S}) = m.Data;
             allPhase(Indx_P).(Sessions{Indx_S})= m.Phase;
-            allPower(Indx_P).(Sessions{Indx_S}) = m.Power;
+            
+            for Indx_B = 1:numel(BandNames)
+                allPower.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S}) = squeeze(m.Power(:, :, Indx_B, :));
+              
+            end
             
         end
     end
@@ -66,7 +70,7 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
     save(fullfile(Paths.Summary, [Title, '_', Task, '_Power.mat']), 'allPower', '-v7.3')
 else
     disp('***************Loading allTones*********************')
-    load(Struct_Path, 'allTones')
+    load(Struct_Path_Data, 'allTones')
     
     load(Struct_Path_Data, 'allData')
     load(fullfile(Paths.Summary, [Title, '_', Task, '_Phase.mat']), 'allPhase')

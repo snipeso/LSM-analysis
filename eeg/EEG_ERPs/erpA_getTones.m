@@ -127,7 +127,7 @@ end
 
 
 function parsave(fname, Data, Power, Phase, Chanlocs)
-save(fname, 'Data', 'Power', 'Phase', 'Chanlocs')
+save(fname, 'Data', 'Power', 'Phase', 'Chanlocs', '-v7.3')
 end
 
 
