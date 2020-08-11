@@ -10,7 +10,8 @@ hold on
 
 if strcmp(Dimention, 'Custom')
     Unique_Categories = unique(Category(1).(Sessions{1}));
-    CustomERPs = nan(Participants, Points, numel(Unique_Categories));
+    %     CustomERPs = nan(Participants, Points, numel(Unique_Categories));
+    CustomERPs = struct();
 end
 
 for Indx_S = 1:numel(Sessions)
@@ -36,7 +37,14 @@ for Indx_S = 1:numel(Sessions)
                 for Indx_C = 1:numel(Unique_Categories)
                     Trials =  Category(Indx_P).(Sessions{Indx_S})== Unique_Categories(Indx_C);
                     ERP = nanmean(nanmean(tempData(Channels, :,Trials), 1), 3);
-                    CustomERPs(Indx_P, :, Indx_C) = ERP;
+                    %                     CustomERPs(Indx_P, :, Indx_C) = ERP; %TODO: try cat all stimuli, so ERP is smoother
+                    Cat = ['C',num2str(Unique_Categories(Indx_C))];
+                    
+                    if size(CustomERPs, 2) <Indx_P || ~isfield(CustomERPs(Indx_P), Cat)
+                        CustomERPs(Indx_P).(Cat) = nanmean(tempData(Channels, :,Trials), 1);
+                    else
+                        CustomERPs(Indx_P).(Cat) = cat(3, CustomERPs(Indx_P).(Cat),nanmean(tempData(Channels, :,Trials), 1) );
+                    end
                 end
                 
         end
@@ -58,8 +66,14 @@ switch Dimention
         plot(t, ERP, 'Color', 'k', 'LineWidth', 3)
     case 'Custom'
         for Indx_C = 1:numel(Unique_Categories)
-            plot(t, nanmean(CustomERPs(:, :, Indx_C), 1),'Color', Colors(Indx_C, :), 'LineWidth', 2)
-
+            %             plot(t, nanmean(CustomERPs(:, :, Indx_C), 1),'Color', Colors(Indx_C, :), 'LineWidth', 2)
+            All = nan(Participants, Points);
+            Cat = ['C',num2str(Unique_Categories(Indx_C))];
+            for Indx_P = 1:Participants
+                
+                All(Indx_P, :) = nanmean(CustomERPs(Indx_P).(Cat), 3);
+            end
+            plot(t, nanmean(All, 1),'Color', Colors(Indx_C, :), 'LineWidth', 2)
         end
 end
 

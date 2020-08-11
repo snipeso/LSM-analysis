@@ -9,15 +9,15 @@ ERP_Parameters
 
 Task = 'LAT';
 
-Condition = 'AllBeam';
-Title = 'AllBeam';
+% Condition = 'AllBeam';
+% Title = 'AllBeam';
 
 
 
-% Condition = 'SD3';
-% Title = 'SleepDep';
+Condition = 'SD3';
+Title = 'SleepDep';
 
-Refresh = false;
+Refresh = true;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -66,13 +66,11 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
     end
     
     
-    save(Struct_Path_Data, 'allData', '-v7.3')
-    save(fullfile(Paths.Summary, [Title, '_', Task, '_Phase.mat']), 'allPhase')
-    save(fullfile(Paths.Summary, [Title, '_', Task, '_Power.mat']), 'allPower', '-v7.3')
+%     save(Struct_Path_Data, 'allData', '-v7.3')
+%     save(fullfile(Paths.Summary, [Title, '_', Task, '_Phase.mat']), 'allPhase')
+%     save(fullfile(Paths.Summary, [Title, '_', Task, '_Power.mat']), 'allPower', '-v7.3')
 else
     disp('***************Loading allTones*********************')
-    load(Struct_Path_Data, 'allTones')
-    
     load(Struct_Path_Data, 'allData')
     load(fullfile(Paths.Summary, [Title, '_', Task, '_Phase.mat']), 'allPhase')
     load(fullfile(Paths.Summary, [Title, '_', Task, '_Power.mat']), 'allPower')
