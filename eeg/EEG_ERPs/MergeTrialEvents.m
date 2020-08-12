@@ -1,4 +1,4 @@
-% function Events = MergeTrialEvents(EEG, AllAnswers, EEG_Triggers)
+function Events = MergeTrialEvents(EEG, AllAnswers, EEG_Triggers)
 % outputs table of trials, with their original latencies
 
 Labels = split(EEG.filename, '_');
@@ -12,7 +12,7 @@ StimIndx = find(strcmp({EEG.event.type}, EEG_Triggers.Stim ));
 RespIndx  = find(strcmp({EEG.event.type}, EEG_Triggers.Response ));
 TriggerTimes = [ EEG.event.latency];
 
-if numel(Stim) ~= size(Events, 1)
+if numel(StimIndx) ~= size(Events, 1)
     error(['MISMATCH in ', EEG.filename])
 end
 
@@ -38,6 +38,7 @@ for Indx_T = 1:size(Events, 1)
         
         % give warning if they're wrong
     elseif isnan(AllAnswers.rt{Indx_T})
+          Events.RespLatency(Indx_T) = nan;
         % check that there's no response
         % maybe allow another .5 seconds to be ocunted as a response, TODO
     end
