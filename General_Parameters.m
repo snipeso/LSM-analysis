@@ -28,7 +28,7 @@ end
 
 % All participants to include in the analysis
 % Participants = {'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07', 'P08', 'P09', 'P11'};
-Participants = {'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07', 'P08', 'P09', 'P10', 'P11', 'P12'};
+Participants = { 'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07', 'P08', 'P09', 'P10', 'P11', 'P12'};
 % Participants = {'P02', 'P03', 'P04', 'P05', 'P06', 'P07', 'P08', 'P09', 'P11'};
 % Participants = {'P01', 'P02', 'P03', 'P05', 'P06', 'P07', 'P08', 'P09',  'P11', 'P12'};
 
@@ -227,7 +227,7 @@ EEG_Triggers.Quit = 'S  9';
 % LAT specific
 EEG_Triggers.LAT.StartLeft = 'S 10';
 EEG_Triggers.LAT.StartRight = 'S 11';
-
+EEG_Triggers.LAT.Tone = 'S 12';
 
 
 saveFreqs = struct();

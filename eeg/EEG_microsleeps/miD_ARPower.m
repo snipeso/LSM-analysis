@@ -12,11 +12,12 @@ Tasks = {'PVT' , 'LAT'};
 Sessions = {'Baseline', 'Session1', 'Session2'};
 Conditions = {'Beam', 'Comp'};
 Title = 'AllTasks';
+PlotLims = [1 30];
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-TitleTag = [Title,'_', Scaling, '_Front'];
+TitleTag = [Title,'_', Scaling];
 
 FFT_Path = fullfile(Paths.Summary, [Title, '_Microsleeps_arFFT.mat']);
 
@@ -73,7 +74,7 @@ end
 
 switch Scaling
     case 'log'
-        for Indx_F = 1:size(allFFT_mi, 2)
+        for Indx_F = 1:size(allFFT, 2)
             allFFT(Indx_F).FFT = log(allFFT(Indx_F).FFT);
         end
         [PowerStruct, Scores] = Restructure(allFFT, Categories, Sessions, Participants);
@@ -95,10 +96,12 @@ end
 Quantiles_Big = nan(numel(Participants), numel(Sessions), 2);
 Quantiles_Small =  nan(numel(Participants), numel(Sessions), 2);
 
+PlotFreqIndx =  dsearchn(Freqs', PlotLims');
+
 for Indx_P = 1:numel(Participants)
     for Indx_S = 1:numel(Sessions)
        
-        A =  PowerStruct(Indx_P).(Sessions{Indx_S});
+        A =  PowerStruct(Indx_P).(Sessions{Indx_S})(1, PlotFreqIndx(1): PlotFreqIndx(2), :);
         A = A(:); % pool datasets
         Quantiles_Big(Indx_P, Indx_S, :) =  [quantile(A(:), .01),  quantile(A(:), .99)];
         Quantiles_Small(Indx_P, Indx_S, :) =  [quantile(A(:), .05),  quantile(A(:), .95)];
@@ -164,10 +167,10 @@ for Indx_S = 1:numel(Sessions)
     
 end
 
-PlotMicrosleeps(Microsleeps', EE,Freqs', YLims_Big, YLabel, Format)
-saveas(gcf,fullfile(Paths.Figures, [ TitleTag, '_MicrosleepARPower.svg']))
+PlotMicrosleeps(Microsleeps', EE', Freqs, YLims_Big, YLabel, Format)
+saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_MicrosleepARPower.svg']))
 
-PlotPowerSpectrumDiff(ALLSession_mi', ALLSession_All', Freqs, YLims_Small, YLabel, Sessions, ...
+PlotPowerSpectrumDiff(ALLSession_mi, ALLSession_All, Freqs, YLims_Small, YLabel, Sessions, ...
     Format, ['Microsleeps by Session ', replace(TitleTag, '_', ' ')])
 saveas(gcf,fullfile(Paths.Figures, [ TitleTag, '_MicrosleepARPower_Means.svg']))
 
