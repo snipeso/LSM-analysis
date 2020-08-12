@@ -3,8 +3,12 @@ run(fullfile(extractBefore(mfilename('fullpath'), 'eeg'), 'General_Parameters'))
 addpath(fullfile(Paths.Analysis, 'functions','eeg'))
 
 % %%% locations
-Paths.Datasets = 'D:\LSM\data';
-Paths.Preprocessed = 'C:\Users\colas\Desktop\LSMData';
+Paths.Datasets = 'D:\Data\Raw';
+Paths.Preprocessed = 'D:\Data\Preprocessed';
+
+
+% Paths.Datasets = 'D:\LSM\data';
+% Paths.Preprocessed = 'C:\Users\colas\Desktop\LSMData';
 
 % Paths.Datasets = 'L:\Somnus-Data\Data01\LSM\Data\Raw';
 % Paths.Preprocessed = 'L:\Somnus-Data\Data01\LSM\Data\Preprocessed';

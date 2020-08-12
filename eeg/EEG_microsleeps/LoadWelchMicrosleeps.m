@@ -13,7 +13,7 @@ Tasks = {'PVT' , 'LAT'};
 Sessions = {'Baseline', 'Session1', 'Session2'};
 Conditions = {'Beam', 'Comp'};
 Title = 'AllTasks';
-Refresh = false;
+Refresh = true;
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
