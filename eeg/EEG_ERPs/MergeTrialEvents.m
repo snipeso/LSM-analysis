@@ -23,10 +23,12 @@ for Indx_T = 1:size(Events, 1)
     % get stim latency and response latency
     Events.StimLatency(Indx_T) = TriggerTimes(StimIndx(Indx_T));
     
-    if ~isnan(AllAnswers.rt{Indx_T}) && ~isempty(AllAnswers.rt{Indx_T})
-        
+    if ~isnan(Events.rt{Indx_T}) && ~isempty(Events.rt{Indx_T})
+        try
         Events.RespLatency(Indx_T) = TriggerTimes(RespIndx(find(RespIndx>Indx, 1, 'first')));
-        
+        catch
+            a=1
+        end
         % make sure the data is consistent
         RealRT = (Events.RespLatency(Indx_T) -  Events.StimLatency(Indx_T))/EEG.srate;
         Discrepancy = Events.rt{Indx_T} - RealRT;
@@ -37,7 +39,7 @@ for Indx_T = 1:size(Events, 1)
         end
         
         % give warning if they're wrong
-    elseif isnan(AllAnswers.rt{Indx_T})
+    elseif isnan(Events.rt{Indx_T})
           Events.RespLatency(Indx_T) = nan;
         % check that there's no response
         % maybe allow another .5 seconds to be ocunted as a response, TODO
