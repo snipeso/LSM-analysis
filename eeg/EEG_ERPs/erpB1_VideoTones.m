@@ -57,13 +57,15 @@ Time = string(TimePoints*1000);
 Unit = repmat("ms", 1, numel(Time));
 Titles = append(Time, Unit);
 
-PlotTopoTimePoints(ERP, Chanlocs, Points, Titles, Format)
+PlotTopoTimePoints(ERP, Chanlocs, 'Divergent', Points, Titles, Format)
 
+Points = round((TimePoints-Start)*HilbertFS);
 for Indx_B = 1:numel(BandNames)
-    Band = repmat([BandNames{Indx_B}, ' '], 1, numel(Time));
+
+    Band = repmat({[BandNames{Indx_B}, ' ']}, 1, numel(Time));
     Titles = append(Band, Time, Unit);
     
-    PlotTopoTimePoints(squeeze(PowerERP(:, :, Indx_B)), Chanlocs, Points, Titles, Format)
+    PlotTopoTimePoints(zscore(squeeze(PowerERP(:, :, Indx_B))')', Chanlocs, 'Divergent', Points, Titles, Format)
 end
 
 % plot gif of ERP

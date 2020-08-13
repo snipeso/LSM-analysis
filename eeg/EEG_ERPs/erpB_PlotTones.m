@@ -84,4 +84,5 @@ end
 
 
 % plot p200xphase, split by quartiles
+colormap(Format.Colormap.Divergent)
 
