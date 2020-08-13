@@ -5,7 +5,7 @@ close all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Refresh = true;
-CheckPlots = false;
+CheckPlots = true;
 
 Task = 'LAT';
 
@@ -134,7 +134,7 @@ for Indx_F = 1:numel(Files)
     
     
     parsave(fullfile(Destination, Filename), Data, Events)
-    disp(['*************finished ',Filename '*************'])
+    disp(['*************finished ', Filename, '*************'])
 end
 
 

@@ -24,16 +24,15 @@ for Indx_T = 1:size(Events, 1)
     Events.StimLatency(Indx_T) = TriggerTimes(StimIndx(Indx_T));
     
     if ~isnan(Events.rt{Indx_T}) && ~isempty(Events.rt{Indx_T})
-        try
+
         Events.RespLatency(Indx_T) = TriggerTimes(RespIndx(find(RespIndx>Indx, 1, 'first')));
-        catch
-            a=1
-        end
+
         % make sure the data is consistent
         RealRT = (Events.RespLatency(Indx_T) -  Events.StimLatency(Indx_T))/EEG.srate;
         Discrepancy = Events.rt{Indx_T} - RealRT;
         if abs(Discrepancy) > .1
             warning(['timing discrepancy of ', num2str(Discrepancy) ' for ', EEG.filename])
+            
         elseif abs(RealRT) > 1
             warning(['RT problem of ', num2str(RealRT) ' for ', EEG.filename])
         end
