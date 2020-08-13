@@ -16,7 +16,7 @@ addpath(fullfile(Paths.Analysis, 'functions', 'eeg', 'ScoringFunctions'))
 Folders.Subfolders(~contains(Folders.Subfolders, Tasks)) = [];
 Folders.Subfolders(~contains(Folders.Subfolders, 'EEG')) = [];
 
-for Indx_D = 3 %1:size(Folders.Datasets,1) % loop through participants
+parfor Indx_D = 1:size(Folders.Datasets,1) % loop through participants
     for Indx_F = 1:size(Folders.Subfolders, 1) % loop through all subfolders
         
         %%%%%%%%%%%%%%%%%%%%%%%%
@@ -87,7 +87,6 @@ for Indx_D = 3 %1:size(Folders.Datasets,1) % loop through participants
         %%% Save
         Filename_Short = [Folders.Datasets{Indx_D}, '_', num2str(Indx_F)];
         SaveScoring(Destination, Filename_Core, Filename_Short, ScoringData, double(sp1), double(sp2));
-    A= 1;
     end
 end
 

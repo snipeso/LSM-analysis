@@ -17,7 +17,7 @@ stopAtten = 60;
 
 % % % FIR filter 0.5 Hz - equiripple
 hp_Frq_EEG = 0.8;
-hp_stopFrq_EEG = 0.45;
+hp_stopFrq_EEG = 0.51;
 hp_stopAtten_EEG = 60;
 
 
