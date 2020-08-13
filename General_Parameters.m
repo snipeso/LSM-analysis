@@ -126,7 +126,6 @@ allSessionLabels = struct(); % labels used to display in plots
 % Labels for task battery
 allSessions.BAT = {'Baseline', 'Session1', 'Session2'};
 allSessionLabels.BAT = {'BL', 'S1', 'S2'};
-Colors.BAT = {[0 0 0], [.3 .3 .3], [.7 .7 .7]};
 
 % Labels for LAT "beamer" condition; a.k.a. "soporific"
 allSessions.LATBeam = {'BaselineBeam', 'Session1Beam', 'Session2Beam1'};

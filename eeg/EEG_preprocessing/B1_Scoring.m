@@ -3,7 +3,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Tasks = {'Sleep', 'MWT'};
+Tasks = {'Sleep'};
 
 Refresh = true;
 
@@ -16,7 +16,7 @@ addpath(fullfile(Paths.Analysis, 'functions', 'eeg', 'ScoringFunctions'))
 Folders.Subfolders(~contains(Folders.Subfolders, Tasks)) = [];
 Folders.Subfolders(~contains(Folders.Subfolders, 'EEG')) = [];
 
-parfor Indx_D = 1:size(Folders.Datasets,1) % loop through participants
+for Indx_D = 3 %1:size(Folders.Datasets,1) % loop through participants
     for Indx_F = 1:size(Folders.Subfolders, 1) % loop through all subfolders
         
         %%%%%%%%%%%%%%%%%%%%%%%%
@@ -73,10 +73,10 @@ parfor Indx_D = 1:size(Folders.Datasets,1) % loop through participants
         %%% process the data
         
         % load file
-        EEG = LoadEEGLAB(Path, Sleep_Channels()); % loads a .set, selects relevant channels
+        EEGunf = LoadEEGLAB(Path, Sleep_Channels()); % loads a .set, selects relevant channels
         
         % filter and downsample the data
-        EEG = FilterScoring(EEG);
+        EEG = FilterScoring(EEGunf);
         
         %%% Rereference the data
         ScoringData = RereferenceScoring(EEG.data); % Only takes the data matrix
@@ -87,6 +87,7 @@ parfor Indx_D = 1:size(Folders.Datasets,1) % loop through participants
         %%% Save
         Filename_Short = [Folders.Datasets{Indx_D}, '_', num2str(Indx_F)];
         SaveScoring(Destination, Filename_Core, Filename_Short, ScoringData, double(sp1), double(sp2));
+    A= 1;
     end
 end
 
