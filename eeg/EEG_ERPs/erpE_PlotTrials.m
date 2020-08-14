@@ -17,6 +17,8 @@ TitleTag = [Task '_', Title, '_Trials'];
 Tally = struct();
 Stim = struct();
 StimPower = struct();
+Resp = struct();
+RespPower = struct();
 for Indx_P = 1:numel(Participants)
     for Indx_S = 1:numel(Sessions)
         
@@ -47,6 +49,7 @@ for Indx_P = 1:numel(Participants)
               StimPowerTrials(:, :, :, Indx_T) = Temp(Indx_T).Power(:, 1:Powerpoints, :);
         end
         Stim(Indx_P).(Sessions{Indx_S}) = StimTrials;
+        
         for Indx_B = 1:numel(BandNames)
          StimPower.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S}) = squeeze(StimPowerTrials(:, :, Indx_B, :));
         end
@@ -56,6 +59,7 @@ end
 
 % plot ERPs of on time, late, and missing stim and responses (when present)
 t = linspace(Start, Stop, ERPpoints);
+figure
 PlotERP(t, Stim, 0,  PlotChannels, 'Custom', Format.Colors.Tally, Tally)
 legend({'Hits', 'Late', 'Misses'})
 xlim([-.5, 1.5])
@@ -68,13 +72,11 @@ set(gca, 'FontSize', 14)
 % plot power for the above
    t = linspace(Start, Stop, Powerpoints);
 for Indx_B = 1:numel(BandNames)
-
-PlotERP(t, StimPower(BandNames{Indx_B}), 0,  PlotChannels, 'Custom', Format.Colors.Tally, Tally)
+figure
+PlotERP(t, StimPower.(BandNames{Indx_B}), 0,  PlotChannels, 'Custom', Format.Colors.Tally, Tally)
 legend({'Hits', 'Late', 'Misses'})
-xlim([-.5, 1.5])
 title(['All Stim ', BandNames{Indx_B}])
-ylabel('miV')
-ylim([-3, 3])
+
 set(gca, 'FontSize', 14)
  
 end

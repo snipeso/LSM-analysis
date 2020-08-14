@@ -57,9 +57,8 @@ for Indx_S = 1:numel(Sessions)
     
 end
 
-
-
-
+Min = nan;
+Max = nan;
 switch Dimention
     case 'Participants'
         ERP = nanmean(AllERPs, 1); %CHECK
@@ -73,10 +72,13 @@ switch Dimention
                 
                 All(Indx_P, :) = nanmean(CustomERPs(Indx_P).(Cat), 3);
             end
+            
             plot(t, nanmean(All, 1),'Color', Colors(Indx_C, :), 'LineWidth', 2)
+            Min = min(Min, min(nanmean(All, 1))');
+             Max = max(Max, max(nanmean(All, 1))');
         end
 end
 
 plot([Trigger, Trigger], [min(AllERPs(:)), max(AllERPs(:))], 'Color', [.5 .5 .5])
 xlabel('Time (s)')
-ylim( [min(AllERPs(:)), max(AllERPs(:))])
+ylim([Min, Max])
