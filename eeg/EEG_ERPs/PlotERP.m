@@ -75,7 +75,7 @@ switch Dimention
             
             plot(t, nanmean(All, 1),'Color', Colors(Indx_C, :), 'LineWidth', 2)
             Min = min(Min, min(nanmean(All, 1))');
-             Max = max(Max, max(nanmean(All, 1))');
+            Max = max(Max, max(nanmean(All, 1))');
         end
 end
 

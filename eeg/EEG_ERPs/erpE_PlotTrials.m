@@ -73,13 +73,43 @@ end
 % plot ERPs of on time, late, and missing stim and responses (when present)
 PlotERPandPower(Stim, StimPower, [Start, Stop], PlotChannels, Tally, ...
     {'Hits', 'Late', 'Misses'}, 'All Stim', 'Tally', Format)
-saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_ERPTally.svg']))
-
+saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_ERP_Stim_Tally.svg']))
 
 PlotERPandPower(Resp, RespPower, [Start, Stop], PlotChannels, Tally, ...
     {'Hits', 'Late'}, 'All Resp',  'Tally', Format)
+saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_ERP_Resp_Tally.svg']))
+
 
 % plot specific channels
+[~, PlotSpots] = intersect({Chanlocs.labels}, string(EEG_Channels.ERP));
+% FZ
+PlotERPandPower(Stim, StimPower, [Start, Stop], PlotSpots(1), Tally, ...
+    {'Hits', 'Late', 'Misses'}, 'FZ Stim', 'Tally', Format)
+saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_ERP_Stim_FZ_Tally.svg']))
+
+PlotERPandPower(Resp, RespPower, [Start, Stop],  PlotSpots(1), Tally, ...
+    {'Hits', 'Late'}, 'FZ Resp',  'Tally', Format)
+saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_ERP_Resp_FZ_Tally.svg']))
+
+% CZ
+PlotERPandPower(Stim, StimPower, [Start, Stop],  PlotSpots(2), Tally, ...
+    {'Hits', 'Late', 'Misses'}, 'CZ Stim', 'Tally', Format)
+saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_ERP_Stim_CZ_Tally.svg']))
+
+PlotERPandPower(Resp, RespPower, [Start, Stop],  PlotSpots(2), Tally, ...
+    {'Hits', 'Late'}, 'CZ Resp',  'Tally', Format)
+saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_ERP_Resp_CZ_Tally.svg']))
+
+% Oz
+PlotERPandPower(Stim, StimPower, [Start, Stop],  PlotSpots(3), Tally, ...
+    {'Hits', 'Late', 'Misses'}, 'OZ Stim', 'Tally', Format)
+saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_ERP_Stim_OZ_Tally.svg']))
+
+PlotERPandPower(Resp, RespPower, [Start, Stop],  PlotSpots(3), Tally, ...
+    {'Hits', 'Late'}, 'OZ Resp',  'Tally', Format)
+saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_ERP_Stim_OZ_Tally.svg']))
+
+% plot erp split by ongoing phases
 
 % plot normalized erp and power for on time and late responses so squished
 
