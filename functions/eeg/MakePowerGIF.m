@@ -1,4 +1,4 @@
-function MakePowerGIF(Path, Filename, Hilbert, BandNames, Chanlocs,...
+function MakePowerGIF(Path, Filename, Hilbert, t, BandNames, Chanlocs,...
     StartTime, EndTime, oldfs, newfs, Slowdown, Colormap, FontName)
 
 Filepath = fullfile(Path, [Filename, num2str(StartTime), '-', num2str(EndTime), '.gif']);
@@ -9,8 +9,14 @@ if ~exist(Path, 'dir')
     mkdir(Path)
 end
 
+[~, StartPoint] = min(abs(t-StartTime));
+[~, EndPoint] = min(abs(t-EndTime));
+
 % Hilbert_Short = log(Hilbert(:, round(StartTime*oldfs):round(EndTime*oldfs), :));
-Hilbert_Short = Hilbert(:, round(StartTime*oldfs):round(EndTime*oldfs), :);
+Hilbert_Short = Hilbert(:, StartPoint:EndPoint, :);
+
+t_short = t(StartPoint:EndPoint);
+
 Points = size(Hilbert_Short, 2);
 Gap = (1/newfs)*Slowdown;
 
@@ -45,7 +51,7 @@ for Indx_F = 1:Frames
         topoplot(squeeze(MeanFrame(:, :, Indx_B)), Chanlocs, 'maplimits', CLims, ...
             'style', 'map', 'headrad', 'rim', 'colormap', colormap(Colormap), ...
             'gridscale', 150)
-        title(BandNames{Indx_B}, 'FontSize', 14, 'FontName', FontName)
+        title([BandNames{Indx_B}, ' (', num2str(round(1000*t_short(Edges(Indx_F)))), ')' ], 'FontSize', 14, 'FontName', FontName)
     end
     set(gcf,'color','w')
     drawnow

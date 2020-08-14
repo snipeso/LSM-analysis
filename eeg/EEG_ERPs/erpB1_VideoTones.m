@@ -1,9 +1,8 @@
 
-% Load_Tones
+Load_Tones
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-PowerWindow = [-1.5, .1];
 TimePoints = [0, .2 .26, .33, .44, .8];
 PlotChannels = EEG_Channels.Hotspot; % eventually find a more accurate set of channels?
 
@@ -12,6 +11,7 @@ PlotChannels = EEG_Channels.Hotspot; % eventually find a more accurate set of ch
 
 TitleTag = [Task '_', Title, '_Tones'];
 
+%%
 % create average ERP and Power for everyone at all channels
 ERPWindow = round((Stop - Start)*newfs);
 PowerWindow =  round((Stop - Start)*HilbertFS);
@@ -57,18 +57,30 @@ Time = string(TimePoints*1000);
 Unit = repmat("ms", 1, numel(Time));
 Titles = append(Time, Unit);
 
+% plot ERP stills
 PlotTopoTimePoints(ERP, Chanlocs, 'Divergent', Points, Titles, Format)
+saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_ERPTopo.svg']))
 
+
+% plot power stills
 Points = round((TimePoints-Start)*HilbertFS);
 for Indx_B = 1:numel(BandNames)
 
+    PowerERP(:, :, Indx_B) = zscore(PowerERP(:, :, Indx_B)')';
     Band = repmat({[BandNames{Indx_B}, ' ']}, 1, numel(Time));
     Titles = append(Band, Time, Unit);
     
-    PlotTopoTimePoints(zscore(squeeze(PowerERP(:, :, Indx_B))')', Chanlocs, 'Divergent', Points, Titles, Format)
+    PlotTopoTimePoints(squeeze(PowerERP(:, :, Indx_B)), Chanlocs, 'Divergent', Points, Titles, Format)
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_',BandNames{Indx_B} '_ERPPowerTopo.svg']))
 end
 
+
+%%
+
 % plot gif of ERP
+t = linspace(Start, Stop, ERPWindow);
+MakePowerGIF(Paths.Figures, [TitleTag, 'ERP'], ERP, t, {'ERP'}, Chanlocs,...
+    -.1, 1, newfs, 100, 20, Format.Colormap.Divergent, Format.FontName)
 
 
 % plot gif of power
