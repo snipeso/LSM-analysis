@@ -72,7 +72,7 @@ switch Dimention
                 
                 All(Indx_P, :) = nanmean(CustomERPs(Indx_P).(Cat), 3);
                 
-                plot(t, All(Indx_P, :), 'Color',[.8 .8 .8], 'LineWidth', .1) % TEMP
+%                 plot(t, All(Indx_P, :), 'Color',[.8 .8 .8], 'LineWidth', .1) % TEMP
             end
             
             plot(t, nanmean(All, 1),'Color', Colors(Indx_C, :), 'LineWidth', 2)

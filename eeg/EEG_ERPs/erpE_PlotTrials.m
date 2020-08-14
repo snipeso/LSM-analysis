@@ -15,6 +15,8 @@ TitleTag = [Task '_', Title, '_Trials'];
 [~, PlotChannels] = intersect({Chanlocs.labels}, string(PlotChannels));
 
 Tally = struct();
+RTQuintile = struct();
+
 Stim = struct();
 StimPower = struct();
 Resp = struct();
@@ -30,13 +32,22 @@ for Indx_P = 1:numel(Participants)
         end
         
         T(T.Noise==1, :) = [];
-        % get categories
+        
+        % get tally categories
         RTs = cell2mat(T.rt);
         RTally = zeros(size(RTs));
         RTally(isnan(RTs)) = 3;
         RTally(RTs<.5) = 1;
         RTally(RTs>.5) = 2;
         Tally(Indx_P).(Sessions{Indx_S}) = RTally;
+        
+        % get rt categories
+        Limits = linspace(0, 1, 5+1);
+        Edges = quantile([AllAnswers.rt{strcmp(AllAnswers.Participant, Participants{Indx_P})}], Limits);
+        Quintiles = discretize(RTs, Edges);
+        Quintiles(isnan(Quintiles)) = numel(Edges);
+        RTQuintile(Indx_P).(Sessions{Indx_S}) = Quintiles;
+        
         
         % get stim ERPs
         Temp  =  allData(Indx_P).(Sessions{Indx_S});
@@ -81,33 +92,33 @@ saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_ERP_Resp_Tally.svg']))
 
 
 % plot specific channels
+Format.Colors.Quintiles = flipud(plasma(numel(Limits)+1));
+Format.Colors.Quintiles(1, :) = []; % get rid of first white
 [~, PlotSpots] = intersect({Chanlocs.labels}, string(EEG_Channels.ERP));
-% FZ
-PlotERPandPower(Stim, StimPower, [Start, Stop], PlotSpots(1), Tally, ...
-    {'Hits', 'Late', 'Misses'}, 'FZ Stim', 'Tally', Format)
-saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_ERP_Stim_FZ_Tally.svg']))
+Labels = {'FZ', 'CZ', 'Oz'};
+for Indx_C = 1:numel(PlotSpots)
+    PlotERPandPower(Stim, StimPower, [Start, Stop], PlotSpots(Indx_C), Tally, ...
+        {'Hits', 'Late', 'Misses'}, [Labels{Indx_C},' Stim'], 'Tally', Format)
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_ERP_Stim_', Labels{Indx_C}, '_Tally.svg']))
+    
+    PlotERPandPower(Resp, RespPower, [Start, Stop],  PlotSpots(Indx_C), Tally, ...
+        {'Hits', 'Late'},  [Labels{Indx_C},' Resp'],  'Tally', Format)
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_ERP_Resp_,' Labels{Indx_C}, '_Tally.svg']))
+    
+    % plot ERP split by RT quintile
+    
+    PlotERPandPower(Stim, StimPower, [Start, Stop], PlotSpots(Indx_C), RTQuintile, ...
+        string(Limits), [Labels{Indx_C},' Stim'], 'Quintiles', Format)
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_ERP_Stim_RTQuintile.svg']))
+    
+    PlotERPandPower(Resp, RespPower, [Start, Stop], PlotSpots(Indx_C), RTQuintile, ...
+        string(Limits(1:end-1)),  [Labels{Indx_C},' Resp'],  'Quintiles', Format)
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_ERP_Resp_RTQuintile.svg']))
+end
 
-PlotERPandPower(Resp, RespPower, [Start, Stop],  PlotSpots(1), Tally, ...
-    {'Hits', 'Late'}, 'FZ Resp',  'Tally', Format)
-saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_ERP_Resp_FZ_Tally.svg']))
 
-% CZ
-PlotERPandPower(Stim, StimPower, [Start, Stop],  PlotSpots(2), Tally, ...
-    {'Hits', 'Late', 'Misses'}, 'CZ Stim', 'Tally', Format)
-saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_ERP_Stim_CZ_Tally.svg']))
 
-PlotERPandPower(Resp, RespPower, [Start, Stop],  PlotSpots(2), Tally, ...
-    {'Hits', 'Late'}, 'CZ Resp',  'Tally', Format)
-saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_ERP_Resp_CZ_Tally.svg']))
 
-% Oz
-PlotERPandPower(Stim, StimPower, [Start, Stop],  PlotSpots(3), Tally, ...
-    {'Hits', 'Late', 'Misses'}, 'OZ Stim', 'Tally', Format)
-saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_ERP_Stim_OZ_Tally.svg']))
-
-PlotERPandPower(Resp, RespPower, [Start, Stop],  PlotSpots(3), Tally, ...
-    {'Hits', 'Late'}, 'OZ Resp',  'Tally', Format)
-saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_ERP_Stim_OZ_Tally.svg']))
 
 % plot erp split by ongoing phases
 
