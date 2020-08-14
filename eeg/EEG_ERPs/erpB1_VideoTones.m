@@ -84,3 +84,6 @@ MakePowerGIF(Paths.Figures, [TitleTag, 'ERP'], ERP, t, {'ERP'}, Chanlocs,...
 
 
 % plot gif of power
+t = linspace(Start, Stop, PowerWindow);
+MakePowerGIF(Paths.Figures, [TitleTag, 'PowerERP'], PowerERP, t, BandNames, Chanlocs,...
+    -.1, 1, HilbertFS, 100, 20, Format.Colormap.Divergent, Format.FontName)

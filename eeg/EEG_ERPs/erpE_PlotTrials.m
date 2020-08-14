@@ -1,7 +1,20 @@
 
 
+Load_Trials
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+PlotChannels = EEG_Channels.Hotspot; % eventually find a more accurate set of channels?
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+TitleTag = [Task '_', Title, '_Trials'];
+[~, PlotChannels] = intersect({Chanlocs.labels}, string(PlotChannels));
 
 % plot ERPs of on time, late, and missing stim and responses (when present)
+
 
 % plot power for the above
 
