@@ -66,9 +66,9 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
     end
     
     
-%     save(Struct_Path_Data, 'allData', '-v7.3')
-%     save(fullfile(Paths.Summary, [Title, '_', Task, '_Phase.mat']), 'allPhase')
-%     save(fullfile(Paths.Summary, [Title, '_', Task, '_Power.mat']), 'allPower', '-v7.3')
+    save(Struct_Path_Data, 'allData', '-v7.3')
+    save(fullfile(Paths.Summary, [Title, '_', Task, '_Phase.mat']), 'allPhase')
+    save(fullfile(Paths.Summary, [Title, '_', Task, '_Power.mat']), 'allPower', '-v7.3')
 else
     disp('***************Loading allTones*********************')
     load(Struct_Path_Data, 'allData')

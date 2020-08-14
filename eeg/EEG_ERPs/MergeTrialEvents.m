@@ -23,7 +23,11 @@ for Indx_T = 1:size(Events, 1)
     % get stim latency and response latency
     Events.StimLatency(Indx_T) = TriggerTimes(StimIndx(Indx_T));
     
-    if ~isnan(Events.rt{Indx_T}) && ~isempty(Events.rt{Indx_T})
+    if Events.rt{Indx_T} < .1
+        Events.Error(Indx_T)= 1;
+        Events.rt(Indx_T) = {[nan]};
+        Events.RespLatency(Indx_T) = nan;
+    elseif ~isnan(Events.rt{Indx_T}) && ~isempty(Events.rt{Indx_T})
 
         Events.RespLatency(Indx_T) = TriggerTimes(RespIndx(find(RespIndx>Indx, 1, 'first')));
 

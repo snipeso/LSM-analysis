@@ -3,16 +3,19 @@ function EEG = nanNoise(EEG, Cuts_Filepath)
 m = matfile(Cuts_Filepath);
 
 try
-if ~isempty(m.TMPREJ)
-    Starts = convertFS(m.TMPREJ(:, 1), m.srate, EEG.srate);
-    Ends =  convertFS(m.TMPREJ(:, 2), m.srate, EEG.srate);
-    
-    
-    
-    for Indx_N = 1:numel(Starts)
-        EEG.data(:, Starts(Indx_N):Ends(Indx_N)) = nan;
+    if ~isempty(m.TMPREJ)
+        Starts = convertFS(m.TMPREJ(:, 1), m.srate, EEG.srate);
+        Ends =  convertFS(m.TMPREJ(:, 2), m.srate, EEG.srate);
+        
+        if any(Ends>size(EEG.data, 2))
+            Ends(Ends>size(EEG.data, 2)) = size(EEG.data, 2);
+            warning(['a few extra samples'])
+        end
+        
+        for Indx_N = 1:numel(Starts)
+            EEG.data(:, Starts(Indx_N):Ends(Indx_N)) = nan;
+        end
     end
-end
 end
 end
 
