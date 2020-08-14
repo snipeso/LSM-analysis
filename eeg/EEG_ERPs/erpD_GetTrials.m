@@ -5,7 +5,6 @@ close all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Refresh = true;
-CheckPlots = true;
 
 Task = 'LAT';
 
@@ -53,10 +52,10 @@ for Indx_F = 1:numel(Files)
     
     
     
-        % get hilbert power bands and phase
-        EEGds = pop_resample(EEG, HilbertFS);
-        EEG  = pop_resample(EEG, newfs);
-        [HilbertPower, HilbertPhase] = HilbertBands(EEGds, Bands, BandNames, 'matrix');
+    % get hilbert power bands and phase
+    EEGds = pop_resample(EEG, HilbertFS);
+    EEG  = pop_resample(EEG, newfs);
+    [HilbertPower, HilbertPhase] = HilbertBands(EEGds, Bands, BandNames, 'matrix');
     %
     
     % get trial information into event structure
@@ -70,27 +69,37 @@ for Indx_F = 1:numel(Files)
     % remove bad segments
     Cuts_Filepath = fullfile(Source_Cuts, [extractBefore(File, '_Clean'), '_Cleaning_Cuts.mat']);
     EEG = nanNoise(EEG, Cuts_Filepath);
+    for Indx_B = 1:numel(BandNames)
+        PowerEEG = struct();
+        PowerEEG.data = squeeze(HilbertPower(:, :, Indx_B));
+        PowerEEG.srate = HilbertFS;
+        PowerEEG = nanNoise(PowerEEG, Cuts_Filepath);
+        HilbertPower(:, :, Indx_B) = PowerEEG.data;
+    end
+    
     
     Data = struct();
-
     
-   
+    
+    Remove = [];
     for Indx_E = 1:size(Events)
         StartPoint = round(Events.StimLatency(Indx_E)+fs*Start);
         
         if isnan(Events.RespLatency(Indx_E))
-            StopPoint = round(StartPoint+fs*Stop)-1;
+            StopPoint = round(StartPoint+fs*(Stop-Start))-1;
         else
             StopPoint = round(Events.RespLatency(Indx_E)+fs*Stop)-1;
         end
         
         
         Epoch = EEG.data(:, StartPoint:StopPoint);
-        if any(isnan(Epoch(:)))
+         Data(Indx_E).EEG = Epoch;
+        if nnz(isnan(Epoch(:))) > .5*numel(Epoch)
+            Remove = cat(1, Remove, Indx_E);
             continue
         end
         
-        Data(Indx_E).EEG = Epoch;
+       
         Data(Indx_E).Power =  HilbertPower(:, round(StartPoint/fs*HilbertFS):round(StopPoint/fs*HilbertFS), :);
         Data(Indx_E).StimPhase =  HilbertPhase(:, round(Events.StimLatency(Indx_E)/fs*HilbertFS), :);
         
@@ -103,34 +112,11 @@ for Indx_F = 1:numel(Files)
         end
         
         Data(Indx_E).Stim = -Start;
-
-    end
-
-    
-    
-    if CheckPlots
-        plotChannels = EEG_Channels.Hotspot; % hotspot
-        ChanIndx = ismember( str2double({Chanlocs.labels}), plotChannels);
-        figure('units','normalized','outerposition',[0 0 .25 1])
-        subplot(5, 1, 1)
-        plot(squeeze(nanmean(Data(ChanIndx, :, :), 1)))
-        hold on
-        plot(nanmean(nanmean(Data(ChanIndx, :, :), 1), 3), 'k', 'LineWidth', 2)
-        xlim([900, 1600])
-        ylim([-10 10])
-        title(File)
-        for Indx_B = 1:numel(BandNames)
-            subplot(5, 1, Indx_B+1)
-            plot(squeeze(nanmean(Power(ChanIndx, :, Indx_B,  :), 1)))
-            hold on
-            plot(nanmean(nanmean(Power(ChanIndx, :, Indx_B, :), 1), 4), 'k', 'LineWidth', 2)
-            %             xlim([900, 1600])
-            ylim([1 10])
-            title(BandNames(Indx_B))
-        end
         
-        saveas(gcf,fullfile(Paths.Figures, [extractBefore(File, '.set'), '_ERPs.svg']))
     end
+    
+    Data(Remove) = [];
+    Events.Noise(Remove) = 1;
     
     
     parsave(fullfile(Destination, Filename), Data, Events)
@@ -141,6 +127,3 @@ end
 function parsave(fname, Data, Events)
 save(fname, 'Data', 'Events', '-v7.3')
 end
-
-
-% Maybe todo: can just save phase at trigger?
