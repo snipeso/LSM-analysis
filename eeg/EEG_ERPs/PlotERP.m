@@ -65,12 +65,14 @@ switch Dimention
         plot(t, ERP, 'Color', 'k', 'LineWidth', 3)
     case 'Custom'
         for Indx_C = 1:numel(Unique_Categories)
-            %             plot(t, nanmean(CustomERPs(:, :, Indx_C), 1),'Color', Colors(Indx_C, :), 'LineWidth', 2)
+
             All = nan(Participants, Points);
             Cat = ['C',num2str(Unique_Categories(Indx_C))];
             for Indx_P = 1:Participants
                 
                 All(Indx_P, :) = nanmean(CustomERPs(Indx_P).(Cat), 3);
+                
+                plot(t, All(Indx_P, :), 'Color',[.8 .8 .8], 'LineWidth', .1) % TEMP
             end
             
             plot(t, nanmean(All, 1),'Color', Colors(Indx_C, :), 'LineWidth', 2)

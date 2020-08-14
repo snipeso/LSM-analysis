@@ -12,11 +12,15 @@ ERP_Parameters
 
 Task = 'LAT';
 
-% Condition = 'AllBeam';
-% Title = 'AllBeam';
+Condition = 'AllBeam';
+Title = 'AllBeam';
 
-Condition = 'SD3';
-Title = 'SleepDep';
+% Condition = 'SD3';
+% Title = 'SleepDep';
+
+% Condition = 'AllBL';
+% Title = 'AllBL';
+
 
 Refresh = true;
 
@@ -64,7 +68,7 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
     end
     
     
-    save(Struct_Path_Data, 'allData', 'allEvents', '-v7.3')
+%     save(Struct_Path_Data, 'allData', 'allEvents', '-v7.3')
 else
     disp('***************Loading allTrials*********************')
     load(Struct_Path_Data, 'allData', 'allEvents')
