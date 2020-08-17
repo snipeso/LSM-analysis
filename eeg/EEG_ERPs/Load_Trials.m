@@ -87,7 +87,7 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
             Events = m.Events;
             Remove = Events.Noise==1;
             Events(Remove, :) = [];
-
+            
             
             if isempty(Events)
                 warning(['**************Could not find ', Participants{Indx_P}, ' ',  Sessions{Indx_S}, '*************' ])
@@ -142,13 +142,23 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
                     
                     if ~isnan(Meta(Indx_T).Resp)
                         RespPower.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S})(:, :, Indx_T) = Power(Indx_T).(BandNames{Indx_B})(:, round(HilbertFS*rStart):(round(HilbertFS*rStop)-1));
-                        StimPhases.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S})(:, :, Indx_T) = Phase(Indx_T).(BandNames{Indx_B})(:, round(HilbertFS*rStart):round(HilbertFS*PhasePeriod):(round(HilbertFS*rStop)-1));
+                        RespPhases.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S})(:, :, Indx_T) = Phase(Indx_T).(BandNames{Indx_B})(:, round(HilbertFS*rStart):round(HilbertFS*PhasePeriod):(round(HilbertFS*rStop)-1));
                     else
                         RespPower.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S})(:, :, Indx_T) = nan(numel(Chanlocs), Powerpoints);
-                        StimPhases.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S})(:, :, Indx_T) = nan(numel(Chanlocs), numel(1:PhasePeriod*HilbertFS:Powerpoints));
+                        RespPhases.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S})(:, :, Indx_T) = nan(numel(Chanlocs), numel(1:PhasePeriod*HilbertFS:Powerpoints));
                     end
                 end
             end
+            % Remove bad epochs
+            Stim(Indx_P).(Sessions{Indx_S})(:, :,  Remove) = [];
+            Resp(Indx_P).(Sessions{Indx_S})(:, :, Remove) = [];
+            
+            for Indx_B = 1:numel(BandNames) % TODO, eventually find a better way
+                StimPower.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S})(:, :,  Remove) = [];
+                StimPhases.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S})(:, :, Remove) = [];
+                RespPower.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S})(:, :,  Remove) = [];
+            end
+            
         end
     end
     
