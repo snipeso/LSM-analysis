@@ -97,8 +97,7 @@ parfor Indx_F = 1:numel(Files)
         
         StartPointH = round(StartPoint/fs*HilbertFS);
         StopPointH = round(StopPoint/fs*HilbertFS);
-        StimPointH =  round(Events.StimLatency(Indx_E)/fs*HilbertFS);
-        PhasePoints = round(StartPointH:PhaseTimes*HilbertFS:StopPointH);
+       
         
         Epoch = EEG.data(:, StartPoint:StopPoint);
         Data(Indx_E).EEG = Epoch;
@@ -129,7 +128,6 @@ parfor Indx_F = 1:numel(Files)
         
     end
     
-    Data(Remove) = [];
     Events.Noise(Remove) = 1;
     
     parsave(fullfile(Destination, Filename), Data, Power, Phase, Meta, Events)

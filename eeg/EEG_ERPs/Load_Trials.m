@@ -61,7 +61,7 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
     % initialize structures for all data
     Tally = struct(); % categories for each trial
     RTQuintile = struct();
-     allEvents = struct();
+    allEvents = struct();
     
     Stim = struct(); % data
     StimPower = struct();
@@ -84,19 +84,18 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
             
             m = matfile(fullfile(Path, File{1}),  'Writable', false );
             
-            allEvents(Indx_P).(Sessions{Indx_S}) = m.Events;
+            Events = m.Events;
+            Remove = Events.Noise==1;
+            Events(Remove, :) = [];
+
             
-            T = allEvents(Indx_P).(Sessions{Indx_S});
-            
-            if isempty(T)
+            if isempty(Events)
                 warning(['**************Could not find ', Participants{Indx_P}, ' ',  Sessions{Indx_S}, '*************' ])
                 continue
             end
             
-            T(T.Noise==1, :) = [];
-            
             % get tally categories
-            RTs = cell2mat(T.rt);
+            RTs = cell2mat(Events.rt);
             RTally = zeros(size(RTs));
             RTally(isnan(RTs)) = 3;
             RTally(RTs<.5) = 1;
@@ -117,7 +116,11 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
             Phase = m.Phase;
             Meta = m.Meta;
             
-            for Indx_T = 1:numel(RTally)
+            allEvents(Indx_P).(Sessions{Indx_S}) = Events;
+            for Indx_T = 1:numel(Data)
+                if Remove(Indx_T)
+                    continue
+                end
                 
                 % get ERPs
                 Stim(Indx_P).(Sessions{Indx_S})(:, :, Indx_T) = Data(Indx_T).EEG(:, 1:ERPpoints);
