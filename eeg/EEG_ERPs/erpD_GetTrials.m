@@ -36,7 +36,7 @@ end
 
 
 
-for Indx_F = 1:numel(Files)
+parfor Indx_F = 1:numel(Files)
     
     File = Files{Indx_F};
     Filename = [extractBefore(File, '_Clean.set'), '_Trials.mat'];
@@ -87,7 +87,7 @@ for Indx_F = 1:numel(Files)
     Remove = [];
     for Indx_E = 1:size(Events)
         StartPoint = round(Events.StimLatency(Indx_E)+fs*Start);
-       
+        
         
         if isnan(Events.RespLatency(Indx_E))
             StopPoint = round(StartPoint+fs*(Stop-Start))-1;
@@ -98,22 +98,22 @@ for Indx_F = 1:numel(Files)
         StartPointH = round(StartPoint/fs*HilbertFS);
         StopPointH = round(StopPoint/fs*HilbertFS);
         StimPointH =  round(Events.StimLatency(Indx_E)/fs*HilbertFS);
-         PhasePoints = round(StartPointH:PhaseTimes*HilbertFS:StopPointH);
+        PhasePoints = round(StartPointH:PhaseTimes*HilbertFS:StopPointH);
         
         Epoch = EEG.data(:, StartPoint:StopPoint);
-         Data(Indx_E).EEG = Epoch;
+        Data(Indx_E).EEG = Epoch;
         if nnz(isnan(Epoch(:))) > .5*numel(Epoch)
             Remove = cat(1, Remove, Indx_E);
             continue
         end
         
-       Data(Indx_E).EdgePoints = [StartPoint, StopPoint];
-       Data(Indx_E).fs = fs;
-       
-       for Indx_B = 1:numel(BandNames)
-          Power(Indx_E).(BandNames{Indx_B}) =  squeeze(HilbertPower(:, StartPointH:StopPointH, Indx_B));
-          Phase(Indx_E).(BandNames{Indx_B}) =  squeeze(HilbertPhase(:, StartPointH:StopPointH, Indx_B));
-       end
+        Data(Indx_E).EdgePoints = [StartPoint, StopPoint];
+        Data(Indx_E).fs = fs;
+        
+        for Indx_B = 1:numel(BandNames)
+            Power(Indx_E).(BandNames{Indx_B}) =  squeeze(HilbertPower(:, StartPointH:StopPointH, Indx_B));
+            Phase(Indx_E).(BandNames{Indx_B}) =  squeeze(HilbertPhase(:, StartPointH:StopPointH, Indx_B));
+        end
         
         if isnan(Events.RespLatency(Indx_E))
             Meta(Indx_E).Resp = nan;
@@ -124,20 +124,19 @@ for Indx_F = 1:numel(Files)
         Meta(Indx_E).Stim = -Start;
         Meta(Indx_E).fs = fs;
         Meta(Indx_E).fsH = HilbertFS;
-         Meta(Indx_E).EdgePoints =  [StartPoint, StopPoint];
-          Meta(Indx_E).EdgePointsH =  [StartPointH, StopPointH];
+        Meta(Indx_E).EdgePoints =  [StartPoint, StopPoint];
+        Meta(Indx_E).EdgePointsH =  [StartPointH, StopPointH];
         
     end
     
     Data(Remove) = [];
     Events.Noise(Remove) = 1;
     
-    
-    parsave(fullfile(Destination, Filename), Data, Events)
+    parsave(fullfile(Destination, Filename), Data, Power, Phase, Meta, Events)
     disp(['*************finished ', Filename, '*************'])
 end
 
 
-function parsave(fname, Data, Events)
-save(fname, 'Data', 'Events', '-v7.3')
+function parsave(fname,  Data, Power, Phase, Meta, Events)
+save(fname,  'Data', 'Power', 'Phase', 'Meta', 'Events', '-v7.3')
 end
