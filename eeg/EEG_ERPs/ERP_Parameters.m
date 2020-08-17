@@ -13,7 +13,7 @@ Paths.Preprocessed = 'D:\Data\Preprocessed'; % LSM external hard disk
 
 % Paths.Preprocessed = 'C:\Users\schlaf\Desktop\LSMData'; % the Brick
 
-Paths.Summary = fullfile(mfilename('fullpath'), 'SummaryData');
+Paths.Summary = fullfile(extractBefore(mfilename('fullpath'), 'ERP_Parameters'), 'SummaryData');
 Paths.ERPs = fullfile(Paths.Preprocessed, 'ERPs');
 Paths.Figures = fullfile(Paths.Figures, 'ERPs');
 Paths.Responses = fullfile(Paths.Preprocessed, 'Tasks', 'AllAnswers');
