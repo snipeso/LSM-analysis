@@ -154,7 +154,7 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
     
     
     save(Struct_Path_Data, 'Tally', 'RTQuintile', 'Stim', 'StimPower', ...
-        'Resp', 'RespPower', 'StimPhases', 'RespPhases', 'Means', 'SDs')
+        'Resp', 'RespPower', 'StimPhases', 'RespPhases', 'Means', 'SDs', '-v7.3')
     
 else
     disp('***************Loading ERPs*********************')
