@@ -42,7 +42,7 @@ if ~exist(Paths.Figures, 'dir')
     mkdir(Paths.Figures)
 end
 
-
+Limits = linspace(0, 1, 5+1);
 
 %%% get ERPs locked to stim and resp
 Struct_Path_Data = fullfile(Paths.Summary, [Title, '_', Task, '_ERPs.mat']);
@@ -103,7 +103,7 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
             Tally(Indx_P).(Sessions{Indx_S}) = RTally;
             
             % get rt categories
-            Limits = linspace(0, 1, 5+1);
+
             Edges = quantile([AllAnswers.rt{strcmp(AllAnswers.Participant, Participants{Indx_P})}], Limits);
             Quintiles = discretize(RTs, Edges);
             Quintiles(isnan(Quintiles)) = numel(Edges);
