@@ -137,15 +137,15 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
                 % get power and phase
                 for Indx_B = 1:numel(BandNames)
                     StimPower.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S})(:, :, Indx_T) = Power(Indx_T).(BandNames{Indx_B})(:, 1:Powerpoints);
-                    StimPhases(Indx_P).(Sessions{Indx_S})(:, :, Indx_T) = Phase(Indx_T).(BandNames{Indx_B})(:, 1:PhasePeriod*HilbertFS:Powerpoints);
+                    StimPhases.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S})(:, :, Indx_T) = Phase(Indx_T).(BandNames{Indx_B})(:, 1:PhasePeriod*HilbertFS:Powerpoints);
                     
                     
                     if ~isnan(Meta(Indx_T).Resp)
                         RespPower.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S})(:, :, Indx_T) = Power(Indx_T).(BandNames{Indx_B})(:, round(HilbertFS*rStart):(round(HilbertFS*rStop)-1));
-                        StimPhases(Indx_P).(Sessions{Indx_S})(:, :, Indx_T) = Phase(Indx_T).(BandNames{Indx_B})(:, round(HilbertFS*rStart):round(HilbertFS*PhasePeriod):(round(HilbertFS*rStop)-1));
+                        StimPhases.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S})(:, :, Indx_T) = Phase(Indx_T).(BandNames{Indx_B})(:, round(HilbertFS*rStart):round(HilbertFS*PhasePeriod):(round(HilbertFS*rStop)-1));
                     else
                         RespPower.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S})(:, :, Indx_T) = nan(numel(Chanlocs), Powerpoints);
-                        StimPhases(Indx_P).(Sessions{Indx_S})(:, :, Indx_T) = nan(numel(Chanlocs), numel(1:PhasePeriod*HilbertFS:Powerpoints));
+                        StimPhases.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S})(:, :, Indx_T) = nan(numel(Chanlocs), numel(1:PhasePeriod*HilbertFS:Powerpoints));
                     end
                 end
             end

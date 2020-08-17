@@ -47,6 +47,7 @@ end
 
 
 % plot erp split by ongoing phases
+PhaseSplit
 
 % plot normalized erp and power for on time and late responses so squished
 
