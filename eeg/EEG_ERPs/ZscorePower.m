@@ -31,8 +31,8 @@ for Indx_P = 1:numel(Participants)
     
     for Indx_B = 1:numel(BandNames)
         MEAN = SUM(:, Indx_B)./N(:, Indx_B);
-        Means(Indx_B).(BandNames{Indx_B}) = MEAN;
-        SDs(Indx_B).(BandNames{Indx_B}) =  sqrt((SUMSQ(:, Indx_B) - N(:, Indx_B).*(MEAN.^2))./(N(:, Indx_B) - 1));
+        Means(Indx_P).(BandNames{Indx_B}) = MEAN;
+        SDs(Indx_P).(BandNames{Indx_B}) =  sqrt((SUMSQ(:, Indx_B) - N(:, Indx_B).*(MEAN.^2))./(N(:, Indx_B) - 1));
     end
     
 end
