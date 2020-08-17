@@ -1,0 +1,34 @@
+function [Means, SDs] = ZscorePower(Path, Participants, Channels, BandNames)
+% Struct(Indx_P).(Bands) = [Ch]
+
+
+allFiles = ls(Path);
+Means = struct();
+SDs = struct();
+
+for Indx_P = 1:numel(Participants)
+    Files = allFiles(contains(allFiles, Participants{Indx_P}), :);
+    SUM = zeros(numel(Channels), numel(BandNames));
+    SUMSQ = zeros(numel(Channels), numel(BandNames));
+    N = zeros(1, numel(BandNames)); % not strictly needed, but less of a headache for me right now
+    
+    for Indx_F = 1:size(Files, 1)
+        m = matfile(fullfile(Path, Files(Indx_F, :)),  'Writable', false);
+        Power = m.Power;
+        for Indx_B = 1:numel(BandNames)
+            for Indx_T = 1:numel(Power)
+                Band = Power(Indx_E).(BandNames{Indx_B});
+                SUM(:, Indx_B) = SUM(:, Indx_B)  + squeeze(nansum(Band, 2));
+                SUMSQ(:, Indx_B) = SUMSQ(:, Indx_B)  + squeeze(nansum(Band.^2, 2));
+                N(:, Indx_B)  = N(:, Indx_B)  + nnz(~isnan(Band(1, :)));
+            end
+        end
+    end
+    
+    for Indx_B = 1:numel(BandNames)
+        MEAN = SUM(:, Indx_B)./N(:, Indx_B);
+        Means(Indx_B).(BandNames{Indx_B}) = MEAN;
+        SDs(Indx_B).(BandNames{Indx_B}) =  sqrt((SUMSQ(:, Indx_B) - N(:, Indx_B).*(MEAN.^2))./(N(:, Indx_B) - 1));
+    end
+    
+end
