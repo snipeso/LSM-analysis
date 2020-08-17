@@ -3,9 +3,26 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Normalize = 'true';
+Normalize = true;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Normalize power data
+if Normalize
+    OldStimPower = StimPower;
+    for Indx_P = 1:numel(Participants)
+        for Indx_S = 1:numel(Sessions)
+            
+            for Indx_B = 1:numel(BandNames)
+                Temp =    StimPower.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S});
+                Temp = (Temp-Means(Indx_P).(BandNames{Indx_B}))./(SDs(Indx_P).(BandNames{Indx_B}));
+                StimPower.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S}) = Temp;
+            end
+        end
+        
+    end
+end
 
 % plot ERPs of on time, late, and missing stim and responses (when present)
 PlotERPandPower(Stim, StimPower, [Start, Stop], PlotChannels, Tally, ...
