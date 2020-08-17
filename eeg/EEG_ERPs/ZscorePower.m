@@ -7,7 +7,7 @@ Means = struct();
 SDs = struct();
 
 for Indx_P = 1:numel(Participants)
-    Files = allFiles(contains(allFiles, Participants{Indx_P}), :);
+    Files = allFiles(contains(string(allFiles), Participants{Indx_P}), :);
     SUM = zeros(numel(Channels), numel(BandNames));
     SUMSQ = zeros(numel(Channels), numel(BandNames));
     N = zeros(1, numel(BandNames)); % not strictly needed, but less of a headache for me right now
@@ -17,8 +17,12 @@ for Indx_P = 1:numel(Participants)
         Power = m.Power;
         for Indx_B = 1:numel(BandNames)
             for Indx_T = 1:numel(Power)
-                Band = Power(Indx_E).(BandNames{Indx_B});
+                Band = Power(Indx_T).(BandNames{Indx_B});
+               if isempty(Band)
+                   continue
+               end
                 SUM(:, Indx_B) = SUM(:, Indx_B)  + squeeze(nansum(Band, 2));
+
                 SUMSQ(:, Indx_B) = SUMSQ(:, Indx_B)  + squeeze(nansum(Band.^2, 2));
                 N(:, Indx_B)  = N(:, Indx_B)  + nnz(~isnan(Band(1, :)));
             end

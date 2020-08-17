@@ -13,10 +13,11 @@ Paths.Preprocessed = 'D:\Data\Preprocessed'; % LSM external hard disk
 
 % Paths.Preprocessed = 'C:\Users\schlaf\Desktop\LSMData'; % the Brick
 
-Paths.Summary = fullfile(extractBefore(mfilename('fullpath'), 'ERP_Parameters'), 'SummaryData');
+
 Paths.ERPs = fullfile(Paths.Preprocessed, 'ERPs');
 Paths.Figures = fullfile(Paths.Figures, 'ERPs');
 Paths.Responses = fullfile(Paths.Preprocessed, 'Tasks', 'AllAnswers');
+Paths.Summary = fullfile(Paths.ERPs, 'SummaryData');
 
 % Participants = {'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07', 'P08', 'P09', 'P10', 'P11', 'P12'};
 
@@ -33,7 +34,7 @@ Stop = 2;
 BL_Start = -200;
 BL_Stop = 0;
 
-PhaseTimes = .2; 
+PhasePeriod = .2; 
 
 Bands = [
     0.5, 4;
