@@ -79,11 +79,15 @@ for Indx_F = 1:numel(Files)
     
     
     Data = struct();
+    Power = struct();
+    Phase = struct();
+    Meta = struct();
     
     
     Remove = [];
     for Indx_E = 1:size(Events)
         StartPoint = round(Events.StimLatency(Indx_E)+fs*Start);
+       
         
         if isnan(Events.RespLatency(Indx_E))
             StopPoint = round(StartPoint+fs*(Stop-Start))-1;
@@ -91,6 +95,10 @@ for Indx_F = 1:numel(Files)
             StopPoint = round(Events.RespLatency(Indx_E)+fs*Stop)-1;
         end
         
+        StartPointH = round(StartPoint/fs*HilbertFS);
+        StopPointH = round(StopPoint/fs*HilbertFS);
+        StimPointH =  round(Events.StimLatency(Indx_E)/fs*HilbertFS);
+         PhasePoints = round(StartPointH:PhaseTimes*HilbertFS:StopPointH);
         
         Epoch = EEG.data(:, StartPoint:StopPoint);
          Data(Indx_E).EEG = Epoch;
@@ -99,19 +107,25 @@ for Indx_F = 1:numel(Files)
             continue
         end
         
+       Data(Indx_E).EdgePoints = [StartPoint, StopPoint];
+       Data(Indx_E).fs = fs;
        
-        Data(Indx_E).Power =  HilbertPower(:, round(StartPoint/fs*HilbertFS):round(StopPoint/fs*HilbertFS), :);
-        Data(Indx_E).StimPhase =  HilbertPhase(:, round(Events.StimLatency(Indx_E)/fs*HilbertFS), :);
+       for Indx_B = 1:numel(BandNames)
+          Power(Indx_E).(BandNames{Indx_B}) =  squeeze(HilbertPower(:, StartPointH:StopPointH, Indx_B));
+          Phase(Indx_E).(BandNames{Indx_B}) =  squeeze(HilbertPhase(:, StartPointH:StopPointH, Indx_B));
+       end
         
         if isnan(Events.RespLatency(Indx_E))
-            Data(Indx_E).RespPhase = nan;
-            Data(Indx_E).Resp = nan;
+            Meta(Indx_E).Resp = nan;
         else
-            Data(Indx_E).RespPhase =  HilbertPhase(:, round(Events.RespLatency(Indx_E)/fs*HilbertFS), :);
-            Data(Indx_E).Resp = (size(Epoch, 2)/fs - Stop);
+            Meta(Indx_E).Resp = (size(Epoch, 2)/fs - Stop);
         end
         
-        Data(Indx_E).Stim = -Start;
+        Meta(Indx_E).Stim = -Start;
+        Meta(Indx_E).fs = fs;
+        Meta(Indx_E).fsH = HilbertFS;
+         Meta(Indx_E).EdgePoints =  [StartPoint, StopPoint];
+          Meta(Indx_E).EdgePointsH =  [StartPointH, StopPointH];
         
     end
     

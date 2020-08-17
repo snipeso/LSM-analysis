@@ -33,6 +33,8 @@ Stop = 2;
 BL_Start = -200;
 BL_Stop = 0;
 
+PhaseTimes = .2; 
+
 Bands = [
     0.5, 4;
     4.1, 8;
@@ -41,7 +43,7 @@ Bands = [
 ];
 
 BandNames = {'delta', 'theta', 'alpha', 'beta'};
-HilbertFS = 100;
+HilbertFS = 80;
 newfs = 250;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
