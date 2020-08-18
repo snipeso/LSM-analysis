@@ -116,6 +116,18 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
             Phase = m.Phase;
             Meta = m.Meta;
             
+            % initialize matrices
+            Stim(Indx_P).(Sessions{Indx_S}) = nan(numel(Chanlocs), ERPpoints, numel(Data));
+            Resp(Indx_P).(Sessions{Indx_S}) =  nan(numel(Chanlocs), ERPpoints, numel(Data));
+            
+            for Indx_B = 1:numel(BandNames) % TODO, eventually find a better way
+                StimPower.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S}) =  nan(numel(Chanlocs), Powerpoints, numel(Data));
+                StimPhases.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S}) =  nan(numel(Chanlocs), numel(1:PhasePeriod*HilbertFS:Powerpoints), numel(Data));
+                RespPower.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S}) =  nan(numel(Chanlocs), Powerpoints, numel(Data));
+                RespPhases.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S}) =  nan(numel(Chanlocs), numel(1:PhasePeriod*HilbertFS:Powerpoints), numel(Data));
+             
+            end
+            
             allEvents(Indx_P).(Sessions{Indx_S}) = Events;
             for Indx_T = 1:numel(Data)
                 if Remove(Indx_T)
