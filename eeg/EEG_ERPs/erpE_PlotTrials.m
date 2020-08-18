@@ -24,6 +24,8 @@ if Normalize
     end
 end
 
+% plot ERPs of tones and responses by session!
+
 % plot ERPs of on time, late, and missing stim and responses (when present)
 PlotERPandPower(Stim, StimPower, [Start, Stop], PlotChannels, Tally, ...
     {'Hits', 'Late', 'Misses'}, 'All Stim', 'Tally', Format)
@@ -42,7 +44,8 @@ Labels = {'FZ', 'CZ', 'Oz'};
 
 StimPhaseTimes = Start:PhasePeriod:Stop;
 
-[~, PhasePoint] = min(abs(StimPhaseTimes-0));
+PhaseTime = 0;
+[~, PhasePoint] = min(abs(StimPhaseTimes-PhaseTime));
 
 for Indx_C = 1:numel(PlotSpots)
     PlotERPandPower(Stim, StimPower, [Start, Stop], PlotSpots(Indx_C), Tally, ...
@@ -64,11 +67,14 @@ for Indx_C = 1:numel(PlotSpots)
     saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_',Labels{Indx_C}, '_ERP_Resp_RTQuintile.svg']))
     
     
-    % plot erp split by ongoing phases
-    PhaseCats =  SplitPhase(StimPhases, PhasePoint, PlotSpots(Indx_C), 6);
-    PlotERPandPower(Stim, StimPower, [Start, Stop], PlotSpots(Indx_C), PhaseCats, ...
-        {string(1:6)},  [Labels{Indx_C},' Resp'],  'Phases', Format)
-    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_',Labels{Indx_C}, '_ERP_Resp_Phase.svg']))
+%     % plot erp split by ongoing phases
+%     PhaseCats =  SplitPhase(StimPhases, PhasePoint, PlotSpots(Indx_C), 6);
+%     PlotERPandPower(Stim, StimPower, [Start, Stop], PlotSpots(Indx_C), PhaseCats, ...
+%         {string(1:6)},  [Labels{Indx_C},' Resp'],  'Phases', Format)
+%     saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_',Labels{Indx_C}, '_ERP_Resp_Phase.svg']))
+    
+    % plot RTs by phase
+    
     
 end
 

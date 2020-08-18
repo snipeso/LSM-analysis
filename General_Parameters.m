@@ -118,6 +118,7 @@ Format.Colors.Participants = Format.Colormap.PaleRainbow(floor(linspace(1, ...
     size(Format.Colormap.Rainbow, 1), numel(Participants))), :);
 
 
+Format.Legend.Tally = {'Hits', 'Late', 'Misses'};
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Sessions
