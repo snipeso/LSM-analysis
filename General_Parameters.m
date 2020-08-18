@@ -15,6 +15,7 @@ Paths.Figures = fullfile(Paths.Analysis, 'figures');
 addpath(fullfile(Paths.Analysis, 'functions','general'))
 addpath(fullfile(Paths.Analysis, 'functions','plots'))
 addpath(fullfile(Paths.Analysis, 'functions','tasks'))
+addpath(fullfile(Paths.Analysis, 'functions','eeg'))
 
 run(fullfile(Paths.Analysis, 'functions', 'external', 'addExternalFunctions'))
 
@@ -27,11 +28,7 @@ end
 
 
 % All participants to include in the analysis
-% Participants = {'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07', 'P08', 'P09', 'P11'};
 Participants = { 'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07', 'P08', 'P09', 'P10', 'P11', 'P12'};
-% Participants = {'P02', 'P03', 'P04', 'P05', 'P06', 'P07', 'P08', 'P09', 'P11'};
-% Participants = {'P01', 'P02', 'P03', 'P05', 'P06', 'P07', 'P08', 'P09',  'P11', 'P12'};
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
