@@ -103,7 +103,7 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
             Tally(Indx_P).(Sessions{Indx_S}) = RTally;
             
             % get rt categories
-
+            
             Edges = quantile([AllAnswers.rt{strcmp(AllAnswers.Participant, Participants{Indx_P})}], Limits);
             Quintiles = discretize(RTs, Edges);
             Quintiles(isnan(Quintiles)) = numel(Edges);
@@ -161,11 +161,9 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
             
         end
     end
-    
-    
-    save(Struct_Path_Data, 'Tally', 'RTQuintile', 'Stim', 'StimPower', ...
+
+    save(Struct_Path_Data, 'Tally', 'RTQuintile', 'Stim', 'allEvents', 'StimPower', ...
         'Resp', 'RespPower', 'StimPhases', 'RespPhases', 'Means', 'SDs', '-v7.3')
-    
 else
     disp('***************Loading ERPs*********************')
     load(Struct_Path_Data)
