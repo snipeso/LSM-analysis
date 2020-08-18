@@ -79,7 +79,8 @@ for Indx_C = 1:numel(PlotSpots)
 %     saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_',Labels{Indx_C}, '_ERP_Resp_Phase.svg']))
     
     % plot RTs by phase
-    PlotPhaseRTs(StimPhases, PlotSpots(Indx_C), [PlotPhasePoints; PlotPhaseTimes], allEvents, Tally, '', Format)
+    PlotPhaseRTs(StimPhases, PlotSpots(Indx_C), [PlotPhasePoints; PlotPhaseTimes],...
+        allEvents, Tally, Labels{Indx_C}, Format)
     
 end
 
