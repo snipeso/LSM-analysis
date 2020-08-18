@@ -7,8 +7,33 @@ Normalize = true;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+Limits = [0:.2:1];
+PowerWindow = [-1.5, .1];
+ERPWindow = Stop - Start;
 t = linspace(Start, Stop, ERPWindow*newfs);
 tPower = linspace(Start, Stop, ERPWindow*HilbertFS);
+
+Format.Colors.Quintiles = flipud(plasma(numel(Limits)+1));
+Format.Colors.Quintiles(1, :) = []; % get rid of first white
+Format.Colors.Phases = flipud(plasma(6+1));
+Format.Colors.Phases(1, :) = []; % get rid of first white
+[~, PlotSpots] = intersect({Chanlocs.labels}, string(EEG_Channels.ERP));
+Labels = {'FZ', 'CZ', 'Oz'};
+
+
+
+TriggerTime = 0;
+[~, StartPower] = min(abs(tPower -PowerWindow(1)));
+[~, StopPower] = min(abs(tPower -PowerWindow(2)));
+
+StimPhaseTimes = Start:PhasePeriod:Stop;
+
+PhaseTime = 0;
+[~, PhasePoint] = min(abs(StimPhaseTimes-PhaseTime));
+
+PlotPhaseTimes = [-2, -1.25, -.25, 0, .25, .5];
+PlotPhasePoints =  dsearchn( StimPhaseTimes', PlotPhaseTimes')';
+
 
 % Normalize power data
 if Normalize

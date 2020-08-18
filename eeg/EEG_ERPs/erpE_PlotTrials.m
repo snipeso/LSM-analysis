@@ -104,7 +104,41 @@ for Indx_C = 1:numel(PlotSpots)
     ylabel('miV')
     set(gca, 'FontSize', 14, 'FontName', Format.FontName)
     legend(SessionLabels)
-    saveas(gcf,fullfile(Paths.Figures, [TitleTag,Labels{Indx_C}, '_Power_Sessions.svg']))
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag, Labels{Indx_C}, '_Power_Sessions.svg']))
+    
+    
+    
+    % plot erps by ongoing frequency power quartiles
+    figure('units','normalized','outerposition',[0 0 .5 .5])
+    for Indx_B = 1:numel(BandNames)
+        
+        Quantiles = struct();
+        for Indx_P = 1:numel(Participants)
+            for Indx_S = 1:numel(Sessions)
+                tempData = StimPower.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S});
+                if isempty(tempData)
+                    continue
+                end
+                Power = squeeze(nanmean(nanmean(tempData(PlotSpots(Indx_C), StartPower:StopPower, :), 2), 1));
+                Edges = quantile(Power, Limits);
+                Quantiles(Indx_P).(Sessions{Indx_S}) = discretize(Power, Edges);
+            end
+            
+        end
+        
+        subplot(2, 2, Indx_B)
+        Colors = flipud(gray(numel(Edges)));
+        PlotERP(t, Stim, TriggerTime,  PlotSpots(Indx_C), 'Custom', Colors(2:end, :), Quantiles)
+        xlim([-.2, 1])
+        title([Labels{Indx_C}, ' Trials based on ongoing ', BandNames{Indx_B}, ' power'])
+        ylabel('miV')
+        set(gca, 'FontSize', 14, 'FontName', Format.FontName)
+        legend(split(cellstr(num2str(Limits(2:end)))))
+        ylim([-1 5])
+       
+    end
+     saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_',Labels{Indx_C}, '_Power_OngoingFreq.svg']))
+    
 end
 
 
@@ -112,37 +146,6 @@ end
 
 %%% same as tones
 
-
-
-% plot erps by ongoing frequency power quartiles
-
-for Indx_B = 1:numel(BandNames)
-    
-    Quantiles = struct();
-    for Indx_P = 1:numel(Participants)
-        for Indx_S = 1:numel(Sessions)
-            tempData = StimPower.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S});
-            if isempty(tempData)
-                continue
-            end
-            Power = squeeze(nanmean(nanmean(tempData(PlotChannels, StartPower:StopPower, :), 2), 1));
-            Edges = quantile(Power, Limits);
-            Quantiles(Indx_P).(Sessions{Indx_S}) = discretize(Power, Edges);
-        end
-        
-    end
-    
-    figure('units','normalized','outerposition',[0 0 .5 .5])
-    Colors = flipud(gray(numel(Edges)));
-    PlotERP(t, Stim, TriggerTime,  PlotChannels, 'Custom', Colors(2:end, :), Quantiles)
-    xlim([-.2, 1])
-    title(['Trials based on ongoing ', BandNames{Indx_B}, ' power'])
-    ylabel('miV')
-    set(gca, 'FontSize', 14, 'FontName', Format.FontName)
-    legend(split(cellstr(num2str(Limits(2:end)))))
-    ylim([-1 5])
-    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_', BandNames{Indx_B}, '_Power_OngoingFreq.svg']))
-end
 
 
 

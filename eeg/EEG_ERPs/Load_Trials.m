@@ -8,16 +8,16 @@ ERP_Parameters
 
 Task = 'LAT';
 % 
-% Condition = 'AllBeam';
-% Title = 'AllBeam';
+Condition = 'AllBeam';
+Title = 'AllBeam';
 
 % Condition = 'SD3';
 % Title = 'SleepDep';
 
-Condition = 'AllBL';
-Title = 'AllBL';
+% Condition = 'AllBL';
+% Title = 'AllBL';
 
-Refresh = true;
+Refresh = false;
 
 PlotChannels = EEG_Channels.Hotspot; % eventually find a more accurate set of channels?
 
