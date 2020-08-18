@@ -49,6 +49,9 @@ StimPhaseTimes = Start:PhasePeriod:Stop;
 PhaseTime = 0;
 [~, PhasePoint] = min(abs(StimPhaseTimes-PhaseTime));
 
+PlotPhaseTimes = [-2, -1.25, -.25, 0, .25, .5];
+PlotPhasePoints =  dsearchn( StimPhaseTimes', PlotPhaseTimes')';
+
 for Indx_C = 1:numel(PlotSpots)
     PlotERPandPower(Stim, StimPower, [Start, Stop], PlotSpots(Indx_C), Tally, ...
         {'Hits', 'Late', 'Misses'}, [Labels{Indx_C},' Stim'], 'Tally', Format)
@@ -76,7 +79,7 @@ for Indx_C = 1:numel(PlotSpots)
 %     saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_',Labels{Indx_C}, '_ERP_Resp_Phase.svg']))
     
     % plot RTs by phase
-    
+    PlotPhaseRTs(StimPhases, PlotSpots(Indx_C), [PlotPhasePoints; PlotPhaseTimes], allEvents, Tally, '', Format)
     
 end
 
