@@ -1,4 +1,4 @@
-function PlotPolar(Phases, Data, nBins, Format, Subplot)
+function PlotPolar(Phases, Data, nBins, Color, Subplot)
 
 PhaseEdges = linspace(-pi, pi, nBins+1);
 
@@ -8,16 +8,14 @@ Bins = unique(BinnedPhases);
 
 Means = nan(numel(Bins), size(Data, 2));
 for Indx_B = 1:numel(Bins)
-    Means(Indx_B, :) =  nanmean([Data{BinnedPhases==Bins(Indx_B), :}]);
+    Means(Indx_B, :) =  nanmean(Data(BinnedPhases==Bins(Indx_B), :));
 end
 
-GrandMean = repmat(nanmean(Means), 1, numel(Bins));
+GrandMean = repmat(nanmean(Means), 1, numel(Bins)+1);
 hold on
-polarplot(Subplot, PhaseEdges(1:end-1), GrandMean, 'Color', [.7 .7 .7])
-polarplot(Subplot, PhaseEdges, [Means; Means(1)] )
+polarplot(Subplot, PhaseEdges, GrandMean, 'Color', [.7 .7 .7])
+polarplot(Subplot, PhaseEdges, [Means; Means(1)], 'Color', Color, 'LineWidth', 2)
 grid off
-
-set(gca, 'FontName', Format.FontName)
 
 Ax = gca; % current axes
 Ax.ThetaGrid = 'off';

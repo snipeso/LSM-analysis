@@ -62,7 +62,6 @@ for Indx_C = 1:numel(PlotSpots)
     saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_',Labels{Indx_C}, '_ERP_Resp_,' Labels{Indx_C}, '_Tally.svg']))
     
     % plot ERP split by RT quintile
-    
     PlotERPandPower(Stim, StimPower, [Start, Stop], PlotSpots(Indx_C), RTQuintile, ...
         string(Limits), [Labels{Indx_C},' Stim'], 'Quintiles', Format)
     saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_',Labels{Indx_C}, '_ERP_Stim_RTQuintile.svg']))
@@ -81,6 +80,7 @@ for Indx_C = 1:numel(PlotSpots)
     % plot RTs by phase
     PlotPhaseRTs(StimPhases, PlotSpots(Indx_C), [PlotPhasePoints; PlotPhaseTimes],...
         allEvents, Tally, Labels{Indx_C}, Format)
+     saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_',Labels{Indx_C}, '_PhaseRTs.svg']))
     
 end
 
