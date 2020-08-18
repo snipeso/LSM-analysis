@@ -39,6 +39,8 @@ saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_ERP_Resp_Tally.svg']))
 % plot specific channels
 Format.Colors.Quintiles = flipud(plasma(numel(Limits)+1));
 Format.Colors.Quintiles(1, :) = []; % get rid of first white
+Format.Colors.Phases = flipud(plasma(6+1));
+Format.Colors.Phases(1, :) = []; % get rid of first white
 [~, PlotSpots] = intersect({Chanlocs.labels}, string(EEG_Channels.ERP));
 Labels = {'FZ', 'CZ', 'Oz'};
 
