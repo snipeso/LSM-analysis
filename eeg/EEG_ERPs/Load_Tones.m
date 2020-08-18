@@ -12,10 +12,14 @@ Task = 'LAT';
 % Condition = 'AllBeam';
 % Title = 'AllBeam';
 
+% 
+Condition = 'BL';
+Title = 'Baseline';
 
 
-Condition = 'SD3';
-Title = 'SleepDep';
+% 
+% Condition = 'SD3';
+% Title = 'SleepDep';
 
 Refresh = true;
 
