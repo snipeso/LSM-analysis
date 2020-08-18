@@ -14,6 +14,10 @@ if strcmp(Dimention, 'Custom')
     CustomERPs = struct();
 end
 
+
+Min = nan;
+Max = nan;
+
 for Indx_S = 1:numel(Sessions)
     if strcmp(Dimention, 'Sessions')
         SessionERPs = nan(Participants, Points);
@@ -32,6 +36,8 @@ for Indx_S = 1:numel(Sessions)
             case 'Sessions'
                 ERP = nanmean(nanmean(tempData(Channels, :, :), 1), 3);
                 SessionERPs(Indx_P, :) = ERP;
+                Min = min(Min, min(ERP(:)));
+                Max = max(Max, max(ERP(:)));
             case 'Custom'
                 
                 for Indx_C = 1:numel(Unique_Categories)
@@ -57,22 +63,20 @@ for Indx_S = 1:numel(Sessions)
     
 end
 
-Min = nan;
-Max = nan;
 switch Dimention
     case 'Participants'
         ERP = nanmean(AllERPs, 1); %CHECK
         plot(t, ERP, 'Color', 'k', 'LineWidth', 3)
     case 'Custom'
         for Indx_C = 1:numel(Unique_Categories)
-
+            
             All = nan(Participants, Points);
             Cat = ['C',num2str(Unique_Categories(Indx_C))];
             for Indx_P = 1:Participants
                 
                 All(Indx_P, :) = nanmean(CustomERPs(Indx_P).(Cat), 3);
                 
-%                 plot(t, All(Indx_P, :), 'Color',[.8 .8 .8], 'LineWidth', .1) % TEMP
+                %                 plot(t, All(Indx_P, :), 'Color',[.8 .8 .8], 'LineWidth', .1) % TEMP
             end
             
             plot(t, nanmean(All, 1),'Color', Colors(Indx_C, :), 'LineWidth', 2)

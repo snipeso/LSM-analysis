@@ -14,8 +14,8 @@ Task = 'LAT';
 % Condition = 'SD3';
 % Title = 'SleepDep';
 
-% Condition = 'AllBL';
-% Title = 'AllBL';
+Condition = 'AllBL';
+Title = 'AllBL';
 
 Refresh = true;
 

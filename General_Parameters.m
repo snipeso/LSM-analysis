@@ -152,7 +152,7 @@ allSessionLabels.Basic = {'BL', 'S1', 'S2'};
 allSessions.LATAllBeam = {'BaselineBeam', 'MainPre', 'Session1Beam', 'Session2Beam1', 'Session2Beam2', 'Session2Beam3', 'MainPost'};
 allSessionLabels.LATAllBeam = {'BL', 'Pre', 'S1', 'S2-1', 'S2-2', 'S2-3', 'Post'};
 
-allSessions.LATAllBL = {'BaselineBeam', 'MainPre', 'Session2Beam3', 'MainPost'};
+allSessions.LATAllBL = {'BaselineBeam', 'MainPre', 'MainPost'};
 allSessionLabels.LATAllBL = {'BL', 'Pre', 'Post'};
 
 

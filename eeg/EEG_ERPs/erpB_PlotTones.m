@@ -47,7 +47,7 @@ ylabel('miV')
 set(gca, 'FontSize', 14, 'FontName', Format.FontName)
 legend(SessionLabels)
 ylim([-1 5])
-saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_Power_Individuals.svg']))
+saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_Power_Sessions.svg']))
 
 
 % plot erps by ongoing frequency power quartiles
@@ -77,7 +77,7 @@ for Indx_B = 1:numel(BandNames)
     set(gca, 'FontSize', 14, 'FontName', Format.FontName)
     legend(split(cellstr(num2str(Limits(2:end)))))
     ylim([-1 5])
-    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_Power_Individuals.svg']))
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_', BandNames{Indx_B}, '_Power_OngoingFreq.svg']))
 end
 
 % eventually, plot P200xongoing power, see if linearly correlated

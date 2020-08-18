@@ -7,6 +7,8 @@ Normalize = true;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+t = linspace(Start, Stop, ERPWindow*newfs);
+tPower = linspace(Start, Stop, ERPWindow*HilbertFS);
 
 % Normalize power data
 if Normalize
@@ -71,17 +73,70 @@ for Indx_C = 1:numel(PlotSpots)
     saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_',Labels{Indx_C}, '_ERP_Resp_RTQuintile.svg']))
     
     
-%     % plot erp split by ongoing phases
-%     PhaseCats =  SplitPhase(StimPhases, PhasePoint, PlotSpots(Indx_C), 6);
-%     PlotERPandPower(Stim, StimPower, [Start, Stop], PlotSpots(Indx_C), PhaseCats, ...
-%         {string(1:6)},  [Labels{Indx_C},' Resp'],  'Phases', Format)
-%     saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_',Labels{Indx_C}, '_ERP_Resp_Phase.svg']))
+    %     % plot erp split by ongoing phases
+    %     PhaseCats =  SplitPhase(StimPhases, PhasePoint, PlotSpots(Indx_C), 6);
+    %     PlotERPandPower(Stim, StimPower, [Start, Stop], PlotSpots(Indx_C), PhaseCats, ...
+    %         {string(1:6)},  [Labels{Indx_C},' Resp'],  'Phases', Format)
+    %     saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_',Labels{Indx_C}, '_ERP_Resp_Phase.svg']))
     
     % plot RTs by phase
     PlotPhaseRTs(StimPhases, PlotSpots(Indx_C), [PlotPhasePoints; PlotPhaseTimes],...
         allEvents, Tally, Labels{Indx_C}, Format)
-     saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_',Labels{Indx_C}, '_PhaseRTs.svg']))
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_',Labels{Indx_C}, '_PhaseRTs.svg']))
     
+    
+    % plot mean ERPs by session
+    figure('units','normalized','outerposition',[0 0 .5 .5])
+    PlotERP(t, Stim, TriggerTime,   PlotSpots(Indx_C), 'Sessions', Format.Colors.([Task, Condition]))
+    xlim([-.2, 1])
+    title([Labels{Indx_C}, ' ERP by Session'])
+    ylabel('miV')
+    set(gca, 'FontSize', 14, 'FontName', Format.FontName)
+    legend(SessionLabels)
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag,Labels{Indx_C}, '_Power_Sessions.svg']))
+end
+
+
+
+
+%%% same as tones
+
+
+
+% plot erps by ongoing frequency power quartiles
+Limits = [0:.2:1];
+PowerWindow = [-1.5, .1];
+ERPWindow = Stop - Start;
+
+TriggerTime = 0;
+[~, StartPower] = min(abs(tPower -PowerWindow(1)));
+[~, StopPower] = min(abs(tPower -PowerWindow(2)));
+for Indx_B = 1:numel(BandNames)
+    
+    Quantiles = struct();
+    for Indx_P = 1:numel(Participants)
+        for Indx_S = 1:numel(Sessions)
+            tempData = StimPower.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S});
+            if isempty(tempData)
+                continue
+            end
+            Power = squeeze(nanmean(nanmean(tempData(PlotChannels, StartPower:StopPower, :), 2), 1));
+            Edges = quantile(Power, Limits);
+            Quantiles(Indx_P).(Sessions{Indx_S}) = discretize(Power, Edges);
+        end
+        
+    end
+    
+    figure('units','normalized','outerposition',[0 0 .5 .5])
+    Colors = flipud(gray(numel(Edges)));
+    PlotERP(t, Stim, TriggerTime,  PlotChannels, 'Custom', Colors(2:end, :), Quantiles)
+    xlim([-.2, 1])
+    title(['Trials based on ongoing ', BandNames{Indx_B}, ' power'])
+    ylabel('miV')
+    set(gca, 'FontSize', 14, 'FontName', Format.FontName)
+    legend(split(cellstr(num2str(Limits(2:end)))))
+    ylim([-1 5])
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_', BandNames{Indx_B}, '_Power_OngoingFreq.svg']))
 end
 
 

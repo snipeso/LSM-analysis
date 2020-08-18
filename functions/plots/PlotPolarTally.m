@@ -23,7 +23,7 @@ for Indx_C = 1:numel(Categories)
 
 GrandMean = repmat(nanmean(Proportions(:, Indx_C)), 1, numel(Bins)+1);
 hold on
-polarplot(Subplot, PhaseEdges, GrandMean, 'Color', [.7 .7 .7])
+polarplot(Subplot, PhaseEdges, GrandMean, ':',  'Color', Format.Colors.Tally(Indx_C, :))
 polarplot(Subplot, PhaseEdges, [Proportions(:, Indx_C); Proportions(1, Indx_C)], ...
     'Color', Format.Colors.Tally(Indx_C, :), 'LineWidth', 2)
 
