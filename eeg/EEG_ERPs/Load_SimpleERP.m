@@ -15,7 +15,7 @@ Stimulus = 'Alarm';
 Condition = 'Beam';
 % Options: 'Beam', 'BL', 'SD'
 
-Refresh = true;
+Refresh = false;
 SkipBadParticipants = true;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,33 +1,38 @@
 
-Load_SimpleERP
-
+% Load_SimpleERP
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-PowerWindow = [-1, .1];
+PowerWindow = [-1, .1]; % window from which to average power to split erp
 PlotChannels = EEG_Channels.Hotspot; % eventually find a more accurate set of channels?
 
+TriggerTime = 0;
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-TitleTag = [Task '_', Title, '_Tones'];
+%%% get indices
 [~, PlotChannels] = intersect({Chanlocs.labels}, string(PlotChannels));
 ERPWindow = Stop - Start;
+
+% time arrays
 t = linspace(Start, Stop, ERPWindow*newfs);
 tPower = linspace(Start, Stop, ERPWindow*HilbertFS);
 
 [~, StartPower] = min(abs(tPower -PowerWindow(1)));
 [~, StopPower] = min(abs(tPower -PowerWindow(2)));
 
-TriggerTime = 0;
-% plot tone ERP, with each participant in light color
-% 
+%%%%%%%%%%%%
+%%% Plots
+
+% plot ERP, with each participant in light color
 figure('units','normalized','outerposition',[0 0 .5 .5])
 PlotERP(t, allData, TriggerTime,  PlotChannels, 'Participants', Format.Colors.Participants)
 xlim([-.2, 1])
 title('All Tones ERP')
-ylabel('miV')
 set(gca, 'FontSize', 14)
+ylabel('miV')
+saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_SimpleERP.svg']))
+
 
 % plot ERP, delta, theta, beta etc..
 figure('units','normalized','outerposition',[0 0 .5 1])
