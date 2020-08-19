@@ -12,8 +12,8 @@ Refresh = true;
 CheckPlots = false;
 
 Task = 'LAT';
-Stimulus = 'Tone';
-% Options: 'Tone' (from LAT), 'Alarm', 'Stim', 'Resp'
+Stimulus = 'Tones';
+% Options: 'Tones' (from LAT), 'Alarm', 'Stim', 'Resp'
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -23,7 +23,7 @@ ERP_Parameters
 
 % get trigger and possibly anything else
 switch Stimulus
-    case 'Tone'
+    case 'Tones'
         Trigger = EEG_Triggers.LAT.Tone;
     case 'Alarm'
         Trigger =  EEG_Triggers.Alarm;
@@ -76,15 +76,15 @@ for Indx_F = 1:numel(Files)
     EEGhilbert = pop_resample(EEG, HilbertFS);
     EEG = pop_resample(EEG, newfs);
     
-
-    [HilbertPower, HilbertPhase] = HilbertBands(EEGhilbert, Bands, 'matrix');
+    
+%     [HilbertPower, HilbertPhase] = HilbertBands(EEGhilbert, Bands, 'matrix');
     
     % set noise to NaN
-        Cuts_Filepath = fullfile(Source_Cuts, [extractBefore(File, '_Clean'), '_Cleaning_Cuts.mat']);
+    Cuts_Filepath = fullfile(Source_Cuts, [extractBefore(File, '_Clean'), '_Cleaning_Cuts.mat']);
     EEG = nanNoise(EEG, Cuts_Filepath);
     
     %%% get times and latencies
-            [Channels, Points] = size(EEG.data);
+    [Channels, Points] = size(EEG.data);
     fs = EEG.srate;
     Chanlocs = EEG.chanlocs;
     
@@ -110,7 +110,7 @@ for Indx_F = 1:numel(Files)
         dPoints = dStart:dStart+TotWindow-1;
         Epoch = EEG.data(:, dPoints);
         
-         Data(:, :, Indx_E) = Epoch; % TEMP
+        Data(:, :, Indx_E) = Epoch; % TEMP
         % remove all epochs with any nan values
         if nnz(isnan(mean(Epoch))) > TotWindow/3
             Remove = cat(2, Remove, Indx_E);
@@ -131,7 +131,7 @@ for Indx_F = 1:numel(Files)
     disp(['Keeping ', num2str(size(Data, 3)), 'trials for ', File, ...
         ', discarding ', num2str(numel(Remove)), ' due to noise'])
     
-
+    
     parsave(fullfile(Destination, Filename), Data, Power, Phase, Chanlocs)
     disp(['*************finished ',Filename '*************'])
 end
