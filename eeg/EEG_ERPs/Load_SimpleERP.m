@@ -1,7 +1,5 @@
 
 
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Task = 'LAT';
@@ -100,9 +98,6 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
     
     save(Struct_Path_Data, 'allData', 'allPhase', 'Chanlocs', 'Means', 'SDs', '-v7.3')
     save(fullfile(Paths.Summary, [TitleTag, 'SimpleERP_Power.mat']), 'allPower', '-v7.3')
-    
-    
-    
 else
     
     disp(['*************** Loading ', Title, ' *********************'])

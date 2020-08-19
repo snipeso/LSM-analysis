@@ -1,8 +1,16 @@
 
-
+clear
+close all
+clc
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+Normalize = true;
+PlotChannels = 'ERP'; % eventually find a more accurate set of channels?
+
+TriggerTime = 0;
+
+Refresh = true;
 Normalize = true;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
