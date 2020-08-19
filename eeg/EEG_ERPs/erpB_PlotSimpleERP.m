@@ -1,17 +1,25 @@
 
-% Load_SimpleERP
+% clear
+% clc
+% close all
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 PowerWindow = [-1, .1]; % window from which to average power to split erp
-PlotChannels = EEG_Channels.Hotspot; % eventually find a more accurate set of channels?
+PlotChannels = 'Hotspot'; % eventually find a more accurate set of channels?
 
 TriggerTime = 0;
 
+Refresh = false;
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% Load_SimpleERP
+
+
 %%% get indices
-[~, PlotChannels] = intersect({Chanlocs.labels}, string(PlotChannels));
+[~, PlotChannels] = intersect({Chanlocs.labels}, string(EEG_Channels.(PlotChannels)));
 ERPWindow = Stop - Start;
 
 % time arrays

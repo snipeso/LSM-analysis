@@ -32,7 +32,7 @@ for Indx_S = 1:numel(Sessions)
         switch Dimention
             case 'Participants'
                 ERP = nanmean(nanmean(tempData(Channels, :, :), 1), 3);
-                plot(t, ERP, 'Color', Colors(Indx_P, :), 'LineWidth', 2)
+                plot(t, ERP, 'Color', Colors(Indx_P, :), 'LineWidth', 1)
             case 'Sessions'
                 ERP = nanmean(nanmean(tempData(Channels, :, :), 1), 3);
                 SessionERPs(Indx_P, :) = ERP;
@@ -68,6 +68,8 @@ end
 switch Dimention
     case 'Participants'
         ERP = nanmean(AllERPs, 1); %CHECK
+        Min = min(ERP(:));
+        Max = max(ERP(:));
         plot(t, ERP, 'Color', 'k', 'LineWidth', 3)
     case 'Custom'
         for Indx_C = 1:numel(Unique_Categories)
