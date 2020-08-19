@@ -9,10 +9,9 @@ close all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Refresh = true;
-CheckPlots = false;
 
 Task = 'LAT';
-Stimulus = 'Tones';
+Stimulus = 'Alarm';
 % Options: 'Tones' (from LAT), 'Alarm', 'Stim', 'Resp'
 
 
@@ -38,7 +37,7 @@ end
 %%% get files and paths
 Source = fullfile(Paths.Preprocessed, 'Interpolated', 'SET', Task);
 Source_Cuts = fullfile(Paths.Preprocessed, 'Cleaning', 'Cuts', Task);
-Destination = fullfile(Paths.ERPs, Stimulus, Task);
+Destination = fullfile(Paths.ERPs, 'SimpleERP', Stimulus, Task);
 
 if ~exist(Destination, 'dir')
     mkdir(Destination)
@@ -71,25 +70,35 @@ for Indx_F = 1:numel(Files)
     
     % load EEG
     EEG = pop_loadset('filename', File, 'filepath', Source);
+    [Channels, Points] = size(EEG.data);
+    fs = EEG.srate;
+    Chanlocs = EEG.chanlocs;
+    
+    % skip if there are no relevant triggers
+    AllTriggers =  {EEG.event.type};
+    if ~any(strcmp(AllTriggers, Trigger))
+        warning([File, ' doesnt have any ', Stimulus])
+        parsave(fullfile(Destination, Filename), [], [], [], Chanlocs)
+        disp(['*************finished ',Filename ', but empty*************'])
+        continue
+    else
+        disp(['*************Starting ',Filename ', with ' num2str(nnz((strcmp(AllTriggers, Trigger)))), ' trials*************'])
+    end
     
     % get hilbert power bands and phase
     EEGhilbert = pop_resample(EEG, HilbertFS);
     EEG = pop_resample(EEG, newfs);
     
     
-%     [HilbertPower, HilbertPhase] = HilbertBands(EEGhilbert, Bands, 'matrix');
+    [HilbertPower, HilbertPhase] = HilbertBands(EEGhilbert, Bands, 'matrix');
     
     % set noise to NaN
     Cuts_Filepath = fullfile(Source_Cuts, [extractBefore(File, '_Clean'), '_Cleaning_Cuts.mat']);
     EEG = nanNoise(EEG, Cuts_Filepath);
     
-    %%% get times and latencies
-    [Channels, Points] = size(EEG.data);
-    fs = EEG.srate;
-    Chanlocs = EEG.chanlocs;
     
-    % get start and stop times relative to stimulus triggers
-    AllTriggers =  {EEG.event.type};
+    %%% get start and stop times relative to stimulus triggers
+    
     AllTriggerTimes =  [EEG.event.latency];
     ToneTriggerTimes = AllTriggerTimes(strcmp(AllTriggers, Trigger))/fs;
     
@@ -128,9 +137,8 @@ for Indx_F = 1:numel(Files)
     Data(:, :, Remove) = [];
     Power(:, :, :, Remove) = [];
     Phase(:, :, Remove) = [];
-    disp(['Keeping ', num2str(size(Data, 3)), 'trials for ', File, ...
+    disp(['Keeping ', num2str(size(Data, 3)), ' trials for ', File, ...
         ', discarding ', num2str(numel(Remove)), ' due to noise'])
-    
     
     parsave(fullfile(Destination, Filename), Data, Power, Phase, Chanlocs)
     disp(['*************finished ',Filename '*************'])
@@ -139,8 +147,6 @@ end
 
 function parsave(fname, Data, Power, Phase, Chanlocs)
 % this is how to save inside a parfor loop
+Power = single(Power);
 save(fname, 'Data', 'Power', 'Phase', 'Chanlocs', '-v7.3')
 end
-
-
-% Maybe todo: can just save phase at trigger?

@@ -1,4 +1,5 @@
 function EEG = nanNoise(EEG, Cuts_Filepath)
+% makes all data marked as a cut to nan
 
 m = matfile(Cuts_Filepath);
 
@@ -14,8 +15,10 @@ end
         
         if any(Ends>size(EEG.data, 2))
             Diff = Ends(end) - size(EEG.data, 2);
-            Ends(Ends>size(EEG.data, 2)) = size(EEG.data, 2);
             warning([num2str(Diff), ' extra samples'])
+            
+            % set end to file end
+            Ends(Ends>size(EEG.data, 2)) = size(EEG.data, 2);
         end
         
         for Indx_N = 1:numel(Starts)
