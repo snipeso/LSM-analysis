@@ -1,11 +1,13 @@
 
-% Load_Trials
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Normalize = true;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Load_Trials
 
 Limits = [0:.2:1];
 PowerWindow = [-1.5, .1];
@@ -34,21 +36,8 @@ PhaseTime = 0;
 PlotPhaseTimes = [-2, -1.25, -.25, 0, .25, .5];
 PlotPhasePoints =  dsearchn( StimPhaseTimes', PlotPhaseTimes')';
 
-% Normalize power data
-if Normalize
-    OldStimPower = StimPower;
-    for Indx_P = 1:numel(Participants)
-        for Indx_S = 1:numel(Sessions)
-            
-            for Indx_B = 1:numel(BandNames)
-                Temp =    StimPower.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S});
-                Temp = (Temp-Means(Indx_P).(BandNames{Indx_B}))./(SDs(Indx_P).(BandNames{Indx_B}));
-                StimPower.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S}) = Temp;
-            end
-        end
-        
-    end
-end
+
+
 
 % plot ERPs of tones and responses by session!
 

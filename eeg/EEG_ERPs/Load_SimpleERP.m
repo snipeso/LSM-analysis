@@ -106,3 +106,7 @@ else
     load(fullfile(Paths.Summary, [TitleTag, 'SimpleERP_Power.mat']), 'allPower')
     
 end
+
+if Normalize
+    Struct = ZScorePower(Struct, Means, SDs)
+end

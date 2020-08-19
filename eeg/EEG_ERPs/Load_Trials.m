@@ -182,4 +182,8 @@ else
 end
 
 
+% Normalize power data
+if Normalize
+
+end
 

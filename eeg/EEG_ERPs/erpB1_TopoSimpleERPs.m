@@ -10,6 +10,7 @@
 TimePoints = [0, .2 .26, .33, .44, .8];
 PlotChannels = EEG_Channels.Hotspot; % eventually find a more accurate set of channels?
 MakeVideo = false;
+Normalize = true;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
