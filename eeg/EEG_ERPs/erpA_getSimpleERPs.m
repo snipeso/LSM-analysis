@@ -11,7 +11,7 @@ close all
 Refresh = true;
 
 Task = 'LAT';
-Stimulus = 'Alarm';
+Stimulus = 'Tones';
 % Options: 'Tones' (from LAT), 'Alarm', 'Stim', 'Resp'
 
 
@@ -52,7 +52,7 @@ Files(~contains(Files, '.set')) = [];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% extract ERPs
 
-for Indx_F = 1:numel(Files)
+parfor Indx_F = 1:numel(Files)
     
     File = Files{Indx_F};
     Filename = [extractBefore(File, '_Clean.set'), '_', Stimulus, '.mat'];

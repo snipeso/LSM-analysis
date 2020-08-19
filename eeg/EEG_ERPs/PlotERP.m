@@ -19,7 +19,10 @@ Min = nan;
 Max = nan;
 
 for Indx_S = 1:numel(Sessions)
-    if strcmp(Dimention, 'Sessions')
+      switch Dimention
+            case 'Participants'
+                ParticipantERPs = nan();
+                  case 'Sessions'
         SessionERPs = nan(Participants, Points);
     end
     
