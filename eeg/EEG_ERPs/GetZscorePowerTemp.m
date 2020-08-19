@@ -1,6 +1,8 @@
-function [Means, SDs] = GetZscorePower(Path, Participants, Channels, BandNames)
-% Struct(Indx_P).(Bands) = [Ch]
 
+
+function [Means, SDs] = GetZscorePowerTemp(Path, Participants, Channels, BandNames)
+% Struct(Indx_P).(Bands) = [Ch]
+% TEMP! When I have time, I need to make the get trials the same
 
 allFiles = ls(Path);
 Means = struct();
@@ -21,8 +23,9 @@ for Indx_P = 1:numel(Participants)
         m = matfile(fullfile(Path, Files(Indx_F, :)),  'Writable', false);
         Power = m.Power;
         for Indx_B = 1:numel(BandNames)
-            for Indx_T = 1:numel(Power)
-                Band = Power(Indx_T).(BandNames{Indx_B});
+           
+            for Indx_T = 1:size(Power, 4)
+               Band = squeeze(Power(:, :, Indx_B, Indx_T));
                if isempty(Band)
                    continue
                end
@@ -40,4 +43,5 @@ for Indx_P = 1:numel(Participants)
         SDs(Indx_P).(BandNames{Indx_B}) =  sqrt((SUMSQ(:, Indx_B) - N(:, Indx_B).*(MEAN.^2))./(N(:, Indx_B) - 1));
     end
     
+end
 end

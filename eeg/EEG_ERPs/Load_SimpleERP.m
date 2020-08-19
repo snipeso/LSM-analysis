@@ -95,11 +95,12 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
     
         
      % Get zscores for participants
-    [Means, SDs] = GetZscorePower(Path, Participants, Chanlocs, BandNames);
+     PowerPath = fullfile(Paths.Summary, [TitleTag, 'SimpleERP_Power.mat']);
+    [Means, SDs] = GetZscorePowerTemp(Path, Participants, Chanlocs, BandNames);
     
     
     save(Struct_Path_Data, 'allData', 'allPhase', 'Chanlocs', 'Means', 'SDs', '-v7.3')
-    save(fullfile(Paths.Summary, [TitleTag, 'SimpleERP_Power.mat']), 'allPower', '-v7.3')
+    save(PowerPath, 'allPower', '-v7.3')
     
     
     
