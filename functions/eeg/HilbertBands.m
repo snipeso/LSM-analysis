@@ -1,5 +1,13 @@
-function [HilbertPower, Phase] = HilbertBands(EEG, Bands, BandNames, Type)
+function [HilbertPower, Phase] = HilbertBands(EEG, Bands, Type, PlotData)
+% calculates hilbert power for EEG data in specified bands
+% Bands is a struct, with fieldnames indicating band names, and a 1x2
+% matrix indicating frequency limits.
+% Type indicates whether output is a 'struct' or 'matrix'
+% PlotData is optional, in case debugging and want to see whatup
 
+BandNames = fieldnames(Bands);
+
+% can select how data is spat out
 switch Type
     case 'struct'
         HilbertPower = struct();
@@ -9,18 +17,25 @@ switch Type
         Phase = HilbertPower;
 end
 
-for Indx_B = 1:numel(BandNames)
-    EEG_filt = pop_eegfiltnew(EEG, Bands(Indx_B, 1), Bands(Indx_B, 2));
+for Indx_B = 1:numel(BandNames)  
     
-    %     [pxx, ~] = pwelch(EEG.data(11, :));
-    %     [pxxF, fr] = pwelch(EEG_filt.data(11, :));
-    %     figure
-    %     plot(fr, log(pxx))
-    %     hold on
-    %     plot(fr, log(pxxF))
-    %
-    %     eegplot(EEG.data, 'srate', EEG.srate, 'winlength', 30, ...
-    %         'command', 'tmprej = TMPREJ', 'data2', EEG_filt.data)
+    EEG_filt = pop_eegfiltnew(EEG, [],  Bands.(BandNames{Indx_B})(2));
+    EEG_filt = pop_eegfiltnew(EEG_filt, Bands.(BandNames{Indx_B})(1),  []);
+   
+    
+    if exist('PlotData', 'var') && PlotData
+        % plot power spectrum
+        [pxx, ~] = pwelch(EEG.data(11, :));
+        [pxxF, fr] = pwelch(EEG_filt.data(11, :));
+        figure
+        plot(fr, log(pxx))
+        hold on
+        plot(fr, log(pxxF))
+    
+        % plot data in time
+        eegplot(EEG.data, 'srate', EEG.srate, 'winlength', 30, ...
+            'command', 'tmprej = TMPREJ', 'data2', EEG_filt.data)
+    end
     
     switch Type
         case 'struct'
@@ -31,8 +46,6 @@ for Indx_B = 1:numel(BandNames)
             Hilby = hilbert(EEG_filt.data')';
             HilbertPower(:, :,Indx_B) = abs(Hilby);
             Phase(:, :, Indx_B) = angle(Hilby);
-            
     end
-    
 end
 

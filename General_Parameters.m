@@ -230,12 +230,12 @@ EEG_Triggers.LAT.StartRight = 'S 11';
 EEG_Triggers.LAT.Tone = 'S 12';
 
 
-saveFreqs = struct();
-saveFreqs.Delta = [1 4];
-saveFreqs.Theta = [4.5 7.5];
-saveFreqs.Alpha = [8.5 12.5];
-saveFreqs.Beta = [14 25];
-saveFreqFields = fieldnames(saveFreqs);
+Bands = struct();
+Bands.delta = [1 4];
+Bands.theta = [4.5 8];
+Bands.alpha = [8.1 13];
+Bands.beta = [14 25];
+BandNames = fieldnames(Bands);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

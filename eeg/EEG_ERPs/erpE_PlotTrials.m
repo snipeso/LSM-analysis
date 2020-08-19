@@ -144,6 +144,7 @@ for Indx_B = 1:numel(BandNames)
     saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_', BandNames{Indx_B}, '_Power_OngoingFreq.svg']))
 end
 
+% plot ERP hits, misses, late pannel, split by session
 
 
 % plot normalized erp and power for on time and late responses so squished

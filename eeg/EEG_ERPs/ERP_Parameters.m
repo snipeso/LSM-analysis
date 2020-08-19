@@ -25,14 +25,6 @@ BL_Stop = 0;
 
 PhasePeriod = .2;
 
-Bands = [
-    0.5, 4;
-    4.1, 8;
-    8.1, 13;
-    15, 25
-    ];
-
-BandNames = {'delta', 'theta', 'alpha', 'beta'};
 HilbertFS = 80;
 newfs = 250;
 

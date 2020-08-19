@@ -39,7 +39,6 @@ for Indx_S = 1:numel(Sessions)
                 Min = min(Min, min(ERP(:)));
                 Max = max(Max, max(ERP(:)));
             case 'Custom'
-                
                 for Indx_C = 1:numel(Unique_Categories)
                     Trials =  Category(Indx_P).(Sessions{Indx_S})== Unique_Categories(Indx_C);
                     ERP = nanmean(nanmean(tempData(Channels, :,Trials), 1), 3);
@@ -52,6 +51,9 @@ for Indx_S = 1:numel(Sessions)
                         CustomERPs(Indx_P).(Cat) = cat(3, CustomERPs(Indx_P).(Cat),nanmean(tempData(Channels, :,Trials), 1) );
                     end
                 end
+            otherwise
+                % just average channels
+                ERP = squeeze(nanmean(tempData(Channels, :, :), 1));
                 
         end
         AllERPs = cat(1, AllERPs, ERP);

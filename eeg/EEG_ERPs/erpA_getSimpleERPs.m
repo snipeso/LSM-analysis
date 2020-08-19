@@ -1,3 +1,7 @@
+% Saves each file in requested folder as a structure of:
+% Struct(P_Indx).(Session)(ch x time x trial)
+
+
 clear
 clc
 close all
@@ -8,20 +12,33 @@ Refresh = true;
 CheckPlots = false;
 
 Task = 'LAT';
+Stimulus = 'Tone';
+% Options: 'Tone' (from LAT), 'Alarm', 'Stim', 'Resp'
 
-ToneTrigger = 'S 12';
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
 ERP_Parameters
 
+% get trigger and possibly anything else
+switch Stimulus
+    case 'Tone'
+        ToneTrigger = EEG_Triggers.LAT.Tone;
+    case 'Alarm'
+        ToneTrigger =  EEG_Triggers.Alarm;
+    case 'Stim'
+        ToneTrigger =  EEG_Triggers.Stim;
+    case 'Resp'
+        ToneTrigger =  EEG_Triggers.Response;
+end
 
-% get struct(participant).(recording).ERP/Power = matrix(ch, time, tone) / matrix(ch, freq, time, tone)
 
-% get files and paths
+
+%%% get files and paths
 Source = fullfile(Paths.Preprocessed, 'Interpolated', 'SET', Task);
 Source_Cuts = fullfile(Paths.Preprocessed, 'Cleaning', 'Cuts', Task);
-Destination = fullfile(Paths.ERPs, 'Tones', Task);
+Destination = fullfile(Paths.ERPs, Stimulus, Task);
 
 if ~exist(Destination, 'dir')
     mkdir(Destination)
@@ -31,18 +48,20 @@ Files = deblank(cellstr(ls(Source)));
 Files(~contains(Files, '.set')) = [];
 
 
-Paths.Figures = fullfile(Paths.Figures, 'Tones', Task, 'AllFiles');
+Paths.Figures = fullfile(Paths.Figures, Stimulus, Task, 'AllFiles');
 
 if ~exist(Paths.Figures, 'dir')
     mkdir(Paths.Figures)
 end
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% extract ERPs
 
 for Indx_F = 1:numel(Files)
     
     File = Files{Indx_F};
-    Filename = [extractBefore(File, '_Clean.set'), '_Tones.mat'];
+    Filename = [extractBefore(File, '_Clean.set'), '_', Stimulus, '.mat'];
     
     % skip if already done
     if ~Refresh && exist(fullfile(Destination, Filename), 'file')
@@ -54,9 +73,9 @@ for Indx_F = 1:numel(Files)
     EEG = pop_loadset('filename', File, 'filepath', Source);
     
     % get hilbert power bands and phase
-    EEGds = pop_resample(EEG, HilbertFS);
-    EEG  = pop_resample(EEG, newfs);
-    [HilbertPower, HilbertPhase] = HilbertBands(EEGds, Bands, BandNames, 'matrix');
+    EEGhilbert = pop_resample(EEG, HilbertFS);
+    EEG = pop_resample(EEG, newfs);
+    [HilbertPower, HilbertPhase] = HilbertBands(EEGhilbert, Bands, 'matrix');
     
     %%% Set as nan all noise
     % remove nonEEG channels
@@ -96,29 +115,8 @@ for Indx_F = 1:numel(Files)
     Power(:, :, :, Remove) = [];
     Phase(:, :, Remove) = [];
     
-    if CheckPlots
-        plotChannels = EEG_Channels.Hotspot; % hotspot
-        ChanIndx = ismember( str2double({Chanlocs.labels}), plotChannels);
-        figure('units','normalized','outerposition',[0 0 .25 1])
-        subplot(5, 1, 1)
-        plot(squeeze(nanmean(Data(ChanIndx, :, :), 1)))
-        hold on
-        plot(nanmean(nanmean(Data(ChanIndx, :, :), 1), 3), 'k', 'LineWidth', 2)
-        xlim([900, 1600])
-        ylim([-10 10])
-        title(File)
-        for Indx_B = 1:numel(BandNames)
-            subplot(5, 1, Indx_B+1)
-            plot(squeeze(nanmean(Power(ChanIndx, :, Indx_B,  :), 1)))
-            hold on
-            plot(nanmean(nanmean(Power(ChanIndx, :, Indx_B, :), 1), 4), 'k', 'LineWidth', 2)
-%             xlim([900, 1600])
-            ylim([1 10])
-            title(BandNames(Indx_B))
-        end
-        
-        saveas(gcf,fullfile(Paths.Figures, [extractBefore(File, '.set'), '_ERPs.svg']))
-    end
+    saveas(gcf,fullfile(Paths.Figures, [extractBefore(File, '.set'), '_ERPs.svg']))
+    
     
     
     parsave(fullfile(Destination, Filename), Data, Power, Phase, Chanlocs)
