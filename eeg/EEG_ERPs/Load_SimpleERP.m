@@ -7,7 +7,7 @@
 Task = 'LAT';
 % Options: 'LAT', 'PVT'
 
-Stimulus = 'Resp';
+Stimulus = 'Tones';
 % Options: 'Tones' (from LAT), 'Alarm', 'Stim', 'Resp'
 
 Condition = 'Beam';
@@ -55,10 +55,6 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
     Files = deblank(cellstr(ls(Path)));
     Files(~contains(Files, '.mat')) = [];
     
-    
-     % Get zscores for participants
-    [Means, SDs] = GetZscorePower(Path, Participants, Chanlocs, BandNames);
-    
     allData =struct();
     allPhase =struct();
     allPower =struct();
@@ -96,17 +92,25 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
         end
     end
     Chanlocs = m.Chanlocs;
+    
+        
+     % Get zscores for participants
+    [Means, SDs] = GetZscorePower(Path, Participants, Chanlocs, BandNames);
+    
+    
     save(Struct_Path_Data, 'allData', 'allPhase', 'Chanlocs', 'Means', 'SDs', '-v7.3')
     save(fullfile(Paths.Summary, [TitleTag, 'SimpleERP_Power.mat']), 'allPower', '-v7.3')
+    
+    
     
 else
     
     disp(['*************** Loading ', Title, ' *********************'])
-    load(Struct_Path_Data, 'allData', 'allPhase', 'Chanlocs')
+    load(Struct_Path_Data, 'allData', 'allPhase', 'Chanlocs', 'Means', 'SDs')
     load(fullfile(Paths.Summary, [TitleTag, 'SimpleERP_Power.mat']), 'allPower')
     
 end
 
 if Normalize
-    Struct = ZScorePower(Struct, Means, SDs)
+    allPower = ZScorePower(allPower, Means, SDs);
 end
