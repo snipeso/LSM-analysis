@@ -130,11 +130,11 @@ parfor Indx_F = 1:numel(Files)
     
     Events.Noise(Remove) = 1;
     
-    parsave(fullfile(Destination, Filename), Data, Power, Phase, Meta, Events)
+    parsave(fullfile(Destination, Filename), Data, Power, Phase, Meta, Events, Chanlocs)
     disp(['*************finished ', Filename, '*************'])
 end
 
 
-function parsave(fname,  Data, Power, Phase, Meta, Events)
-save(fname,  'Data', 'Power', 'Phase', 'Meta', 'Events', '-v7.3')
+function parsave(fname,  Data, Power, Phase, Meta, Events, Chanlocs)
+save(fname,  'Data', 'Power', 'Phase', 'Meta', 'Events', 'Chanlocs', '-v7.3')
 end

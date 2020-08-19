@@ -24,13 +24,13 @@ ERP_Parameters
 % get trigger and possibly anything else
 switch Stimulus
     case 'Tone'
-        ToneTrigger = EEG_Triggers.LAT.Tone;
+        Trigger = EEG_Triggers.LAT.Tone;
     case 'Alarm'
-        ToneTrigger =  EEG_Triggers.Alarm;
+        Trigger =  EEG_Triggers.Alarm;
     case 'Stim'
-        ToneTrigger =  EEG_Triggers.Stim;
+        Trigger =  EEG_Triggers.Stim;
     case 'Resp'
-        ToneTrigger =  EEG_Triggers.Response;
+        Trigger =  EEG_Triggers.Response;
 end
 
 
@@ -75,56 +75,70 @@ for Indx_F = 1:numel(Files)
     % get hilbert power bands and phase
     EEGhilbert = pop_resample(EEG, HilbertFS);
     EEG = pop_resample(EEG, newfs);
+    
+
     [HilbertPower, HilbertPhase] = HilbertBands(EEGhilbert, Bands, 'matrix');
     
-    %%% Set as nan all noise
-    % remove nonEEG channels
-    [Channels, Points] = size(EEG.data);
+    % set noise to NaN
+        Cuts_Filepath = fullfile(Source_Cuts, [extractBefore(File, '_Clean'), '_Cleaning_Cuts.mat']);
+    EEG = nanNoise(EEG, Cuts_Filepath);
+    
+    %%% get times and latencies
+            [Channels, Points] = size(EEG.data);
     fs = EEG.srate;
     Chanlocs = EEG.chanlocs;
     
+    % get start and stop times relative to stimulus triggers
     AllTriggers =  {EEG.event.type};
     AllTriggerTimes =  [EEG.event.latency];
-    ToneTriggerTimes = AllTriggerTimes(strcmp(AllTriggers, ToneTrigger))/fs;
+    ToneTriggerTimes = AllTriggerTimes(strcmp(AllTriggers, Trigger))/fs;
     
     Starts = ToneTriggerTimes + Start;
     Stops = ToneTriggerTimes + Stop;
     
-    Cuts_Filepath = fullfile(Source_Cuts, [extractBefore(File, '_Clean'), '_Cleaning_Cuts.mat']);
-    EEG = nanNoise(EEG, Cuts_Filepath);
-    
     TotWindow = round(fs*Stop - fs*Start);
     TotWindowPower = round(HilbertFS*Stop - HilbertFS*Start);
     
-    Data = zeros(Channels, TotWindow, numel(Starts));
-    Power = zeros(Channels,  TotWindowPower, numel(BandNames), numel(Starts));
-    Phase = zeros(Channels, numel(BandNames), numel(Starts));
+    %%% save data into jumbo matrices
+    Data = nan(Channels, TotWindow, numel(Starts));
+    Power = nan(Channels,  TotWindowPower, numel(BandNames), numel(Starts));
+    Phase = nan(Channels, numel(BandNames), numel(Starts));
+    
     Remove = [];
     for Indx_E = 1:numel(Starts)
-        Epoch = EEG.data(:, round(Starts(Indx_E)*fs):round(Starts(Indx_E)*fs)+TotWindow-1);
-        if any(isnan(Epoch(:)))
+        dStart = round(Starts(Indx_E)*fs);
+        dPoints = dStart:dStart+TotWindow-1;
+        Epoch = EEG.data(:, dPoints);
+        
+         Data(:, :, Indx_E) = Epoch; % TEMP
+        % remove all epochs with any nan values
+        if nnz(isnan(mean(Epoch))) > TotWindow/3
             Remove = cat(2, Remove, Indx_E);
             continue
         end
         
+        hStart = round(Starts(Indx_E)*HilbertFS);
+        hPoints = hStart:hStart+TotWindowPower-1;
+        
         Data(:, :, Indx_E) = Epoch;
-        Power(:, :, :, Indx_E) = HilbertPower(:, round(Starts(Indx_E)*HilbertFS):round(Starts(Indx_E)*HilbertFS)+TotWindowPower-1, :);
+        Power(:, :, :, Indx_E) = HilbertPower(:, hPoints, :);
         Phase(:, :, Indx_E) = HilbertPhase(:, round(ToneTriggerTimes(Indx_E)*HilbertFS), :);
     end
+    
     Data(:, :, Remove) = [];
     Power(:, :, :, Remove) = [];
     Phase(:, :, Remove) = [];
+    disp(['Keeping ', num2str(size(Data, 3)), 'trials for ', File, ...
+        ', discarding ', num2str(numel(Remove)), ' due to noise'])
     
-    saveas(gcf,fullfile(Paths.Figures, [extractBefore(File, '.set'), '_ERPs.svg']))
-    
-    
-    
+
     parsave(fullfile(Destination, Filename), Data, Power, Phase, Chanlocs)
     disp(['*************finished ',Filename '*************'])
 end
 
 
 function parsave(fname, Data, Power, Phase, Chanlocs)
+% this is how to save inside a parfor loop
 save(fname, 'Data', 'Power', 'Phase', 'Chanlocs', '-v7.3')
 end
 
