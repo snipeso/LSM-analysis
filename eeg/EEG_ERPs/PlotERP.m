@@ -154,12 +154,22 @@ Max = max(GrandMean(:));
 Min = min(GrandMean(:));
 Ceiling = Max+(Max-Min)*0.1;
 
+[~, pValuesFDR] = fdr(pValues, .05);
+pValuesFDR = pValues(pValuesFDR);
+
 Sig_pValues = nan(size(pValues));
 Sig_pValues(pValues<=.05) = Ceiling;
 Sig_pValues(pValues>.05) = nan;
 
+
+Sig_pValuesFDR = nan(size(pValuesFDR));
+Sig_pValuesFDR(pValuesFDR<=.05) = Ceiling;
+Sig_pValuesFDR(pValuesFDR>.05) = nan;
+
 hold on
-plot(linspace(t(1), t(end), numel(Sig_pValues)), Sig_pValues, 'LineWidth', 4, 'Color', [0 0 0])
+plot(linspace(t(1), t(end), numel(Sig_pValues)), Sig_pValues, 'LineWidth', 4, 'Color', [.5 0.5 0.5])
+plot(linspace(t(1), t(end), numel(Sig_pValuesFDR)), Sig_pValuesFDR, 'LineWidth', 4, 'Color', [0 0 0])
+
 
   if ndims(Matrix) < 3 
       plot(t, zeros(size(Matrix, 2), 1), 'Color', [.7 .7 .7])
