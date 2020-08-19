@@ -123,6 +123,7 @@ end
 function Stats(Matrix, t)
 % Matrix is participants x time x group
 
+% get mini window for test
 PeriodLength = 20; % ms
 End = size(Matrix, 2);
 fs = 1/(diff(t(1:2)));
@@ -132,12 +133,13 @@ Starts = round(1:Period+1:End+1);
 Stops = round(Starts-1);
 Stops(1) = []; % remove starting 0
 
+% get pvalues for each window
 pValues = ones(numel(Stops), 1);
 for Indx_S = 1:numel(Stops)
     
     if ndims(Matrix) < 3 %run a t-test
         Data = squeeze(nanmean(Matrix(:, Starts(Indx_S):Stops(Indx_S)), 2));
-
+        
         [~, p] = ttest(Data);
     else
         Data = squeeze(nanmean(Matrix(:, Starts(Indx_S):Stops(Indx_S), :), 2));
@@ -145,35 +147,37 @@ for Indx_S = 1:numel(Stops)
         p = 1;
     end
     
-    
     pValues(Indx_S) = p;
 end
 
+% identify height for plotting sig bars
 GrandMean = nanmean(Matrix, 1);
 Max = max(GrandMean(:));
 Min = min(GrandMean(:));
 Ceiling = Max+(Max-Min)*0.1;
 
+% do fdr correction
 [~, pValuesFDR] = fdr(pValues, .05);
 pValuesFDR = pValues(pValuesFDR);
 
+% TODO: make this more succint
 Sig_pValues = nan(size(pValues));
 Sig_pValues(pValues<=.05) = Ceiling;
 Sig_pValues(pValues>.05) = nan;
-
 
 Sig_pValuesFDR = nan(size(pValuesFDR));
 Sig_pValuesFDR(pValuesFDR<=.05) = Ceiling;
 Sig_pValuesFDR(pValuesFDR>.05) = nan;
 
+% plot significance bars
 hold on
 plot(linspace(t(1), t(end), numel(Sig_pValues)), Sig_pValues, 'LineWidth', 4, 'Color', [.5 0.5 0.5])
 plot(linspace(t(1), t(end), numel(Sig_pValuesFDR)), Sig_pValuesFDR, 'LineWidth', 4, 'Color', [0 0 0])
 
 
-  if ndims(Matrix) < 3 
-      plot(t, zeros(size(Matrix, 2), 1), 'Color', [.7 .7 .7])
-
-  end
+% plot 0 line, because this is what the stats were compared to
+if ndims(Matrix) < 3
+    plot(t, zeros(size(Matrix, 2), 1), 'Color', [0  0 0])
+end
 % TODO: split by larger significance?
 end
