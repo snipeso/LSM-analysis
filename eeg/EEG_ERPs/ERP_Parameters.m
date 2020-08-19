@@ -13,6 +13,7 @@ Paths.Summary = fullfile(Paths.ERPs, 'SummaryData');
 
 if exist('SkipBadParticipants', 'var') && SkipBadParticipants
     Participants = {'P01', 'P02', 'P03', 'P05', 'P06', 'P07', 'P08', 'P09',  'P11', 'P12'};
+    disp('*** Skipping bad participants ***')
 end
 
 % Parameters

@@ -1,13 +1,14 @@
 
+Load_SimpleERP
 
-Load_Tones
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-PowerWindow = [-1.5, .1];
+PowerWindow = [-1, .1];
 PlotChannels = EEG_Channels.Hotspot; % eventually find a more accurate set of channels?
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 TitleTag = [Task '_', Title, '_Tones'];
 [~, PlotChannels] = intersect({Chanlocs.labels}, string(PlotChannels));

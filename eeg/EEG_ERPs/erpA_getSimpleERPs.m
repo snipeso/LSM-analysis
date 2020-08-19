@@ -47,11 +47,6 @@ Files = deblank(cellstr(ls(Source)));
 Files(~contains(Files, '.set')) = [];
 
 
-Paths.Figures = fullfile(Paths.Figures, Stimulus, Task, 'AllFiles');
-
-if ~exist(Paths.Figures, 'dir')
-    mkdir(Paths.Figures)
-end
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
