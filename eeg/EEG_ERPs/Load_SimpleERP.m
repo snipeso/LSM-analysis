@@ -1,6 +1,6 @@
 
 
-ERP_Parameters
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -17,6 +17,7 @@ SkipBadParticipants = true;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+ERP_Parameters
 
 % get trigger and possibly anything else
 switch Condition

@@ -21,20 +21,24 @@ switch Dimention
             ERPs = [];
             for Indx_S = 1:numel(Sessions)
                 tempData = Data(Indx_P).(Sessions{Indx_S});
-                
-                ERP = squeeze(nanmean(tempData(Channels, :, :), 1)); % average across channels
-                
+                if isempty(tempData)
+                    ERP = [];
+                elseif ndims(tempData)<3
+                    
+                    ERP = nanmean(tempData(Channels, :));
+                    ERP = ERP';
+                else
+                    ERP = squeeze(nanmean(tempData(Channels, :, :), 1)); % average across channels
+                end
                 ERPs = cat(2, ERPs, ERP);
             end
             
-            pERP = nanmean(ERPs, 2);
-            pERP = smooth(pERP);
+            pERP = PlotSingle(ERPs, t, Colors(Indx_P, :));
             AllERPs(Indx_P, :) = pERP;
-            plot(t, pERP, 'Color', Colors(Indx_P, :), 'LineWidth', 1)
         end
         
-        plot(t, nanmean(AllERPs), 'k', 'LineWidth', 1)
-        Stats(AllERPs, srate)
+        plot(t, nanmean(AllERPs), 'k', 'LineWidth', 3)
+        Stats(AllERPs, t)
         
     case 'Session'
         
@@ -86,29 +90,54 @@ end
 Min = min(AllERPs(:));
 Max = max(AllERPs(:));
 
+ylim([Min, Max])
+
 plot([Trigger, Trigger], [Min, Max], 'Color', [.7 .7 .7])
+
+end
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Functions
+
+function ERP = PlotSingle(ERPs, t, Color)
+
+if isempty(ERPs)
+    ERP = nan(size(t));
+    return
+end
+
+fs = 1/(diff(t(1:2)));
+
+
+ERP = nanmean(ERPs, 2);
+ERP = smooth(ERP, fs/10);
+
+plot(t, ERP', 'Color', Color, 'LineWidth', 1)
+
 
 end
 
 function Stats(Matrix, t)
 % Matrix is participants x time x group
 
-
-
-PeriodLength = 10; % ms
+PeriodLength = 20; % ms
 End = size(Matrix, 2);
 fs = 1/(diff(t(1:2)));
-Period = PeriodLength*fs;
+Period = (PeriodLength/1000)*fs;
 
-Starts = 1:Period+1:End+1;
-Stops = Starts-1;
+Starts = round(1:Period+1:End+1);
+Stops = round(Starts-1);
 Stops(1) = []; % remove starting 0
 
-pValues = ones(End, 1);
-for Indx_S = 1:numel(Starts)
+pValues = ones(numel(Stops), 1);
+for Indx_S = 1:numel(Stops)
     
-    if nDims(Matrix) < 3 %run a t-test
+    if ndims(Matrix) < 3 %run a t-test
         Data = squeeze(nanmean(Matrix(:, Starts(Indx_S):Stops(Indx_S)), 2));
+
         [~, p] = ttest(Data);
     else
         Data = squeeze(nanmean(Matrix(:, Starts(Indx_S):Stops(Indx_S), :), 2));
@@ -123,14 +152,18 @@ end
 GrandMean = nanmean(Matrix, 1);
 Max = max(GrandMean(:));
 Min = min(GrandMean(:));
-Ceiling = Max+(Max-Min)*0.05;
+Ceiling = Max+(Max-Min)*0.1;
 
+Sig_pValues = nan(size(pValues));
 Sig_pValues(pValues<=.05) = Ceiling;
 Sig_pValues(pValues>.05) = nan;
 
 hold on
-plot(t, Sig_pValues)
+plot(linspace(t(1), t(end), numel(Sig_pValues)), Sig_pValues, 'LineWidth', 4, 'Color', [0 0 0])
+
+  if ndims(Matrix) < 3 
+      plot(t, zeros(size(Matrix, 2), 1), 'Color', [.7 .7 .7])
+
+  end
 % TODO: split by larger significance?
-
-
 end

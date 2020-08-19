@@ -11,7 +11,7 @@ PlotChannels = 'Hotspot'; % eventually find a more accurate set of channels?
 
 TriggerTime = 0;
 
-Refresh = false;
+Refresh = true;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
