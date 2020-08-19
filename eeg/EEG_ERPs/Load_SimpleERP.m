@@ -7,7 +7,7 @@ ERP_Parameters
 Task = 'LAT';
 % Options: 'LAT', 'PVT'
 
-Stimulus = 'Tones';
+Stimulus = 'Alarm';
 % Options: 'Tones' (from LAT), 'Alarm', 'Stim', 'Resp'
 
 Condition = 'Beam';

@@ -21,7 +21,9 @@ switch Dimention
             ERPs = [];
             for Indx_S = 1:numel(Sessions)
                 tempData = Data(Indx_P).(Sessions{Indx_S});
+                
                 ERP = squeeze(nanmean(tempData(Channels, :, :), 1)); % average across channels
+                
                 ERPs = cat(2, ERPs, ERP);
             end
             
@@ -32,7 +34,7 @@ switch Dimention
         end
         
         plot(t, nanmean(AllERPs), 'k', 'LineWidth', 1)
-        Stats(AllERPs)
+        Stats(AllERPs, srate)
         
     case 'Session'
         
@@ -80,16 +82,55 @@ switch Dimention
         % plot thin gray lines for each recording average
 end
 
+% plot line of trigger % TODO: make it possible to provide list?
+Min = min(AllERPs(:));
+Max = max(AllERPs(:));
+
+plot([Trigger, Trigger], [Min, Max], 'Color', [.7 .7 .7])
+
 end
 
-function Stats(Matrix, srate)
+function Stats(Matrix, t)
 % Matrix is participants x time x group
 
 
 
+PeriodLength = 10; % ms
+End = size(Matrix, 2);
+fs = 1/(diff(t(1:2)));
+Period = PeriodLength*fs;
 
- [stats, Table] = mes1way(Matrix, 'eta2', 'isDep',1,'nBoot', 1000);
+Starts = 1:Period+1:End+1;
+Stops = Starts-1;
+Stops(1) = []; % remove starting 0
 
- sigstar()
- 
+pValues = ones(End, 1);
+for Indx_S = 1:numel(Starts)
+    
+    if nDims(Matrix) < 3 %run a t-test
+        Data = squeeze(nanmean(Matrix(:, Starts(Indx_S):Stops(Indx_S)), 2));
+        [~, p] = ttest(Data);
+    else
+        Data = squeeze(nanmean(Matrix(:, Starts(Indx_S):Stops(Indx_S), :), 2));
+        [stats, ~] = mes1way(Data, 'eta2', 'isDep',1); %  'nBoot', 1000
+        p = 1;
+    end
+    
+    
+    pValues(Indx_S) = p;
+end
+
+GrandMean = nanmean(Matrix, 1);
+Max = max(GrandMean(:));
+Min = min(GrandMean(:));
+Ceiling = Max+(Max-Min)*0.05;
+
+Sig_pValues(pValues<=.05) = Ceiling;
+Sig_pValues(pValues>.05) = nan;
+
+hold on
+plot(t, Sig_pValues)
+% TODO: split by larger significance?
+
+
 end
