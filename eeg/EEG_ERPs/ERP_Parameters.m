@@ -36,10 +36,6 @@ if ~exist(Paths.Summary, 'dir')
     mkdir(Paths.Summary)
 end
 
-if ~exist(Paths.Figures, 'dir')
-    mkdir(Paths.Figures)
-end
-
 % get response times
 LATResponses = 'LATAllAnswers.mat';
 if exist(fullfile(Paths.Responses, LATResponses), 'file')

@@ -7,13 +7,14 @@
 Task = 'LAT';
 % Options: 'LAT', 'PVT'
 
-Stimulus = 'Tones';
+Stimulus = 'Resp';
 % Options: 'Tones' (from LAT), 'Alarm', 'Stim', 'Resp'
 
 Condition = 'Beam';
 % Options: 'Beam', 'BL', 'SD'
 
 SkipBadParticipants = true;
+Labels = {'FZ', 'CZ', 'Oz'};
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -35,7 +36,7 @@ Sessions = allSessions.([Task,Condition]);
 SessionLabels = allSessionLabels.([Task, Condition]);
 
 % set figure destination
-Paths.Figures = fullfile(Paths.Figures, Stimulus, Task, 'AllFiles');
+Paths.Figures = fullfile(Paths.Figures, Stimulus, Task);
 if ~exist(Paths.Figures, 'dir')
     mkdir(Paths.Figures)
 end

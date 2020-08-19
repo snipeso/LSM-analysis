@@ -67,10 +67,7 @@ switch Dimention
                 
             end
             
-            
             PlotSingle(squeeze(AllERPs(:, :, Indx_S))', t, Colors(Indx_S, :), true);
-            
-            
         end
         
         Stats(AllERPs, t)
@@ -80,27 +77,44 @@ switch Dimention
         % group by inputted categories
         Unique_Categories = unique(Category(1).(Sessions{1}));
         
+        AllERPs =  nan(Participants, Points, numel(Unique_Categories));
+        
         % emergency color thing so I don't have to care all the time
         if numel(Unique_Categories)>size(Colors, 1)
             Colors = gray(numel(Unique_Categories));
         end
         
         for Indx_C = 1:numel(Unique_Categories)
-            ERPs = [];
+            
             for Indx_P = 1:Participants
+                ERPs = [];
                 for Indx_S = 1:numel(Sessions)
                     tempData = Data(Indx_P).(Sessions{Indx_S});
                     Trials =  Category(Indx_P).(Sessions{Indx_S}) == Unique_Categories(Indx_C);
                     
-                    ERP = squeeze(nanmean(tempData(Channels, :,Trials), 1));
+                    if isempty(tempData) % skip if empty
+                        ERP = [];
+                    elseif ndims(tempData)<3 %#ok<*ISMAT> % deal with 1 trial session
+                        ERP = nanmean(tempData(Channels, :));
+                        ERP = ERP';
+                    else
+                        ERP = squeeze(nanmean(tempData(Channels, :, Trials), 1)); % average across channels
+                    end
+                    
+                    
                     ERPs = cat(2, ERPs, ERP);
                 end
+                
+                cERP = PlotSingle(ERP, t, [], false);
+                AllERPs(Indx_P, :, Indx_C) = cERP;
             end
             
-            cERP = nanmean(ERPs, 2);
-            AllERPs = cat(2, AllERPs, cERP);
-            plot(t, cERP, 'Color', Colors(Indx_C, :), 'LineWidth', 1)
+              PlotSingle(squeeze(AllERPs(:, :, Indx_C))', t, Colors(Indx_C, :), true);
         end
+        
+              Stats(AllERPs, t)
+     
+        
     otherwise
         % plot thin gray lines for each recording average
 end
@@ -178,8 +192,9 @@ YLims = [  Min-(Max-Min)*0.2, Max+(Max-Min)*0.2];
 ylim(YLims)
 
 % do fdr correction
-[~, pValuesFDR] = fdr(pValues, .05);
-pValuesFDR = pValues(pValuesFDR);
+[~, pValuesFDRmask] = fdr(pValues, .05);
+pValuesFDR = nan(size(pValues));
+pValuesFDR(pValuesFDRmask) = pValues(pValuesFDRmask);
 
 % TODO: make this more succint
 Sig_pValues = nan(size(pValues));
@@ -192,7 +207,7 @@ Sig_pValuesFDR(pValuesFDR>.05) = nan;
 
 % plot significance bars
 hold on
-plot(linspace(t(1), t(end), numel(Sig_pValues)), Sig_pValues, 'LineWidth', 4, 'Color', [.5 0.5 0.5])
+plot(linspace(t(1), t(end), numel(Sig_pValues)), Sig_pValues, 'LineWidth', 4, 'Color', [.7 0.7 0.7])
 plot(linspace(t(1), t(end), numel(Sig_pValuesFDR)), Sig_pValuesFDR, 'LineWidth', 4, 'Color', [0 0 0])
 
 
