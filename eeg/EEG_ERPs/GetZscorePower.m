@@ -1,4 +1,4 @@
-function [Means, SDs] = ZscorePower(Path, Participants, Channels, BandNames)
+function [Means, SDs] = GetZscorePower(Path, Participants, Channels, BandNames)
 % Struct(Indx_P).(Bands) = [Ch]
 
 

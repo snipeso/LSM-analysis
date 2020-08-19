@@ -1,17 +1,20 @@
 
-Load_Tones
+
+% clear
+% clc
+% close all
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 TimePoints = [0, .2 .26, .33, .44, .8];
 PlotChannels = EEG_Channels.Hotspot; % eventually find a more accurate set of channels?
-
+MakeVideo = false;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-TitleTag = [Task '_', Title, '_Tones'];
+% Load_SimpleERP
 
-%%
 % create average ERP and Power for everyone at all channels
 ERPWindow = round((Stop - Start)*newfs);
 PowerWindow =  round((Stop - Start)*HilbertFS);
@@ -65,7 +68,7 @@ saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_ERPTopo.svg']))
 % plot power stills
 Points = round((TimePoints-Start)*HilbertFS);
 for Indx_B = 1:numel(BandNames)
-
+    
     PowerERP(:, :, Indx_B) = zscore(PowerERP(:, :, Indx_B)')';
     Band = repmat({[BandNames{Indx_B}, ' ']}, 1, numel(Time));
     Titles = append(Band, Time, Unit);
@@ -75,15 +78,19 @@ for Indx_B = 1:numel(BandNames)
 end
 
 
-%%
-
-% plot gif of ERP
-t = linspace(Start, Stop, ERPWindow);
-MakePowerGIF(Paths.Figures, [TitleTag, 'ERP'], ERP, t, {'ERP'}, Chanlocs,...
-    -.1, 1, newfs, 100, 20, Format.Colormap.Divergent, Format.FontName)
 
 
-% plot gif of power
-t = linspace(Start, Stop, PowerWindow);
-MakePowerGIF(Paths.Figures, [TitleTag, 'PowerERP'], PowerERP, t, BandNames, Chanlocs,...
-    -.1, 1, HilbertFS, 100, 20, Format.Colormap.Divergent, Format.FontName)
+if MakeVideo
+    
+    % plot gif of ERP
+    t = linspace(Start, Stop, ERPWindow);
+    MakePowerGIF(Paths.Figures, [TitleTag, 'ERP'], ERP, t, {'ERP'}, Chanlocs,...
+        -.1, 1, newfs, 100, 20, Format.Colormap.Divergent, Format.FontName)
+    
+    
+    % plot gif of power
+    t = linspace(Start, Stop, PowerWindow);
+    MakePowerGIF(Paths.Figures, [TitleTag, 'PowerERP'], PowerERP, t, BandNames, Chanlocs,...
+        -.1, 1, HilbertFS, 100, 20, Format.Colormap.Divergent, Format.FontName)
+    
+end

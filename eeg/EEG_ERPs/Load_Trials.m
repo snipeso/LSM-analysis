@@ -56,7 +56,7 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
     
     
     % Get zscores for participants
-    [Means, SDs] = ZscorePower(Path, Participants, Chanlocs, BandNames);
+    [Means, SDs] = GetZscorePower(Path, Participants, Chanlocs, BandNames);
     
     % initialize structures for all data
     Tally = struct(); % categories for each trial
