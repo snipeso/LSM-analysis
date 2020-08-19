@@ -21,40 +21,59 @@ switch Dimention
             ERPs = [];
             for Indx_S = 1:numel(Sessions)
                 tempData = Data(Indx_P).(Sessions{Indx_S});
-                if isempty(tempData)
+                
+                
+                if isempty(tempData) % skip if empty
                     ERP = [];
-                elseif ndims(tempData)<3
-                    
+                elseif ndims(tempData)<3 % deal with 1 trial session
                     ERP = nanmean(tempData(Channels, :));
                     ERP = ERP';
                 else
                     ERP = squeeze(nanmean(tempData(Channels, :, :), 1)); % average across channels
                 end
+                
                 ERPs = cat(2, ERPs, ERP);
             end
             
-            pERP = PlotSingle(ERPs, t, Colors(Indx_P, :));
+            pERP = PlotSingle(ERPs, t, Colors(Indx_P, :), true);
             AllERPs(Indx_P, :) = pERP;
         end
         
         plot(t, nanmean(AllERPs), 'k', 'LineWidth', 3)
         Stats(AllERPs, t)
         
-    case 'Session'
+    case 'Sessions'
+        
+        AllERPs =  nan(Participants, Points, numel(Sessions));
         
         % plots all participants' sessions averaged
         for Indx_S = 1:numel(Sessions)
-            ERPs = [];
+            
             for Indx_P = 1:Participants
                 tempData = Data(Indx_P).(Sessions{Indx_S});
-                ERP = squeeze(nanmean(tempData(Channels, :, :), 1)); % average across channels
-                ERPs = cat(2, ERPs, ERP);
+                
+                if isempty(tempData) % skip if empty
+                    ERP = [];
+                elseif ndims(tempData)<3 %#ok<*ISMAT> % deal with 1 trial session
+                    ERP = nanmean(tempData(Channels, :));
+                    ERP = ERP';
+                else
+                    ERP = squeeze(nanmean(tempData(Channels, :, :), 1)); % average across channels
+                end
+                
+                sERP = PlotSingle(ERP, t, [], false);
+                AllERPs(Indx_P, :, Indx_S) = sERP;
+                
+                
             end
             
-            sERP = nanmean(ERPs, 2);
-            AllERPs = cat(2, AllERPs, sERP);
-            plot(t, sERP, 'Color', Colors(Indx_S, :), 'LineWidth', 1)
+            
+            PlotSingle(squeeze(AllERPs(:, :, Indx_S))', t, Colors(Indx_S, :), true);
+            
+            
         end
+        
+        Stats(AllERPs, t)
         
     case 'Custom'
         
@@ -90,7 +109,6 @@ end
 Min = min(AllERPs(:));
 Max = max(AllERPs(:));
 
-ylim([Min, Max])
 
 plot([Trigger, Trigger], [Min, Max], 'Color', [.7 .7 .7])
 
@@ -102,7 +120,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Functions
 
-function ERP = PlotSingle(ERPs, t, Color)
+function ERP = PlotSingle(ERPs, t, Color, Plot)
 
 if isempty(ERPs)
     ERP = nan(size(t));
@@ -113,10 +131,11 @@ fs = 1/(diff(t(1:2)));
 
 
 ERP = nanmean(ERPs, 2);
-ERP = smooth(ERP, fs/10);
+% ERP = smooth(ERP, fs/20);
 
-plot(t, ERP', 'Color', Color, 'LineWidth', 1)
-
+if Plot
+    plot(t, ERP', 'Color', Color, 'LineWidth', 2)
+end
 
 end
 
@@ -143,8 +162,8 @@ for Indx_S = 1:numel(Stops)
         [~, p] = ttest(Data);
     else
         Data = squeeze(nanmean(Matrix(:, Starts(Indx_S):Stops(Indx_S), :), 2));
-        [stats, ~] = mes1way(Data, 'eta2', 'isDep',1); %  'nBoot', 1000
-        p = 1;
+        [stats, Table] = mes1way(Data, 'eta2', 'isDep',1); %  'nBoot', 1000
+        p = Table{2, 6};
     end
     
     pValues(Indx_S) = p;
@@ -155,6 +174,8 @@ GrandMean = nanmean(Matrix, 1);
 Max = max(GrandMean(:));
 Min = min(GrandMean(:));
 Ceiling = Max+(Max-Min)*0.1;
+YLims = [  Min-(Max-Min)*0.2, Max+(Max-Min)*0.2];
+ylim(YLims)
 
 % do fdr correction
 [~, pValuesFDR] = fdr(pValues, .05);
