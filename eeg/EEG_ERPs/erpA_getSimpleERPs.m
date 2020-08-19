@@ -65,8 +65,7 @@ for Indx_F = 1:numel(Files)
     
     % load EEG
     EEG = pop_loadset('filename', File, 'filepath', Source);
-    [Channels, Points] = size(EEG.data);
-    fs = EEG.srate;
+    [Channels, ~] = size(EEG.data);
     Chanlocs = EEG.chanlocs;
     
     % skip if there are no relevant triggers
@@ -83,7 +82,7 @@ for Indx_F = 1:numel(Files)
     % get hilbert power bands and phase
     EEGhilbert = pop_resample(EEG, HilbertFS);
     EEG = pop_resample(EEG, newfs);
-    
+    fs = EEG.srate;
     
     [HilbertPower, HilbertPhase] = HilbertBands(EEGhilbert, Bands, 'matrix');
     
