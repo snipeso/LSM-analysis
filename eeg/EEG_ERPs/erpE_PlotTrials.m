@@ -1,13 +1,25 @@
 
-
+clear
+close all
+clc
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Normalize = true;
+PlotChannels = 'ERP'; % eventually find a more accurate set of channels?
+
+TriggerTime = 0;
+
+Refresh = false;
+Normalize = true;
+
+Xlims = [-1.5, 1.5];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Load_Trials
+
+%%
 
 Limits = [0:.2:1];
 PowerWindow = [-1.5, .1];
@@ -41,14 +53,14 @@ PlotPhasePoints =  dsearchn( StimPhaseTimes', PlotPhaseTimes')';
 
 % plot ERPs of tones and responses by session!
 
-% plot ERPs of on time, late, and missing stim and responses (when present)
-PlotERPandPower(Stim, StimPower, [Start, Stop], PlotChannels, Tally, ...
-    {'Hits', 'Late', 'Misses'}, 'All Stim', 'Tally', Format)
-saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_ERP_Stim_Tally.svg']))
-
-PlotERPandPower(Resp, RespPower, [Start, Stop], PlotChannels, Tally, ...
-    {'Hits', 'Late'}, 'All Resp',  'Tally', Format)
-saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_ERP_Resp_Tally.svg']))
+% % plot ERPs of on time, late, and missing stim and responses (when present)
+% PlotERPandPower(Stim, StimPower, [Start, Stop], PlotChannels, Tally, ...
+%     {'Hits', 'Late', 'Misses'}, 'All Stim', 'Tally', Format)
+% saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_ERP_Stim_Tally.svg']))
+% 
+% PlotERPandPower(Resp, RespPower, [Start, Stop], PlotChannels, Tally, ...
+%     {'Hits', 'Late'}, 'All Resp',  'Tally', Format)
+% saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_ERP_Resp_Tally.svg']))
 
 
 % plot specific channels
@@ -85,20 +97,20 @@ for Indx_C = 1:numel(PlotSpots)
     saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_',Labels{Indx_C}, '_PhaseRTs.svg']))
     
     
-    % plot mean ERPs by session
-    figure('units','normalized','outerposition',[0 0 .5 .5])
-    PlotERP(t, Stim, TriggerTime,   PlotSpots(Indx_C), 'Sessions', Format.Colors.([Task, Condition]))
-    xlim([-.2, 1])
-    title([Labels{Indx_C}, ' ERP by Session'])
-    ylabel('miV')
-    set(gca, 'FontSize', 14, 'FontName', Format.FontName)
-    legend(SessionLabels)
-    saveas(gcf,fullfile(Paths.Figures, [TitleTag, Labels{Indx_C}, '_Power_Sessions.svg']))
+%     % plot mean ERPs by session
+%     figure('units','normalized','outerposition',[0 0 .5 .5])
+%     PlotERP(t, Stim, TriggerTime,   PlotSpots(Indx_C), 'Sessions', Format.Colors.([Task, Condition]))
+%       xlim(Xlims)
+%     title([Labels{Indx_C}, ' ERP by Session'])
+%     ylabel('miV')
+%     set(gca, 'FontSize', 14, 'FontName', Format.FontName)
+%     legend(SessionLabels)
+%     saveas(gcf,fullfile(Paths.Figures, [TitleTag, Labels{Indx_C}, '_Power_Sessions.svg']))
     
     
     
     % plot erps by ongoing frequency power quartiles
-    figure('units','normalized','outerposition',[0 0 .5 .5])
+    figure('units','normalized','outerposition',[0 0 1 1])
     for Indx_B = 1:numel(BandNames)
         
         Quantiles = struct();
@@ -118,12 +130,11 @@ for Indx_C = 1:numel(PlotSpots)
         subplot(2, 2, Indx_B)
         Colors = flipud(gray(numel(Edges)));
         PlotERP(t, Stim, TriggerTime,  PlotSpots(Indx_C), 'Custom', Colors(2:end, :), Quantiles)
-        xlim([-.2, 1])
+          xlim(Xlims)
         title([Labels{Indx_C}, ' Trials based on ongoing ', BandNames{Indx_B}, ' power'])
         ylabel('miV')
         set(gca, 'FontSize', 14, 'FontName', Format.FontName)
         legend(split(cellstr(num2str(Limits(2:end)))))
-       
     end
      saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_',Labels{Indx_C}, '_Power_OngoingFreq.svg']))
     

@@ -1,40 +1,47 @@
-clear
-clc
-close all
-
-ERP_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Task = 'LAT';
-% 
-% Condition = 'AllBeam';
-% Title = 'AllBeam';
+% Options: 'LAT', 'PVT'
 
-% Condition = 'SD3';
-% Title = 'SleepDep';
-
-Condition = 'AllBL';
-Title = 'AllBL';
+Condition = 'SD';
+% Options: 'Beam', 'BL', 'SD'
 
 Refresh = false;
 
-PlotChannels = EEG_Channels.Hotspot; % eventually find a more accurate set of channels?
-Normalize = true;
+SkipBadParticipants = true;
+Labels = {'FZ', 'CZ', 'Oz'};
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ERP_Parameters
+
+
+% To get rid of:
+Limits = linspace(0, 1, 5+1); % move to function the selection of rts and quantiles
+
+% get trigger and possibly anything else
+switch Condition
+    case 'Beam'
+        Condition = 'AllBeam';
+        Title = 'Soporific';
+    case 'BL'
+        Title = 'Baseline';
+    case 'SD'
+        Condition = 'SD3';
+        Title = 'SleepDep';
+end
+
+
 
 % labels and indices
 Sessions = allSessions.([Task,Condition]);
 SessionLabels = allSessionLabels.([Task, Condition]);
 
-load('Chanlocs111.mat', 'Chanlocs')
+TitleTag = [Title, '_', Task];
 
 ERPpoints = newfs*(Stop-Start);
 Powerpoints = HilbertFS*(Stop-Start);
-
-TitleTag = [Task '_', Title, '_Trials'];
-[~, PlotChannels] = intersect({Chanlocs.labels}, string(PlotChannels));
 
 % locations
 Paths.Figures = fullfile(Paths.Figures, 'Trials', Task);
@@ -42,10 +49,9 @@ if ~exist(Paths.Figures, 'dir')
     mkdir(Paths.Figures)
 end
 
-Limits = linspace(0, 1, 5+1);
 
 %%% get ERPs locked to stim and resp
-Struct_Path_Data = fullfile(Paths.Summary, [Title, '_', Task, '_ERPs.mat']);
+Struct_Path_Data = fullfile(Paths.Summary, [TitleTag, '_TrialERPs.mat']);
 if ~exist(Struct_Path_Data, 'file') || Refresh
     disp('*************Creating allTrials********************')
     
@@ -55,10 +61,7 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
     Files(~contains(Files, '.mat')) = [];
     
     
-    % Get zscores for participants
-    [Means, SDs] = GetZscorePower(Path, Participants, Chanlocs, BandNames);
-    
-    % initialize structures for all data
+    % initialize structures for all data % TODO, get rid of!
     Tally = struct(); % categories for each trial
     RTQuintile = struct();
     allEvents = struct();
@@ -115,6 +118,7 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
             Power = m.Power;
             Phase = m.Phase;
             Meta = m.Meta;
+            Chanlocs = m.Chanlocs;
             
             % initialize matrices
             Stim(Indx_P).(Sessions{Indx_S}) = nan(numel(Chanlocs), ERPpoints, numel(Data));
@@ -125,7 +129,7 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
                 StimPhases.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S}) =  nan(numel(Chanlocs), numel(1:PhasePeriod*HilbertFS:Powerpoints), numel(Data));
                 RespPower.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S}) =  nan(numel(Chanlocs), Powerpoints, numel(Data));
                 RespPhases.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S}) =  nan(numel(Chanlocs), numel(1:PhasePeriod*HilbertFS:Powerpoints), numel(Data));
-             
+                
             end
             
             allEvents(Indx_P).(Sessions{Indx_S}) = Events;
@@ -173,7 +177,12 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
             
         end
     end
-
+    
+    Chanlocs = m.Chanlocs;
+    
+    % Get zscores for participants
+    [Means, SDs] = GetZscorePower(Path, Participants, Chanlocs, BandNames);
+    
     save(Struct_Path_Data, 'Tally', 'RTQuintile', 'Stim', 'allEvents', 'StimPower', ...
         'Resp', 'RespPower', 'StimPhases', 'RespPhases', 'Means', 'SDs', '-v7.3')
 else
@@ -184,6 +193,7 @@ end
 
 % Normalize power data
 if Normalize
-
+    StimPower = ZScorePower(StimPower, Means, SDs);
+     RespPower = ZScorePower(RespPower, Means, SDs);
 end
 

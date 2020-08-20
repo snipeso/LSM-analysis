@@ -105,10 +105,11 @@ switch Dimention
                         end
                     end
                     
-                    
+                    try
                     ERPs = cat(2, ERPs, ERP);
-                    
-                    
+                    catch
+                        a=1
+                    end
                 end
                 
                 cERP = PlotSingle(ERP, t, [], false);
