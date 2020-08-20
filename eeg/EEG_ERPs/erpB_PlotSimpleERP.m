@@ -1,22 +1,25 @@
 
-% clear
-% clc
-% close all
+clear
+clc
+close all
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-PowerWindow = [-1, .1]; % window from which to average power to split erp
-PlotChannels = 'ERP'; % eventually find a more accurate set of channels?
+Task = 'LAT';
+% Options: 'LAT', 'PVT'
 
-TriggerTime = 0;
+Stimulus = 'Tones';
+% Options: 'Tones' (from LAT), 'Alarm', 'Stim', 'Resp'
+
+Condition = 'Beam';
+% Options: 'Beam', 'BL', 'SD'
 
 Refresh = true;
-Normalize = true;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Load_SimpleERP
+Load_SimpleERP
 
 
 %%% get indices

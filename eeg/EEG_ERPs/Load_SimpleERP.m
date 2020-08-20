@@ -2,14 +2,14 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Task = 'LAT';
-% Options: 'LAT', 'PVT'
 
-Stimulus = 'Tones';
-% Options: 'Tones' (from LAT), 'Alarm', 'Stim', 'Resp'
+PowerWindow = [-1, .1]; % window from which to average power to split erp
+PlotChannels = 'ERP'; % eventually find a more accurate set of channels?
 
-Condition = 'Beam';
-% Options: 'Beam', 'BL', 'SD'
+
+TriggerTime = 0;
+
+Normalize = true;
 
 SkipBadParticipants = true;
 Labels = {'FZ', 'CZ', 'Oz'};
