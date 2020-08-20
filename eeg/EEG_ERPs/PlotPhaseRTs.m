@@ -28,10 +28,6 @@ for Indx_B = 1:numel(BandNames)
         AllTally = ConcatStruct(Tally, [],[]);
         AX = subplot(numel(BandNames)*2, nPoints, Indx, polaraxes);
         
-        %          for Indx_T =1:3
-        %
-        %             PlotPolar(AllPhases, AllTally==Indx_T, nBins, Format.Colors.Tally(Indx_T, :), AX)
-        %          end
         PlotPolarTally(AllPhases, AllTally, nBins, Format.Legend.Tally, Format, AX)
         title([num2str(round(PhasePoints(2, Indx_P)*1000)), ' ', BandNames{Indx_B}, Title, ' Tally'])
         Indx=Indx+1;
