@@ -99,9 +99,16 @@ switch Dimention
                         ERP = ERP';
                     else
                         ERP = squeeze(nanmean(tempData(Channels, :, Trials), 1)); % average across channels
+                        if nnz(Trials) == 1 %TODO, merge with first attempt at fixing this
+                            ERP = ERP';
+                        end
                     end
            
+                    try
                     ERPs = cat(2, ERPs, ERP);
+                    catch
+                        a = 1
+                    end
               
                 end
                 

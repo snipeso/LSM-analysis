@@ -4,7 +4,7 @@
 Task = 'LAT';
 % Options: 'LAT', 'PVT'
 
-Condition = 'SD';
+Condition = 'BL';
 % Options: 'Beam', 'BL', 'SD'
 
 Refresh = false;
