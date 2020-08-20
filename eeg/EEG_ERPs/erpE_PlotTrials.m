@@ -11,7 +11,7 @@ PlotChannels = 'ERP'; % eventually find a more accurate set of channels?
 TriggerTime = 0;
 
 Refresh = false;
-Normalize = true;
+
 
 Xlims = [-1.5, 1.5];
 
