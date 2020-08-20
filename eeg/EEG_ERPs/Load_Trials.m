@@ -4,7 +4,7 @@
 Task = 'LAT';
 % Options: 'LAT', 'PVT'
 
-Condition = 'BL';
+Condition = 'SD';
 % Options: 'Beam', 'BL', 'SD'
 
 Refresh = false;
@@ -27,10 +27,12 @@ switch Condition
         Title = 'Soporific';
     case 'BL'
         Title = 'Baseline';
-    case 'SD3'
+    case 'SD'
         Condition = 'SD3';
         Title = 'SleepDep';
 end
+
+
 
 % labels and indices
 Sessions = allSessions.([Task,Condition]);

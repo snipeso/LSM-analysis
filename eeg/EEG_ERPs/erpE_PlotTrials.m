@@ -19,6 +19,8 @@ Xlims = [-1.5, 1.5];
 
 Load_Trials
 
+%%
+
 Limits = [0:.2:1];
 PowerWindow = [-1.5, .1];
 ERPWindow = Stop - Start;
@@ -108,7 +110,7 @@ for Indx_C = 1:numel(PlotSpots)
     
     
     % plot erps by ongoing frequency power quartiles
-    figure('units','normalized','outerposition',[0 0 .5 .5])
+    figure('units','normalized','outerposition',[0 0 1 1])
     for Indx_B = 1:numel(BandNames)
         
         Quantiles = struct();
@@ -133,8 +135,7 @@ for Indx_C = 1:numel(PlotSpots)
         ylabel('miV')
         set(gca, 'FontSize', 14, 'FontName', Format.FontName)
         legend(split(cellstr(num2str(Limits(2:end)))))
-        ylim([-1 5])
-       
+
     end
      saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_',Labels{Indx_C}, '_Power_OngoingFreq.svg']))
     

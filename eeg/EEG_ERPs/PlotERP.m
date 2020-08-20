@@ -101,8 +101,11 @@ switch Dimention
                         ERP = squeeze(nanmean(tempData(Channels, :, Trials), 1)); % average across channels
                     end
                     
-                    
+                    try
                     ERPs = cat(2, ERPs, ERP);
+                    catch
+                        a=1
+                    end
                 end
                 
                 cERP = PlotSingle(ERP, t, [], false);
