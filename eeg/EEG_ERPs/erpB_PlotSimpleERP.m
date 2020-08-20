@@ -9,7 +9,7 @@ close all
 Task = 'LAT';
 % Options: 'LAT', 'PVT'
 
-Stimulus = 'Stim';
+Stimulus = 'Tones';
 % Options: 'Tones' (from LAT), 'Alarm', 'Stim', 'Resp'
 
 Condition = 'Beam';
@@ -25,6 +25,7 @@ PlotChannels = 'ERP';
 Load_SimpleERP
 
 
+
 %%% get indices
 [~, PlotChannels] = intersect({Chanlocs.labels}, string(EEG_Channels.(PlotChannels)));
 ERPWindow = Stop - Start;
@@ -35,6 +36,8 @@ tPower = linspace(Start, Stop, ERPWindow*HilbertFS);
 
 [~, StartPower] = min(abs(tPower -PowerWindow(1)));
 [~, StopPower] = min(abs(tPower -PowerWindow(2)));
+
+
 
 %%%%%%%%%%%%
 %%% Plots
@@ -53,13 +56,15 @@ for Indx_Ch = 1:numel(PlotChannels)
     figure('units','normalized','outerposition',[0 0 .5 1])
     for Indx_B = 1:numel(BandNames)
         subplot(numel(BandNames), 1,  Indx_B)
-        PlotERP(tPower, allPower.(BandNames{Indx_B}), TriggerTime, ...
-            PlotChannels(Indx_Ch), 'Participants', Format.Colors.Participants)
+%         PlotERP(tPower, allPower.(BandNames{Indx_B}), TriggerTime, ...
+%             PlotChannels(Indx_Ch), 'Participants', Format.Colors.Participants)
+   PlotERP(tPower, allPower.(BandNames{Indx_B}), TriggerTime, ...
+            PlotChannels(Indx_Ch), 'Sessions',Format.Colors.([Task,Condition]))
         xlim(Xlims)
         title([Labels{Indx_Ch}, ' ', BandNames{Indx_B}, ' ', replace(TitleTag, '_', ' '),])
         set(gca, 'FontSize', 14, 'FontName', Format.FontName)
     end
-    saveas(gcf,fullfile(Paths.Figures, [TitleTag, Labels{Indx_Ch}, '_Power_Individuals.svg']))
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag, Labels{Indx_Ch}, '_Power_Sessions.svg']))
     
     
     % plot mean ERPs by session
