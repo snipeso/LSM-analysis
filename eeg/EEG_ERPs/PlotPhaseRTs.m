@@ -12,7 +12,7 @@ for Indx_B = 1:numel(BandNames)
         
         AllPhases = ConcatStruct(Phases.(BandNames{Indx_B}), Channel, PhasePoints(1,Indx_P));
         AllRTs = ConcatTable(Events, 'rt');
-         AX = subplot(numel(BandNames)*2, nPoints, Indx, polaraxes);
+        AX = subplot(numel(BandNames)*2, nPoints, Indx, polaraxes);
         PlotPolar(AllPhases, AllRTs, nBins, Format.Colors.Generic.Red, AX)
         title([num2str(round(PhasePoints(2, Indx_P)*1000)), ' ', BandNames{Indx_B}, Title, ' RT'])
         Indx=Indx+1;
@@ -26,14 +26,14 @@ for Indx_B = 1:numel(BandNames)
         
         AllPhases = ConcatStruct(Phases.(BandNames{Indx_B}), Channel, PhasePoints(1, Indx_P));
         AllTally = ConcatStruct(Tally, [],[]);
-         AX = subplot(numel(BandNames)*2, nPoints, Indx, polaraxes);
-         
-%          for Indx_T =1:3
-%              
-%             PlotPolar(AllPhases, AllTally==Indx_T, nBins, Format.Colors.Tally(Indx_T, :), AX) 
-%          end
+        AX = subplot(numel(BandNames)*2, nPoints, Indx, polaraxes);
+        
+        %          for Indx_T =1:3
+        %
+        %             PlotPolar(AllPhases, AllTally==Indx_T, nBins, Format.Colors.Tally(Indx_T, :), AX)
+        %          end
         PlotPolarTally(AllPhases, AllTally, nBins, Format.Legend.Tally, Format, AX)
-         title([num2str(round(PhasePoints(2, Indx_P)*1000)), ' ', BandNames{Indx_B}, Title, ' Tally'])
+        title([num2str(round(PhasePoints(2, Indx_P)*1000)), ' ', BandNames{Indx_B}, Title, ' Tally'])
         Indx=Indx+1;
     end
     
@@ -49,10 +49,12 @@ for Indx_P = 1:numel(Structure)
     for Indx_S = 1:numel(Sessions)
         if isempty(Channel) && isempty(TimePoint)
             Points = Structure(Indx_P).(Sessions{Indx_S});
+        elseif isempty(Structure(Indx_P).(Sessions{Indx_S}))
+            continue
         else
-               Points = Structure(Indx_P).(Sessions{Indx_S})(Channel, TimePoint, :);
+            Points = Structure(Indx_P).(Sessions{Indx_S})(Channel, TimePoint, :);
         end
-             All = cat(1, All, Points(:));
+        All = cat(1, All, Points(:));
     end
 end
 end
@@ -64,13 +66,18 @@ for Indx_P = 1:numel(Structure)
     Sessions = fieldnames(Structure);
     pPoints = [];
     for Indx_S = 1:numel(Sessions)
-        Points = Structure(Indx_P).(Sessions{Indx_S}).(Field);
-        pPoints = cat(1, pPoints, [Points{:}]');
-        
+        if isempty(Structure(Indx_P).(Sessions{Indx_S}))
+            continue
+        else
+            Points = Structure(Indx_P).(Sessions{Indx_S}).(Field);
+            
+          
+        end
+          pPoints = cat(1, pPoints, [Points{:}]');
     end
-
-%     pPoints(~isnan(pPoints)) = zscore(pPoints(~isnan(pPoints)));
- pPoints(~isnan(pPoints)) = mat2gray(pPoints(~isnan(pPoints)));
+    
+    %     pPoints(~isnan(pPoints)) = zscore(pPoints(~isnan(pPoints)));
+    pPoints(~isnan(pPoints)) = mat2gray(pPoints(~isnan(pPoints)));
     All = cat(1, All, pPoints);
 end
 end

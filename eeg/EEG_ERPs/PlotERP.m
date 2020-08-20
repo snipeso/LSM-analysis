@@ -95,25 +95,31 @@ switch Dimention
                     if isempty(tempData) % skip if empty
                         ERP = [];
                     elseif ndims(tempData)<3 %#ok<*ISMAT> % deal with 1 trial session
-                        ERP = nanmean(tempData(Channels, :));
+                        ERP = nanmean(tempData(Channels, :), 1);
                         ERP = ERP';
                     else
                         ERP = squeeze(nanmean(tempData(Channels, :, Trials), 1)); % average across channels
+                        
+                        if size(ERP, 1) ==1
+                            ERP = ERP';
+                        end
                     end
                     
                     
                     ERPs = cat(2, ERPs, ERP);
+                    
+                    
                 end
                 
                 cERP = PlotSingle(ERP, t, [], false);
                 AllERPs(Indx_P, :, Indx_C) = cERP;
             end
             
-              PlotSingle(squeeze(AllERPs(:, :, Indx_C))', t, Colors(Indx_C, :), true);
+            PlotSingle(squeeze(AllERPs(:, :, Indx_C))', t, Colors(Indx_C, :), true);
         end
         
-              Stats(AllERPs, t)
-     
+        Stats(AllERPs, t)
+        
         
     otherwise
         % plot thin gray lines for each recording average

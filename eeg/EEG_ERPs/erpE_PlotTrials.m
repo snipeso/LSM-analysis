@@ -7,7 +7,7 @@ Normalize = true;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Load_Trials
+Load_Trials
 
 Limits = [0:.2:1];
 PowerWindow = [-1.5, .1];
@@ -123,7 +123,6 @@ for Indx_C = 1:numel(PlotSpots)
         ylabel('miV')
         set(gca, 'FontSize', 14, 'FontName', Format.FontName)
         legend(split(cellstr(num2str(Limits(2:end)))))
-        ylim([-1 5])
        
     end
      saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_',Labels{Indx_C}, '_Power_OngoingFreq.svg']))

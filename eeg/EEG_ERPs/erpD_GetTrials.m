@@ -55,7 +55,7 @@ parfor Indx_F = 1:numel(Files)
     % get hilbert power bands and phase
     EEGds = pop_resample(EEG, HilbertFS);
     EEG  = pop_resample(EEG, newfs);
-    [HilbertPower, HilbertPhase] = HilbertBands(EEGds, Bands, BandNames, 'matrix');
+    [HilbertPower, HilbertPhase] = HilbertBands(EEGds, Bands,  'matrix', false);
     %
     
     % get trial information into event structure
