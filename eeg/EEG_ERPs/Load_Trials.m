@@ -4,10 +4,7 @@
 Task = 'LAT';
 % Options: 'LAT', 'PVT'
 
-Stimulus = 'Tones';
-% Options: 'Tones' (from LAT), 'Alarm', 'Stim', 'Resp'
-
-Condition = 'Beam';
+Condition = 'BL';
 % Options: 'Beam', 'BL', 'SD'
 
 Refresh = false;
@@ -18,6 +15,7 @@ Labels = {'FZ', 'CZ', 'Oz'};
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 ERP_Parameters
+
 
 % To get rid of:
 Limits = linspace(0, 1, 5+1); % move to function the selection of rts and quantiles
@@ -38,6 +36,7 @@ end
 Sessions = allSessions.([Task,Condition]);
 SessionLabels = allSessionLabels.([Task, Condition]);
 
+TitleTag = [Title, '_', Task];
 
 ERPpoints = newfs*(Stop-Start);
 Powerpoints = HilbertFS*(Stop-Start);
@@ -117,6 +116,7 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
             Power = m.Power;
             Phase = m.Phase;
             Meta = m.Meta;
+            Chanlocs = m.Chanlocs;
             
             % initialize matrices
             Stim(Indx_P).(Sessions{Indx_S}) = nan(numel(Chanlocs), ERPpoints, numel(Data));
