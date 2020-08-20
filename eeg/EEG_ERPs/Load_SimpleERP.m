@@ -49,7 +49,11 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
     
     disp(['************* Creating ', Title, ' ********************'])
     
+    if contains(Stimulus, 'ISI')
+           Path = fullfile(Paths.ERPs, 'SimpleERP', 'Intertrial');
+    else
     Path = fullfile(Paths.ERPs, 'SimpleERP', Stimulus, Task);
+    end
     Files = deblank(cellstr(ls(Path)));
     Files(~contains(Files, '.mat')) = [];
     

@@ -4,13 +4,14 @@
 Task = 'LAT';
 % Options: 'LAT', 'PVT'
 
-Condition = 'BL';
+Condition = 'SD';
 % Options: 'Beam', 'BL', 'SD'
 
 Refresh = false;
 
 SkipBadParticipants = true;
 Labels = {'FZ', 'CZ', 'Oz'};
+Normalize = true;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -194,6 +195,6 @@ end
 % Normalize power data
 if Normalize
     StimPower = ZScorePower(StimPower, Means, SDs);
-     RespPower = ZScorePower(RespPower, Means, SDs);
+    RespPower = ZScorePower(RespPower, Means, SDs);
 end
 

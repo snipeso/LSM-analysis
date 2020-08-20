@@ -9,7 +9,7 @@ close all
 Task = 'LAT';
 % Options: 'LAT', 'PVT'
 
-Stimulus = 'Tones';
+Stimulus = 'RespISI';
 % Options: 'Tones' (from LAT), 'Alarm', 'Stim', 'Resp'
 
 Condition = 'Beam';
