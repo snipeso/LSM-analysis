@@ -184,7 +184,7 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
     [Means, SDs] = GetZscorePower(Path, Participants, Chanlocs, BandNames);
     
     save(Struct_Path_Data, 'Tally', 'RTQuintile', 'Stim', 'allEvents', 'StimPower', ...
-        'Resp', 'RespPower', 'StimPhases', 'RespPhases', 'Means', 'SDs', '-v7.3')
+        'Resp', 'RespPower', 'StimPhases', 'RespPhases', 'Means', 'SDs', 'Chanlocs', '-v7.3')
 else
     disp('***************Loading ERPs*********************')
     load(Struct_Path_Data)

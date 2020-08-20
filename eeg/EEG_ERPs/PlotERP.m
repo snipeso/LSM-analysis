@@ -100,12 +100,9 @@ switch Dimention
                     else
                         ERP = squeeze(nanmean(tempData(Channels, :, Trials), 1)); % average across channels
                     end
-                    
-                    try
+           
                     ERPs = cat(2, ERPs, ERP);
-                    catch
-                        a=1
-                    end
+              
                 end
                 
                 cERP = PlotSingle(ERP, t, [], false);
@@ -168,6 +165,11 @@ Period = (PeriodLength/1000)*fs;
 Starts = round(1:Period+1:End+1);
 Stops = round(Starts-1);
 Stops(1) = []; % remove starting 0
+
+% remove groups that are missing
+if ndims(Matrix) == 3
+    Matrix(:, :, squeeze(all(isnan(mean(Matrix, 2))))) = [];
+end
 
 % get pvalues for each window
 pValues = ones(numel(Stops), 1);

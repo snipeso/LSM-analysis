@@ -19,7 +19,7 @@ Xlims = [-1.5, 1.5];
 
 Load_Trials
 
-%%
+
 
 Limits = [0:.2:1];
 PowerWindow = [-1.5, .1];
@@ -64,7 +64,7 @@ PlotPhasePoints =  dsearchn( StimPhaseTimes', PlotPhaseTimes')';
 
 
 % plot specific channels
-
+%%
 
 for Indx_C = 1:numel(PlotSpots)
     PlotERPandPower(Stim, StimPower, [Start, Stop], PlotSpots(Indx_C), Tally, ...
