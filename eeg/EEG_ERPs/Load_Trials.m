@@ -4,12 +4,11 @@
 Task = 'LAT';
 % Options: 'LAT', 'PVT'
 
-Condition = 'BL';
-% Options: 'Beam', 'BL', 'SD'
 
 Refresh = false;
 
 SkipBadParticipants = true;
+PlotChannels = 'ERP'; % eventually find a more accurate set of channels?
 Labels = {'FZ', 'CZ', 'Oz'};
 Normalize = true;
 
@@ -31,6 +30,10 @@ switch Condition
     case 'SD'
         Condition = 'SD3';
         Title = 'SleepDep';
+    case 'SDvBL'
+           Condition = 'AllBeam';
+        Title = 'SleepDepBL';
+        
 end
 
 
