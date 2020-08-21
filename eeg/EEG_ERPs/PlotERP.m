@@ -112,7 +112,8 @@ switch Dimention
               
                 end
                 
-                cERP = PlotSingle(ERP, t, [], false);
+                cERP = PlotSingle(ERPs, t, [], false);
+                disp([num2str(Indx_P), ' has ', num2str(size(ERPs, 2)), ' type ', num2str(Indx_C) ' trials'])
                 AllERPs(Indx_P, :, Indx_C) = cERP;
             end
             

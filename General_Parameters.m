@@ -60,6 +60,16 @@ Format.Colors.LAT = [
    59, 104, 0; % post
 ]./255; % RGB to sRGB
 
+
+Format.Colors.PVT = [
+70, 9, 92; % BL
+50, 98, 141; % Pre
+30, 155, 137; % S1
+137, 213, 70; % S2
+119, 49, 49 % post
+]/255;
+
+
 Format.Colors.LATBeam = [
 Format.Colors.LAT(1, :);   
 Format.Colors.LAT(3, :); 
@@ -72,18 +82,13 @@ Format.Colors.LAT(5, :);
 Format.Colors.LAT(6, :);   
 ];
 
+Format.Colors.PVTAllBeam = Format.Colors.PVT;
+
 Format.Colors.LATAllBeam = Format.Colors.LAT;
 Format.Colors.LATAllBL = Format.Colors.LAT;
 
 Format.Colors.LATComp = makePale(Format.Colors.LATBeam);
 
-Format.Colors.PVT = [
-70, 9, 92;
-50, 98, 141;
-30, 155, 137;
-137, 213, 70;
-119, 49, 49
-]/255;
 
 Format.Colors.Standing = Format.Colors.PVT;
 Format.Colors.Fixation = Format.Colors.PVT;
@@ -158,8 +163,8 @@ allSessions.LATSD3 = {'Session2Beam1', 'Session2Beam2', 'Session2Beam3'};
 allSessionLabels.LATSD3 = {'S1', 'S2', 'S3'};
 
 % Labels for all PVT beamer conditions
-allSessions.PVT = {'BaselineBeam', 'MainPre', 'Session1Beam', 'Session2Beam', 'MainPost'};
-allSessionLabels.PVT = {'BL', 'Pre', 'S1', 'S2', 'Post'};
+allSessions.PVTAllBeam = {'BaselineBeam', 'MainPre', 'Session1Beam', 'Session2Beam', 'MainPost'};
+allSessionLabels.PVTAllBeam = {'BL', 'Pre', 'S1', 'S2', 'Post'};
 
 % Labels for all RRT recordings
 allSessions.RRT = {'BaselinePre', 'BaselinePost', ...

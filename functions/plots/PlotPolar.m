@@ -1,4 +1,4 @@
-function PlotPolar(Phases, Data, Participants, nBins, Color, Subplot)
+function PlotPolar(Phases, Data, nBins, Color, Subplot)
 
 PhaseEdges = linspace(-pi, pi, nBins+1);
 
