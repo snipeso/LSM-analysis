@@ -37,10 +37,10 @@ if ~exist(Paths.Summary, 'dir')
 end
 
 % get response times
-LATResponses = 'LATAllAnswers.mat';
-if exist(fullfile(Paths.Responses, LATResponses), 'file')
-    load(fullfile(Paths.Responses, LATResponses), 'AllAnswers')
+Responses = [Task, 'AllAnswers.mat'];
+if exist(fullfile(Paths.Responses, Responses), 'file')
+    load(fullfile(Paths.Responses, Responses), 'AllAnswers')
 else
-    AllAnswers = importTask(Paths.Datasets, 'LAT', Paths.Responses); % needs to have access to raw data folder
+    AllAnswers = importTask(Paths.Datasets, Task, Paths.Responses); % needs to have access to raw data folder
 end
 
