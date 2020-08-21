@@ -1,96 +1,228 @@
-function PlotPooledERP(t, Data, Trigger, Channels, Dimention, Colors, Category)
+function PlotERP(t, Data, Trigger, Channels, Dimention, Colors, Category)
+% t is vector of timepoints to plot
+% Data is Struct(Participant).(Session)(ch x time x trial)
+% Channels is list of indices to plot
+% Dimention is what gets seperately averaged. Options: 'Participants',
+% 'Session', 'Custom', and ''. The last just plots one big ERP
 
 
 Sessions = fieldnames(Data);
 Participants = size(Data, 2);
 Points = size(Data(1).(Sessions{1}), 2);
 
-AllERPs = [];
 hold on
-
-if strcmp(Dimention, 'Custom')
-    Unique_Categories = unique(Category(1).(Sessions{1}));
-    %     CustomERPs = nan(Participants, Points, numel(Unique_Categories));
-    CustomERPs = struct();
-end
-
-
-Min = nan;
-Max = nan;
-
-for Indx_S = 1:numel(Sessions)
-    if strcmp(Dimention, 'Sessions')
-        SessionERPs = [];
-    end
-    
-    for Indx_P = 1:Participants
-        
-        tempData = Data(Indx_P).(Sessions{Indx_S});
-        if isempty(tempData)
-            continue
-        end
-        switch Dimention
-            case 'Participants'
-                ERP = nanmean(tempData(Channels, :, :), 1);
-                plot(t, nanmean(ERP, 3), 'Color', Colors(Indx_P, :), 'LineWidth', 2)
-            case 'Sessions'
-                ERP = squeeze(nanmean(tempData(Channels, :, :), 1));
-                SessionERPs = cat(2, SessionERPs, ERP);
-                Min = min(Min, min(ERP(:)));
-                Max = max(Max, max(ERP(:)));
-            case 'Custom'
-                
-                for Indx_C = 1:numel(Unique_Categories)
-                    Trials =  Category(Indx_P).(Sessions{Indx_S})== Unique_Categories(Indx_C);
-                    ERP = squeeze(nanmean(tempData(Channels, :,Trials), 1));
-                    %                     CustomERPs(Indx_P, :, Indx_C) = ERP; %TODO: try cat all stimuli, so ERP is smoother
-                    Cat = ['C',num2str(Unique_Categories(Indx_C))];
-                    
-                    if size(CustomERPs, 2) <Indx_P || ~isfield(CustomERPs(Indx_P), Cat)
-                        CustomERPs(Indx_P).(Cat) = squeeze(nanmean(tempData(Channels, :,Trials), 1));
-                    else
-                        try
-                        CustomERPs(Indx_P).(Cat) = cat(2, CustomERPs(Indx_P).(Cat), squeeze(nanmean(tempData(Channels, :,Trials), 1)) );
-                        catch
-                            a=1
-                        end
-                    end
-                end
-                
-        end
-        try
-        AllERPs = cat(2, AllERPs, ERP);
-        catch
-            a=2
-        end
-    end
-    
-    if strcmp(Dimention, 'Sessions')
-        plot(t, nanmean(SessionERPs, 2),'Color', Colors(Indx_S, :), 'LineWidth', 2)
-    end
-    
-end
-
 switch Dimention
     case 'Participants'
-        ERP = nanmean(AllERPs, 1); %CHECK
-        plot(t, ERP, 'Color', 'k', 'LineWidth', 3)
-    case 'Custom'
-        for Indx_C = 1:numel(Unique_Categories)
-            
-            All = [];
-            Cat = ['C',num2str(Unique_Categories(Indx_C))];
-            for Indx_P = 1:Participants
+        
+        AllERPs = nan(Participants, Points);
+        
+        % plots all trials of participant
+        for Indx_P = 1:Participants
+            ERPs = [];
+            for Indx_S = 1:numel(Sessions)
+                tempData = Data(Indx_P).(Sessions{Indx_S});
                 
-                All = cat(2, All, CustomERPs(Indx_P).(Cat));
+                
+                if isempty(tempData) % skip if empty
+                    ERP = [];
+                elseif ndims(tempData)<3 % deal with 1 trial session
+                    ERP = nanmean(tempData(Channels, :));
+                    ERP = ERP';
+                else
+                    ERP = squeeze(nanmean(tempData(Channels, :, :), 1)); % average across channels
+                end
+                
+                ERPs = cat(2, ERPs, ERP);
             end
             
-            plot(t, nanmean(All, 2),'Color', Colors(Indx_C, :), 'LineWidth', 2)
-            Min = min(Min, min(nanmean(All, 1))');
-            Max = max(Max, max(nanmean(All, 1))');
+            pERP = PlotSingle(ERPs, t, Colors(Indx_P, :), true);
+            AllERPs(Indx_P, :) = pERP;
         end
+        
+        plot(t, nanmean(AllERPs), 'k', 'LineWidth', 3)
+        Stats(AllERPs, t)
+        
+    case 'Sessions'
+        
+        AllERPs =  nan(Participants, Points, numel(Sessions));
+        
+        % plots all participants' sessions averaged
+        for Indx_S = 1:numel(Sessions)
+            
+            for Indx_P = 1:Participants
+                tempData = Data(Indx_P).(Sessions{Indx_S});
+                
+                if isempty(tempData) % skip if empty
+                    ERP = [];
+                elseif ndims(tempData)<3 %#ok<*ISMAT> % deal with 1 trial session
+                    ERP = nanmean(tempData(Channels, :));
+                    ERP = ERP';
+                else
+                    ERP = squeeze(nanmean(tempData(Channels, :, :), 1)); % average across channels
+                end
+                
+                sERP = PlotSingle(ERP, t, [], false);
+                AllERPs(Indx_P, :, Indx_S) = sERP;
+                
+                
+            end
+            
+            PlotSingle(squeeze(AllERPs(:, :, Indx_S))', t, Colors(Indx_S, :), true);
+        end
+        
+        Stats(AllERPs, t)
+        
+    case 'Custom'
+        
+        % group by inputted categories
+        Unique_Categories = unique(Category(1).(Sessions{1}));
+        
+        AllERPs =  nan( Points, numel(Unique_Categories));
+        
+        % emergency color thing so I don't have to care all the time
+        if numel(Unique_Categories)>size(Colors, 1)
+            Colors = gray(numel(Unique_Categories));
+        end
+        
+        for Indx_C = 1:numel(Unique_Categories)
+            ERPs = [];
+            for Indx_P = 1:Participants
+                
+                for Indx_S = 1:numel(Sessions)
+                    tempData = Data(Indx_P).(Sessions{Indx_S});
+                    Trials =  Category(Indx_P).(Sessions{Indx_S}) == Unique_Categories(Indx_C);
+                    
+                    if isempty(tempData) % skip if empty
+                        ERP = [];
+                    elseif ndims(tempData)<3 %#ok<*ISMAT> % deal with 1 trial session
+                        ERP = nanmean(tempData(Channels, :), 1);
+                        ERP = ERP';
+                    else
+                        ERP = squeeze(nanmean(tempData(Channels, :, Trials), 1)); % average across channels
+                        if nnz(Trials) == 1 %TODO, merge with first attempt at fixing this
+                            ERP = ERP';
+                        end
+                    end
+           
+                    ERPs = cat(2, ERPs, ERP);
+         
+                end
+      
+            end
+            
+           
+            cERP = PlotSingle(ERPs, t, Colors(Indx_C, :), true);
+               AllERPs( :, Indx_C) = cERP;
+        end
+        
+        Stats(AllERPs', t)
+        
+        
+    otherwise
+        % plot thin gray lines for each recording average
 end
 
-plot([Trigger, Trigger], [min(AllERPs(:)), max(AllERPs(:))], 'Color', [.5 .5 .5])
-xlabel('Time (s)')
-ylim([Min, Max])
+% plot line of trigger % TODO: make it possible to provide list?
+Min = min(AllERPs(:));
+Max = max(AllERPs(:));
+
+
+plot([Trigger, Trigger], [Min, Max], 'Color', [.7 .7 .7])
+
+end
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Functions
+
+function ERP = PlotSingle(ERPs, t, Color, Plot)
+
+if isempty(ERPs)
+    ERP = nan(size(t));
+    return
+end
+
+fs = 1/(diff(t(1:2)));
+
+
+ERP = nanmean(ERPs, 2);
+% ERP = smooth(ERP, fs/20);
+
+if Plot
+    plot(t, ERP', 'Color', Color, 'LineWidth', 2)
+end
+
+end
+
+function Stats(Matrix, t)
+% Matrix is participants x time x group
+
+% get mini window for test
+PeriodLength = 20; % ms
+End = size(Matrix, 2);
+fs = 1/(diff(t(1:2)));
+Period = (PeriodLength/1000)*fs;
+
+Starts = round(1:Period+1:End+1);
+Stops = round(Starts-1);
+Stops(1) = []; % remove starting 0
+
+% remove groups that are missing
+if ndims(Matrix) == 3
+    Matrix(:, :, squeeze(all(isnan(mean(Matrix, 2))))) = [];
+end
+
+% get pvalues for each window
+pValues = ones(numel(Stops), 1);
+for Indx_S = 1:numel(Stops)
+    
+    if ndims(Matrix) < 3 %run a t-test
+        Data = squeeze(nanmean(Matrix(:, Starts(Indx_S):Stops(Indx_S)), 2));
+        
+        [~, p] = ttest(Data);
+    else
+        Data = squeeze(nanmean(Matrix(:, Starts(Indx_S):Stops(Indx_S), :), 2));
+        [stats, Table] = mes1way(Data, 'eta2', 'isDep',1); %  'nBoot', 1000
+        p = Table{2, 6};
+    end
+    
+    pValues(Indx_S) = p;
+end
+
+% identify height for plotting sig bars
+GrandMean = nanmean(Matrix, 1);
+Max = max(GrandMean(:));
+Min = min(GrandMean(:));
+Ceiling = Max+(Max-Min)*0.1;
+YLims = [  Min-(Max-Min)*0.2, Max+(Max-Min)*0.2];
+ylim(YLims)
+
+% do fdr correction
+[~, pValuesFDRmask] = fdr(pValues, .05);
+pValuesFDR = nan(size(pValues));
+pValuesFDR(pValuesFDRmask) = pValues(pValuesFDRmask);
+
+% TODO: make this more succint
+Sig_pValues = nan(size(pValues));
+Sig_pValues(pValues<=.05) = Ceiling;
+Sig_pValues(pValues>.05) = nan;
+
+Sig_pValuesFDR = nan(size(pValuesFDR));
+Sig_pValuesFDR(pValuesFDR<=.05) = Ceiling;
+Sig_pValuesFDR(pValuesFDR>.05) = nan;
+
+% plot significance bars
+hold on
+plot(linspace(t(1), t(end), numel(Sig_pValues)), Sig_pValues, 'LineWidth', 4, 'Color', [.7 0.7 0.7])
+plot(linspace(t(1), t(end), numel(Sig_pValuesFDR)), Sig_pValuesFDR, 'LineWidth', 4, 'Color', [0 0 0])
+
+
+% plot 0 line, because this is what the stats were compared to
+if ndims(Matrix) < 3
+    plot(t, zeros(size(Matrix, 2), 1), 'Color', [0  0 0])
+end
+% TODO: split by larger significance?
+end
+
