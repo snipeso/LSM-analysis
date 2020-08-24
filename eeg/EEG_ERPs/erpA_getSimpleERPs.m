@@ -1,5 +1,4 @@
-% Saves each file in requested folder as a structure of:
-% Struct(P_Indx).(Session)(ch x time x trial)
+% Saves each file in requested folder with matrices (ch x time x trial)
 
 
 clear

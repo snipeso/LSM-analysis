@@ -6,14 +6,13 @@ close all
 
 Refresh = true;
 
-Task = 'PVT';
+Task = 'LAT';
+% Options: 'LAT', 'PVT'
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 ERP_Parameters
 
-
-% get struct(participant).(recording).ERP/Power = matrix(ch, time, tone) / matrix(ch, freq, time, tone)
 
 % get files and paths
 Source = fullfile(Paths.Preprocessed, 'Interpolated', 'SET', Task);
