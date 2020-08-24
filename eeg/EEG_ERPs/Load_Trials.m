@@ -11,15 +11,15 @@ switch Condition
         DataTag = [Task, '_', Title];
     case 'BL'
         Title = 'Baseline';
-         DataTag = [Task, '_', Title];
+        DataTag = [Task, '_', Title];
     case 'SD'
         Condition = 'SD3';
         Title = 'SleepDep';
-         DataTag = [Task, '_', Title];
+        DataTag = [Task, '_', Title];
     case 'BLvSD'
         Condition = 'AllBeam';
         Title = 'BLvSD';
-         DataTag = [Task, '_', Title];
+        DataTag = [Task, '_Soporific'];
 end
 
 % labels and indices
@@ -38,23 +38,23 @@ if ~exist(Paths.Figures, 'dir')
 end
 
 
-%%% get ERPs locked to stim and resp
+%%% get ERPs locked to stimuli and responses
+
 Struct_Path_Data = fullfile(Paths.Summary, [DataTag, '_TrialERPs.mat']);
 if ~exist(Struct_Path_Data, 'file') || Refresh
-    disp('*************Creating allTrials********************')
-    
+    disp(['************* Creating ', DataTag, ' ********************'])
     
     Path = fullfile(Paths.ERPs, 'Trials', Task);
     Files = deblank(cellstr(ls(Path)));
     Files(~contains(Files, '.mat')) = [];
     
     
-    % initialize structures for all data % TODO, get rid of!
+    % initialize structures for all data
     allEvents = struct();
     
     Stim = struct(); % data
-    StimPower = struct();
     Resp = struct();
+    StimPower = struct();
     RespPower = struct();
     StimPhases = struct(); % ch x trials
     RespPhases = struct();
@@ -63,27 +63,26 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
     for Indx_P = 1:numel(Participants)
         for Indx_S = 1:numel(Sessions)
             
-            % load data
-            File = Files(contains(Files, Sessions{Indx_S}) & contains(Files, Participants{Indx_P}));
+            File = Files(contains(Files, Sessions{Indx_S}) & ...
+                contains(Files, Participants{Indx_P}));
             
             if isempty(File)
-                warning(['**************Could not find ', Participants{Indx_P}, ' ',  Sessions{Indx_S}, '*************' ])
+                warning(['**************Could not find ', ...
+                    Participants{Indx_P}, ' ',  Sessions{Indx_S}, '*************' ])
                 continue
             end
             
             m = matfile(fullfile(Path, File{1}),  'Writable', false );
             
-            Trials = m.Events;
-            Remove = Trials.Noise==1;
-            Trials(Remove, :) = [];
-            
+            Trials = m.Trials;
             
             if isempty(Trials)
-                warning(['**************Could not find ', Participants{Indx_P}, ' ',  Sessions{Indx_S}, '*************' ])
+                warning(['**************No trials for ', ...
+                    Participants{Indx_P}, ' ',  Sessions{Indx_S}, '*************' ])
                 continue
             end
             
-
+            
             %%% get ERPs
             Data  =   m.Data;
             Power = m.Power;
@@ -91,23 +90,9 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
             Meta = m.Meta;
             Chanlocs = m.Chanlocs;
             
-            % initialize matrices
-            Stim(Indx_P).(Sessions{Indx_S}) = nan(numel(Chanlocs), ERPpoints, numel(Data));
-            Resp(Indx_P).(Sessions{Indx_S}) =  nan(numel(Chanlocs), ERPpoints, numel(Data));
-            
-            for Indx_B = 1:numel(BandNames) % TODO, eventually find a better way
-                StimPower.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S}) =  nan(numel(Chanlocs), Powerpoints, numel(Data));
-                StimPhases.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S}) =  nan(numel(Chanlocs), numel(1:PhasePeriod*HilbertFS:Powerpoints), numel(Data));
-                RespPower.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S}) =  nan(numel(Chanlocs), Powerpoints, numel(Data));
-                RespPhases.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S}) =  nan(numel(Chanlocs), numel(1:PhasePeriod*HilbertFS:Powerpoints), numel(Data));
-                
-            end
             
             allEvents(Indx_P).(Sessions{Indx_S}) = Trials;
             for Indx_T = 1:numel(Data)
-                if Remove(Indx_T)
-                    continue
-                end
                 
                 % get ERPs
                 Stim(Indx_P).(Sessions{Indx_S})(:, :, Indx_T) = Data(Indx_T).EEG(:, 1:ERPpoints);
@@ -136,16 +121,6 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
                     end
                 end
             end
-            % Remove bad epochs
-            Stim(Indx_P).(Sessions{Indx_S})(:, :,  Remove) = [];
-            Resp(Indx_P).(Sessions{Indx_S})(:, :, Remove) = [];
-            
-            for Indx_B = 1:numel(BandNames) % TODO, eventually find a better way
-                StimPower.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S})(:, :,  Remove) = [];
-                StimPhases.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S})(:, :, Remove) = [];
-                RespPower.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S})(:, :,  Remove) = [];
-            end
-            
         end
     end
     
