@@ -1,11 +1,9 @@
-
 clear
 close all
 clc
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Normalize = true;
 PlotChannels = 'ERP'; % eventually find a more accurate set of channels?
 
 TriggerTime = 0;
@@ -18,7 +16,7 @@ Xlims = [-1.5, 1.5];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Load_Trials
-%%
+
 
 
 Limits = [0:.2:1];
@@ -35,8 +33,6 @@ Format.Colors.Phases(1, :) = []; % get rid of first white
 Labels = {'FZ', 'CZ', 'Oz'};
 
 
-
-TriggerTime = 0;
 [~, StartPower] = min(abs(tPower -PowerWindow(1)));
 [~, StopPower] = min(abs(tPower -PowerWindow(2)));
 
@@ -64,7 +60,7 @@ PlotPhasePoints =  dsearchn( StimPhaseTimes', PlotPhaseTimes')';
 
 
 % plot specific channels
-%%
+
 
 for Indx_C = 1:numel(PlotSpots)
     PlotERPandPower(Stim, StimPower, [Start, Stop], PlotSpots(Indx_C), Tally, ...

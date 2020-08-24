@@ -5,6 +5,8 @@ Task = 'LAT';
 % Options: 'LAT', 'PVT'
 
 
+Normalize = true;
+
 Refresh = false;
 
 SkipBadParticipants = true;
