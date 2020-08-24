@@ -2,20 +2,7 @@ clear
 close all
 clc
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-PlotChannels = 'ERP'; % eventually find a more accurate set of channels?
-
-TriggerTime = 0;
-
-Refresh = false;
-
-Xlims = [-1.5, 1.5];
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 Load_Trials
-
 
 
 Limits = [0:.2:1];

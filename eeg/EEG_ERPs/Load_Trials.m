@@ -1,38 +1,23 @@
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Task = 'LAT';
-% Options: 'LAT', 'PVT'
-
-Refresh = false;
-
-SkipBadParticipants = true;
-PlotChannels = 'ERP'; % eventually find a more accurate set of channels?
-Labels = {'FZ', 'CZ', 'Oz'};
-Normalize = true;
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+plotERP_Parameters
 ERP_Parameters
-
-
-% To get rid of:
-Limits = linspace(0, 1, 5+1); % move to function the selection of rts and quantiles
 
 % get trigger and possibly anything else
 switch Condition
     case 'Beam'
         Condition = 'AllBeam';
         Title = 'Soporific';
+        Data = [Task, '_', Title];
     case 'BL'
         Title = 'Baseline';
     case 'SD'
         Condition = 'SD3';
         Title = 'SleepDep';
     case 'SDvBL'
-           Condition = 'AllBeam';
+        Condition = 'AllBeam';
         Title = 'Soporific';
-        TrueTitle = 'SDvBL'
+        TrueTitle = 'SDvBL';
         
 end
 
@@ -66,8 +51,6 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
     
     
     % initialize structures for all data % TODO, get rid of!
-    Tally = struct(); % categories for each trial
-    RTQuintile = struct();
     allEvents = struct();
     
     Stim = struct(); % data
@@ -91,32 +74,17 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
             
             m = matfile(fullfile(Path, File{1}),  'Writable', false );
             
-            Events = m.Events;
-            Remove = Events.Noise==1;
-            Events(Remove, :) = [];
+            Trials = m.Events;
+            Remove = Trials.Noise==1;
+            Trials(Remove, :) = [];
             
             
-            if isempty(Events)
+            if isempty(Trials)
                 warning(['**************Could not find ', Participants{Indx_P}, ' ',  Sessions{Indx_S}, '*************' ])
                 continue
             end
             
-            % get tally categories
-            RTs = cell2mat(Events.rt);
-            RTally = zeros(size(RTs));
-            RTally(isnan(RTs)) = 3;
-            RTally(RTs<.5) = 1;
-            RTally(RTs>.5) = 2;
-            Tally(Indx_P).(Sessions{Indx_S}) = RTally;
-            
-            % get rt categories
-            
-            Edges = quantile([AllAnswers.rt{strcmp(AllAnswers.Participant, Participants{Indx_P})}], Limits);
-            Quintiles = discretize(RTs, Edges);
-            Quintiles(isnan(Quintiles)) = numel(Edges);
-            RTQuintile(Indx_P).(Sessions{Indx_S}) = Quintiles;
-            
-            
+
             %%% get ERPs
             Data  =   m.Data;
             Power = m.Power;
@@ -136,7 +104,7 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
                 
             end
             
-            allEvents(Indx_P).(Sessions{Indx_S}) = Events;
+            allEvents(Indx_P).(Sessions{Indx_S}) = Trials;
             for Indx_T = 1:numel(Data)
                 if Remove(Indx_T)
                     continue
@@ -187,7 +155,7 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
     % Get zscores for participants
     [Means, SDs] = GetZscorePower(Path, Participants, Chanlocs, BandNames);
     
-    save(Struct_Path_Data, 'Tally', 'RTQuintile', 'Stim', 'allEvents', 'StimPower', ...
+    save(Struct_Path_Data, 'Stim', 'allEvents', 'StimPower', ...
         'Resp', 'RespPower', 'StimPhases', 'RespPhases', 'Means', 'SDs', 'Chanlocs', '-v7.3')
 else
     disp('***************Loading ERPs*********************')
@@ -200,4 +168,9 @@ if Normalize
     StimPower = ZScorePower(StimPower, Means, SDs);
     RespPower = ZScorePower(RespPower, Means, SDs);
 end
+
+
+% get fancy groups for dividing trials
+Load_TrialQuantiles
+
 

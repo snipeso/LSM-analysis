@@ -56,9 +56,9 @@ for Indx_Ch = 1:numel(PlotChannels)
     figure('units','normalized','outerposition',[0 0 .5 1])
     for Indx_B = 1:numel(BandNames)
         subplot(numel(BandNames), 1,  Indx_B)
-%         PlotERP(tPower, allPower.(BandNames{Indx_B}), TriggerTime, ...
-%             PlotChannels(Indx_Ch), 'Participants', Format.Colors.Participants)
-   PlotERP(tPower, allPower.(BandNames{Indx_B}), TriggerTime, ...
+        %         PlotERP(tPower, allPower.(BandNames{Indx_B}), TriggerTime, ...
+        %             PlotChannels(Indx_Ch), 'Participants', Format.Colors.Participants)
+        PlotERP(tPower, allPower.(BandNames{Indx_B}), TriggerTime, ...
             PlotChannels(Indx_Ch), 'Sessions',Format.Colors.([Task,Condition]))
         xlim(Xlims)
         title([Labels{Indx_Ch}, ' ', BandNames{Indx_B}, ' ', replace(TitleTag, '_', ' '),])
@@ -99,7 +99,7 @@ for Indx_Ch = 1:numel(PlotChannels)
         figure('units','normalized','outerposition',[0 0 .5 .5])
         Colors = flipud(gray(numel(Edges)));
         PlotERP(t, allData, TriggerTime,  PlotChannels(Indx_Ch), 'Custom', Colors(2:end, :), Quantiles)
-      xlim(Xlims)
+        xlim(Xlims)
         title([ Labels{Indx_Ch}, ' ', replace(TitleTag, '_', ' '), ' based on ongoing ', BandNames{Indx_B}, ' power'])
         ylabel('miV')
         set(gca, 'FontSize', 14, 'FontName', Format.FontName)

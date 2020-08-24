@@ -152,6 +152,6 @@ parfor Indx_F = 1:numel(Files)
 end
 
 
-function parsave(fname,  Data, Power, Phase, Meta, Events, Chanlocs)
-save(fname,  'Data', 'Power', 'Phase', 'Meta', 'Events', 'Chanlocs', '-v7.3')
+function parsave(fname,  Data, Power, Phase, Meta, Trials, Chanlocs)
+save(fname,  'Data', 'Power', 'Phase', 'Meta', 'Trials', 'Chanlocs', '-v7.3')
 end
