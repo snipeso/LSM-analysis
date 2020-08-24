@@ -22,3 +22,5 @@ Xlims = [-1.5, 1.5];
 TotRTQuantiles = 5;
 
 Normalize = true; % if normalize power data, best true
+
+PowerWindow = [-0.5, .1]; % window from which to average power to split erp

@@ -1,21 +1,7 @@
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-PowerWindow = [-0.5, .1]; % window from which to average power to split erp
-PlotChannels = 'ERP'; % eventually find a more accurate set of channels?
-
-TriggerTime = 0;
-
-Normalize = true;
-
-SkipBadParticipants = true;
-Labels = {'FZ', 'CZ', 'Oz'};
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 ERP_Parameters
+plotERP_Parameters
 
 % get trigger and possibly anything else
 switch Condition
