@@ -32,7 +32,8 @@ switch Condition
         Title = 'SleepDep';
     case 'SDvBL'
            Condition = 'AllBeam';
-        Title = 'SleepDepBL';
+        Title = 'Soporific';
+        TrueTitle = 'SDvBL'
         
 end
 

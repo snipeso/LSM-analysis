@@ -65,7 +65,6 @@ Format.Colors.LATBeam = Format.Colors.LAT([1, 3, 5], :);
 Format.Colors.LATSD3 = Format.Colors.LAT([4, 5, 6], :);   
 
 
-Format.Colors.PVTAllBeam = Format.Colors.PVT;
 
 Format.Colors.LATAllBeam = Format.Colors.LAT;
 Format.Colors.LATAllBL = Format.Colors.LAT;
@@ -81,6 +80,9 @@ Format.Colors.PVT = [
 137, 213, 70;
 119, 49, 49
 ]/255;
+
+
+Format.Colors.PVTAllBeam = Format.Colors.PVT;
 
 Format.Colors.Standing = Format.Colors.PVT;
 Format.Colors.Fixation = Format.Colors.PVT;
