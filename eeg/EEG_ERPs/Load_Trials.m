@@ -3,28 +3,27 @@
 plotERP_Parameters
 ERP_Parameters
 
-% get trigger and possibly anything else
+%%% condition specific variables
 switch Condition
     case 'Beam'
         Condition = 'AllBeam';
         Title = 'Soporific';
-        Data = [Task, '_', Title];
+        DataTag = [Task, '_', Title];
     case 'BL'
         Title = 'Baseline';
+         DataTag = [Task, '_', Title];
     case 'SD'
         Condition = 'SD3';
         Title = 'SleepDep';
-    case 'SDvBL'
+         DataTag = [Task, '_', Title];
+    case 'BLvSD'
         Condition = 'AllBeam';
-        Title = 'Soporific';
-        TrueTitle = 'SDvBL';
-        
+        Title = 'BLvSD';
+         DataTag = [Task, '_', Title];
 end
 
-
-
 % labels and indices
-Sessions = allSessions.([Task,Condition]);
+Sessions = allSessions.([Task, Condition]);
 SessionLabels = allSessionLabels.([Task, Condition]);
 
 TitleTag = [Title, '_', Task];
@@ -40,7 +39,7 @@ end
 
 
 %%% get ERPs locked to stim and resp
-Struct_Path_Data = fullfile(Paths.Summary, [TitleTag, '_TrialERPs.mat']);
+Struct_Path_Data = fullfile(Paths.Summary, [DataTag, '_TrialERPs.mat']);
 if ~exist(Struct_Path_Data, 'file') || Refresh
     disp('*************Creating allTrials********************')
     
