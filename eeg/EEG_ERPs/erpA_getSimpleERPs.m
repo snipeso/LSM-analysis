@@ -64,8 +64,8 @@ parfor Indx_F = 1:numel(Files)
     
     % load EEG
     EEG = pop_loadset('filename', File, 'filepath', Source);
-    [Channels, ~] = size(EEG.data);
     Chanlocs = EEG.chanlocs;
+    Channels = numel(Chanlocs);
     
     % skip if there are no relevant triggers
     AllTriggers =  {EEG.event.type};

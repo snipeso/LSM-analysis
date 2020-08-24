@@ -27,12 +27,8 @@ Files = deblank(cellstr(ls(Source)));
 Files(~contains(Files, '.set')) = [];
 
 
-Paths.Figures = fullfile(Paths.Figures, 'Trials', Task, 'AllFiles');
-
-if ~exist(Paths.Figures, 'dir')
-    mkdir(Paths.Figures)
-end
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% extract ERPs
 
 
 parfor Indx_F = 1:numel(Files)
@@ -48,26 +44,23 @@ parfor Indx_F = 1:numel(Files)
     
     % load EEG
     EEG = pop_loadset('filename', File, 'filepath', Source);
+        Chanlocs = EEG.chanlocs;
+    Channels = numel(Chanlocs);
     
-    
-    
-    % get hilbert power bands and phase
-    EEGds = pop_resample(EEG, HilbertFS);
-    EEG  = pop_resample(EEG, newfs);
-    [HilbertPower, HilbertPhase] = HilbertBands(EEGds, Bands,'matrix');
-    %
-    
-    % get trial information into event structure
+    % add trigger latencies to table of trials
     Events = MergeTrialEvents(EEG, AllAnswers, EEG_Triggers);
     
-    % Set as nan all noise
-    [Channels, Points] = size(EEG.data);
+    % get hilbert power bands and phase
+    EEGhilbert = pop_resample(EEG, HilbertFS);
+    EEG = pop_resample(EEG, newfs);
     fs = EEG.srate;
-    Chanlocs = EEG.chanlocs;
     
-    % remove bad segments
+    [HilbertPower, HilbertPhase] = HilbertBands(EEGhilbert, Bands, 'matrix');
+    
+    % set noise to NaN
     Cuts_Filepath = fullfile(Source_Cuts, [extractBefore(File, '_Clean'), '_Cleaning_Cuts.mat']);
     EEG = nanNoise(EEG, Cuts_Filepath);
+    
     for Indx_B = 1:numel(BandNames)
         PowerEEG = struct();
         PowerEEG.data = squeeze(HilbertPower(:, :, Indx_B));
@@ -76,6 +69,8 @@ parfor Indx_F = 1:numel(Files)
         HilbertPower(:, :, Indx_B) = PowerEEG.data;
     end
     
+    
+    %%% save data to new structure
     
     Data = struct();
     Power = struct();
