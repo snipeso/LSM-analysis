@@ -90,8 +90,9 @@ parfor Indx_F = 1:numel(Files)
     EEG = nanNoise(EEG, Cuts_Filepath);
     
     
-    %%% get start and stop times relative to stimulus triggers
+    %%% Cut and save epochs
     
+    % get start and stop times relative to stimulus triggers
     AllTriggerTimes =  [EEG.event.latency];
     ToneTriggerTimes = AllTriggerTimes(strcmp(AllTriggers, Trigger))/fs;
     
@@ -101,7 +102,7 @@ parfor Indx_F = 1:numel(Files)
     TotWindow = round(fs*Stop - fs*Start);
     TotWindowPower = round(HilbertFS*Stop - HilbertFS*Start);
     
-    %%% save data into jumbo matrices
+    %%% save data into jumbo matrices TODO: don't
     Data = nan(Channels, TotWindow, numel(Starts));
     Power = nan(Channels,  TotWindowPower, numel(BandNames), numel(Starts));
     Phase = nan(Channels, numel(BandNames), numel(Starts));
@@ -130,8 +131,8 @@ parfor Indx_F = 1:numel(Files)
     Data(:, :, Remove) = [];
     Power(:, :, :, Remove) = [];
     Phase(:, :, Remove) = [];
-    disp(['Keeping ', num2str(size(Data, 3)), ' trials for ', File, ...
-        ', discarding ', num2str(numel(Remove)), ' due to noise'])
+    disp(['**** Keeping ', num2str(size(Data, 3)), ' trials for ', File, ...
+        ', discarding ', num2str(numel(Remove)), ' due to noise ****'])
     
     parsave(fullfile(Destination, Filename), Data, Power, Phase, Chanlocs)
     disp(['*************finished ',Filename '*************'])
