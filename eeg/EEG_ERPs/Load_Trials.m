@@ -50,7 +50,7 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
     
     
     % initialize structures for all data
-    allEvents = struct();
+    allTrials = struct();
     
     Stim = struct(); % data
     Resp = struct();
@@ -76,6 +76,7 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
             
             Trials = m.Trials;
             
+            % continue if there aren't any trials
             if isempty(Trials)
                 warning(['**************No trials for ', ...
                     Participants{Indx_P}, ' ',  Sessions{Indx_S}, '*************' ])
@@ -83,16 +84,16 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
             end
             
             
-            %%% get ERPs
+            %%% restructure data
+            TotTrials = size(Trials, 1);
             Data  =   m.Data;
             Power = m.Power;
             Phase = m.Phase;
             Meta = m.Meta;
             Chanlocs = m.Chanlocs;
             
-            
-            allEvents(Indx_P).(Sessions{Indx_S}) = Trials;
-            for Indx_T = 1:numel(Data)
+            allTrials(Indx_P).(Sessions{Indx_S}) = Trials;
+            for Indx_T = 1:TotTrials
                 
                 % get ERPs
                 Stim(Indx_P).(Sessions{Indx_S})(:, :, Indx_T) = Data(Indx_T).EEG(:, 1:ERPpoints);
@@ -101,35 +102,45 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
                     rStart = Meta(Indx_T).Resp + Start;
                     rStop = Meta(Indx_T).Resp + Stop;
                     
-                    Resp(Indx_P).(Sessions{Indx_S})(:, :, Indx_T) = Data(Indx_T).EEG(:, round(newfs*rStart):(round(newfs*rStop)-1));
+                    Resp(Indx_P).(Sessions{Indx_S})(:, :, Indx_T) = ...
+                        Data(Indx_T).EEG(:, round(newfs*rStart):(round(newfs*rStop)-1));
                 else
-                    Resp(Indx_P).(Sessions{Indx_S})(:, :, Indx_T) = nan(numel(Chanlocs), ERPpoints);
+                    Resp(Indx_P).(Sessions{Indx_S})(:, :, Indx_T) = ...
+                        nan(numel(Chanlocs), ERPpoints);
                 end
                 
                 % get power and phase
                 for Indx_B = 1:numel(BandNames)
-                    StimPower.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S})(:, :, Indx_T) = Power(Indx_T).(BandNames{Indx_B})(:, 1:Powerpoints);
-                    StimPhases.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S})(:, :, Indx_T) = Phase(Indx_T).(BandNames{Indx_B})(:, 1:PhasePeriod*HilbertFS:Powerpoints);
+                    StimPower.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S})(:, :, Indx_T) = ...
+                        Power(Indx_T).(BandNames{Indx_B})(:, 1:Powerpoints);
+                    
+                    PhasePoints = 1:PhasePeriod*HilbertFS:Powerpoints;
+                    StimPhases.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S})(:, :, Indx_T) = ...
+                        Phase(Indx_T).(BandNames{Indx_B})(:, PhasePoints);
                     
                     
                     if ~isnan(Meta(Indx_T).Resp)
-                        RespPower.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S})(:, :, Indx_T) = Power(Indx_T).(BandNames{Indx_B})(:, round(HilbertFS*rStart):(round(HilbertFS*rStop)-1));
-                        RespPhases.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S})(:, :, Indx_T) = Phase(Indx_T).(BandNames{Indx_B})(:, round(HilbertFS*rStart):round(HilbertFS*PhasePeriod):(round(HilbertFS*rStop)-1));
+                        RespPower.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S})(:, :, Indx_T) = ...
+                            Power(Indx_T).(BandNames{Indx_B})(:, round(HilbertFS*rStart):(round(HilbertFS*rStop)-1));
+                        
+                        RespPhasePoints = round(HilbertFS*rStart):round(HilbertFS*PhasePeriod):(round(HilbertFS*rStop)-1);
+                        RespPhases.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S})(:, :, Indx_T) = ...
+                            Phase(Indx_T).(BandNames{Indx_B})(:,RespPhasePoints);
                     else
-                        RespPower.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S})(:, :, Indx_T) = nan(numel(Chanlocs), Powerpoints);
-                        RespPhases.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S})(:, :, Indx_T) = nan(numel(Chanlocs), numel(1:PhasePeriod*HilbertFS:Powerpoints));
+                        RespPower.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S})(:, :, Indx_T) = ...
+                            nan(numel(Chanlocs), Powerpoints);
+                        RespPhases.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S})(:, :, Indx_T) = ...
+                            nan(numel(Chanlocs), numel(PhasePoints));
                     end
                 end
             end
         end
     end
-    
-    Chanlocs = m.Chanlocs;
-    
+   
     % Get zscores for participants
     [Means, SDs] = GetZscorePower(Path, Participants, Chanlocs, BandNames);
     
-    save(Struct_Path_Data, 'Stim', 'allEvents', 'StimPower', ...
+    save(Struct_Path_Data, 'Stim', 'allTrials', 'StimPower', ...
         'Resp', 'RespPower', 'StimPhases', 'RespPhases', 'Means', 'SDs', 'Chanlocs', '-v7.3')
 else
     disp('***************Loading ERPs*********************')
