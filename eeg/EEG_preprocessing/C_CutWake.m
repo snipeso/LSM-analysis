@@ -10,7 +10,7 @@
 %% Section 1: Choose a file
 %%% Choose the folder you want to edit, change the variable Folder.Data
 %%% accordingly (this should be a folder in the folder "LightFiltering",
-%%% and is one the tasks, like "MWT").
+%%% and is onerm the tasks, like "MWT").
 %%% If you want to clean a specific file, set the variable Filename
 %%% accordingly; if you leave it as an empty list, the script will randomly
 %%% select a file from your chosen folder that hasn't been marked yet.
@@ -21,7 +21,7 @@ EEG_Parameters
 
 % Filename = 'P05_LAT_Session2Beam3_Cleaning.set'; % choose this if you want to clean a specific file
 Filename = []; % choose this if you want to randomly select a file to clean from the list
-Folder = 'Standing';
+Folder = 'PVT';
 
 Source = fullfile(Paths.Preprocessed, 'Cleaning', 'SET', Folder);
 Destination = fullfile(Paths.Preprocessed, 'Cleaning', 'Cuts', Folder);
