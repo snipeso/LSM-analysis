@@ -1,51 +1,65 @@
-function Events = MergeTrialEvents(EEG, AllAnswers, EEG_Triggers)
+function Trials = MergeTrialEvents(EEG, AllAnswers, EEG_Triggers)
 % outputs table of trials, with their original latencies
 
+% get subtable specific to the current session
 Labels = split(EEG.filename, '_');
-Events = AllAnswers(...
+Trials = AllAnswers(...
     strcmp(AllAnswers.Participant, Labels{1}) & ...
     strcmp(AllAnswers.Task, Labels{2}) &  ...
     strcmp(AllAnswers.Session, Labels{3}), :);
 
-% triggers
-StimIndx = find(strcmp({EEG.event.type}, EEG_Triggers.Stim ));
-RespIndx  = find(strcmp({EEG.event.type}, EEG_Triggers.Response ));
+if isempty(Trials)
+    error([EEG.filename, ' does not have entries in table'])
+end
+
+% get stimulus and response triggers
+StimIndx = find(strcmp({EEG.event.type}, EEG_Triggers.Stim));
+RespIndx  = find(strcmp({EEG.event.type}, EEG_Triggers.Response));
 TriggerTimes = [ EEG.event.latency];
 
-if numel(StimIndx) ~= size(Events, 1)
+% throw an error if there's a discrepancy in trials
+if numel(StimIndx) ~= size(Trials, 1)
     error(['MISMATCH in ', EEG.filename])
 end
 
-for Indx_T = 1:size(Events, 1)
+for Indx_T = 1:size(Trials, 1) % loop through trials
     
-    Indx = StimIndx(Indx_T);
+    Indx = StimIndx(Indx_T); % current trigger number
     
-    % get stim latency and response latency
-    Events.StimLatency(Indx_T) = TriggerTimes(StimIndx(Indx_T));
+    % get stim latency
+    Trials.StimLatency(Indx_T) = TriggerTimes(StimIndx(Indx_T));
     
-    if Events.rt{Indx_T} < .1
-        Events.Error(Indx_T)= 1;
-        Events.rt(Indx_T) = {[nan]};
-        Events.RespLatency(Indx_T) = nan;
-    elseif ~isnan(Events.rt{Indx_T}) && ~isempty(Events.rt{Indx_T})
-
-        Events.RespLatency(Indx_T) = TriggerTimes(RespIndx(find(RespIndx>Indx, 1, 'first')));
-
+    % get response latency, if a response was given
+    if Trials.rt{Indx_T} < .1 % consider response as an error if the value is less than .1 (too fast, or error)
+        Trials.Error(Indx_T)= 1;
+        Trials.rt(Indx_T) = {[nan]};
+        Trials.RespLatency(Indx_T) = nan;
+    
+    elseif ~isnan(Trials.rt{Indx_T}) && ~isempty(Trials.rt{Indx_T}) % if a reaction time is recorded, look for the trigger
+        
+        % get latency of first response after current stimulus
+        Trials.RespLatency(Indx_T) = TriggerTimes(RespIndx(find(RespIndx>Indx, 1, 'first')));
+        
         % make sure the data is consistent
-        RealRT = (Events.RespLatency(Indx_T) -  Events.StimLatency(Indx_T))/EEG.srate;
-        Discrepancy = Events.rt{Indx_T} - RealRT;
+        RealRT = (Trials.RespLatency(Indx_T) -  Trials.StimLatency(Indx_T))/EEG.srate;
+        Discrepancy = Trials.rt{Indx_T} - RealRT; % difference between computer recorded RT and distance between triggers
+        
         if abs(Discrepancy) > .1
-            warning(['timing discrepancy of ', num2str(Discrepancy) ' for ', EEG.filename])
+            warning(['timing discrepancy of ', num2str(Discrepancy) 's for ', EEG.filename])
             
-        elseif abs(RealRT) > 1
-            warning(['RT problem of ', num2str(RealRT) ' for ', EEG.filename])
+        elseif abs(RealRT) > 1 % serious problem if reaction time is off by more than some milliseconds
+            error(['RT problem of ', num2str(RealRT) ' for ', EEG.filename])
         end
         
-        % give warning if they're wrong
-    elseif isnan(Events.rt{Indx_T})
-          Events.RespLatency(Indx_T) = nan;
-        % check that there's no response
-        % maybe allow another .5 seconds to be ocunted as a response, TODO
+    elseif isnan(Trials.rt{Indx_T}) % if no reaction time is recorded, latency is nan
+        Trials.RespLatency(Indx_T) = nan;
+        
+        % check that there's really no response
+        if RespIndx(find(RespIndx>Indx, 1, 'first')) == Indx+1
+            error(['Response not saved in data for ',  EEG.filename])
+        end
     end
-    
 end
+
+
+

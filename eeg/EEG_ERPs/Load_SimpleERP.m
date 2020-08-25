@@ -3,9 +3,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-PowerWindow = [-1, .1]; % window from which to average power to split erp
+PowerWindow = [-0.5, .1]; % window from which to average power to split erp
 PlotChannels = 'ERP'; % eventually find a more accurate set of channels?
-
 
 TriggerTime = 0;
 
@@ -25,7 +24,7 @@ switch Condition
         Title = 'Soporific';
     case 'BL'
         Title = 'Baseline';
-    case 'SD3'
+    case 'SD'
         Condition = 'SD3';
         Title = 'SleepDep';
 end
@@ -50,9 +49,9 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
     disp(['************* Creating ', Title, ' ********************'])
     
     if contains(Stimulus, 'ISI')
-           Path = fullfile(Paths.ERPs, 'SimpleERP', 'Intertrial');
+        Path = fullfile(Paths.ERPs, 'SimpleERP', 'Intertrial');
     else
-    Path = fullfile(Paths.ERPs, 'SimpleERP', Stimulus, Task);
+        Path = fullfile(Paths.ERPs, 'SimpleERP', Stimulus, Task);
     end
     Files = deblank(cellstr(ls(Path)));
     Files(~contains(Files, '.mat')) = [];
@@ -95,9 +94,9 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
     end
     Chanlocs = m.Chanlocs;
     
-        
-     % Get zscores for participants
-     PowerPath = fullfile(Paths.Summary, [TitleTag, 'SimpleERP_Power.mat']);
+    
+    % Get zscores for participants
+    PowerPath = fullfile(Paths.Summary, [TitleTag, 'SimpleERP_Power.mat']);
     [Means, SDs] = GetZscorePowerTemp(Path, Participants, Chanlocs, BandNames);
     
     

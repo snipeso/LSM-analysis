@@ -10,9 +10,9 @@ Task = 'LAT';
 % Options: 'LAT', 'PVT'
 
 Stimulus = 'Stim';
-% Options: 'Tones' (from LAT), 'Alarm', 'Stim', 'Resp'
+% Options: 'Tones' (from LAT), 'Alarm', 'Stim', 'Resp', 'RespISI'
 
-Condition = 'Beam';
+Condition = 'SD';
 % Options: 'Beam', 'BL', 'SD'
 
 Refresh = true;
