@@ -7,12 +7,13 @@ clc
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Target = 'Fixation';
+Target = 'LAT';
 Refresh = false;
-Data_Type = 'Wake';
+Data_Type = 'ERP';
 % Filename = ['P09_LAT_Session1Beam_ICA_Components.set'];
 Filename = [];
 CheckOutput = true;
+Automate = true;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 EEG_Parameters
@@ -21,8 +22,8 @@ EEG_Parameters
 % get files and paths
 Source_Comps = fullfile(Paths.Preprocessed, 'ICA', 'Components', Target);
 Source_Data = fullfile(Paths.Preprocessed, Data_Type, 'SET', Target);
-Destination_BadComps = fullfile(Paths.Preprocessed, 'ICA', 'BadComponents', Target);
-Destination = fullfile(Paths.Preprocessed, 'ICA', 'Deblinked', Target);
+Destination_BadComps = fullfile(Paths.Preprocessed, 'ICA', Data_Type, 'BadComponents', Target);
+Destination = fullfile(Paths.Preprocessed, 'ICA', Data_Type, 'Deblinked', Target);
 
 if ~exist(Destination_BadComps, 'dir')
     mkdir(Destination_BadComps)

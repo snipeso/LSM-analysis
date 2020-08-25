@@ -51,6 +51,13 @@ Parameters(3).lp = 40; % low pass filter
 Parameters(3).hp = 0.5; % high pass filter
 Parameters(3).hp_stopband = 0.25; % high pass filter
 
+% Wake: starting data for properly cleaned wake data
+Parameters(3).Format = 'ERP'; % reference name
+Parameters(3).fs = 500; % new sampling rate
+Parameters(3).lp = 40; % low pass filter
+Parameters(3).hp = 0.1; % high pass filter
+Parameters(3).hp_stopband = 0.05; % high pass filter
+
 % ICA: heavily filtered data for getting ICA components
 Parameters(4).Format = 'ICA'; % reference name
 Parameters(4).fs = 500; % new sampling rate
