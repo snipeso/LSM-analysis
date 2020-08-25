@@ -8,17 +8,17 @@ EEG_Parameters
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Tasks = {'Fixation', 'Standing'}; % which tasks to convert (for now)
+Tasks = {'PVT'}; % which tasks to convert (for now)
 % Tasks = {'MWT', 'Fixation', 'Standing', 'LAT', 'PVT'}; % which tasks to convert (for now)
 % options: 'LAT', 'PVT', 'SpFT', 'Game', 'Music', 'MWT', 'Sleep',
 % 'Fixation', 'Oddball', 'Standing', 'Questionnaire'
 
-Destination_Formats = {'Cleaning', 'Microsleeps'}; % chooses which filtering to do
+Destination_Formats = {'ERP'}; % chooses which filtering to do
 % options: 'Scoring', 'Cleaning', 'ICA', 'Wake' 'Microsleeps'
 
 Refresh = false; % redo files that are already in destination folder
 
-SpotCheck = true; % occasionally plot results, to make sure things are ok
+SpotCheck = false; % occasionally plot results, to make sure things are ok
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
