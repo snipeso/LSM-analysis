@@ -10,7 +10,8 @@ clear
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Targets = {'LAT', 'PVT', 'MWT', 'Standing', 'Fixation'}; % specify folder for analysis
+Tasks = {'LAT',}; % specify folder for analysis
+DataType = 'ERP';
 Refresh = false;
 SpotCheck = false;
 
@@ -22,14 +23,14 @@ load('StandardChanlocs128.mat', 'StandardChanlocs')
 StandardChanlocs(EEG_Channels.notEEG) = [];
 
 
-for Indx_T = 1:numel(Targets)
+for Indx_T = 1:numel(Tasks)
     
-    Target = Targets{Indx_T};
+    Task = Tasks{Indx_T};
     
     % get files and paths
-    Source_EEG = fullfile(Paths.Preprocessed, 'ICA', 'Deblinked', Target);
-    Source_Cuts = fullfile(Paths.Preprocessed, 'Cleaning', 'Cuts', Target);
-    Destination = fullfile(Paths.Preprocessed, 'Interpolated', 'SET', Target);
+    Source_EEG = fullfile(Paths.Preprocessed, 'ICA', ['Deblinked_', DataType], Task);
+    Source_Cuts = fullfile(Paths.Preprocessed, 'Cleaning', 'Cuts', Task);
+    Destination = fullfile(Paths.Preprocessed, 'Interpolated', DataType, Task);
     
     if ~exist(Destination, 'dir')
         mkdir(Destination)

@@ -12,7 +12,7 @@ Refresh = false;
 Data_Type = 'ERP';
 % Filename = ['P09_LAT_Session1Beam_ICA_Components.set'];
 Filename = [];
-CheckOutput = true;
+CheckOutput = false;
 Automate = true;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -9,13 +9,13 @@ close all
 Task = 'LAT';
 % Options: 'LAT', 'PVT'
 
-Stimulus = 'RespISI';
+Stimulus = 'Stim';
 % Options: 'Tones' (from LAT), 'Alarm', 'Stim', 'Resp'
 
 Condition = 'Beam';
 % Options: 'Beam', 'BL', 'SD'
 
-Refresh = false;
+Refresh = true;
 
 Xlims = [-1.5, 1.5];
 PlotChannels = 'ERP';
