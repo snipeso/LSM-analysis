@@ -74,7 +74,7 @@ for Indx_T = 1:numel(Tasks)
 end
 
 
-% save average
+% save average across all tasks
 Destination = fullfile(Paths.Analysis, 'statistics', 'Data', 'AllTasks');
 
 if ~exist(Destination, 'dir')
@@ -98,5 +98,4 @@ for Indx_C = 1:numel(Conditions)
         Filename = ['AllTasks_back', saveFreqFields{Indx_F}, '_', Title, '.mat'];
         save(fullfile(Destination, Filename), 'Matrix')
     end
-    
 end
