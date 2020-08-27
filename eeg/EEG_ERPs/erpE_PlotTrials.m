@@ -49,27 +49,27 @@ PlotPhasePoints =  dsearchn( StimPhaseTimes', PlotPhaseTimes')';
 
 
 for Indx_C = 1:numel(PlotSpots)
-    PlotERPandPower(Stim, StimPower, [Start, Stop], PlotSpots(Indx_C), Tally, ...
+    PlotERPandPower(Stim, StimPower, [Start, Stop], PlotSpots(Indx_C), BLPoints, Tally, ...
         {'Hits', 'Late', 'Misses'}, [Labels{Indx_C},' Stim'], 'Tally', Format)
     saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_',Labels{Indx_C}, '_ERP_Stim_', Labels{Indx_C}, '_Tally.svg']))
     
-    PlotERPandPower(Resp, RespPower, [Start, Stop],  PlotSpots(Indx_C), Tally, ...
+    PlotERPandPower(Resp, RespPower, [Start, Stop],  PlotSpots(Indx_C), BLPoints, Tally, ...
         {'Hits', 'Late'},  [Labels{Indx_C},' Resp'],  'Tally', Format)
     saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_',Labels{Indx_C}, '_ERP_Resp_,' Labels{Indx_C}, '_Tally.svg']))
     
     % plot ERP split by RT quintile
-    PlotERPandPower(Stim, StimPower, [Start, Stop], PlotSpots(Indx_C), RTQuintile, ...
+    PlotERPandPower(Stim, StimPower, [Start, Stop], PlotSpots(Indx_C), BLPoints, RTQuintile, ...
         string(Limits), [Labels{Indx_C},' Stim'], 'Quintiles', Format)
     saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_',Labels{Indx_C}, '_ERP_Stim_RTQuintile.svg']))
     
-    PlotERPandPower(Resp, RespPower, [Start, Stop], PlotSpots(Indx_C), RTQuintile, ...
+    PlotERPandPower(Resp, RespPower, [Start, Stop], PlotSpots(Indx_C), BLPoints, RTQuintile, ...
         string(Limits(1:end-1)),  [Labels{Indx_C},' Resp'],  'Quintiles', Format)
     saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_',Labels{Indx_C}, '_ERP_Resp_RTQuintile.svg']))
     
     
     %     % plot erp split by ongoing phases
     %     PhaseCats =  SplitPhase(StimPhases, PhasePoint, PlotSpots(Indx_C), 6);
-    %     PlotERPandPower(Stim, StimPower, [Start, Stop], PlotSpots(Indx_C), PhaseCats, ...
+    %     PlotERPandPower(Stim, StimPower, [Start, Stop], PlotSpots(Indx_C), BLPoints, PhaseCats, ...
     %         {string(1:6)},  [Labels{Indx_C},' Resp'],  'Phases', Format)
     %     saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_',Labels{Indx_C}, '_ERP_Resp_Phase.svg']))
     
@@ -81,7 +81,7 @@ for Indx_C = 1:numel(PlotSpots)
     
 %     % plot mean ERPs by session
 %     figure('units','normalized','outerposition',[0 0 .5 .5])
-%     PlotERP(t, Stim, TriggerTime,   PlotSpots(Indx_C), 'Sessions', Format.Colors.([Task, Condition]))
+%     PlotERP(t, Stim, TriggerTime,   PlotSpots(Indx_C), BLPoints, 'Sessions', Format.Colors.([Task, Condition]))
 %       xlim(Xlims)
 %     title([Labels{Indx_C}, ' ERP by Session'])
 %     ylabel('miV')
@@ -111,7 +111,7 @@ for Indx_C = 1:numel(PlotSpots)
         
         subplot(2, 2, Indx_B)
         Colors = flipud(gray(numel(Edges)));
-        PlotERP(t, Stim, TriggerTime,  PlotSpots(Indx_C), 'Custom', Colors(2:end, :), Quantiles)
+        PlotERP(t, Stim, TriggerTime,  PlotSpots(Indx_C), BLPoints, 'Custom', Colors(2:end, :), Quantiles)
           xlim(Xlims)
         title([Labels{Indx_C}, ' Trials based on ongoing ', BandNames{Indx_B}, ' power'])
         ylabel('miV')

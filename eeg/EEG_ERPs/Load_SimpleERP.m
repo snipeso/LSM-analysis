@@ -24,6 +24,10 @@ if ~exist(Paths.Figures, 'dir')
     mkdir(Paths.Figures)
 end
 
+% get baseline points
+
+BLPoints = round((BaselineWindow-Start)*newfs);
+
 %%%%%%%%%%%%%%%%
 % Load tones
 

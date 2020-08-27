@@ -12,7 +12,7 @@ Task = 'LAT';
 Stimulus = 'Stim';
 % Options: 'Tones' (from LAT), 'Alarm', 'Stim', 'Resp', 'RespISI'
 
-Condition = 'SD';
+Condition = 'Beam';
 % Options: 'Beam', 'BL', 'SD'
 
 Refresh = true;
@@ -44,7 +44,7 @@ tPower = linspace(Start, Stop, ERPWindow*HilbertFS);
 for Indx_Ch = 1:numel(PlotChannels)
     % plot ERP, with each participant in light color
     figure('units','normalized','outerposition',[0 0 .5 .5])
-    PlotERP(t, allData, TriggerTime,  PlotChannels(Indx_Ch), 'Participants', Format.Colors.Participants)
+    PlotERP(t, allData, TriggerTime,  PlotChannels(Indx_Ch), BLPoints, 'Participants', Format.Colors.Participants)
     xlim(Xlims)
     title([Labels{Indx_Ch}, ' ', replace(TitleTag, '_', ' '), ' ERP'])
     set(gca, 'FontSize', 14, 'FontName', Format.FontName)
@@ -59,7 +59,7 @@ for Indx_Ch = 1:numel(PlotChannels)
         %         PlotERP(tPower, allPower.(BandNames{Indx_B}), TriggerTime, ...
         %             PlotChannels(Indx_Ch), 'Participants', Format.Colors.Participants)
         PlotERP(tPower, allPower.(BandNames{Indx_B}), TriggerTime, ...
-            PlotChannels(Indx_Ch), 'Sessions',Format.Colors.([Task,Condition]))
+            PlotChannels(Indx_Ch), [], 'Sessions',Format.Colors.([Task,Condition]))
         xlim(Xlims)
         title([Labels{Indx_Ch}, ' ', BandNames{Indx_B}, ' ', replace(TitleTag, '_', ' '),])
         set(gca, 'FontSize', 14, 'FontName', Format.FontName)
@@ -69,7 +69,7 @@ for Indx_Ch = 1:numel(PlotChannels)
     
     % plot mean ERPs by session
     figure('units','normalized','outerposition',[0 0 .5 .5])
-    PlotERP(t, allData, TriggerTime,  PlotChannels(Indx_Ch), 'Sessions', Format.Colors.([Task,Condition]))
+    PlotERP(t, allData, TriggerTime,  PlotChannels(Indx_Ch), BLPoints, 'Sessions', Format.Colors.([Task,Condition]))
     xlim(Xlims)
     title([Labels{Indx_Ch}, ' ', replace(TitleTag, '_', ' '), ' ERP by Session'])
     ylabel('miV')
@@ -98,7 +98,7 @@ for Indx_Ch = 1:numel(PlotChannels)
         
         figure('units','normalized','outerposition',[0 0 .5 .5])
         Colors = flipud(gray(numel(Edges)));
-        PlotERP(t, allData, TriggerTime,  PlotChannels(Indx_Ch), 'Custom', Colors(2:end, :), Quantiles)
+        PlotERP(t, allData, TriggerTime,  PlotChannels(Indx_Ch), BLPoints, 'Custom', Colors(2:end, :), Quantiles)
         xlim(Xlims)
         title([ Labels{Indx_Ch}, ' ', replace(TitleTag, '_', ' '), ' based on ongoing ', BandNames{Indx_B}, ' power'])
         ylabel('miV')

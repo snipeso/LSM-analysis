@@ -7,8 +7,9 @@ clc
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Task = 'LAT';
+Task = 'PVT';
 Refresh = false;
+
 Data_Type = 'ERP';
 % Filename = ['P09_LAT_Session1Beam_ICA_Components.set'];
 Filename = [];
