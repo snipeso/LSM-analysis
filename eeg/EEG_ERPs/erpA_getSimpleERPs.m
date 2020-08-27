@@ -9,7 +9,7 @@ close all
 
 Refresh = true;
 
-Task = 'LAT';
+Task = 'PVT';
 Stimulus = 'Resp';
 % Options: 'Tones' (from LAT), 'Alarm', 'Stim', 'Resp'
 
@@ -34,7 +34,7 @@ end
 
 
 %%% get files and paths
-Source = fullfile(Paths.Preprocessed, 'Interpolated', 'ERP', Task);
+Source = fullfile(Paths.Preprocessed, 'Interpolated', 'ERP', 'SET', Task);
 Source_Cuts = fullfile(Paths.Preprocessed, 'Cleaning', 'Cuts', Task);
 Destination = fullfile(Paths.ERPs, 'SimpleERP', Stimulus, Task);
 
