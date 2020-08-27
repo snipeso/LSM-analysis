@@ -7,8 +7,6 @@ SkipBadParticipants = true;
 PlotChannels = 'ERP'; % eventually find a more accurate set of channels?
 Labels = {'FZ', 'CZ', 'Oz'};
 
-
-
 TriggerTime = 0;
 
 Refresh = false;
