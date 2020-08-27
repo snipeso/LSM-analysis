@@ -6,10 +6,8 @@ close all
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Task = 'LAT';
-% Options: 'LAT', 'PVT'
 
-Stimulus = 'Stim';
+Stimulus = 'Resp';
 % Options: 'Tones' (from LAT), 'Alarm', 'Stim', 'Resp', 'RespISI'
 
 Condition = 'Beam';
@@ -17,8 +15,6 @@ Condition = 'Beam';
 
 Refresh = true;
 
-Xlims = [-1.5, 1.5];
-PlotChannels = 'ERP';
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -64,7 +60,7 @@ for Indx_Ch = 1:numel(PlotChannels)
         title([Labels{Indx_Ch}, ' ', BandNames{Indx_B}, ' ', replace(TitleTag, '_', ' '),])
         set(gca, 'FontSize', 14, 'FontName', Format.FontName)
     end
-    saveas(gcf,fullfile(Paths.Figures, [TitleTag, Labels{Indx_Ch}, '_SessionERPs.svg']))
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag, Labels{Indx_Ch}, '_SessionsPower.svg']))
     
     
     % plot mean ERPs by session
@@ -75,7 +71,7 @@ for Indx_Ch = 1:numel(PlotChannels)
     ylabel('miV')
     set(gca, 'FontSize', 14, 'FontName', Format.FontName)
     legend(SessionLabels)
-    saveas(gcf,fullfile(Paths.Figures, [TitleTag, Labels{Indx_Ch}, '_Power_Sessions.svg']))
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag, Labels{Indx_Ch}, '_SessionsERP.svg']))
     
     
     % plot erps by ongoing frequency power quartiles

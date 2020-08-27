@@ -13,11 +13,11 @@ TriggerTime = 0;
 
 Refresh = false;
 
-Xlims = [-1.5, 1.5];
+Xlims = [-1.5, 2];
 
 TotRTQuantiles = 5;
 
 Normalize = true; % if normalize power data, best true
 
 PowerWindow = [-0.5, .1]; % window from which to average power to split erp
-BaselineWindow = [-0.5, -.2];
+BaselineWindow = [-1, -.2];

@@ -1,7 +1,7 @@
 
-
-ERP_Parameters
 plotERP_Parameters
+ERP_Parameters
+
 
 % get trigger and possibly anything else
 switch Condition

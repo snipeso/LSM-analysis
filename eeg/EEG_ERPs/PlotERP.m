@@ -39,6 +39,14 @@ switch Dimention
                     ERP = nanmean(tempData(Channels, :));
                     ERP = ERP';
                 else
+                    if ~isempty(BLPoints)
+                        BL = tempData(:, BLPoints(1):BLPoints(2), :);
+                        %                         if nnz(isnan(BL(1, :))) > numel(BL(1, :))/3 % skip if there's not enough baseline
+                        %                             continue
+                        %                         end
+                        tempData = tempData - nanmean(BL, 2);
+                    end
+                    
                     ERP = squeeze(nanmean(tempData(Channels, :, :), 1)); % average across channels
                 end
                 
@@ -79,6 +87,14 @@ switch Dimention
                     ERP = nanmean(tempData(Channels, :));
                     ERP = ERP';
                 else
+                    if ~isempty(BLPoints)
+                        BL = tempData(:, BLPoints(1):BLPoints(2), :);
+                        %                         if nnz(isnan(BL(1, :))) > numel(BL(1, :))/3 % skip if there's not enough baseline
+                        %                             continue
+                        %                         end
+                        tempData = tempData - nanmean(BL, 2);
+                    end
+                    
                     ERP = squeeze(nanmean(tempData(Channels, :, :), 1)); % average across channels
                 end
                 
@@ -129,6 +145,14 @@ switch Dimention
                         ERP = nanmean(tempData(Channels, :), 1);
                         ERP = ERP';
                     else
+                        if ~isempty(BLPoints)
+                            BL = tempData(:, BLPoints(1):BLPoints(2), :);
+                            %                         if nnz(isnan(BL(1, :))) > numel(BL(1, :))/3 % skip if there's not enough baseline
+                            %                             continue
+                            %                         end
+                            tempData = tempData - nanmean(BL, 2);
+                        end
+                        
                         ERP = squeeze(nanmean(tempData(Channels, :, Trials), 1)); % average across channels
                         if nnz(Trials) == 1 %TODO, merge with first attempt at fixing this
                             ERP = ERP';
