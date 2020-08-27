@@ -64,7 +64,7 @@ for Indx_Ch = 1:numel(PlotChannels)
         title([Labels{Indx_Ch}, ' ', BandNames{Indx_B}, ' ', replace(TitleTag, '_', ' '),])
         set(gca, 'FontSize', 14, 'FontName', Format.FontName)
     end
-    saveas(gcf,fullfile(Paths.Figures, [TitleTag, Labels{Indx_Ch}, '_Power_Sessions.svg']))
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag, Labels{Indx_Ch}, '_SessionERPs.svg']))
     
     
     % plot mean ERPs by session
