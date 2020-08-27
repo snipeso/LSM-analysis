@@ -67,7 +67,7 @@ Format.Colors.LATSD3 = Format.Colors.LAT([4, 5, 6], :);
 
 
 Format.Colors.LATAllBeam = Format.Colors.LAT;
-Format.Colors.LATAllBL = Format.Colors.LAT;
+Format.Colors.LATBL = Format.Colors.LAT;
 
 Format.Colors.LATComp = makePale(Format.Colors.LATBeam);
 

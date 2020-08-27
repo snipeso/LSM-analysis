@@ -10,10 +10,10 @@ close all
 Stimulus = 'Resp';
 % Options: 'Tones' (from LAT), 'Alarm', 'Stim', 'Resp', 'RespISI'
 
-Condition = 'Beam';
+Condition = 'BL';
 % Options: 'Beam', 'BL', 'SD'
 
-Refresh = true;
+Refresh = false;
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

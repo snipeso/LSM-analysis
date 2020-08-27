@@ -51,7 +51,7 @@ Files(~contains(Files, '.set')) = [];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% extract ERPs
 
-parfor Indx_F = 1:numel(Files)
+for Indx_F = 1:numel(Files)
     
     File = Files{Indx_F};
     Filename = [extractBefore(File, '_Clean.set'), '_', Stimulus, '.mat'];
