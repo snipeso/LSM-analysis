@@ -10,7 +10,7 @@ clear
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Tasks = {'LAT',}; % specify folder for analysis
+Tasks = {'PVT',}; % specify folder for analysis
 DataType = 'ERP';
 Refresh = false;
 SpotCheck = false;

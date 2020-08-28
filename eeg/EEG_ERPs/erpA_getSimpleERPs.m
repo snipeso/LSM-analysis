@@ -9,7 +9,7 @@ close all
 
 Refresh = true;
 
-Task = 'LAT';
+Task = 'PVT';
 Stimulus = 'Resp';
 % Options: 'Tones' (from LAT), 'Alarm', 'Stim', 'Resp'
 
@@ -51,7 +51,7 @@ Files(~contains(Files, '.set')) = [];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% extract ERPs
 
-for Indx_F = 1:numel(Files)
+parfor Indx_F = 1:numel(Files)
     
     File = Files{Indx_F};
     Filename = [extractBefore(File, '_Clean.set'), '_', Stimulus, '.mat'];
@@ -139,9 +139,9 @@ for Indx_F = 1:numel(Files)
         
          % get and restructure power epochs
         for Indx_B = 1:numel(BandNames)
-            Power(Indx_T).(BandNames{Indx_B}) =  ...
+            Power(Indx_E).(BandNames{Indx_B}) =  ...
                 squeeze(HilbertPower(:, StartPointH:StopPointH, Indx_B));
-            Phase(Indx_T).(BandNames{Indx_B}) =  ...
+            Phase(Indx_E).(BandNames{Indx_B}) =  ...
                 squeeze(HilbertPhase(:, StartPointH:StopPointH, Indx_B));
         end
        
@@ -161,6 +161,5 @@ end
 
 function parsave(fname, Data, Power, Phase, Chanlocs)
 % this is how to save inside a parfor loop
-Power = single(Power);
 save(fname, 'Data', 'Power', 'Phase', 'Chanlocs', '-v7.3')
 end

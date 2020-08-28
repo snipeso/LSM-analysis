@@ -71,6 +71,7 @@ Format.Colors.LATBL = Format.Colors.LAT;
 
 Format.Colors.LATComp = makePale(Format.Colors.LATBeam);
 
+Format.Colors.LATAll = [Format.Colors.LATBeam; Format.Colors.LATComp];
 Format.Colors.LATSDvBL = Format.Colors.LAT([1, 5], :);   
 
 Format.Colors.PVT = [
