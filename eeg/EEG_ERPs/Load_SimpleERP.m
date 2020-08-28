@@ -69,16 +69,26 @@ if ~exist(Struct_Path_Data, 'file') || Refresh
                 continue
             end
             
-            allData(Indx_P).(Sessions{Indx_S}) = m.Data;
-            allPhase(Indx_P).(Sessions{Indx_S})= m.Phase;
+            Data  =   m.Data;
+            Power = m.Power;
+            Phase = m.Phase;
+            TotTrials = numel(Data);
             
-            for Indx_B = 1:numel(BandNames)
-                if ndims(m.Power) < 4 % edge case of only 1 stimulus in recording
-                    Power = m.Power(:, :, Indx_B);
-                else
-                    Power = squeeze(m.Power(:, :, Indx_B, :));
+            for Indx_T = 1:TotTrials
+                
+                % get ERPs
+                allData(Indx_P).(Sessions{Indx_S})(:, :, Indx_T) = Data(Indx_T).EEG;
+                
+              
+                % get power and phase
+                for Indx_B = 1:numel(BandNames)
+                    allPower.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S})(:, :, Indx_T) = ...
+                        Power(Indx_T).(BandNames{Indx_B});
+                    
+                    PhasePoint = HilbertFS*(TriggerTime-Start);
+                    allPhase.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S})(:, :, Indx_T) = ...
+                        Phase(Indx_T).(BandNames{Indx_B})(:, PhasePoint);
                 end
-                allPower.(BandNames{Indx_B})(Indx_P).(Sessions{Indx_S}) = Power;
             end
         end
     end

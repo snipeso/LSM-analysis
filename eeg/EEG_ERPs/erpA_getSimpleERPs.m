@@ -7,10 +7,10 @@ close all
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Refresh = false;
+Refresh = true;
 
-Task = 'LAT';
-Stimulus = 'Stim';
+Task = 'PVT';
+Stimulus = 'Resp';
 % Options: 'Tones' (from LAT), 'Alarm', 'Stim', 'Resp'
 
 
@@ -104,6 +104,7 @@ parfor Indx_F = 1:numel(Files)
     
     TotEpochs = numel(Starts);
     Points = round(fs*Stop - fs*Start);
+    PointsH =  round(HilbertFS*Stop - HilbertFS*Start);
     TotWindowPower = round(HilbertFS*Stop - HilbertFS*Start);
     
     %%% cut and save data
@@ -135,8 +136,10 @@ parfor Indx_F = 1:numel(Files)
         Data(Indx_E).EEG = Epoch;
         
         % convert points to the hilbert timeline
-        StartPointH = round(StartPoint/fs*HilbertFS);
-        StopPointH = round(StopPoint/fs*HilbertFS);
+        
+         StartPointH = round(Starts(Indx_E)*HilbertFS);
+        StopPointH = StartPointH+PointsH-1;
+
         
          % get and restructure power epochs
         for Indx_B = 1:numel(BandNames)

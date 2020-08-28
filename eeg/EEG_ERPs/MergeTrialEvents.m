@@ -31,9 +31,16 @@ for Indx_T = 1:size(Trials, 1) % loop through trials
     
     % get response latency, if a response was given
     if Trials.rt{Indx_T} < .1 % consider response as an error if the value is less than .1 (too fast, or error)
-        Trials.Error(Indx_T)= {'Too fast RT'};
+       
+          if Trials.rt{Indx_T} < 0
+               Trials.Error(Indx_T) = {'negative RT'};
+          else
+               Trials.Error(Indx_T)= {'Too fast RT'};
+          end
+        
         Trials.rt(Indx_T) = {[nan]};
         Trials.RespLatency(Indx_T) = nan;
+      
         
     elseif ~isnan(Trials.rt{Indx_T}) && ~isempty(Trials.rt{Indx_T}) % if a reaction time is recorded, look for the trigger
         
@@ -47,7 +54,7 @@ for Indx_T = 1:size(Trials, 1) % loop through trials
         if abs(Discrepancy) > .1
             warning(['timing discrepancy of ', num2str(Discrepancy) 's for ', EEG.filename])
             
-        elseif abs(RealRT) > 1 % serious problem if reaction time is off by more than some milliseconds
+        elseif abs(Discrepancy) > 1 % serious problem if reaction time is off by more than some milliseconds
             error(['RT problem of ', num2str(RealRT) ' for ', EEG.filename])
         end
         

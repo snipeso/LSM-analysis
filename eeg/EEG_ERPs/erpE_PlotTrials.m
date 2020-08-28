@@ -3,10 +3,10 @@ close all
 clc
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Task = 'LAT';
+Task = 'PVT';
 
 
-Condition = 'BL';
+Condition = 'Beam';
 % Options: 'Beam', 'BL', 'SD'
 
 

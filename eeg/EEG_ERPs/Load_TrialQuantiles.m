@@ -7,7 +7,7 @@ RTQuantile = struct();
 PreStim = struct();
 
 
-BLW = newfs*(BaselineWindow - Start);
+BLW = round(newfs*(BaselineWindow - Start));
 
 for Indx_P = 1:numel(Participants)
     
@@ -15,6 +15,9 @@ for Indx_P = 1:numel(Participants)
     
     for Indx_S =1:numel(Sessions)
         T = allTrials(Indx_P).(Sessions{Indx_S});
+        if isempty(T)
+            continue
+        end
         T = T(:, 1:size(AllAnswers, 2));
        pTrials = cat(1, pTrials, T);
     end
@@ -23,6 +26,10 @@ for Indx_P = 1:numel(Participants)
         
         %%% get tally categories
         Trials = allTrials(Indx_P).(Sessions{Indx_S});
+        
+        if isempty(Trials)
+            continue
+        end
         
         RTs = cell2mat(Trials.rt);
         tempTally = nan(size(RTs));
@@ -47,10 +54,13 @@ for Indx_P = 1:numel(Participants)
         tempPreStim = nan(numel(Chanlocs), numel(Freqs), TotTrials);
         
         for Indx_T = 1:TotTrials
-            Data = Stim(Indx_P).(Sessions{Indx_S})(:, BLW(1):BLW(2), :);
+            Data = squeeze(Stim(Indx_P).(Sessions{Indx_S})(:, BLW(1):BLW(2), Indx_T));
+            if any(isnan(Data(:)))
+                continue
+            end
             [pxx,~] = pwelch(Data', size(Data, 2), [], Freqs, newfs);
             
-            tempPreStim(:, :, Indx_T) = pxx';
+            tempPreStim(:, :, Indx_T) = log(pxx)';
         end
         PreStim(Indx_P).(Sessions{Indx_S}) = tempPreStim;
     end
