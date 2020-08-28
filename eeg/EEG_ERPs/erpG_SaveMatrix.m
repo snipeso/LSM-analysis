@@ -117,7 +117,7 @@ for Indx_T = 1:numel(Tasks)
     hold on
     patch('XData', X, 'YData', Y, 'FaceColor', [.5 .5 .5], 'FaceAlpha', .2, 'EdgeColor', 'none')
     
-    title([Labels{Indx_Ch}, ' ', replace(TitleTag, '_', ' '), ' ERP by Session'])
+    title([Task, ' ERP by Session'])
     ylabel('miV')
     set(gca, 'FontSize', 14, 'FontName', Format.FontName)
     legend(fieldnames(allData))
