@@ -7,13 +7,13 @@ close all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-Stimulus = 'Resp';
+Stimulus = 'Stim';
 % Options: 'Tones' (from LAT), 'Alarm', 'Stim', 'Resp', 'RespISI'
 
 Condition = 'Beam';
 % Options: 'Beam', 'BL', 'SD'
 
-Task = 'PVT';
+Task = 'LAT';
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

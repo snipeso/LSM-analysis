@@ -39,5 +39,5 @@ for Indx_P = 1:numel(Participants)
         Means(Indx_P).(BandNames{Indx_B}) = MEAN;
         SDs(Indx_P).(BandNames{Indx_B}) =  sqrt((SUMSQ(:, Indx_B) - N(:, Indx_B).*(MEAN.^2))./(N(:, Indx_B) - 1));
     end
-    
+    disp(['Finished participant ', Participants{Indx_P} ])
 end
