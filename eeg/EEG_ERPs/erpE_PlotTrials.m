@@ -2,14 +2,24 @@ clear
 close all
 clc
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Task = 'LAT';
 
+
+Condition = 'BL';
+% Options: 'Beam', 'BL', 'SD'
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Load_Trials
 
+%%
 
 Limits = [0:.2:1];
 PowerWindow = [-1.5, .1];
 ERPWindow = Stop - Start;
+
+BLPoints = round((BaselineWindow-Start)*newfs);
 t = linspace(Start, Stop, ERPWindow*newfs);
 tPower = linspace(Start, Stop, ERPWindow*HilbertFS);
 
@@ -60,13 +70,13 @@ for Indx_C = 1:numel(PlotSpots)
     saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_',Labels{Indx_C}, '_ERP_Resp_,' Labels{Indx_C}, '_Tally.svg']))
     
     % plot ERP split by RT quintile
-    PlotERPandPower(Stim, StimPower, [Start, Stop], PlotSpots(Indx_C), BLPoints, RTQuintile, ...
+    PlotERPandPower(Stim, StimPower, [Start, Stop], PlotSpots(Indx_C), BLPoints, RTQuantile, ...
         string(Limits), [Labels{Indx_C},' Stim'], 'Quintiles', Format)
-    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_',Labels{Indx_C}, '_ERP_Stim_RTQuintile.svg']))
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_',Labels{Indx_C}, '_ERP_Stim_RTQuantile.svg']))
     
-    PlotERPandPower(Resp, RespPower, [Start, Stop], PlotSpots(Indx_C), BLPoints, RTQuintile, ...
+    PlotERPandPower(Resp, RespPower, [Start, Stop], PlotSpots(Indx_C), BLPoints, RTQuantile, ...
         string(Limits(1:end-1)),  [Labels{Indx_C},' Resp'],  'Quintiles', Format)
-    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_',Labels{Indx_C}, '_ERP_Resp_RTQuintile.svg']))
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_',Labels{Indx_C}, '_ERP_Resp_RTQuantile.svg']))
     
     
     %     % plot erp split by ongoing phases
@@ -77,7 +87,7 @@ for Indx_C = 1:numel(PlotSpots)
     
     % plot RTs by phase
     PlotPhaseRTs(StimPhases, PlotSpots(Indx_C), [PlotPhasePoints; PlotPhaseTimes],...
-        allEvents, Tally, Labels{Indx_C}, Format)
+        allTrials, Tally, Labels{Indx_C}, Format)
     saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_',Labels{Indx_C}, '_PhaseRTs.svg']))
     
     
