@@ -95,6 +95,8 @@ Format.Colors.PVT(4, :);
 ];
 Format.Colors.PVTComp = makePale(Format.Colors.PVTBeam);
 
+Format.Colors.PVTAll = [Format.Colors.PVTBeam; Format.Colors.PVTComp];
+
 Format.Colors.Generic.Red = [235 95 106]/255;
 Format.Colors.Generic.Pale1 = [243 238 193]/255; % peach
 Format.Colors.Generic.Pale2 = [244 178 119]/255; % orange

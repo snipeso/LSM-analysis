@@ -7,26 +7,34 @@ close all
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Tasks = {'LAT', 'PVT'};
+Tasks = { 'LAT', 'PVT'};
 Conditions = {'Beam', 'Comp'};
 ConditionTitles = {'Soporific', 'Classic'};
 
 
-Stimulus = 'Resp';
-TimeWindow = [0 .25];
-Channel = 2;
-Component = 'rP300';
-Refresh = false;
+% Stimulus = 'Resp';
+% TimeWindow = [0 .25];
+% Channel = 2;
+% Component = 'rP300';
+% Refresh = false;
 
+
+
+Stimulus = 'Stim';
+TimeWindow = [.25, .75];
+Channel = 2;
+Component = 'sP300';
+Refresh = false;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 for Indx_T = 1:numel(Tasks)
     
-    Task = Tasks{Indx_T};
-    
+  
+        Task = Tasks{Indx_T};
     ERP_Parameters
     plotERP_Parameters
+  
     
     TimePoints = round((TimeWindow-Start)*newfs);
     BLPoints = round((BaselineWindow-Start)*newfs);
@@ -60,10 +68,11 @@ for Indx_T = 1:numel(Tasks)
         Files = deblank(cellstr(ls(Path)));
         Files(~contains(Files, '.mat')) = [];
         
-        
+        figure('units','normalized','outerposition',[0 0 1 1])
+        Indx = 1;
         Matrix = nan(numel(Participants), numel(Sessions));
         for Indx_P = 1:numel(Participants)
-            figure
+            subplot(3, ceil(numel(Participants)/3), Indx)
             hold on
             for Indx_S = 1:numel(Sessions)
                 File = Files(contains(Files, Sessions{Indx_S}) & ...
@@ -87,6 +96,7 @@ for Indx_T = 1:numel(Tasks)
                 [~, PlotChannel] = intersect({Chanlocs.labels}, string(EEG_Channels.ERP(Channel)));
                 
                 Data = m.Data;
+                Data = cat(3, Data.EEG);
                 allData(Indx_P).(Sessions{Indx_S}) = Data;
                 
                 % get integral at requested range (excluding parts with
@@ -95,12 +105,13 @@ for Indx_T = 1:numel(Tasks)
                 MainSign = nanmean(MeanPeak)/ abs(nanmean(MeanPeak));
                 MeanPeak( MeanPeak*MainSign<0) = []; % remove parts of the opposite sign of the majority of the data in window
                 
-                plot(MeanPeak, 'Color', Format.Colors.(Task)(Indx_S, :))
+                plot(MeanPeak, 'Color', Format.Colors.([Task, 'Beam'])(Indx_S, :))
                 
                 Matrix(Indx_P, Indx_S) = sum(MeanPeak)*Period;
             end
             legend(SessionLabels)
-            title([Participants{Indx_P}, ' ', Task])
+            title([Participants{Indx_P}, ' ', Task, ' ', Condition])
+            Indx = Indx + 1;
         end
         
         Filename = [Task, '_' Component, 'mean_', Title, '.mat'];
@@ -108,7 +119,7 @@ for Indx_T = 1:numel(Tasks)
         
     end
     
-    figure
+      figure('units','normalized','outerposition',[0 0 .5 .5])
     PlotERP(t, allData, TriggerTime,  PlotChannel, BLPoints, 'Sessions', Format.Colors.([Task, 'All']))
     Ax = gca;
     YLims = Ax.YLim;
@@ -137,18 +148,18 @@ end
 for Indx_C = 1:numel(Conditions)
     Title = ConditionTitles{Indx_C};
     
-    for Indx_F = 1:numel(saveFreqFields) % loop through frequency bands
-        AllTasks = [];
-        for Indx_T = 1:numel(Tasks)
-            Task = Tasks{Indx_T};
-            Source = fullfile(Paths.Analysis, 'statistics', 'Data', Task); % for statistics
-            Filename =  [Task, '_' Component, 'mean_', Title, '.mat'];
-            load(fullfile(Source, Filename), 'Matrix')
-            AllTasks = cat(3, AllTasks, Matrix);
-        end
-        
-        Matrix = nanmean(AllTasks, 3);
-        Filename = ['AllTasks_', Component, 'mean_', Title, '.mat'];
-        save(fullfile(Destination, Filename), 'Matrix')
+    
+    AllTasks = [];
+    for Indx_T = 1:numel(Tasks)
+        Task = Tasks{Indx_T};
+        Source = fullfile(Paths.Analysis, 'statistics', 'Data', Task); % for statistics
+        Filename =  [Task, '_' Component, 'mean_', Title, '.mat'];
+        load(fullfile(Source, Filename), 'Matrix')
+        AllTasks = cat(3, AllTasks, Matrix);
     end
+    
+    Matrix = nanmean(AllTasks, 3);
+    Filename = ['AllTasks_', Component, 'mean_', Title, '.mat'];
+    save(fullfile(Destination, Filename), 'Matrix')
+    
 end

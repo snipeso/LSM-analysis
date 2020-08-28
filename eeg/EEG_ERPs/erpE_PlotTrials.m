@@ -2,6 +2,8 @@ clear
 close all
 clc
 
+Task = 'LAT';
+
 Load_Trials
 
 

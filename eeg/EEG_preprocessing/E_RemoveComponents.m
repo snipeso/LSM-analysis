@@ -7,14 +7,14 @@ clc
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Task = 'PVT';
+Task = 'LAT';
 Refresh = false;
 
 Data_Type = 'ERP';
 % Filename = ['P09_LAT_Session1Beam_ICA_Components.set'];
 Filename = [];
-CheckOutput = false;
-Automate = true;
+CheckOutput = true;
+Automate = false;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 EEG_Parameters
