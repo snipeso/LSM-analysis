@@ -4,14 +4,17 @@
 
 Tally = struct(); % categories for each trial
 RTQuantile = struct();
+PreStim = struct();
 
+
+BLW = newfs*(BaselineWindow - Start);
 
 for Indx_P = 1:numel(Participants)
     for Indx_S = 1:numel(Sessions)
         
+        %%% get tally categories
         Trials = allTrials(Indx_P).(Sessions{Indx_S});
         
-        % get tally categories
         RTs = cell2mat(Trials.rt);
         tempTally = nan(size(RTs));
         tempTally(isnan(RTs)) = 3; % misses
@@ -19,7 +22,7 @@ for Indx_P = 1:numel(Participants)
         tempTally(RTs>.5) = 2; % late
         Tally(Indx_P).(Sessions{Indx_S}) = tempTally;
         
-        % get rt quantiles
+        %%% get rt quantiles
         allRTs = [AllAnswers.rt{strcmp(AllAnswers.Participant, Participants{Indx_P})}]; % TODO: maybe with fewer parentheses
         Edges = quantile(AllRTs, linspace(0, 1, TotRTQuantiles+1)); % edges splitting all reaction times evenly
         
@@ -30,6 +33,17 @@ for Indx_P = 1:numel(Participants)
         Quantiles(isnan(Quantiles)) = numel(Edges); % make extra category for misses
         RTQuantile(Indx_P).(Sessions{Indx_S}) = Quantiles;
         
-
+        
+        %%% get power in prestimulus period
+        TotTrials = size(Stim(Indx_P).(Sessions{Indx_S}), 3);
+        tempPreStim = nan(numel(Chanlocs), numel(Freqs), TotTrials);
+        
+        for Indx_T = 1:TotTrials
+            Data = Stim(Indx_P).(Sessions{Indx_S})(:, BLW(1):BLW(2), :);
+            [pxx,~] = pwelch(Data', size(Data, 2), [], Freqs, newfs);
+            
+            tempPreStim(:, :, Indx_T) = pxx';
+        end
+        PreStim(Indx_P).(Sessions{Indx_S}) = tempPreStim;
     end
 end

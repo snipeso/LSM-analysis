@@ -209,7 +209,7 @@ EEG_Channels.M2 = [ 100, 49, 99, 101, 95];
 EEG_Channels.ERP = [11, 55, 75]; % Fz, Cz, Oz
 EEG_Channels.EOG1 = [  1, 125,   8, 125,   2, 125,  1, 120,  1,  32];
 EEG_Channels.EOG2 = [128,  32, 128,  25, 128,  26, 43,  32, 38, 121];
-
+EEG_Channels.Standard = [24, 11, 124, 36, 55, 104, 52, 62, 92, 70, 75, 83];
 
 EEG_Channels.Hotspot = [3:7, 9:13, 15, 16, 18:20, 24, 106, 111, 112, 117, 118, 123, 124];
 EEG_Channels.Backspot = [EEG_Channels.O1, EEG_Channels.O2];
