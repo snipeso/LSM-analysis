@@ -15,7 +15,7 @@ ERP_Parameters
 
 
 % get files and paths
-Source = fullfile(Paths.Preprocessed, 'Interpolated', 'SET', Task);
+Source = fullfile(Paths.Preprocessed, 'Interpolated', 'ERP', Task);
 Source_Cuts = fullfile(Paths.Preprocessed, 'Cleaning', 'Cuts', Task);
 Destination = fullfile(Paths.ERPs, 'Trials', Task);
 
@@ -47,13 +47,15 @@ parfor Indx_F = 1:numel(Files)
     Chanlocs = EEG.chanlocs;
     Channels = numel(Chanlocs);
     
-    % add trigger latencies to table of trials
-    Trials = MergeTrialEvents(EEG, AllAnswers, EEG_Triggers);
+    
     
     % get hilbert power bands and phase
     EEGhilbert = pop_resample(EEG, HilbertFS);
     EEG = pop_resample(EEG, newfs);
     fs = EEG.srate;
+    
+    % add trigger latencies to table of trials
+    Trials = MergeTrialEvents(EEG, AllAnswers, EEG_Triggers);
     
     [HilbertPower, HilbertPhase] = HilbertBands(EEGhilbert, Bands, 'matrix');
     

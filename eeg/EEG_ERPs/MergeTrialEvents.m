@@ -31,10 +31,10 @@ for Indx_T = 1:size(Trials, 1) % loop through trials
     
     % get response latency, if a response was given
     if Trials.rt{Indx_T} < .1 % consider response as an error if the value is less than .1 (too fast, or error)
-        Trials.Error(Indx_T)= 1;
+        Trials.Error(Indx_T)= {'Too fast RT'};
         Trials.rt(Indx_T) = {[nan]};
         Trials.RespLatency(Indx_T) = nan;
-    
+        
     elseif ~isnan(Trials.rt{Indx_T}) && ~isempty(Trials.rt{Indx_T}) % if a reaction time is recorded, look for the trigger
         
         % get latency of first response after current stimulus
@@ -56,7 +56,17 @@ for Indx_T = 1:size(Trials, 1) % loop through trials
         
         % check that there's really no response
         if RespIndx(find(RespIndx>Indx, 1, 'first')) == Indx+1
-            error(['Response not saved in data for ',  EEG.filename])
+            Trials.RespLatency(Indx_T) = TriggerTimes(RespIndx(find(RespIndx>Indx, 1, 'first')));
+            Fix = ( Trials.RespLatency(Indx_T) -  Trials.StimLatency(Indx_T))/EEG.srate; % calculate RT
+            
+            Trials.Error(Indx_T) = {'missing RT'};
+            Trials.missed(Indx_T) = {[nan]};
+            Trials.rt(Indx_T) = {[Fix]};
+            
+            if Fix > 0.5
+                Trials.late(Indx_T) = {[1]};
+            end
+            warning(['Response not saved in data for ',  EEG.filename, '; fixing RT (', num2str(Fix), ') based on triggers'])
         end
     end
 end

@@ -1,6 +1,6 @@
 
 
-Task = 'LAT';
+
 % Options: 'LAT', 'PVT'
 
 SkipBadParticipants = true;
@@ -9,7 +9,7 @@ Labels = {'FZ', 'CZ', 'Oz'};
 
 TriggerTime = 0;
 
-Refresh = false;
+Refresh = true;
 
 Xlims = [-1.5, 2];
 

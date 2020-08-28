@@ -10,6 +10,15 @@ PreStim = struct();
 BLW = newfs*(BaselineWindow - Start);
 
 for Indx_P = 1:numel(Participants)
+    
+    pTrials = table();
+    
+    for Indx_S =1:numel(Sessions)
+        T = allTrials(Indx_P).(Sessions{Indx_S});
+        T = T(:, 1:size(AllAnswers, 2));
+       pTrials = cat(1, pTrials, T);
+    end
+    
     for Indx_S = 1:numel(Sessions)
         
         %%% get tally categories
@@ -22,9 +31,8 @@ for Indx_P = 1:numel(Participants)
         tempTally(RTs>.5) = 2; % late
         Tally(Indx_P).(Sessions{Indx_S}) = tempTally;
         
-        %%% get rt quantiles
-        allRTs = [AllAnswers.rt{strcmp(AllAnswers.Participant, Participants{Indx_P})}]; % TODO: maybe with fewer parentheses
-        Edges = quantile(AllRTs, linspace(0, 1, TotRTQuantiles+1)); % edges splitting all reaction times evenly
+        % get rt quantiles
+        Edges = quantile(cell2mat(pTrials.rt), linspace(0, 1, TotRTQuantiles+1)); % edges splitting all reaction times evenly
         
         % Alternative:
         % Edges = quantile(RTs, linspace(0, 1, TotRTQuantiles+1));

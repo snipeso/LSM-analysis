@@ -173,6 +173,7 @@ switch Dimention
             end
             
             PlotSingle(squeeze(AllERPs(:, :, Indx_C))', t, Colors(Indx_C, :), true);
+            A =1;
         end
         
         Stats(AllERPs, t)
@@ -201,6 +202,10 @@ function ERP = PlotSingle(ERPs, t, Color, Plot)
 
 if isempty(ERPs)
     ERP = nan(size(t));
+    return
+elseif size(ERPs, 2) < 10
+    ERP = nan(size(t));
+    warning('not enough trials')
     return
 end
 

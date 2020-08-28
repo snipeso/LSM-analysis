@@ -7,10 +7,10 @@ close all
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Refresh = true;
+Refresh = false;
 
-Task = 'PVT';
-Stimulus = 'Resp';
+Task = 'LAT';
+Stimulus = 'Stim';
 % Options: 'Tones' (from LAT), 'Alarm', 'Stim', 'Resp'
 
 
@@ -77,6 +77,7 @@ parfor Indx_F = 1:numel(Files)
     else
         disp(['*************Starting ',Filename ', with ' ...
             num2str(nnz((strcmp(AllTriggers, Trigger)))), ' trials *************'])
+
     end
     
     % get hilbert power bands and phase
@@ -151,7 +152,7 @@ parfor Indx_F = 1:numel(Files)
     Power(Remove) = [];
     Phase(Remove) = [];
     
-    disp(['**** Keeping ', num2str(size(Data, 3)), ' trials for ', File, ...
+    disp(['**** Keeping ', num2str(numel(Data)), ' trials for ', File, ...
         ', discarding ', num2str(numel(Remove)), ' due to noise ****'])
     
     parsave(fullfile(Destination, Filename), Data, Power, Phase, Chanlocs)

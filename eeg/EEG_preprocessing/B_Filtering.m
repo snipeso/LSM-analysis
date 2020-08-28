@@ -8,7 +8,7 @@ EEG_Parameters
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Tasks = {'PVT'}; % which tasks to convert (for now)
+Tasks = {'LAT'}; % which tasks to convert (for now)
 % Tasks = {'MWT', 'Fixation', 'Standing', 'LAT', 'PVT'}; % which tasks to convert (for now)
 % options: 'LAT', 'PVT', 'SpFT', 'Game', 'Music', 'MWT', 'Sleep',
 % 'Fixation', 'Oddball', 'Standing', 'Questionnaire'
