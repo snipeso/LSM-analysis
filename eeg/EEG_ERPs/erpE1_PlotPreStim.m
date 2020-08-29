@@ -18,3 +18,6 @@ for Indx_C =  1:numel(PlotAllSpotIndx)
     title([AllLabels{Indx_C}, ' Pre-stimulus ', Task])
 end
 % plot topography for bands
+
+saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_', '_PreStimSpectrum.svg']))
+   
