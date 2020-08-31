@@ -6,14 +6,18 @@ run(fullfile(extractBefore(mfilename('fullpath'), 'tasks'), 'General_Parameters'
 Paths.Figures = fullfile(Paths.Figures, 'Tasks', 'LAT');
 
 %%% locations
-Paths.Datasets = 'D:\LSM\data';
-Paths.Preprocessed = 'C:\Users\colas\Desktop\LSMData';
+% Paths.Datasets = 'D:\LSM\data';
+% Paths.Preprocessed = 'C:\Users\colas\Desktop\LSMData';
 
 % Paths.Datasets = 'L:\Somnus-Data\Data01\LSM\Data\Raw';
 % Paths.Preprocessed = 'L:\Somnus-Data\Data01\LSM\Data\Preprocessed';
 % 
 % Paths.Datasets ='D:\LSM\data';
 % Paths.Preprocessed = 'C:\Users\schlaf\Desktop\LSMData';
+
+Paths.Datasets = 'D:\Data\Raw';
+Paths.Preprocessed = 'D:\Data\Preprocessed\';
+
 
 Paths.Responses = fullfile(Paths.Preprocessed, 'Tasks', 'AllAnswers');
 
