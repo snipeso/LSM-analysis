@@ -1,8 +1,9 @@
 function [Twoway, Pairwise] = anova2way(ClassicMatrix, SopoMatrix, Participants, Type, Task, TitleTag, YLabel, Figure_Path, Format)
 % if format is skipped or empty, won't include plots
 
-Twoway = struct();
-Pairwise = struct();
+% Twoway.Type = Type;
+% Pairwise.Type = Type;
+
 
 MES = 'eta2';
 
@@ -113,12 +114,37 @@ Table = [ClassicTable; SopoTable];
 [stats, Table] = mes2way(Table.Data, [Table.Session, Table.Condition], MES, ...
     'fName',{'Session', 'Condition'}, 'isDep',[1 1], 'nBoot', 1000);
 
+pValues = [cell2mat(Table( 3:5,6)), [1:3]'];
+
+C1 = stats.([MES, 'Ci'])(:, 1);
+C2 = stats.([MES, 'Ci'])(:, 2);
+
+
+% get stats for table
+SessionEta = stats.(MES)(1);
+SessionP = pValues(1, 1);
+SessionC1 = C1(1);
+SessionC2 = C2(1);
+
+ConditionEta = stats.(MES)(2);
+ConditionP = pValues(2, 1);
+ConditionC1 = C1(2);
+ConditionC2 = C2(2);
+
+InteractEta = stats.(MES)(3);
+InteractP = pValues(3, 1);
+InteractC1 = C1(3);
+InteractC2 = C2(3);
+
 if exist('Format', 'var') && ~isempty(Format)
     %%% plot effect sizes
     subplot(1, 3, 2)
     hold on
     bar(1:3, stats.(MES), 'FaceColor', [.5 .5 .5], 'LineStyle', 'none')
-    errorbar(1:3, stats.(MES), stats.(MES)-stats.([MES, 'Ci'])(:, 1),  stats.([MES, 'Ci'])(:, 2)-stats.(MES), ...
+    
+    C1 = stats.(MES)-C1;
+    C2 =  C2-stats.(MES);
+    errorbar(1:3, stats.(MES), C1, C2, ...
         'Color', 'k', 'LineStyle', 'none', 'LineWidth', 2 )
     
     xticks(1:3)
@@ -130,7 +156,6 @@ if exist('Format', 'var') && ~isempty(Format)
     title(['ANOVA effect size: ', MES])
     
     % plot significance
-    pValues = [cell2mat(Table( 3:5,6)), [1:3]'];
     pValues(pValues(:, 1)>.1, :) = [];
     for Indx = 1:size(pValues, 1)
         sigstar({[pValues(Indx, 2)-.1, pValues(Indx, 2)+.1]},[pValues(Indx, 1)], {[0 0 0]})
@@ -215,10 +240,38 @@ for Indx = 2:4 % loop through session, condition and interaction
         ', p = ', num2str(pValue), '', ', eta2 = ', num2str(stats.(MES)(Indx-1))]))
 end
 
-Conditions = {'classic', 'soporific'};
+Conditions = {'Classic', 'Soporific'};
 for Indx = 1:2
     disp(['Hedges g for BL vs S1 in condition ', Conditions{Indx},' is: ', ...
         num2str(Hedges(1, Indx)), ' CI: ', num2str(HedgesCI(1, Indx, 1)), ' ', num2str(HedgesCI(1, Indx, 2)) ])
     disp(['Hedges g for S1 vs S2 in condition ', Conditions{Indx},' is: ', ...
         num2str(Hedges(2, Indx)), ' CI: ', num2str(HedgesCI(2, Indx, 1)), ' ', num2str(HedgesCI(2, Indx, 2))  ])
 end
+
+
+%%%%%%%%%%%%%%%%%%%%%%
+%%% create table row
+
+CNames = {'SessionEta', 'SessionP', 'SessionC1', 'SessionC2', ...
+    'ConditionEta', 'ConditionP', 'ConditionC1', 'ConditionC2', ...
+    'InteractEta', 'InteractP', 'InteractC1', 'InteractC2'};
+
+Twoway = table(SessionEta, SessionP, SessionC1, SessionC2, ...
+    ConditionEta, ConditionP, ConditionC1, ConditionC2, ...
+    InteractEta, InteractP, InteractC1, InteractC2, ...
+    'VariableNames', strcat(CNames,  '_', Task), ...
+    'RowNames', {Type});
+
+
+CNames = [strcat(Conditions, '_BLvSD1G'),  strcat(Conditions, '_SD1vSD2G'), ...
+    strcat(Conditions, '_BLvSD1C1'),  strcat(Conditions, '_SD1vSD2C1'), ...
+    strcat(Conditions, '_BLvSD1C2'),  strcat(Conditions, '_SD1vSD2C2'), ...
+    ];
+
+Hedges = Hedges(:, 1:2)';
+HC1 = squeeze(HedgesCI(:, 1:2, 1))';
+HC2 = squeeze(HedgesCI(:, 1:2, 2))';
+Pairwise = array2table([Hedges(:)', HC1(:)' HC2(:)'], 'VariableNames', strcat(CNames, '_', Task),  'RowNames', {Type});
+
+
+

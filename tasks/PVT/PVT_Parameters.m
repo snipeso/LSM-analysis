@@ -9,8 +9,12 @@ Paths.Preprocessed = 'C:\Users\schlaf\Desktop\LSMData';
 
 Paths.Figures = fullfile(Paths.Figures, 'PVT');
 %%% locations
-Paths.Datasets = 'D:\LSM\data';
-Paths.Preprocessed = 'C:\Users\colas\Desktop\LSMData';
+% Paths.Datasets = 'D:\LSM\data';
+% Paths.Preprocessed = 'C:\Users\colas\Desktop\LSMData';
+
+Paths.Datasets = 'D:\Data\Raw';
+Paths.Preprocessed = 'D:\Data\Preprocessed\';
+
 
 % Paths.Datasets = 'L:\Somnus-Data\Data01\LSM\Data\Raw';
 % Paths.Preprocessed = 'L:\Somnus-Data\Data01\LSM\Data\Preprocessed';

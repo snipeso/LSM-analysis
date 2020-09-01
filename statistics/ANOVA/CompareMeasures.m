@@ -10,7 +10,7 @@ Stats_Parameters
 
 Task1 = 'LAT';
 
-DataPath = fullfile(Paths.Analysis, 'statistics', 'Data', Task1); % for statistics
+DataPath = fullfile(Paths.Preprocessed, 'Statistics', Analysis, Task1); % for statistics
 
 Task = Task1;
 
@@ -140,7 +140,8 @@ for Indx_T = 1:numel(Types)
         pause(2)
         
         
-        anova2way(ClassicMatrix, SopoMatrix, ParticipantsLeft, Type, Task, TitleTag, YLabelNew, Figure_Path, Format);
+        anova2way(ClassicMatrix, SopoMatrix, ParticipantsLeft, Type, Task,...
+            TitleTag, YLabelNew, Figure_Path, Format);
 
     end
 end
