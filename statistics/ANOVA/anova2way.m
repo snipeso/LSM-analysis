@@ -60,7 +60,7 @@ C_S1vS2= SxC.pValue(strcmp(SxC.Condition, 'C')&strcmp(SxC.Session_1, 'S1')& strc
 
 if exist('Format', 'var') && ~isempty(Format)
     
-    Measure = Format.Colors.Measures.(Type);
+    Measure = Format.MeasuresDict(Type);
     ColorPair = [  Format.Colors.(Measure).(Task).Classic;
       Format.Colors.(Measure).(Task).Soporific];
     
