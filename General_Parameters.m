@@ -46,23 +46,23 @@ Format.Colormap.PaleRainbow = paleunirainbow;
 
 
 % LAT v PVT
-% TV v Music v LAT v    
+% TV v Music v LAT v
 % S1 vs S2 vs S3
 % Comp v Beam
 
 Format.Colors.LAT = [
-   10, 3, 155; % BL
-   117, 0, 168; % pre
-   187, 53, 134; % S1
-   229, 108, 91; % S2-1
-   250, 157, 58; %S2-2
-   252, 200, 37; % S2-3
-   59, 104, 0; % post
-]./255; % RGB to sRGB
+    10, 3, 155; % BL
+    117, 0, 168; % pre
+    187, 53, 134; % S1
+    229, 108, 91; % S2-1
+    250, 157, 58; %S2-2
+    252, 200, 37; % S2-3
+    59, 104, 0; % post
+    ]./255; % RGB to sRGB
 
-Format.Colors.LATBeam = Format.Colors.LAT([1, 3, 5], :);   
+Format.Colors.LATBeam = Format.Colors.LAT([1, 3, 5], :);
 
-Format.Colors.LATSD3 = Format.Colors.LAT([4, 5, 6], :);   
+Format.Colors.LATSD3 = Format.Colors.LAT([4, 5, 6], :);
 
 
 
@@ -72,15 +72,15 @@ Format.Colors.LATBL = Format.Colors.LAT;
 Format.Colors.LATComp = makePale(Format.Colors.LATBeam);
 
 Format.Colors.LATAll = [Format.Colors.LATBeam; Format.Colors.LATComp];
-Format.Colors.LATSDvBL = Format.Colors.LAT([1, 5], :);   
+Format.Colors.LATSDvBL = Format.Colors.LAT([1, 5], :);
 
 Format.Colors.PVT = [
-70, 9, 92;
-50, 98, 141;
-30, 155, 137;
-137, 213, 70;
-119, 49, 49
-]/255;
+    70, 9, 92;
+    50, 98, 141;
+    30, 155, 137;
+    137, 213, 70;
+    119, 49, 49
+    ]/255;
 
 
 Format.Colors.PVTAllBeam = Format.Colors.PVT;
@@ -89,10 +89,10 @@ Format.Colors.Standing = Format.Colors.PVT;
 Format.Colors.Fixation = Format.Colors.PVT;
 
 Format.Colors.PVTBeam = [
-Format.Colors.PVT(1, :);   
-Format.Colors.PVT(3, :); 
-Format.Colors.PVT(4, :);   
-];
+    Format.Colors.PVT(1, :);
+    Format.Colors.PVT(3, :);
+    Format.Colors.PVT(4, :);
+    ];
 Format.Colors.PVTComp = makePale(Format.Colors.PVTBeam);
 
 Format.Colors.PVTAll = [Format.Colors.PVTBeam; Format.Colors.PVTComp];
@@ -117,6 +117,38 @@ Format.Colors.Participants = Format.Colormap.PaleRainbow(floor(linspace(1, ...
     size(Format.Colormap.Rainbow, 1), numel(Participants))), :);
 
 
+Format.Colors.EEG.PVT.Soporific = [255 205 43]/255;
+Format.Colors.EEG.PVT.Classic = [255 240 191]/255;
+Format.Colors.Behavior.PVT.Soporific = [13 171 197]/255;
+Format.Colors.Behavior.PVT.Classic = [182 230 237]/255;
+Format.Colors.Questionnaires.PVT.Soporific = [197 59 118]/255;
+Format.Colors.Questionnaires.PVT.Classic = [237 196 214]/255;
+
+Format.Colors.EEG.LAT.Soporific = [220 186 78]/255;
+Format.Colors.EEG.LAT.Classic = [244 234 202]/255;
+Format.Colors.Behavior.LAT.Soporific = [88 151 162]/255;
+Format.Colors.Behavior.LAT.Classic = [205 224 227]/255;
+Format.Colors.Questionnaires.LAT.Soporific = [166 100 128]/255;
+Format.Colors.Questionnaires.LAT.Classic = [228 208 217]/255;
+
+
+Format.MeasuresDict = containers.Map;
+Measures.EEG = {'Delta', 'Theta', 'Alpha', 'Beta',...
+    'backDelta', 'backTheta', 'backAlpha', 'backBeta',...
+    'miTot', 'miDuration', 'miStart',   'rP300mean', 'sP300mean'};
+Measures.Behavior = { 'Hits', 'Misses', 'Late', 'Lapses-FA', ...
+    'FA', 'Lapses', 'meanRTs', 'medianRTs',...
+    'stdRTs', 'Q1Q4RTs', 'Top10', 'Bottom10' };
+Measures.Questionnaires = {  'KSS', 'Motivation', 'Effortful', 'Focused',  'Difficult'};
+MeasureTypes = fieldnames(Measures);
+for M = MeasureTypes'
+    for T =Measures.(M{1})
+    Format.MeasuresDict(T{1}) = M{1};
+    end
+end
+
+
+clear Measures MeasureTypes M T
 Format.Legend.Tally = {'Hits', 'Late', 'Misses'};
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

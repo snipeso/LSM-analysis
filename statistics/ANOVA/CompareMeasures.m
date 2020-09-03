@@ -10,6 +10,8 @@ Stats_Parameters
 
 Task1 = 'LAT';
 
+Analysis = 'classicVsoporific';
+
 DataPath = fullfile(Paths.Preprocessed, 'Statistics', Analysis, Task1); % for statistics
 
 Task = Task1;
@@ -22,13 +24,19 @@ Task = Task1;
 %     false, true % zscore
 %     ];
 
-Types = {'Hits', 'Misses', 'Late'};
-YLabels = {'%', '%', '%'};
+% Types = {'Hits', 'Misses', 'Late'};
+% YLabels = {'%', '%', '%'};
+% Normalizations = [
+%     false, false; % loggify
+%     false, true % zscore
+%     ];
+
+Types = {'KSS', 'Lapses', 'miDuration', 'Theta', 'meanRTs'};
+YLabels = {'VAS Score', '#', '%', 'Power Density', 'Seconds'};
 Normalizations = [
     false, false; % loggify
     false, true % zscore
     ];
-
 
 % Types = {'Delta', 'Theta', 'Alpha', 'Beta'};
 

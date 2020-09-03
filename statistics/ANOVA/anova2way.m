@@ -60,8 +60,9 @@ C_S1vS2= SxC.pValue(strcmp(SxC.Condition, 'C')&strcmp(SxC.Session_1, 'S1')& strc
 
 if exist('Format', 'var') && ~isempty(Format)
     
-    ColorPair = [   makePale(Format.Colors.Tasks.(Task));
-        Format.Colors.Tasks.(Task)];
+    Measure = Format.Colors.Measures.(Type);
+    ColorPair = [  Format.Colors.(Measure).(Task).Classic;
+      Format.Colors.(Measure).(Task).Soporific];
     
     % pairwise significance tests
     comparisons = {
@@ -75,6 +76,45 @@ if exist('Format', 'var') && ~isempty(Format)
         [1.1, 3.1], S_BLvS2, ColorPair(2, :);
         [1.9, 2.9], C_S1vS2, ColorPair(1, :);
         [2.1, 3.1], S_S1vS2, ColorPair(2, :)};
+    
+    
+    
+    comparisons([comparisons{:, 2}]>=0.1, :) = [];
+    
+    %%% plot just means
+      figure('units','normalized','outerposition',[0 0 .2 .33])
+    PlotBars([ClassicMeans; SopMeans]', [ClassicSEM; SopSEM]', {'BL', 'S1', 'S2'}, ColorPair)
+  
+    title([Task, ' ', Type])
+    ylabel(YLabel)
+    box off
+   
+    set(gca, 'FontName', Format.FontName, 'FontSize',12)
+    
+    
+    if size(comparisons, 1) > 0
+        sigstar(comparisons(:, 1),[comparisons{:, 2}]', comparisons(:, 3))
+    end
+     axis square
+      saveas(gcf,fullfile(Figure_Path, [TitleTag, '_means_anova2way.svg']))
+    
+    %%% start of united plot
+        % pairwise significance tests
+         ColorPair = [   makePale(Format.Colors.Tasks.(Task));
+        Format.Colors.Tasks.(Task)];
+    comparisons = {
+        [.9, 1.1], BL_SvC, [0 0 0];
+        [1.9, 2.1], S1_SvC, [0 0 0];
+        [2.9, 3.1], S2_SvC, [0 0 0];
+        
+        [.9, 1.9], C_BLvS1, ColorPair(1, :);
+        [1.1, 2.1], S_BLvS1,ColorPair(2, :);
+        [.9, 2.9], C_BLvS2, ColorPair(1, :);
+        [1.1, 3.1], S_BLvS2, ColorPair(2, :);
+        [1.9, 2.9], C_S1vS2, ColorPair(1, :);
+        [2.1, 3.1], S_S1vS2, ColorPair(2, :)};
+    
+    
     
     comparisons([comparisons{:, 2}]>=0.1, :) = [];
     
@@ -197,12 +237,35 @@ if exist('Format', 'var') && ~isempty(Format)
     
     
     % plot all values in same plot
-    figure('units','normalized','outerposition',[0 0 .55 .4])
+    figure('units','normalized','outerposition',[0 0 .4 .44])
     PlotScales(ClassicMatrix, SopoMatrix, {'BL', 'S1', 'S2'}, {'Class', 'Sopo'}, [], Format)
     ylabel(YLabel)
-    title([Task, ' ', Type, ' All Means'])
+    title([Task, ' ', Type])
     set(gca, 'FontSize',12)
     box off
+    
+    SigColor = [.5 .5 .5];
+    comparisons = {
+        [.8, 1.2], BL_SvC, SigColor;
+        [1.8, 2.2], S1_SvC, SigColor;
+        [2.8, 3.2], S2_SvC, SigColor;
+        
+        %         [.8 1.8], C_BLvS1, SigColor;
+        %         [1.2, 2.2], S_BLvS1, SigColor;
+        %         [.8, 2.8], C_BLvS2, SigColor;
+        %         [1.2, 3.2], S_BLvS2, SigColor;
+        %         [1.8, 2.8], C_S1vS2, SigColor;
+        %         [2.2, 3.2], S_S1vS2, SigColor
+        };
+    
+    
+    if size(comparisons, 1) > 0
+        sigstar(comparisons(:, 1),[comparisons{:, 2}]', comparisons(:, 3))
+    end
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%
+    %%%%%%%%%%%%%
+    
     saveas(gcf,fullfile(Figure_Path, [TitleTag, '_scales.svg']))
     
 end
@@ -265,13 +328,15 @@ Twoway = table(SessionEta, SessionP, SessionC1, SessionC2, ...
 
 CNames = [strcat(Conditions, '_BLvSD1G'),  strcat(Conditions, '_SD1vSD2G'), ...
     strcat(Conditions, '_BLvSD1C1'),  strcat(Conditions, '_SD1vSD2C1'), ...
-    strcat(Conditions, '_BLvSD1C2'),  strcat(Conditions, '_SD1vSD2C2'), ...
+    strcat(Conditions, '_BLvSD1C2'),  strcat(Conditions,'_SD1vSD2C2'), ...
     ];
 
 Hedges = Hedges(:, 1:2)';
 HC1 = squeeze(HedgesCI(:, 1:2, 1))';
 HC2 = squeeze(HedgesCI(:, 1:2, 2))';
-Pairwise = array2table([Hedges(:)', HC1(:)' HC2(:)'], 'VariableNames', strcat(CNames, '_', Task),  'RowNames', {Type});
+% Pairwise = array2table([Hedges(:)', Hedges(:)'-HC1(:)', HC2(:)'- Hedges(:)'], 'VariableNames', strcat(Task, '_',  CNames),  'RowNames', {Type});
+Pairwise = array2table([Hedges(:)', HC1(:)', HC2(:)'], 'VariableNames', strcat(Task, '_',  CNames),  'RowNames', {Type});
 
-
+SortedNames = sort(Pairwise.Properties.VariableNames);
+Pairwise = Pairwise(:, SortedNames);
 
