@@ -9,6 +9,7 @@ PVT_Parameters
 
 Task = 'PVT';
 
+Analysis = 'classicVsoporific';
 Conditions = {'Beam', 'Comp'};
 Titles = {'Soporific', 'Classic'};
 
@@ -33,7 +34,7 @@ for Indx_C = 1:numel(Conditions)
     
     Sessions = allSessions.([Task,Condition]);
     SessionLabels = allSessionLabels.([Task, Condition]);
-    Destination= fullfile(Paths.Analysis, 'statistics', 'Data',Task);
+     Destination= fullfile(Paths.Preprocessed, 'Statistics', Analysis, Task);
     
     if ~exist(Destination, 'dir')
         mkdir(Destination)
@@ -74,8 +75,8 @@ for Indx_C = 1:numel(Conditions)
     
     % save matrix
     FalseAlarms = squeeze(Responses(:, :, 4));
-        Lapses = squeeze(Responses(:, :, 3)) + squeeze(Responses(:, :, 2));
-        
+    Lapses = squeeze(Responses(:, :, 3)) + squeeze(Responses(:, :, 2));
+    
     Filename = [Task, '_', 'FA' '_', Title, '.mat'];
     Matrix = FalseAlarms;
     save(fullfile(Destination, Filename), 'Matrix')
@@ -84,8 +85,8 @@ for Indx_C = 1:numel(Conditions)
     Matrix = FalseAlarms+Lapses;
     save(fullfile(Destination, Filename), 'Matrix')
     
-        Filename = [Task, '_', 'Lapses' '_', Title, '.mat'];
-
+    Filename = [Task, '_', 'Lapses' '_', Title, '.mat'];
+    
     Matrix = Lapses;
     save(fullfile(Destination, Filename), 'Matrix')
     
@@ -130,14 +131,13 @@ for Indx_C = 1:numel(Conditions)
     title([replace(TitleTag, '_', ' '), ' # False Alarms'])
     set(gca, 'FontSize', 12)
     axis square
-    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_Lapses_and_FA.svg']))
-    
-        subplot(2, 2, 4)
+
+    subplot(2, 2, 4)
     PlotConfettiSpaghetti(Lapses, SessionLabels, [0 20], [], [], Format)
     title([replace(TitleTag, '_', ' '), ' # Lapses'])
     set(gca, 'FontSize', 12)
     axis square
-    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_Lapses.svg']))
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_HitsandLapses.svg']))
     
     
     % save matrix
@@ -149,6 +149,9 @@ for Indx_C = 1:numel(Conditions)
     Matrix = Misses;
     save(fullfile(Destination, Filename), 'Matrix')
     
-    
+         Late = 100*(squeeze(Responses(:, :, 2))./Tot);
+    Filename = [Task, '_', 'Late' '_', Title, '.mat'];
+    Matrix = Late;
+    save(fullfile(Destination, Filename), 'Matrix')
     
 end
