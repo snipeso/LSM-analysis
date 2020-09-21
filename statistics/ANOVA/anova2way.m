@@ -8,7 +8,7 @@ Stats_Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-Task1 = 'LAT';
+Task1 = 'PVT';
 
 DataPath = fullfile(Paths.Analysis, 'statistics', 'Data', Task1); % for statistics
 
@@ -21,9 +21,16 @@ Task = Task1;
 %     false, false; % loggify
 %     false, true % zscore
 %     ];
+% 
+% Types = {'Hits', 'Misses', 'Late'};
+% YLabels = {'%', '%', '%'};
+% Normalizations = [
+%     false, false; % loggify
+%     false, true % zscore
+%     ];
 
-Types = {'Hits', 'Misses', 'Late'};
-YLabels = {'%', '%', '%'};
+Types = {'rP300mean', 'sP300mean'};
+YLabels = {'AU', 'AU', 'AU'};
 Normalizations = [
     false, false; % loggify
     false, true % zscore

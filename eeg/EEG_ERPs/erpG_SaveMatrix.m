@@ -132,7 +132,7 @@ for Indx_T = 1:numel(Tasks)
     ylabel('miV')
     set(gca, 'FontSize', 14, 'FontName', Format.FontName)
     legend(fieldnames(allData))
-    saveas(gcf,fullfile(Paths.Figures, [Task, '_AllSessions.svg']))
+    saveas(gcf,fullfile(Paths.Figures, [Task,  '_', Component, '_AllSessions.svg']))
     
 end
 

@@ -3,13 +3,13 @@
 
 % Options: 'LAT', 'PVT'
 
-SkipBadParticipants = true;
+SkipBadParticipants = false;
 PlotChannels = 'ERP'; % eventually find a more accurate set of channels?
 Labels = {'FZ', 'CZ', 'Oz'};
 
 TriggerTime = 0;
 
-Refresh = true;
+Refresh = false;
 
 Xlims = [-1.5, 2];
 
