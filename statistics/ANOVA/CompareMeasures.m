@@ -24,12 +24,12 @@ Task = Task1;
 %     false, true % zscore
 %     ];
 
-Types = { 'rP300mean', 'sP300mean'};
-YLabels = {'AU', 'AU'};
-Normalizations = [
-    false, false; % loggify
-    false, true % zscore
-    ];
+% Types = { 'rP300mean', 'sP300mean'};
+% YLabels = {'AU', 'AU'};
+% Normalizations = [
+%     false, false; % loggify
+%     false, true % zscore
+%     ];
 
 
 % Types = {'Hits', 'Misses', 'Late'};
@@ -39,12 +39,12 @@ Normalizations = [
 %     false, true % zscore
 %     ];
 % 
-% Types = {'KSS', 'Lapses', 'miDuration', 'Theta', 'meanRTs'};
-% YLabels = {'VAS Score', '#', '%', 'Power Density', 'Seconds'};
-% Normalizations = [
-%     false, false; % loggify
-%     false, true % zscore
-%     ];
+Types = {'KSS', 'Lapses', 'miDuration', 'Theta', 'meanRTs'};
+YLabels = {'VAS Score', '#', '%', 'Power Density', 'Seconds'};
+Normalizations = [
+    false, false; % loggify
+    false, true % zscore
+    ];
 
 % Types = {'Delta', 'Theta', 'Alpha', 'Beta'};
 

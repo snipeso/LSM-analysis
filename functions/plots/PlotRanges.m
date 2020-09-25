@@ -25,9 +25,16 @@ for Indx_R = 1:Rows
            C = [0 0 0];
        end
        
-      plot([LowEnds(Indx_R, Indx_C), HighEnds(Indx_R, Indx_C)], [Ys(Indx_C), Ys(Indx_C)], 'Color', C, 'LineWidth', 2)
-      scatter(Middles(Indx_R, Indx_C), Ys(Indx_C), 30, C, 'filled' )
-       
+       CI = [LowEnds(Indx_R, Indx_C), HighEnds(Indx_R, Indx_C)];
+      
+      
+      if CI(1) < 0 && CI(2)>0
+          scatter(Middles(Indx_R, Indx_C), Ys(Indx_C), 30, C, 'LineWidth', 1)
+          plot(CI, [Ys(Indx_C), Ys(Indx_C)], 'Color', C, 'LineWidth', 1)
+      else   
+      scatter(Middles(Indx_R, Indx_C), Ys(Indx_C), 30, C, 'filled', 'LineWidth', 2 )
+      plot(CI, [Ys(Indx_C), Ys(Indx_C)], 'Color', C, 'LineWidth', 2)
+      end
    end
     
 end

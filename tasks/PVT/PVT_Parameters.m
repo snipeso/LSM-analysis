@@ -12,8 +12,8 @@ Paths.Figures = fullfile(Paths.Figures, 'PVT');
 % Paths.Datasets = 'D:\LSM\data';
 % Paths.Preprocessed = 'C:\Users\colas\Desktop\LSMData';
 
-Paths.Datasets = 'D:\Data\Raw';
-Paths.Preprocessed = 'D:\Data\Preprocessed\';
+% Paths.Datasets = 'D:\Data\Raw';
+% Paths.Preprocessed = 'D:\Data\Preprocessed\';
 
 
 % Paths.Datasets = 'L:\Somnus-Data\Data01\LSM\Data\Raw';

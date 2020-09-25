@@ -36,7 +36,6 @@ NewEEG = EEG;
 NewEEG.data = Data.data;
 
 % remove components
-
 NewEEG = pop_subcomp(NewEEG, badcomps);
 
 % low-pass filter
