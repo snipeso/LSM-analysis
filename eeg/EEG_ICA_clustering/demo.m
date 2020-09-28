@@ -34,9 +34,9 @@ Normalize = '';
 % Labels = {'Blinks', 'Eyes', 'Muscle', 'Beta', 'Theta', 'Theta2', 'Alpha', 'Alpha2'};
 
 load('testICAfreq1.mat');
-All = compeegspecdB(3:30, 1:40);
+All = compeegspecdB(3:30, 3:40);
 load('testICAfreq2.mat');
-All = [All; compeegspecdB(3:30, 1:40)];
+All = [All; compeegspecdB(3:30, 3:40)];
 Labels = [strcat(string(3:30), 'a'), strcat(string(3:30), 'b')];
 
 switch Normalize
@@ -75,7 +75,7 @@ colorbar
 Z = linkage(D,  Link);
 % subplot(1, Subp, 3)
 figure
-dendrogram(Z, 0,'Labels', Labels)
+A = dendrogram(Z, 0,'Labels', Labels)
 
 c = cophenet(Z,D);
 

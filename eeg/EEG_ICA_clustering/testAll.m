@@ -21,11 +21,19 @@ Distances = {'euclidean',  'correlation', 'hamming', 'jaccard', 'spearman'}; % '
 Links = {'average', 'complete', 'single'};
 Normalizations = {'', 'zscore', 'gray'};
 
-Labels = {'Blinks', 'Eyes', 'Muscle', 'Beta', 'Theta', 'Theta2', 'Alpha', 'Alpha2'};
+% Labels = {'Blinks', 'Eyes', 'Muscle', 'Beta', 'Theta', 'Theta2', 'Alpha', 'Alpha2'};
+
+load('testICAfreq1.mat');
+AllComp = compeegspecdB(3:30, 1:40);
+load('testICAfreq2.mat');
+AllComp = [AllComp; compeegspecdB(3:30, 1:40)];
+Labels = [strcat(string(3:30), 'a'), strcat(string(3:30), 'b')];
 
 for Indx_N = 1:numel(Normalizations)
     
-    All = [Blinks; Eyes; Muscle; Beta; Theta; ThetaBoost; Alpha; Alpha2];
+%     All = [Blinks; Eyes; Muscle; Beta; Theta; ThetaBoost; Alpha; Alpha2];
+All = AllComp;
+
     Normalize = Normalizations{Indx_N};
     switch Normalize
         case 'zscore'
