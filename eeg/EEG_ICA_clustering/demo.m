@@ -30,14 +30,14 @@ Normalize = '';
 % Normalize = '';
 
 % 
-% All = [Blinks; Eyes; Muscle; Beta; Theta; ThetaBoost; Alpha; Alpha2];
-% Labels = {'Blinks', 'Eyes', 'Muscle', 'Beta', 'Theta', 'Theta2', 'Alpha', 'Alpha2'};
+All = [Blinks; Eyes; Muscle; Beta; Theta; ThetaBoost; Alpha; Alpha2];
+Labels = {'Blinks', 'Eyes', 'Muscle', 'Beta', 'Theta', 'Theta2', 'Alpha', 'Alpha2'};
 
-load('testICAfreq1.mat');
-All = compeegspecdB(3:30, 3:40);
-load('testICAfreq2.mat');
-All = [All; compeegspecdB(3:30, 3:40)];
-Labels = [strcat(string(3:30), 'a'), strcat(string(3:30), 'b')];
+% load('testICAfreq1.mat');
+% All = compeegspecdB(3:30, 3:40);
+% load('testICAfreq2.mat');
+% All = [All; compeegspecdB(3:30, 3:40)];
+% Labels = [strcat(string(3:30), 'a'), strcat(string(3:30), 'b')];
 
 switch Normalize
     case 'zscore'
