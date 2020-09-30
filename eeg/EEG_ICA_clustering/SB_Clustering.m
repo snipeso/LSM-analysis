@@ -58,7 +58,8 @@ for Indx_P = 9
             % load EEG data
             Session = Sessions{Indx_S};
             
-            Filename = [strjoin({Participants{Indx_P}, Task, Session, Folder, 'Components'}, '_'), '.set'];
+            TitleTag = strjoin({Participants{Indx_P}, Task, Session, Folder, 'Components'}, '_');
+            Filename = [TitleTag, '.set'];
             if ~exist(fullfile(Path, Filename), 'file')
                 continue
             end
@@ -154,6 +155,7 @@ for Indx_P = 9
     for Indx_N = 1:numel(Nodes)
         if Indx >= 32
             colormap(Format.Colormap.Divergent)
+            saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_', num2str(Indx_N), '_.svg']))
             figure('units','normalized','outerposition',[0 0 1 1])
             Indx = 0;
         end
@@ -170,7 +172,12 @@ for Indx_P = 9
           end
     end
      colormap(Format.Colormap.Divergent)
+   saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_', num2str(Indx_N), '_.svg']))
    
+   
+       % plot number of sessions represented
+       PlotWalks(Nodes, Links, 'nSessions', Format)
+   saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_RepresentedSessions_.svg']))
     
 end
 

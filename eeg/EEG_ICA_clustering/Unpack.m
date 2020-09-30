@@ -18,9 +18,14 @@ for Indx_L = 1:size(Links, 1)
     Indx = Indx+1;
     
     Nodes(Indx).Distance = Links(Indx_L, 3);
-    C = Links(Indx_L, 1:2);
-    Nodes(Indx).Children = C;
+    Children = Links(Indx_L, 1:2);
+    Nodes(Indx).Children = Children;
     
     Nodes(Indx).Leaves = ...
-        cat(2, Nodes(C(1)).Leaves, Nodes(C(2)).Leaves);
+        cat(2, Nodes(Children(1)).Leaves, Nodes(Children(2)).Leaves);
+    
+    % assign current node as parent to children
+    for C = Children
+       Nodes(C).Parent = Indx; 
+    end
 end
