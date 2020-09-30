@@ -13,7 +13,7 @@ LinkType = 'complete';
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Freqs = 2.5:.25:40; % frequencies in ICA, ignoring 50hz component
+Freqs = 2.5:.1:40; % frequencies in ICA, ignoring 50hz component
 
 % make place to save agregate info
 Destination = fullfile(Paths.Preprocessed, 'Clustering');
@@ -34,13 +34,17 @@ SDLevels = [10 11 12]; % arbitrarily decided
 % appply seperately for each participant
 for Indx_P = 9
     
-    Path = fullfile(Paths.Preprocessed, Folder, 'SET', Task);
+    Participant = Participants{Indx_P};
+    Path = fullfile(Paths.Preprocessed, Folder, 'Components', Task);
     NodesFilename = [strjoin([Participants(Indx_P), Task, Folder], '_'), '.mat'];
     
     
     %%% get hierarchy of independent components, and relevant information
     %%% across all sessions within a participant
     if ~Refresh || ~exist(fullfile(Destination, NodesFilename), 'file')
+        
+        load('StandardChanlocs128.mat', 'StandardChanlocs')
+        
         AllTopo = [];
         AllFFT = [];
         AllT = [];
@@ -50,16 +54,25 @@ for Indx_P = 9
             % load EEG data
             Session = Sessions{Indx_S};
             
-            Filename = [strjoin({Participants{Indx_P}, Task, Session, Folder}, '_'), '.set'];
+            Filename = [strjoin({Participants{Indx_P}, Task, Session, Folder, 'Components'}, '_'), '.set'];
             if ~exist(fullfile(Path, Filename), 'file')
                 continue
             end
             
             EEG = pop_loadset('filename', Filename, 'filepath', Path);
             
+            
             % get topographies of components
+           Ch = cellfun(@str2num, {EEG.chanlocs.labels}); 
+            
             TopoComponents = EEG.icawinv;
-            TopoComponents(31:end, :) = []; % TEMP
+            TopoComponents(:, 31:end) = []; % TEMP
+            
+            % interpolate missing channels (maybe not good?)
+             TopoComponents = interpTopo(TopoComponents, EEG.chanlocs, StandardChanlocs);
+             TopoComponents = TopoComponents';
+             
+            
             nComps = size(TopoComponents, 1);
             AllTopo = cat(1, AllTopo, TopoComponents);
             
@@ -75,13 +88,14 @@ for Indx_P = 9
             
             % calculate Component Energy
             %             CE = sum(abs(ICAEEG)*(1/EEG.srate)); % double check if this is correct integral
-            CE =  sum(abs(ICAEEG))/(EEG.pnts/EEG.srate); % maybe best to normalize by total time?
+            CE =  sum(abs(ICAEEG), 2)/(EEG.pnts/EEG.srate); % maybe best to normalize by total time?
             
-            T = table('Participant', repmat(Participant, nComps, 1), ...
-                'Session', repmat(Session, nComps, 1), ...
-                'SDLevel', SDLevels{Indx_S}*ones(nComps, 1), ...
-                'CE', CE*ones(nComps, 1), ...
-                'Label', strcat(SessionLabels{Indx_S}, 'IC', string(1:nComps)));
+            T = table( repmat(string(Participant), nComps, 1), ...
+                repmat(string(Session), nComps, 1), ...
+                SDLevels(Indx_S)*ones(nComps, 1), ...
+                CE, ...
+                strcat(SessionLabels{Indx_S}, 'IC', string(1:nComps))', ...
+                'VariableNames', {'Participant','Session',  'SDLevel',  'CE',   'Label', } );
             
             AllT = cat(1, AllT, T);
             
@@ -99,7 +113,7 @@ for Indx_P = 9
         for Indx_N = 1:numel(Nodes)
             
             Leaves = Nodes(Indx_N).Leaves;
-            Nodes(Indx_N).FFT = mean(AllFFT(Leaves, :), 1);
+            Nodes(Indx_N).FFT = mean(AllFFT(Leaves, :), 1); %TO DETERMINE: first log?
             Nodes(Indx_N).Topo = mean(AllTopo(Leaves, :), 1);
             Nodes(Indx_N).CE =  mean(AllT.CE(Leaves));
             Nodes(Indx_N).SD =  mean(AllT.SDLevel(Leaves));
