@@ -135,10 +135,10 @@ for Indx_P = 9
             end
             
             Chanlocs = EEG.chanlocs;
-            save(fullfile(Destination, NodesFilename), 'Nodes', 'Links', 'Chanlocs', 'AllT', '-v7.3')
+           
             
         end
-        
+         save(fullfile(Destination, NodesFilename), 'Nodes', 'Links', 'Chanlocs', 'AllT')
     else
         load(fullfile(Destination, NodesFilename), 'Nodes', 'Links', 'Chanlocs', 'AllT')
         

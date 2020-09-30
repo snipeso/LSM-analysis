@@ -9,7 +9,7 @@ TallyGenerations =  TallyLeaves;
  TallyLeavesxGen = nan(nLeaves);
 
 figure('units','normalized','outerposition',[0 0 1 1])
-subplot(2, 1, 1)
+subplot(2, 2, 1)
 hold on
 for Indx_L = 1:nLeaves
    Node = Indx_L;
@@ -36,7 +36,7 @@ for Indx_L = 1:nLeaves
       
       TallyGenerations(nF, Indx_S) =  TallyGenerations(nF, Indx_S) +1;
       
-      TallyLeavesxGen(Indx_L, Indx_S) = nF/nS;
+      TallyLeavesxGen(Indx_L, Indx_S) = nS;
    end
    
 
@@ -54,7 +54,7 @@ Labels = 1:nLeaves;
 Labels(sum(TallyLeaves)==0) = [];
 TallyLeaves(:, sum(TallyLeaves)==0) = [];
 
-subplot(2, 1, 2)
+subplot(2, 2, 2)
 bar(TallyLeaves', 'stacked')
 
 Colors = Format.Colormap.Linear(round(linspace(1, 256, maxField+1)), :);
@@ -64,7 +64,7 @@ xticklabels(Labels)
 legend(string(1:maxField))
 xlabel('# of subordinates')
 ylabel('# of paths')
-box off
+set(gca, 'FontName', Format.FontName)
 
 
 %%% plot number of sessions for successive generations
@@ -73,20 +73,20 @@ Labels = 1:nLeaves;
 Labels(sum(TallyGenerations)==0) = [];
 TallyGenerations(:, sum(TallyGenerations)==0) = [];
 
-figure('units','normalized','outerposition',[0 0 1 .5])
-subplot(1, 2, 1)
+subplot(2, 2, 3)
 PlotStacks(TallyGenerations', Colors(1:end-1, :))
 xticks(1:numel(Labels))
 xticklabels(Labels)
 legend(string(1:maxField))
 xlabel('# of generations')
 ylabel('# of paths')
-box off
 
+
+set(gca, 'FontName', Format.FontName)
 
 % plot #of leaves per # of generations (used to see how many is a
 % good range of leaves for approximate desired generation level)
-subplot(1, 2, 2)
+subplot(2, 2, 4)
 Labels = 1:nLeaves;
 
 Labels(nansum(TallyLeavesxGen)==0) = [];
@@ -98,3 +98,6 @@ xticks(1:numel(Labels))
 xticklabels(Labels)
 xlabel('# generations')
 ylabel('# of leaves')
+
+
+set(gca, 'FontName', Format.FontName)
