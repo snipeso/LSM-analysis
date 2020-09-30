@@ -1,4 +1,7 @@
 
+clear
+clc
+close all
 
 Clustering_Parameters
 
@@ -10,6 +13,7 @@ Refresh = true;
 
 DistanceType = 'correlation';
 LinkType = 'complete';
+Title = 'ALL';
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -22,13 +26,13 @@ if ~exist(Destination, 'dir')
 end
 
 % get labels
-% Sessions = allSessions.LATAll;
-% SessionLabels = allSessionLabels.LatAll;
-% SDLevels = [1 1 3 6 6 10 10 11 12 1]; % arbitrarily decided
+Sessions = allSessions.LATAll;
+SessionLabels = allSessionLabels.LATAll;
+SDLevels = [1 1 3 6 6 10 10 11 12 1]; % arbitrarily decided
 
-Sessions = allSessions.LATSD3;
-SessionLabels = allSessionLabels.LATSD3;
-SDLevels = [10 11 12]; % arbitrarily decided
+% Sessions = allSessions.LATSD3;
+% SessionLabels = allSessionLabels.LATSD3;
+% SDLevels = [10 11 12]; % arbitrarily decided
 
 
 % appply seperately for each participant
@@ -36,12 +40,12 @@ for Indx_P = 9
     
     Participant = Participants{Indx_P};
     Path = fullfile(Paths.Preprocessed, Folder, 'Components', Task);
-    NodesFilename = [strjoin([Participants(Indx_P), Task, Folder], '_'), '.mat'];
+    NodesFilename = [strjoin([Participants(Indx_P), Task, Folder, Title], '_'), '.mat'];
     
     
     %%% get hierarchy of independent components, and relevant information
     %%% across all sessions within a participant
-    if ~Refresh || ~exist(fullfile(Destination, NodesFilename), 'file')
+    if Refresh || ~exist(fullfile(Destination, NodesFilename), 'file')
         
         load('StandardChanlocs128.mat', 'StandardChanlocs')
         
