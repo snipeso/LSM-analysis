@@ -40,7 +40,7 @@ Format.FontName = 'Tw Cen MT'; % use something else for papers
 
 % Colors
 Format.Colormap.Linear = flip(colorcet('L17'));
-Format.Colormap.Divergent = rdbu;
+Format.Colormap.Divergent = rdbu(20);
 
 Format.Colormap.Rainbow = unirainbow;
 Format.Colormap.PaleRainbow = paleunirainbow;
