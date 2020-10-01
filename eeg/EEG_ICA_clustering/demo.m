@@ -30,36 +30,24 @@ Normalize = '';
 % Normalize = '';
 
 % 
-All = [Blinks; Eyes; Muscle; Beta; Theta; ThetaBoost; Alpha; Alpha2];
-Labels = {'Blinks', 'Eyes', 'Muscle', 'Beta', 'Theta', 'Theta2', 'Alpha', 'Alpha2'};
+% All = [Blinks; Eyes; Muscle; Beta; Theta; ThetaBoost; Alpha; Alpha2];
+% Labels = {'Blinks', 'Eyes', 'Muscle', 'Beta', 'Theta', 'Theta2', 'Alpha', 'Alpha2'};
 
-% load('testICAfreq1.mat');
-% All = compeegspecdB(3:30, 3:40);
-% load('testICAfreq2.mat');
-% All = [All; compeegspecdB(3:30, 3:40)];
-% Labels = [strcat(string(3:30), 'a'), strcat(string(3:30), 'b')];
+load('testICAfreq1.mat');
+All = compeegspecdB(3:30, 3:40);
+load('testICAfreq2.mat');
+All = [All; compeegspecdB(3:30, 3:40)];
+Labels = [strcat(string(3:30), 'a'), strcat(string(3:30), 'b')];
 
-switch Normalize
-    case 'zscore'
-    
-    All = zscore(All')';
-    case 'gray'
-        for Indx = 1:size(All, 1)
-        All(Indx, :) = mat2gray(All(Indx, :));
-        end
-end
 
 figure('units','normalized','outerposition',[0 0 1 .5])
 subplot(1, Subp, 1)
 plot(All')
 legend(Labels)
 
-if strcmp(Distance, 'mahalanobis')
-     C = cov(All,'omitrows');
-     D = pdist(C, Distance);
-else
+
     D = pdist(All, Distance);
-end
+
 
 
 Z = squareform(D);

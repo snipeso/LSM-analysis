@@ -61,6 +61,8 @@ Format.Colors.LAT = [
     59, 104, 0; % post
     ]./255; % RGB to sRGB
 
+
+
 Format.Colors.LATBeam = Format.Colors.LAT([1, 3, 5], :);
 
 Format.Colors.LATSD3 = Format.Colors.LAT([4, 5, 6], :);
@@ -72,7 +74,13 @@ Format.Colors.LATBL = Format.Colors.LAT;
 
 Format.Colors.LATComp = makePale(Format.Colors.LATBeam);
 
-Format.Colors.LATAll = [Format.Colors.LATBeam; Format.Colors.LATComp];
+Format.Colors.LATAll = [Format.Colors.LATComp(1, :); % BLC
+    Format.Colors.LAT(1:2, :); % BLB, Pre
+    Format.Colors.LATComp(2, :); % S1C
+     Format.Colors.LAT(3, :); % S1B
+    Format.Colors.LATComp(3, :); % S2C
+     Format.Colors.LAT(4:7, :); % BLB, Pre 
+    ];
 Format.Colors.LATSDvBL = Format.Colors.LAT([1, 5], :);
 
 Format.Colors.PVT = [

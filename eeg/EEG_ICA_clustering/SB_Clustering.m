@@ -13,7 +13,17 @@ Refresh = true;
 
 DistanceType = 'correlation';
 LinkType = 'complete';
-Title = 'ALL';
+Title = 'SDpWhole';
+
+% % get labels
+% Sessions = allSessions.LATAll;
+% SessionLabels = allSessionLabels.LATAll;
+% SDLevels = [1 1 3 6 6 10 10 11 12 1]; % arbitrarily decided
+
+Sessions = allSessions.LATSD3;
+SessionLabels = allSessionLabels.LATSD3;
+SDLevels = [10 11 12]; % arbitrarily decided
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -24,15 +34,6 @@ Destination = fullfile(Paths.Preprocessed, 'Clustering');
 if ~exist(Destination, 'dir')
     mkdir(Destination)
 end
-
-% get labels
-Sessions = allSessions.LATAll;
-SessionLabels = allSessionLabels.LATAll;
-SDLevels = [1 1 3 6 6 10 10 11 12 1]; % arbitrarily decided
-
-% Sessions = allSessions.LATSD3;
-% SessionLabels = allSessionLabels.LATSD3;
-% SDLevels = [10 11 12]; % arbitrarily decided
 
 
 % appply seperately for each participant
@@ -68,15 +69,15 @@ for Indx_P = 9
             
             
             % get topographies of components
-           Ch = cellfun(@str2num, {EEG.chanlocs.labels}); 
+            Ch = cellfun(@str2num, {EEG.chanlocs.labels});
             
             TopoComponents = EEG.icawinv;
             TopoComponents(:, 31:end) = []; % TEMP
             
             % interpolate missing channels (maybe not good?)
-             TopoComponents = interpTopo(TopoComponents, EEG.chanlocs, StandardChanlocs);
-             TopoComponents = TopoComponents';
-             
+            TopoComponents = interpTopo(TopoComponents, EEG.chanlocs, StandardChanlocs);
+            TopoComponents = TopoComponents';
+            
             
             nComps = size(TopoComponents, 1);
             AllTopo = cat(1, AllTopo, TopoComponents);
@@ -127,18 +128,18 @@ for Indx_P = 9
             Nodes(Indx_N).nSessions = numel(Nodes(Indx_N).Sessions);
             
             % get CE for each level of SD
-            CE = zeros(2, numel(SDLevels));
-            CE(1, :) = SDLevels;
-            for Indx_SD = 1:numel(SDLevels)
-                nCE = AllT(Leaves, :); % node's components' energies
-                CE(2, Indx_SD) = mean(nCE.CE(strcmp(nCE.Session, Sessions{Indx_SD})));
-            end
-            
+            %             CE = zeros(2, numel(SDLevels));
+            %             CE(1, :) = SDLevels;
+            %             for Indx_SD = 1:numel(SDLevels)
+            %                 nCE = AllT(Leaves, :); % node's components' energies
+            %                 CE(2, Indx_SD) = mean(nCE.CE(strcmp(nCE.Session, Sessions{Indx_SD})));
+            %             end
+            %
             Chanlocs = EEG.chanlocs;
-           
+            Nodes(Indx_N).CExSD = CE;
             
         end
-         save(fullfile(Destination, NodesFilename), 'Nodes', 'Links', 'Chanlocs', 'AllT')
+        save(fullfile(Destination, NodesFilename), 'Nodes', 'Links', 'Chanlocs', 'AllT')
     else
         load(fullfile(Destination, NodesFilename), 'Nodes', 'Links', 'Chanlocs', 'AllT')
         
@@ -149,35 +150,44 @@ for Indx_P = 9
     PlotDendro(Links, Labels)
     
     
-    % plot topos
-    figure('units','normalized','outerposition',[0 0 1 1])
-    Indx = 0;
-    for Indx_N = 1:numel(Nodes)
-        if Indx >= 32
-            colormap(Format.Colormap.Divergent)
-            saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_', num2str(Indx_N), '_.svg']))
-            figure('units','normalized','outerposition',[0 0 1 1])
-            Indx = 0;
-        end
-        
-        Indx = Indx+1;
-        subplot(4, 8, Indx)
-        topoplot(Nodes(Indx_N).Topo, Chanlocs, ...
-              'style', 'map', 'headrad', 'rim', 'gridscale', 150); % TODO look at other scripts to make nice
-        
-          if Indx_N <=numel(Labels)
-              title(['N', num2str(Indx_N), ' (', Labels{Nodes(Indx_N).Leaves}, ')'])
-          else
-          title(['N', num2str(Indx_N)])
-          end
-    end
-     colormap(Format.Colormap.Divergent)
-   saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_', num2str(Indx_N), '_.svg']))
-   
-   
-       % plot number of sessions represented
-       PlotWalks(Nodes, Links, 'nSessions', Format)
-   saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_RepresentedSessions_.svg']))
+    %     % plot topos
+    %     figure('units','normalized','outerposition',[0 0 1 1])
+    %     Indx = 0;
+    %     for Indx_N = 1:numel(Nodes)
+    %         if Indx >= 32
+    %             colormap(Format.Colormap.Divergent)
+    %             saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_', num2str(Indx_N), '_.svg']))
+    %             figure('units','normalized','outerposition',[0 0 1 1])
+    %             Indx = 0;
+    %         end
+    %
+    %         Indx = Indx+1;
+    %         subplot(4, 8, Indx)
+    %         topoplot(Nodes(Indx_N).Topo, Chanlocs, ...
+    %               'style', 'map', 'headrad', 'rim', 'gridscale', 150);
+    %
+    %           if Indx_N <=numel(Labels)
+    %               title(['N', num2str(Indx_N), ' (', Labels{Nodes(Indx_N).Leaves}, ')'])
+    %           else
+    %           title(['N', num2str(Indx_N)])
+    %           end
+    %     end
+    %      colormap(Format.Colormap.Divergent)
+    %    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_', num2str(Indx_N), '.svg']))
+    %
+    
+    % plot number of sessions represented
+    PlotWalks(Nodes, Links, 'nSessions', Format)
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_RepresentedSessions.svg']))
+    
+    
+    Clusters = ClusterCompsBySession(Nodes, Links, Labels, Format, true);
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_ClusterTree.svg']))
+    
+    % get figure for each cluster showing topo + topo per session,
+    % stacked bar of sessions represented, line x session of CE
+    PlotClusters(Nodes, Clusters, Freqs, Chanlocs, Format, Sessions, ...
+        SessionLabels, ColorLabel, [Paths.Figures, TitleTag])
     
 end
 

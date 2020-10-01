@@ -1,4 +1,4 @@
-function [Clusters, TotSessions] = ClusterCompsBySession(Nodes, Links, Labels, Format, ToPlot)
+function Clusters = ClusterCompsBySession(Nodes, Links, Labels, Format, ToPlot)
 % goes in node order, and cuts off a branch as soon as it hits 10 sessions.
 % It does this again for 9 sessions, and descending, until all leaves are
 % in the cluster with the most number of closely related components
