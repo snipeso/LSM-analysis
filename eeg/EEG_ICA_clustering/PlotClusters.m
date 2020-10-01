@@ -1,4 +1,4 @@
-function PlotClusters(Nodes, Clusters, Freqs, Chanlocs, Format, Sessions, SessionLabels, ColorLabel, Destination)
+function PlotClusters(Nodes, Clusters, Links, Labels, Freqs, Chanlocs, Format, Sessions, SessionLabels, ColorLabel, Destination)
 
 subX = 3;
 subY = 5;
@@ -36,7 +36,7 @@ for Indx_C = 1:size(Clusters, 1)
         
         nSession(Indx_S) = nnz(L);
         
-        CExSession(Indx_S) = nanmean([Nodes(L).CE]);
+        CExSession(Indx_S) = nansum([Nodes(L).CE]);
     end
       colormap(Format.Colormap.Divergent)
       
@@ -63,6 +63,8 @@ for Indx_C = 1:size(Clusters, 1)
         plot(Freqs, Nodes(Leaves(Indx_L)).FFT, 'LineWidth', 1, ...
             'Color', [Colors(strcmp(Sessions,  Nodes(Leaves(Indx_L)).Sessions) ,:), .3]) 
      end
-  saveas(gcf, [Destination, num2str(Cluster), '_ClusterInfo.svg'])
+     
+       
+  saveas(gcf, [Destination, num2str(C), '_ClusterInfo.svg'])
 end
 

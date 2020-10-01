@@ -19,6 +19,9 @@ while numel(Leaves) > 0 % make sure every leaf has a cluster
     MaxSessions = max(nSessions);
     Cluster = find(nSessions == MaxSessions, 1, 'first'); % get first cluster with the highest number of sessions possible
     
+    if Cluster == 8 || Cluster == 24
+        A = 1';
+    end
     Clusters = cat(1, Clusters, Cluster); % add to list
     TotSessions = cat(1, TotSessions, MaxSessions);
     
@@ -48,11 +51,27 @@ if ToPlot
         Cluster = Clusters(Indx_C);
         
         
-        % TODO: color all children of cluster
+        
         Rows = find(any(ismember(Links(:, 1:2), Nodes(Cluster).Descendants), 2)); % get link
         for Indx_R =1:numel(Rows)
-            Dendro(Rows(Indx_R)).Color = Colors(Indx_C, :);
-            Dendro(Rows(Indx_R)).LineWidth = 1;
+            R = Rows(Indx_R);
+            Dendro(R).Color = Colors(Indx_C, :);
+            
+
+            % make line thicker for between session nodes
+            N = R + numel(Leaves);
+            if Nodes(N).nSessions > 1
+                 Dendro(R).LineWidth = 3;
+            else
+                 Dendro(R).LineWidth = 1;
+            end
+            
         end
     end
 end
+
+
+
+% TODO: 
+% - remove all nodes that are just 1 session and just consider their root
+

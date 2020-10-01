@@ -23,3 +23,9 @@ YMax = max(Links(:, 3));
 
 Padding = YMax*.05;
 ylim([0-Padding, YMax + Padding])
+
+
+for Indx_D = 1:numel(Dendro)
+   Dendro(Indx_D).Color = [.5 .5 .5]; 
+    
+end

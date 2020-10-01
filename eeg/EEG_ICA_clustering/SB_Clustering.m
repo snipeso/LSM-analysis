@@ -9,11 +9,11 @@ Clustering_Parameters
 
 Folder = 'ICA';
 Task = 'LAT';
-Refresh = true;
+Refresh = false;
 
 DistanceType = 'correlation';
 LinkType = 'complete';
-Title = 'SDpWhole';
+Title = 'LATAll';
 
 % % get labels
 % Sessions = allSessions.LATAll;
@@ -23,6 +23,7 @@ Title = 'SDpWhole';
 Sessions = allSessions.LATSD3;
 SessionLabels = allSessionLabels.LATSD3;
 SDLevels = [10 11 12]; % arbitrarily decided
+ColorLabel= 'LATAll';
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -89,7 +90,9 @@ for Indx_P = 9
             
             % get power spectrum for each component % POSSIBLE TODO:
             % eliminate moments in which there's not much happening
-            FFT = pwelch(ICAEEG', [], [], Freqs, EEG.srate)';
+            %             FFT = pwelch(ICAEEG', [], [], Freqs, EEG.srate)';
+            FFT = pwelch(ICAEEG', 10*EEG.srate, [], Freqs, EEG.srate)';
+            FFT = log(FFT);
             AllFFT = cat(1, AllFFT, FFT);
             
             % calculate Component Energy
@@ -187,7 +190,7 @@ for Indx_P = 9
     % get figure for each cluster showing topo + topo per session,
     % stacked bar of sessions represented, line x session of CE
     PlotClusters(Nodes, Clusters, Freqs, Chanlocs, Format, Sessions, ...
-        SessionLabels, ColorLabel, [Paths.Figures, TitleTag])
+        SessionLabels, ColorLabel, [Paths.Figures, '\', TitleTag])
     
 end
 
