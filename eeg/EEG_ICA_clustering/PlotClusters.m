@@ -1,4 +1,4 @@
-function PlotClusters(Nodes, Clusters, Freqs, Chanlocs, Format, Sessions, SessionLabels, ColorLabel, Destination)
+function PlotClusters(Nodes, Clusters, Freqs, Chanlocs, Format, Sessions, SessionLabels, Labels, ColorLabel, Destination)
 
 subX = 3;
 subY = 5;
@@ -57,13 +57,23 @@ for Indx_C = 1:size(Clusters, 1)
     
     
     % plot butterfly of spectrums
-     subplot(subX,  subY, 4:5)
+     subplot(subX,  subY, 4)
      hold on
      for Indx_L = 1:numel(Leaves)
         plot(Freqs, Nodes(Leaves(Indx_L)).FFT, 'LineWidth', 1, ...
             'Color', [Colors(strcmp(Sessions,  Nodes(Leaves(Indx_L)).Sessions) ,:), .3]) 
      end
+     xlabel('Frequency (Hz)')
      
+     
+     % plot little tree of connections between these components
+     D = pdist(cat(1,  Nodes(Leaves).FFT), 'correlation');
+     L = linkage(D, 'average');
+     Lbls = Labels(Leaves);
+     
+     subplot(subX,  subY, 5)
+     PlotDendro(L, Lbls)
+     title(['Mean D: ', num2str(mean(L(:, 3))) ])
        
   saveas(gcf, [Destination, num2str(C), '_ClusterInfo.svg'])
 end

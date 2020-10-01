@@ -14,7 +14,7 @@ Refresh = true;
 DistanceType = 'correlation';
 LinkType = 'complete';
 StructLabel = 'LATAll';
-Title = StructLabel;
+Title = 'AllComp';
 
 % % get labels
 Sessions = allSessions.(StructLabel);
@@ -28,6 +28,11 @@ SDLevels = [1 1 3 6 6 10 10 11 12 1]; % arbitrarily decided
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Paths.Figures = fullfile(Paths.Figures, Title);
+if ~exist(Paths.Figures, 'dir')
+    mkdir(Paths.Figures)
+end
 
 Freqs = 2.5:.1:40; % frequencies in ICA, ignoring 50hz component
 
@@ -74,7 +79,7 @@ for Indx_P = 9
             Ch = cellfun(@str2num, {EEG.chanlocs.labels});
             
             TopoComponents = EEG.icawinv;
-            TopoComponents(:, 31:end) = []; % TEMP
+%             TopoComponents(:, 31:end) = []; % TEMP
             
             % interpolate missing channels (maybe not good?)
             TopoComponents = interpTopo(TopoComponents, EEG.chanlocs, StandardChanlocs);
@@ -87,7 +92,7 @@ for Indx_P = 9
             % identify component energy in the time domain
             Weights = EEG.icaweights*EEG.icasphere;
             ICAEEG = Weights * EEG.data; % TODO: double check that this yields same results as eeglab
-            ICAEEG(31:end, :) = []; % TEMP
+%             ICAEEG(31:end, :) = []; % TEMP
             
             % get power spectrum for each component % POSSIBLE TODO:
             % eliminate moments in which there's not much happening
@@ -151,33 +156,34 @@ for Indx_P = 9
     
     % plot dendrogram with nodes
     Labels = AllT.Label;
+    figure('units','normalized','outerposition',[0 0 1 1])
     PlotDendro(Links, Labels)
     
     
-    %     % plot topos
-    %     figure('units','normalized','outerposition',[0 0 1 1])
-    %     Indx = 0;
-    %     for Indx_N = 1:numel(Nodes)
-    %         if Indx >= 32
-    %             colormap(Format.Colormap.Divergent)
-    %             saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_', num2str(Indx_N), '_.svg']))
-    %             figure('units','normalized','outerposition',[0 0 1 1])
-    %             Indx = 0;
-    %         end
-    %
-    %         Indx = Indx+1;
-    %         subplot(4, 8, Indx)
-    %         topoplot(Nodes(Indx_N).Topo, Chanlocs, ...
-    %               'style', 'map', 'headrad', 'rim', 'gridscale', 150);
-    %
-    %           if Indx_N <=numel(Labels)
-    %               title(['N', num2str(Indx_N), ' (', Labels{Nodes(Indx_N).Leaves}, ')'])
-    %           else
-    %           title(['N', num2str(Indx_N)])
-    %           end
-    %     end
-    %      colormap(Format.Colormap.Divergent)
-    %    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_', num2str(Indx_N), '.svg']))
+%         % plot topos
+%         figure('units','normalized','outerposition',[0 0 1 1])
+%         Indx = 0;
+%         for Indx_N = 1:numel(Nodes)
+%             if Indx >= 32
+%                 colormap(Format.Colormap.Divergent)
+%                 saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_', num2str(Indx_N), '_.svg']))
+%                 figure('units','normalized','outerposition',[0 0 1 1])
+%                 Indx = 0;
+%             end
+%     
+%             Indx = Indx+1;
+%             subplot(4, 8, Indx)
+%             topoplot(Nodes(Indx_N).Topo, Chanlocs, ...
+%                   'style', 'map', 'headrad', 'rim', 'gridscale', 150);
+%     
+%               if Indx_N <=numel(Labels)
+%                   title(['N', num2str(Indx_N), ' (', Labels{Nodes(Indx_N).Leaves}, ')'])
+%               else
+%               title(['N', num2str(Indx_N)])
+%               end
+%         end
+%          colormap(Format.Colormap.Divergent)
+%        saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_', num2str(Indx_N), '.svg']))
     %
     
     % plot number of sessions represented
@@ -188,10 +194,13 @@ for Indx_P = 9
     Clusters = ClusterCompsBySession(Nodes, Links, Labels, Format, true);
     saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_ClusterTree.svg']))
     
+    % remove clusters with just 1 component
+    Clusters(Clusters<=numel(Labels)) = [];
+    
     % get figure for each cluster showing topo + topo per session,
     % stacked bar of sessions represented, line x session of CE
     PlotClusters(Nodes, Clusters, Freqs, Chanlocs, Format, Sessions, ...
-        SessionLabels, StructLabel, [Paths.Figures, '\', TitleTag])
+        SessionLabels, Labels, StructLabel, [Paths.Figures, '\', TitleTag])
     
 end
 

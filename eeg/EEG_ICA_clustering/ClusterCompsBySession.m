@@ -57,6 +57,7 @@ end
 Colors = Format.Colormap.Rainbow(round(linspace(1, 256, numel(Clusters))), :);
 
 if ToPlot
+    figure('units','normalized','outerposition',[0 0 1 1])
     Dendro = PlotDendro(Links, Labels);
     
     for Indx_C = 1:numel(Clusters)

@@ -1,5 +1,5 @@
 function Dendro = PlotDendro(Links, Labels)
-figure('units','normalized','outerposition',[0 0 1 1])
+
 [Dendro, ~, Order] = dendrogram(Links, 0,'Labels', Labels);
 
 nLeaves =  size(Links, 1)+1;
