@@ -11,6 +11,18 @@ ClusteredNodes = [];
 Clusters = [];
 TotSessions  = [];
 
+
+% pre-cluster within-session nodes
+RealNodes = 1:numel(Nodes);
+RealNodes = RealNodes>numel(Leaves); % only consider nodes that have more than 1 leaf
+nSessions = [Nodes.nSessions];
+WSNodes = find(nSessions ==1 & RealNodes);
+
+for wsN = WSNodes
+    ClusteredNodes = cat(1, ClusteredNodes, Nodes(wsN).Descendants');
+end
+
+
 while numel(Leaves) > 0 % make sure every leaf has a cluster
     
     nSessions = [Nodes.nSessions];

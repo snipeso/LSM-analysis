@@ -9,21 +9,22 @@ Clustering_Parameters
 
 Folder = 'ICA';
 Task = 'LAT';
-Refresh = false;
+Refresh = true;
 
 DistanceType = 'correlation';
 LinkType = 'complete';
-Title = 'LATAll';
+StructLabel = 'LATAll';
+Title = StructLabel;
 
 % % get labels
-% Sessions = allSessions.LATAll;
-% SessionLabels = allSessionLabels.LATAll;
-% SDLevels = [1 1 3 6 6 10 10 11 12 1]; % arbitrarily decided
+Sessions = allSessions.(StructLabel);
+SessionLabels = allSessionLabels.(StructLabel);
+SDLevels = [1 1 3 6 6 10 10 11 12 1]; % arbitrarily decided
 
-Sessions = allSessions.LATSD3;
-SessionLabels = allSessionLabels.LATSD3;
-SDLevels = [10 11 12]; % arbitrarily decided
-ColorLabel= 'LATAll';
+% Sessions = allSessions.LATSD3;
+% SessionLabels = allSessionLabels.LATSD3;
+% SDLevels = [10 11 12]; % arbitrarily decided
+% ColorLabel= 'LATAll';
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -190,7 +191,7 @@ for Indx_P = 9
     % get figure for each cluster showing topo + topo per session,
     % stacked bar of sessions represented, line x session of CE
     PlotClusters(Nodes, Clusters, Freqs, Chanlocs, Format, Sessions, ...
-        SessionLabels, ColorLabel, [Paths.Figures, '\', TitleTag])
+        SessionLabels, StructLabel, [Paths.Figures, '\', TitleTag])
     
 end
 

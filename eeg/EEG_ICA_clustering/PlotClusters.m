@@ -1,4 +1,4 @@
-function PlotClusters(Nodes, Clusters, Links, Labels, Freqs, Chanlocs, Format, Sessions, SessionLabels, ColorLabel, Destination)
+function PlotClusters(Nodes, Clusters, Freqs, Chanlocs, Format, Sessions, SessionLabels, ColorLabel, Destination)
 
 subX = 3;
 subY = 5;
