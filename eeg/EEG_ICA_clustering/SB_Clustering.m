@@ -14,7 +14,7 @@ Refresh = true;
 DistanceType = 'correlation';
 LinkType = 'complete';
 StructLabel = 'LATAll';
-Title = 'AllComp';
+Title = StructLabel;
 
 % % get labels
 Sessions = allSessions.(StructLabel);
@@ -27,6 +27,8 @@ SDLevels = [1 1 3 6 6 10 10 11 12 1]; % arbitrarily decided
 % ColorLabel= 'LATAll';
 
 
+MaxKeepComp = 64;
+Smoother = 30; % number of points to smooth the curve for comparing variance
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Paths.Figures = fullfile(Paths.Figures, Title);
@@ -79,7 +81,9 @@ for Indx_P = 9
             Ch = cellfun(@str2num, {EEG.chanlocs.labels});
             
             TopoComponents = EEG.icawinv;
-%             TopoComponents(:, 31:end) = []; % TEMP
+            
+            % remove second half of components
+            TopoComponents(:, MaxKeepComp:end) = [];
             
             % interpolate missing channels (maybe not good?)
             TopoComponents = interpTopo(TopoComponents, EEG.chanlocs, StandardChanlocs);
@@ -91,8 +95,10 @@ for Indx_P = 9
             
             % identify component energy in the time domain
             Weights = EEG.icaweights*EEG.icasphere;
-            ICAEEG = Weights * EEG.data; % TODO: double check that this yields same results as eeglab
-%             ICAEEG(31:end, :) = []; % TEMP
+            ICAEEG = Weights * EEG.data;
+            
+            % again, remove half of components
+            ICAEEG(MaxKeepComp:end, :) = [];
             
             % get power spectrum for each component % POSSIBLE TODO:
             % eliminate moments in which there's not much happening
@@ -116,6 +122,10 @@ for Indx_P = 9
             
         end
         
+        
+        %%% Pruning part 1: remove rotten leaves
+        
+        
         % cluster all components by frequency
         Distances = pdist(AllFFT, DistanceType);
         
@@ -135,29 +145,21 @@ for Indx_P = 9
             
             Nodes(Indx_N).Sessions = unique(AllT.Session(Leaves));
             Nodes(Indx_N).nSessions = numel(Nodes(Indx_N).Sessions);
-            
-            % get CE for each level of SD
-            %             CE = zeros(2, numel(SDLevels));
-            %             CE(1, :) = SDLevels;
-            %             for Indx_SD = 1:numel(SDLevels)
-            %                 nCE = AllT(Leaves, :); % node's components' energies
-            %                 CE(2, Indx_SD) = mean(nCE.CE(strcmp(nCE.Session, Sessions{Indx_SD})));
-            %             end
-            %
-            Chanlocs = EEG.chanlocs;
+
+            StandardChanlocs = EEG.chanlocs;
             Nodes(Indx_N).CExSD = CE;
             
         end
-        save(fullfile(Destination, NodesFilename), 'Nodes', 'Links', 'Chanlocs', 'AllT')
+        save(fullfile(Destination, NodesFilename), 'Nodes', 'Links', 'StandardChanlocs', 'AllT')
     else
-        load(fullfile(Destination, NodesFilename), 'Nodes', 'Links', 'Chanlocs', 'AllT')
+        load(fullfile(Destination, NodesFilename), 'Nodes', 'Links', 'StandardChanlocs', 'AllT')
         
     end
     
     % plot dendrogram with nodes
     Labels = AllT.Label;
     figure('units','normalized','outerposition',[0 0 1 1])
-    PlotDendro(Links, Labels)
+    PlotDendro(Links, Labels);
     
     
 %         % plot topos
@@ -191,17 +193,23 @@ for Indx_P = 9
     saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_RepresentedSessions.svg']))
     
     
-    Clusters = ClusterCompsBySession(Nodes, Links, Labels, Format, true);
-    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_ClusterTree.svg']))
+    Clusters = ClusterCompsBySession(Nodes, Links, Labels, Format);
     
     % remove clusters with just 1 component
-    Clusters(Clusters<=numel(Labels)) = [];
+Clusters(Clusters<=size(Links)+1) = [];
+
+% split clusters by topography
+
+    % slim down clusters
+    ClustersRedux = PruneClusters(Clusters, Nodes, Links);
     
     % get figure for each cluster showing topo + topo per session,
     % stacked bar of sessions represented, line x session of CE
-    PlotClusters(Nodes, Clusters, Freqs, Chanlocs, Format, Sessions, ...
+    PlotClusters(Nodes, ClustersRedux, Freqs, StandardChanlocs, Format, Sessions, ...
         SessionLabels, Labels, StructLabel, [Paths.Figures, '\', TitleTag])
     
+    PlotClusterDendro(ClustersRedux, Links, Nodes, Format, Labels)
+     saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_ClusterTree.svg']))
 end
 
 % from Z matrix, get matrix with c1: #of subordinates c2: #of different

@@ -1,4 +1,4 @@
-function Clusters = ClusterCompsBySession(Nodes, Links, Labels, Format, ToPlot)
+function Clusters = ClusterCompsBySession(Nodes, Links, Labels, Format)
 % goes in node order, and cuts off a branch as soon as it hits 10 sessions.
 % It does this again for 9 sessions, and descending, until all leaves are
 % in the cluster with the most number of closely related components
@@ -54,34 +54,7 @@ while numel(Leaves) > 0 % make sure every leaf has a cluster
     
 end
 
-Colors = Format.Colormap.Rainbow(round(linspace(1, 256, numel(Clusters))), :);
 
-if ToPlot
-    figure('units','normalized','outerposition',[0 0 1 1])
-    Dendro = PlotDendro(Links, Labels);
-    
-    for Indx_C = 1:numel(Clusters)
-        Cluster = Clusters(Indx_C);
-        
-        
-        
-        Rows = find(any(ismember(Links(:, 1:2), Nodes(Cluster).Descendants), 2)); % get link
-        for Indx_R =1:numel(Rows)
-            R = Rows(Indx_R);
-            Dendro(R).Color = Colors(Indx_C, :);
-            
-
-            % make line thicker for between session nodes
-            N = R + numel(Leaves);
-            if Nodes(N).nSessions > 1
-                 Dendro(R).LineWidth = 3;
-            else
-                 Dendro(R).LineWidth = 1;
-            end
-            
-        end
-    end
-end
 
 
 

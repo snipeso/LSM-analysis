@@ -28,8 +28,8 @@ for Indx_C = 1:size(Clusters, 1)
         L = Leaves(strcmp(lSessions, Sessions{Indx_S})); % get all leaves of current session
         Topos = cat(1, Nodes(L).Topo);  %warning! this is IC x ch
         
-            subplot(subX, subY, subY+Indx_S) % second row
-   
+        subplot(subX, subY, subY+Indx_S) % second row
+        
         topoplot(mean(Topos, 1), Chanlocs, ...
             'style', 'map', 'headrad', 'rim', 'gridscale', 200);
         title([SessionLabels{Indx_S}, ' (', num2str(nnz(L)), ')'])
@@ -38,8 +38,8 @@ for Indx_C = 1:size(Clusters, 1)
         
         CExSession(Indx_S) = nansum([Nodes(L).CE]);
     end
-      colormap(Format.Colormap.Divergent)
-      
+    colormap(Format.Colormap.Divergent)
+    
     % plot proportion of sessions
     subplot(subX,  subY, 2)
     Colors = Format.Colors.(ColorLabel);
@@ -57,24 +57,24 @@ for Indx_C = 1:size(Clusters, 1)
     
     
     % plot butterfly of spectrums
-     subplot(subX,  subY, 4)
-     hold on
-     for Indx_L = 1:numel(Leaves)
+    subplot(subX,  subY, 4)
+    hold on
+    for Indx_L = 1:numel(Leaves)
         plot(Freqs, Nodes(Leaves(Indx_L)).FFT, 'LineWidth', 1, ...
-            'Color', [Colors(strcmp(Sessions,  Nodes(Leaves(Indx_L)).Sessions) ,:), .3]) 
-     end
-     xlabel('Frequency (Hz)')
-     
-     
-     % plot little tree of connections between these components
-     D = pdist(cat(1,  Nodes(Leaves).FFT), 'correlation');
-     L = linkage(D, 'average');
-     Lbls = Labels(Leaves);
-     
-     subplot(subX,  subY, 5)
-     PlotDendro(L, Lbls)
-     title(['Mean D: ', num2str(mean(L(:, 3))) ])
-       
-  saveas(gcf, [Destination, num2str(C), '_ClusterInfo.svg'])
+            'Color', [Colors(strcmp(Sessions,  Nodes(Leaves(Indx_L)).Sessions) ,:), .3])
+    end
+    xlabel('Frequency (Hz)')
+    
+    
+    % plot little tree of connections between these components
+    D = pdist(cat(1,  Nodes(Leaves).FFT), 'correlation');
+    L = linkage(D, 'average');
+    Lbls = Labels(Leaves);
+    
+    subplot(subX,  subY, 5)
+    PlotDendro(L, Lbls)
+    title(['Mean D: ', num2str(mean(L(:, 3))) ])
+    set(gca, 'FontSize', 5)
+    saveas(gcf, [Destination, num2str(C), '_ClusterInfo.svg'])
 end
 
