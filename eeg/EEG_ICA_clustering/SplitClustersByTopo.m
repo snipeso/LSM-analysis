@@ -1,4 +1,4 @@
-function [NewClusters, Nodes] = SplitClustersByTopo(Clusters, Nodes, LinkType)
+function [NewClusters, NewNodes] = SplitClustersByTopo(Clusters, Nodes, LinkType)
 
 Threshold = .9;
 
@@ -23,7 +23,7 @@ for Indx_C = 1:numel(Clusters)
     end
     
     %%% for  any items have corr <.9 for all relationships, just toss it
-        Indx_RL = all(R<Threshold|R==1);
+    Indx_RL = all(R<Threshold|R==1);
     RottenLeaves = L(Indx_RL);
     
     Nodes(C).RottenLeaves = RottenLeaves;
@@ -40,28 +40,57 @@ for Indx_C = 1:numel(Clusters)
     end
     
     % remove from R matrix and topos the rotten leaves
-
+    
     R(Indx_RL, :) = [];
-     R(:, Indx_RL) = [];
-     Topos(Indx_RL, :) = [];
-     
-     % DEBUG
-     Leaves = Nodes(C).Leaves;
-     Leaves(ismember(Leaves, RottenLeaves)) = [];
-     if size(Topos, 1) ~= numel(Leaves)
-         A=1
-     end
+    R(:, Indx_RL) = [];
+    Topos(Indx_RL, :) = [];
+    
+    % DEBUG
+    Leaves = Nodes(C).Leaves;
+    Leaves(ismember(Leaves, RottenLeaves)) = [];
+    if size(Topos, 1) ~= numel(Leaves)
+        A=1
+    end
     
     % if there are still uncorrelated things floating around, despite
     % having removed rotten leaves, then I need to split data
     if any(R(:)<Threshold)
         
-        R = 1-R; % flip so that smaller number indicates closer values;
-        D = squareform(R); % make it into 1 array
-        Links = linkage(D, LinkType);
+        % recluster data within node based on space, fix Nodes (and links),
+        % and add subclusters to list of Ok clusters if they meet the
+        % threshold criteria
         
-        figure
-        PlotDendro(Links, string(Leaves));
+        % set diagonal to nan
+        %          R(1:size(R, 1)+1:end) = nan;
+        
+        BadishLeaves = any(R<Threshold);
+        BestLeaves = R(~BadishLeaves, ~BadishLeaves);
+        
+        % make new cluster out of best leaves, replace old cluster
+        
+        % make mini clusters from the worst leaves
+        BadishLeaves= find(BadishLeaves);
+        while ~isempty(BadishLeaves)
+            
+            % get leaves most related to first in the row
+            lR = R(BadishLeaves, BadishLeaves);
+            GoodishLeaves = BadishLeaves(lR(1, :)>Threshold);
+            
+            % if there are no close relatives, remove leaf from contending
+            if isempty(GoodishLeaves)
+                %TODO: maybe signal this bad leaf as a rotten leaf?
+                BadishLeaves(1) = [];
+                continue
+            end
+            
+            % make new cluster of goodish leaves
+            
+            
+            % remove this goodish cluster from badish leaves
+            BadishLeaves(GoodishLeaves) = [];
+        end
+        
+
         A =1;
     end
     

@@ -145,7 +145,7 @@ for Indx_P = 9
             
             Nodes(Indx_N).Sessions = unique(AllT.Session(Leaves));
             Nodes(Indx_N).nSessions = numel(Nodes(Indx_N).Sessions);
-
+            
             StandardChanlocs = EEG.chanlocs;
             Nodes(Indx_N).CExSD = CE;
             
@@ -162,30 +162,30 @@ for Indx_P = 9
     PlotDendro(Links, Labels);
     
     
-%         % plot topos
-%         figure('units','normalized','outerposition',[0 0 1 1])
-%         Indx = 0;
-%         for Indx_N = 1:numel(Nodes)
-%             if Indx >= 32
-%                 colormap(Format.Colormap.Divergent)
-%                 saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_', num2str(Indx_N), '_.svg']))
-%                 figure('units','normalized','outerposition',[0 0 1 1])
-%                 Indx = 0;
-%             end
-%     
-%             Indx = Indx+1;
-%             subplot(4, 8, Indx)
-%             topoplot(Nodes(Indx_N).Topo, Chanlocs, ...
-%                   'style', 'map', 'headrad', 'rim', 'gridscale', 150);
-%     
-%               if Indx_N <=numel(Labels)
-%                   title(['N', num2str(Indx_N), ' (', Labels{Nodes(Indx_N).Leaves}, ')'])
-%               else
-%               title(['N', num2str(Indx_N)])
-%               end
-%         end
-%          colormap(Format.Colormap.Divergent)
-%        saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_', num2str(Indx_N), '.svg']))
+    %         % plot topos
+    %         figure('units','normalized','outerposition',[0 0 1 1])
+    %         Indx = 0;
+    %         for Indx_N = 1:numel(Nodes)
+    %             if Indx >= 32
+    %                 colormap(Format.Colormap.Divergent)
+    %                 saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_', num2str(Indx_N), '_.svg']))
+    %                 figure('units','normalized','outerposition',[0 0 1 1])
+    %                 Indx = 0;
+    %             end
+    %
+    %             Indx = Indx+1;
+    %             subplot(4, 8, Indx)
+    %             topoplot(Nodes(Indx_N).Topo, Chanlocs, ...
+    %                   'style', 'map', 'headrad', 'rim', 'gridscale', 150);
+    %
+    %               if Indx_N <=numel(Labels)
+    %                   title(['N', num2str(Indx_N), ' (', Labels{Nodes(Indx_N).Leaves}, ')'])
+    %               else
+    %               title(['N', num2str(Indx_N)])
+    %               end
+    %         end
+    %          colormap(Format.Colormap.Divergent)
+    %        saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_', num2str(Indx_N), '.svg']))
     %
     
     % plot number of sessions represented
@@ -196,10 +196,12 @@ for Indx_P = 9
     Clusters = ClusterCompsBySession(Nodes, Links, Labels, Format);
     
     % remove clusters with just 1 component
-Clusters(Clusters<=size(Links)+1) = [];
-
-% split clusters by topography
-
+    Clusters(Clusters<=size(Links)+1) = [];
+    
+    %remove clusters with badcomps among the leaves (gets rid of eyes)
+    
+    % split clusters by topography
+    
     % slim down clusters
     ClustersRedux = PruneClusters(Clusters, Nodes, Links);
     
@@ -209,7 +211,7 @@ Clusters(Clusters<=size(Links)+1) = [];
         SessionLabels, Labels, StructLabel, [Paths.Figures, '\', TitleTag])
     
     PlotClusterDendro(ClustersRedux, Links, Nodes, Format, Labels)
-     saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_ClusterTree.svg']))
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_ClusterTree.svg']))
 end
 
 % from Z matrix, get matrix with c1: #of subordinates c2: #of different
