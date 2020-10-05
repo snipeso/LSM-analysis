@@ -28,7 +28,8 @@ SDLevels = [1 1 3 6 6 10 10 11 12 1]; % arbitrarily decided
 
 
 MaxKeepComp = 64;
-Smoother = 30; % number of points to smooth the curve for comparing variance
+TopoThreshold = .9; %min R value accepted for topography 
+MinBadComps = 2; % minimum number of bad components before cluster gets rejected
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Paths.Figures = fullfile(Paths.Figures, Title);
@@ -76,6 +77,8 @@ for Indx_P = 9
             
             EEG = pop_loadset('filename', Filename, 'filepath', Path);
             
+            % get manually rejected components
+            BadComps = EEG.reject.gcompreject';
             
             % get topographies of components
             Ch = cellfun(@str2num, {EEG.chanlocs.labels});
@@ -83,7 +86,7 @@ for Indx_P = 9
             TopoComponents = EEG.icawinv;
             
             % remove second half of components
-            TopoComponents(:, MaxKeepComp:end) = [];
+            TopoComponents(:, MaxKeepComp+1:end) = [];
             
             % interpolate missing channels (maybe not good?)
             TopoComponents = interpTopo(TopoComponents, EEG.chanlocs, StandardChanlocs);
@@ -98,7 +101,7 @@ for Indx_P = 9
             ICAEEG = Weights * EEG.data;
             
             % again, remove half of components
-            ICAEEG(MaxKeepComp:end, :) = [];
+            ICAEEG(MaxKeepComp+1:end, :) = [];
             
             % get power spectrum for each component % POSSIBLE TODO:
             % eliminate moments in which there's not much happening
@@ -116,7 +119,8 @@ for Indx_P = 9
                 SDLevels(Indx_S)*ones(nComps, 1), ...
                 CE, ...
                 strcat(SessionLabels{Indx_S}, 'IC', string(1:nComps))', ...
-                'VariableNames', {'Participant','Session',  'SDLevel',  'CE',   'Label', } );
+                BadComps(1:MaxKeepComp),...
+                'VariableNames', {'Participant','Session',  'SDLevel',  'CE',   'Label', 'BadComps'} );
             
             AllT = cat(1, AllT, T);
             
@@ -142,6 +146,7 @@ for Indx_P = 9
             Nodes(Indx_N).Topo = mean(AllTopo(Leaves, :), 1);
             Nodes(Indx_N).CE =  mean(AllT.CE(Leaves));
             Nodes(Indx_N).SD =  mean(AllT.SDLevel(Leaves));
+            Nodes(Indx_N).nBadComps = nnz(AllT.BadComps(Leaves));
             
             Nodes(Indx_N).Sessions = unique(AllT.Session(Leaves));
             Nodes(Indx_N).nSessions = numel(Nodes(Indx_N).Sessions);
@@ -199,6 +204,7 @@ for Indx_P = 9
     Clusters(Clusters<=size(Links)+1) = [];
     
     %remove clusters with badcomps among the leaves (gets rid of eyes)
+    Clusters = RemoveBadComps(Nodes, Clusters, MinBadComps);
     
     % split clusters by topography
     

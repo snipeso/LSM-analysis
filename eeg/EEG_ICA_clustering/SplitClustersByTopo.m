@@ -1,6 +1,4 @@
-function [NewClusters, NewNodes] = SplitClustersByTopo(Clusters, Nodes, LinkType)
-
-Threshold = .9;
+function [NewClusters, NewNodes] = SplitClustersByTopo(Clusters, Nodes, Threshold, LinkType)
 
 NewClusters = [];
 
