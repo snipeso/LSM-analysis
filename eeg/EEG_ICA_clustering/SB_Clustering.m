@@ -206,10 +206,11 @@ for Indx_P = 9
     %remove clusters with badcomps among the leaves (gets rid of eyes)
     Clusters = RemoveBadComps(Nodes, Clusters, MinBadComps);
     
-    % split clusters by topography
-    
     % slim down clusters
     ClustersRedux = PruneClusters(Clusters, Nodes, Links);
+
+    % split clusters by topography
+    
     
     % get figure for each cluster showing topo + topo per session,
     % stacked bar of sessions represented, line x session of CE
