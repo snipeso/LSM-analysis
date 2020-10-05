@@ -26,6 +26,7 @@ SDLevels = [1 1 3 6 6 10 10 11 12 1]; % arbitrarily decided
 % SDLevels = [10 11 12]; % arbitrarily decided
 % ColorLabel= 'LATAll';
 
+PlotAllComps = false;
 
 MaxKeepComp = 64;
 TopoThreshold = .9; %min R value accepted for topography 
@@ -166,32 +167,32 @@ for Indx_P = 9
     figure('units','normalized','outerposition',[0 0 1 1])
     PlotDendro(Links, Labels);
     
+if PlotAllComps    
+            % plot topos
+            figure('units','normalized','outerposition',[0 0 1 1])
+            Indx = 0;
+            for Indx_N = 1:numel(Nodes)
+                if Indx >= 32
+                    colormap(Format.Colormap.Divergent)
+                    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_', num2str(Indx_N), '_.svg']))
+                    figure('units','normalized','outerposition',[0 0 1 1])
+                    Indx = 0;
+                end
     
-    %         % plot topos
-    %         figure('units','normalized','outerposition',[0 0 1 1])
-    %         Indx = 0;
-    %         for Indx_N = 1:numel(Nodes)
-    %             if Indx >= 32
-    %                 colormap(Format.Colormap.Divergent)
-    %                 saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_', num2str(Indx_N), '_.svg']))
-    %                 figure('units','normalized','outerposition',[0 0 1 1])
-    %                 Indx = 0;
-    %             end
-    %
-    %             Indx = Indx+1;
-    %             subplot(4, 8, Indx)
-    %             topoplot(Nodes(Indx_N).Topo, Chanlocs, ...
-    %                   'style', 'map', 'headrad', 'rim', 'gridscale', 150);
-    %
-    %               if Indx_N <=numel(Labels)
-    %                   title(['N', num2str(Indx_N), ' (', Labels{Nodes(Indx_N).Leaves}, ')'])
-    %               else
-    %               title(['N', num2str(Indx_N)])
-    %               end
-    %         end
-    %          colormap(Format.Colormap.Divergent)
-    %        saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_', num2str(Indx_N), '.svg']))
-    %
+                Indx = Indx+1;
+                subplot(4, 8, Indx)
+                topoplot(Nodes(Indx_N).Topo, Chanlocs, ...
+                      'style', 'map', 'headrad', 'rim', 'gridscale', 150);
+    
+                  if Indx_N <=numel(Labels)
+                      title(['N', num2str(Indx_N), ' (', Labels{Nodes(Indx_N).Leaves}, ')'])
+                  else
+                  title(['N', num2str(Indx_N)])
+                  end
+            end
+             colormap(Format.Colormap.Divergent)
+           saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_', num2str(Indx_N), '.svg']))
+end
     
     % plot number of sessions represented
     PlotWalks(Nodes, Links, 'nSessions', Format)
