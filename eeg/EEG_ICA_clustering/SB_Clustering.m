@@ -208,7 +208,7 @@ end
     Clusters = RemoveBadComps(Nodes, Clusters, MinBadComps);
     
     % slim down clusters
-    ClustersRedux = PruneClusters(Clusters, Nodes, Links);
+%     ClustersRedux = PruneClusters(Clusters, Nodes, Links);
 
     % split clusters by topography
     

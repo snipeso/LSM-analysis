@@ -65,6 +65,10 @@ for Indx_C = 1:size(Clusters, 1)
     end
     xlabel('Frequency (Hz)')
     
+    AllFFT = cat(1,  Nodes(Leaves).FFT);
+    R =  corrcoef(AllFFT');
+    title(['FFT R: ', num2str(mean(R))])
+    
     
     % plot little tree of connections between these components
     D = pdist(cat(1,  Nodes(Leaves).FFT), 'correlation');
