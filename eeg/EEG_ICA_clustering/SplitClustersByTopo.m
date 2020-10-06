@@ -241,7 +241,7 @@ ClusterLinks = linkage(LCALinks, LinkType);
 
 % shift allgroup numbers so they start from last cluster
 IDs = ClusterLinks(:, 1:2);
-IDs(IDs>numel(NewClusters)) = (IDs(IDs>numel(NewClusters))-numel(NewClusters)) + max(max(NewLinks(:, 1:2)))+1;
+IDs(IDs>numel(NewClusters)) = (IDs(IDs>numel(NewClusters))-numel(NewClusters)) + max([max(NewLinks(:, 1:2)), ClusterIndexes]);
 
 
 % change all cluster numbers so they correspond to their cluster
@@ -258,18 +258,17 @@ NewClusters = ClusterIndexes;
 % add properties to new nodes
 for Indx_N = 1:numel(NewNodes)
     L = OldLeafIndexes(NewNodes(Indx_N).Leaves);
-    NewNodes(Indx_N).FFT = mean(Nodes(L).FFT, 1);
-    NewNodes(Indx_N).Topo = mean(Nodes(L).Topo, 1);
-    NewNodes(Indx_N).CE = mean(Nodes(L).CE);
-    NewNodes(Indx_N).SD = mean(Nodes(L).SD, 1);
-    NewNodes(Indx_N).nBadComps = sum(Nodes(L).nBadComps);
+
+    NewNodes(Indx_N).FFT = mean(cat(1, Nodes(L).FFT), 1);
+
+    NewNodes(Indx_N).Topo = mean(cat(1,Nodes(L).Topo), 1);
+    NewNodes(Indx_N).CE = mean(cat(1,Nodes(L).CE));
+    NewNodes(Indx_N).SD = mean(cat(1,Nodes(L).SD));
+    NewNodes(Indx_N).nBadComps = sum(cat(1,Nodes(L).nBadComps));
     NewNodes(Indx_N).Sessions = unique(cat(2,Nodes(L).Sessions));
     NewNodes(Indx_N).nSessions = numel(NewNodes(Indx_N).Sessions);
 end
 
-
-% TODO: add properties to new nodes!!
-% - and fix splitting so that it forms big groups
 % - and find a way to avoid too many little splinters
 
 
