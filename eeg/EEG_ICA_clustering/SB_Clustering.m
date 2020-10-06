@@ -9,7 +9,7 @@ Clustering_Parameters
 
 Folder = 'ICA';
 Task = 'LAT';
-Refresh = true;
+Refresh = false;
 
 DistanceType = 'correlation';
 LinkType = 'complete';
@@ -28,8 +28,11 @@ SDLevels = [1 1 3 6 6 10 10 11 12 1]; % arbitrarily decided
 
 PlotAllComps = false;
 
+WelchWindow = 10;
 MaxKeepComp = 64;
-TopoThreshold = .9; %min R value accepted for topography 
+TopoThreshold = .9; %min R value accepted for topography
+FFTThreshold = .9;
+SplitFreq = 20;
 MinBadComps = 2; % minimum number of bad components before cluster gets rejected
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -39,6 +42,8 @@ if ~exist(Paths.Figures, 'dir')
 end
 
 Freqs = 2.5:.1:40; % frequencies in ICA, ignoring 50hz component
+
+SplitIndx = dsearchn( Freqs', SplitFreq);
 
 % make place to save agregate info
 Destination = fullfile(Paths.Preprocessed, 'Clustering');
@@ -70,7 +75,7 @@ for Indx_P = 9
             % load EEG data
             Session = Sessions{Indx_S};
             
-            TitleTag = strjoin({Participants{Indx_P}, Task, Session, Folder, 'Components'}, '_');
+            TitleTag = strjoin({Title, Participants{Indx_P}, Task, Session, Folder, 'Components'}, '_');
             Filename = [TitleTag, '.set'];
             if ~exist(fullfile(Path, Filename), 'file')
                 continue
@@ -106,14 +111,13 @@ for Indx_P = 9
             
             % get power spectrum for each component % POSSIBLE TODO:
             % eliminate moments in which there's not much happening
-            %             FFT = pwelch(ICAEEG', [], [], Freqs, EEG.srate)';
-            FFT = pwelch(ICAEEG', 10*EEG.srate, [], Freqs, EEG.srate)';
+            FFT = pwelch(ICAEEG', WelchWindow*EEG.srate, [], Freqs, EEG.srate)';
             FFT = log(FFT);
             AllFFT = cat(1, AllFFT, FFT);
             
             % calculate Component Energy
             %             CE = sum(abs(ICAEEG)*(1/EEG.srate)); % double check if this is correct integral
-            CE =  sum(abs(ICAEEG), 2)/(EEG.pnts/EEG.srate); % maybe best to normalize by total time?
+            CE =  sum(abs(ICAEEG), 2)/(EEG.pnts); % maybe best to normalize by total time?
             
             T = table( repmat(string(Participant), nComps, 1), ...
                 repmat(string(Session), nComps, 1), ...
@@ -124,22 +128,22 @@ for Indx_P = 9
                 'VariableNames', {'Participant','Session',  'SDLevel',  'CE',   'Label', 'BadComps'} );
             
             AllT = cat(1, AllT, T);
-            
         end
         
+        %%% make hierarchy tree by frequency
         
-        %%% Pruning part 1: remove rotten leaves
-        
-        
-        % cluster all components by frequency
+        % get distances by frequency between all components
         Distances = pdist(AllFFT, DistanceType);
         
+        % create tree
         Links = linkage(Distances, LinkType);
         
-        % get all leaf components for each node in hierarchy
+        % save data as nodes in the tree, with info on relations
         Nodes = Unpack(Links);
         
-        % get properties of each node
+        
+        %%% get properties of each node
+        
         for Indx_N = 1:numel(Nodes)
             
             Leaves = Nodes(Indx_N).Leaves;
@@ -162,72 +166,58 @@ for Indx_P = 9
         
     end
     
-    % plot dendrogram with nodes
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    %%% Overview plots
     Labels = AllT.Label;
-    figure('units','normalized','outerposition',[0 0 1 1])
-    PlotDendro(Links, Labels);
+    TitleTag = strjoin({Participants{Indx_P}, Task, Folder}, '_');
+    if PlotAllComps
+        
+        % plot dendrogram with nodes
+        figure('units','normalized','outerposition',[0 0 1 1])
+        PlotDendro(Links, Labels);
+        
+        % plot topos
+        PlotAllTopos(Nodes, Labels, StandardChanlocs, Format, Paths.Figures, TitleTag)
+        
+        % plot number of sessions represented
+        PlotWalks(Nodes, Links, 'nSessions', Format)
+        saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_RepresentedSessions.svg']))
+    end
     
-if PlotAllComps    
-            % plot topos
-            figure('units','normalized','outerposition',[0 0 1 1])
-            Indx = 0;
-            for Indx_N = 1:numel(Nodes)
-                if Indx >= 32
-                    colormap(Format.Colormap.Divergent)
-                    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_', num2str(Indx_N), '_.svg']))
-                    figure('units','normalized','outerposition',[0 0 1 1])
-                    Indx = 0;
-                end
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-                Indx = Indx+1;
-                subplot(4, 8, Indx)
-                topoplot(Nodes(Indx_N).Topo, Chanlocs, ...
-                      'style', 'map', 'headrad', 'rim', 'gridscale', 150);
+    %%% Identify clusters
     
-                  if Indx_N <=numel(Labels)
-                      title(['N', num2str(Indx_N), ' (', Labels{Nodes(Indx_N).Leaves}, ')'])
-                  else
-                  title(['N', num2str(Indx_N)])
-                  end
-            end
-             colormap(Format.Colormap.Divergent)
-           saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_', num2str(Indx_N), '.svg']))
-end
+    % get the smallest clusters that represents the most number of sessions
+    Clusters = ClusterCompsBySession(Nodes, Links);
+    disp(['Cluster components by session: ', num2str(numel(Clusters)), ' components'])
     
-    % plot number of sessions represented
-    PlotWalks(Nodes, Links, 'nSessions', Format)
-    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_RepresentedSessions.svg']))
-    
-    
-    Clusters = ClusterCompsBySession(Nodes, Links, Labels, Format);
-    
-    % remove clusters with just 1 component
-    Clusters(Clusters<=size(Links)+1) = [];
-    
-    %remove clusters with badcomps among the leaves (gets rid of eyes)
+    %remove clusters with badcomps among the leaves (gets rid of eye components)
     Clusters = RemoveBadComps(Nodes, Clusters, MinBadComps);
+    disp(['After removing components with artefacts: ', num2str(numel(Clusters)), ' components'])
     
-    % slim down clusters
-%     ClustersRedux = PruneClusters(Clusters, Nodes, Links);
-
+    % remove clusters that are more likely noise
+    Clusters = RemoveNoisyClusters(Nodes, Clusters, FFTThreshold, SplitIndx);
+    
+    % in case any slip through
+    nSessions = [Nodes(Clusters).nSessions];
+    Clusters(nSessions==1) = [];
+    disp(['After removing noisy: ', num2str(numel(Clusters)), ' components'])
+    
+    
     % split clusters by topography
+    [NewLinks, NewClusters, NewNodes, NewLabels] = SplitClustersByTopo(Clusters, Nodes, TopoThreshold, Labels, LinkType);
+    disp(['After splitting components: ', num2str(numel(NewClusters)), ' components'])
     
     
     % get figure for each cluster showing topo + topo per session,
     % stacked bar of sessions represented, line x session of CE
-    PlotClusters(Nodes, ClustersRedux, Freqs, StandardChanlocs, Format, Sessions, ...
-        SessionLabels, Labels, StructLabel, [Paths.Figures, '\', TitleTag])
+    PlotClusters(NewNodes, NewClusters, Freqs, StandardChanlocs, Format, Sessions, ...
+        SessionLabels, NewLabels, StructLabel, [Paths.Figures, '\', [TitleTag, 'FinalClusters']])
     
-    PlotClusterDendro(ClustersRedux, Links, Nodes, Format, Labels)
-    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_ClusterTree.svg']))
+    PlotClusterDendro(NewClusters, NewLinks, NewNodes, Format, NewLabels);
+    saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_FinalClusterTree.svg']))
 end
 
-% from Z matrix, get matrix with c1: #of subordinates c2: #of different
-% recordings
 
-% temp: visualize
-
-% select CompNode
-
-% look at cumulative CE for every level of SD, run a line through it. Identify nodes
-% with positive correlation

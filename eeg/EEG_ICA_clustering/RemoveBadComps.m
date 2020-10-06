@@ -1,5 +1,6 @@
 function Clusters = RemoveBadComps(Nodes, Clusters, MinBadComps)
-
+% remove clusters that have at least a min of bad components. Good for
+% removing manually identified eye artefacts
 
 BadClusters = [];
 for C = Clusters'

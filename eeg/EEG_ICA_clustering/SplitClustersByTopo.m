@@ -1,14 +1,14 @@
-function  [NewLinks, NewClusters, NewNodes, NewLabels] = SplitClustersByTopo(Clusters, Nodes, Threshold, Labels, LinkType)
+function  [NewLinks, NewClusters, NewNodes, NewLabels] = ...
+    SplitClustersByTopo(Clusters, Nodes, Threshold, Labels, LinkType)
 % identifies final subset of clusters (in new nodes structure) where the
 % frequency-defined clusters are composed of spatially highly correlated
 % components, by removing uncorrelated (spatially) components, and
 % splitting clusters if there are spatially correlated sub-clusters.
 
-
 NewClusters = Nodes(1); % start with just original cluster number, and leaves
 Nodes(1).OriginalCluster = 1;% just to make structures the same
 
-for Indx_C = 1:numel(Clusters)
+for Indx_C = 1:numel(Clusters) % go through each cluster to see if needs splitting
     
     N_Indx = numel(NewClusters) +1;
     
@@ -17,10 +17,6 @@ for Indx_C = 1:numel(Clusters)
     L = Nodes(C).Leaves;
     Topos = cat(1, Nodes(L).Topo);
     R = abs(corrcoef(Topos'));
-    
-    if C == 904
-        A=1;
-    end
     
     %%% keep or toss clusters if they're completely related or unrelated
     
@@ -64,14 +60,13 @@ for Indx_C = 1:numel(Clusters)
     end
     
     % remove from R matrix the rotten leaves
-    
     Indx_RL = all(R<Threshold|R==1);
     R(Indx_RL, :) = [];
     R(:, Indx_RL) = [];
     
     Leaves = L(~Indx_RL);
     
-    
+    % form subclusters that are internally correlated above threshold
     NewSubClusters = ClusterMess(R, Threshold);
     for Indx_sC = 1:numel(NewSubClusters)
         N_Indx = numel(NewClusters) +1;
@@ -79,57 +74,6 @@ for Indx_C = 1:numel(Clusters)
         NewClusters(N_Indx).Leaves =  Leaves(NewSubClusters(Indx_sC).Nodes);
         NewClusters(N_Indx).Parent = Nodes(C).Parent;
     end
-    
-    
-    %     BadishLeaves = any(R<Threshold);
-    %
-    %     BestLeaves = Leaves(~BadishLeaves); % completely correlated set of leaves
-    %
-    %
-    %     % make new cluster out of best leaves
-    %     if ~isempty(BestLeaves)
-    %         NewClusters(N_Indx).OriginalCluster = C;
-    %         NewClusters(N_Indx).Leaves = BestLeaves;
-    %         NewClusters(N_Indx).Distance = Nodes(C).Distance;
-    %         NewClusters(N_Indx).Parent = Nodes(C).Parent;
-    %     elseif numel(BestLeaves) == 1
-    %         A= 1;
-    %     end
-    %
-    %     LeavesLeft = Leaves;
-    %
-    %
-    %     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %
-    %     %%% split cluster if there are "bad" leaves (sub-clusters)
-    %
-    %     BadishLeaves= find(BadishLeaves);
-    %     while ~isempty(BadishLeaves) % loop through bad leaves list, taking out correlated chunks
-    %
-    %         % get leaves most related to first in the row
-    %         subR = R(BadishLeaves, BadishLeaves);
-    %         GoodishLeaves = BadishLeaves(subR(1, :)>Threshold); % NOT GOOD!! Need a new algorithm that takes largest chunk of correlated things
-    %
-    %         % if there are no close relatives, remove leaf from contending
-    %         if numel(GoodishLeaves)<=1
-    %             BadishLeaves(1) = [];
-    %             continue
-    %         end
-    %
-    %         % make new cluster of goodish leaves
-    %         N_Indx = numel(NewClusters) +1;
-    %         NewClusters(N_Indx).OriginalCluster = C;
-    %         NewClusters(N_Indx).Parent =  Nodes(C).Parent;
-    %         NewClusters(N_Indx).Leaves = Leaves(GoodishLeaves);
-    %
-    %         % TODO if needed: calculate distance as mean distance of all
-    %         % leaves (same for parent)
-    %
-    %         % remove this goodish cluster from badish leaves
-    %         BadishLeaves(ismember(BadishLeaves,GoodishLeaves)) = [];
-    %     end
-    
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 end
 
 %%% prune clusters & get cluster info
@@ -147,8 +91,7 @@ for Indx_C = 1:numel(NewClusters)
     if  any(R(:)<.9) % DEBUG
         A=1;
     end
-    
-    NewClusters(Indx_C).Topo = mean(Topos, 1);
+
     NewClusters(Indx_C).RTopo = nanmean(R(:));
     
     % get mean of power spectrum and correlation
@@ -156,47 +99,39 @@ for Indx_C = 1:numel(NewClusters)
     R = corrcoef(FFT');
     R(I) = nan;
     
-    NewClusters(Indx_C).FFT = mean(FFT, 1); % MIGHT get rid of
     NewClusters(Indx_C).RFFT = nanmean(R(:));
     
     % get aggregate session information
-    NewClusters(Indx_C).Sessions = unique(cat(2, L.Sessions));
-    NewClusters(Indx_C).nSessions = numel(NewClusters(Indx_C).Sessions);
-    
-    
-    
-    % get component energy ? TODO if needed
+    Sessions = unique(cat(2, L.Sessions));
+    NewClusters(Indx_C).nSessions = numel(Sessions);
 end
-
 
 % remove clusters that cover just 1 session
 nSessions = [NewClusters.nSessions];
 NewClusters(nSessions<=1) = [];
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% create new links matrix
 
 % assemble subset of leaves left (position indicates new number)
 OldLeafIndexes = cat(2, NewClusters.Leaves);
 NewLabels = Labels(OldLeafIndexes);
 
-% get for all NewClusters a mean R value (invert it), sort them, then link
-% every pair of leaves within a cluster to the same r value (need to use
-% row index of previous pair as second value) save the last index to
-% indicate that cluster value (needed for linkage)
-
 % sort clusters by average r values for topography
 MeanTopoR = cat(2, NewClusters.RTopo);
 
 MeanTopoR = 1-MeanTopoR; % flip so highest corr yields lowest value
 [~, Order] = sort(MeanTopoR);
-NewClusters = NewClusters(Order);
-ClusterIndexes = zeros(size(Order));
+NewClusters = NewClusters(Order); % change order
 
-% pair up all the components in a cluster
-Offset = numel(OldLeafIndexes)+1;
+
+% pair up all the components in a cluster to Links format
+Offset = numel(OldLeafIndexes)+1; % number of node being added
 NewLinks = [];
+ClusterIndexes = zeros(size(Order)); % where i'll save the last pair of a cluster, so new cluster index
 for Indx_C = 1:numel(NewClusters)
-    RTopo = 1-NewClusters(Indx_C).RTopo;
+    RTopo = 1-NewClusters(Indx_C).RTopo; % "distance" of the link
     
     % get new node numbers
     OldLeaves =  NewClusters(Indx_C).Leaves;
@@ -205,27 +140,29 @@ for Indx_C = 1:numel(NewClusters)
     % set up first pair of cluster
     NewLinks = cat(1, NewLinks, [NewLeaves(1:2), RTopo]);
     
-    % append all other leaves
+    % append all other leaves to the first pair
     for Indx_L = 3:numel(NewLeaves)
         NewLinks = cat(1, NewLinks, [Offset, NewLeaves(Indx_L), RTopo]);
-        Offset = Offset +1;
+        Offset = Offset+1;
     end
     
     ClusterIndexes(Indx_C) = Offset; % last pair's row is the node for the whole cluster
-    Offset = Offset +1;
+    Offset = Offset+1;
 end
 
-% get matrix of links of least common ancesctors of all clusters (for
-% same clusters, indicate 0 as link), nan all repeats
+%%% get links between clusters from old tree, by finding lowest common ancestors
 LCALinks = ones(numel(NewClusters));
 for Indx_C1 =  1:numel(NewClusters)
-    for Indx_C2 = 1:numel(NewClusters) % Indx_C1:numel(NewClusters)
+    for Indx_C2 = 1:numel(NewClusters)
+        
+        % select nodes of two clusters
         N1 =  NewClusters(Indx_C1).OriginalCluster;
         N2 =  NewClusters(Indx_C2).OriginalCluster;
-        if N1 == N2
+        
+        if N1 == N2 % if from the same original cluster, distance is 0
             LCADistance = 0;
         else
-            LCA = GetLCA(Nodes, N1, N2);
+            LCA = GetLCA(Nodes, N1, N2); % finds first ancestor in common
             LCADistance = Nodes(LCA).Distance;
         end
         
@@ -239,23 +176,27 @@ LCALinks(I) = 1; %#ok<FNDSB>
 
 ClusterLinks = linkage(LCALinks, LinkType);
 
-% shift allgroup numbers so they start from last cluster
+% shift allgroup numbers so they start from last node index used
 IDs = ClusterLinks(:, 1:2);
 IDs(IDs>numel(NewClusters)) = (IDs(IDs>numel(NewClusters))-numel(NewClusters)) + max([max(NewLinks(:, 1:2)), ClusterIndexes]);
 
 
-% change all cluster numbers so they correspond to their cluster
+% change all cluster numbers in cluster tree so they correspond to their cluster index
 ClustersInOrder = IDs(IDs <=numel(NewClusters));
 IDs(IDs <=numel(NewClusters)) = ClusterIndexes(ClustersInOrder);
-
 ClusterLinks(:, 1:2) = IDs;
+
+% shift distances so they're not crazy bigger than the correlation links
 ClusterLinks(:, 3) = mat2gray(ClusterLinks(:, 3))+max(NewLinks(:, 3))+.01; % shift so it's heigher than corr values
 NewLinks = cat(1, NewLinks, ClusterLinks);
 
 NewNodes = Unpack(NewLinks);
 NewClusters = ClusterIndexes;
 
-% add properties to new nodes
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% add properties to new nodes
+
 for Indx_N = 1:numel(NewNodes)
     L = OldLeafIndexes(NewNodes(Indx_N).Leaves);
 
@@ -268,9 +209,3 @@ for Indx_N = 1:numel(NewNodes)
     NewNodes(Indx_N).Sessions = unique(cat(2,Nodes(L).Sessions));
     NewNodes(Indx_N).nSessions = numel(NewNodes(Indx_N).Sessions);
 end
-
-% - and find a way to avoid too many little splinters
-
-
-
-

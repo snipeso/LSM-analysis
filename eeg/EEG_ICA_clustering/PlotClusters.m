@@ -1,9 +1,10 @@
-function PlotClusters(Nodes, Clusters, Freqs, Chanlocs, Format, Sessions, SessionLabels, Labels, ColorLabel, Destination)
+function PlotClusters(Nodes, Clusters, Freqs, Chanlocs, Format, ...
+    Sessions, SessionLabels, Labels, ColorLabel, Destination)
 
 subX = 3;
 subY = 5;
 
-for Indx_C = 1:size(Clusters, 1)
+for Indx_C = 1:numel(Clusters)
     C = Clusters(Indx_C);
     figure('units','normalized','outerposition',[0 0 1 1])
     subplot(subX, subY, 1)
@@ -67,7 +68,7 @@ for Indx_C = 1:size(Clusters, 1)
     
     AllFFT = cat(1,  Nodes(Leaves).FFT);
     R =  corrcoef(AllFFT');
-    title(['FFT R: ', num2str(mean(R))])
+    title(['FFT R: ', num2str(mean(R(:)))])
     
     
     % plot little tree of connections between these components

@@ -3,7 +3,6 @@ function Clusters = PruneClusters(Clusters, Nodes, Links)
 
 % remove clusters with just 1 session (split from above on purpose)
 nSessions = [Nodes(Clusters).nSessions];
-
 Clusters(nSessions==1) = [];
 
 
