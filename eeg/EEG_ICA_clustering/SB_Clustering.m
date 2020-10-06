@@ -153,7 +153,7 @@ for Indx_P = 9
             Nodes(Indx_N).nSessions = numel(Nodes(Indx_N).Sessions);
             
             StandardChanlocs = EEG.chanlocs;
-            Nodes(Indx_N).CExSD = CE;
+            Nodes(Indx_N).CExSD = CE; % ????
             
         end
         save(fullfile(Destination, NodesFilename), 'Nodes', 'Links', 'StandardChanlocs', 'AllT')

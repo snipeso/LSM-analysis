@@ -63,61 +63,73 @@ for Indx_C = 1:numel(Clusters)
         continue
     end
     
-    OldR = R;  % DEBUG
-    try %DEBUG
-        % remove from R matrix and topos the rotten leaves
-        
-        Indx_RL = all(R<Threshold|R==1);
-        R(Indx_RL, :) = [];
-        R(:, Indx_RL) = [];
-        Topos(Indx_RL, :) = [];
-        
-        Leaves = L(~Indx_RL);
-        BadishLeaves = any(R<Threshold);
-        
-        BestLeaves = Leaves(~BadishLeaves); % completely correlated set of leaves
-    catch
-        a=1;
-    end
+    % remove from R matrix the rotten leaves
     
-    % make new cluster out of best leaves
-    if ~isempty(BestLeaves)
-        NewClusters(N_Indx).OriginalCluster = C;
-        NewClusters(N_Indx).Leaves = BestLeaves;
-        NewClusters(N_Indx).Distance = Nodes(C).Distance;
-        NewClusters(N_Indx).Parent = Nodes(C).Parent;
-    elseif numel(BestLeaves) == 1
-        A= 1;
-    end
+    Indx_RL = all(R<Threshold|R==1);
+    R(Indx_RL, :) = [];
+    R(:, Indx_RL) = [];
+    
+    Leaves = L(~Indx_RL);
     
     
-    %%% split cluster if there are "bad" leaves (sub-clusters)
-    
-    BadishLeaves= find(BadishLeaves);
-    while ~isempty(BadishLeaves) % loop through bad leaves list, taking out correlated chunks
-        
-        % get leaves most related to first in the row
-        subR = R(BadishLeaves, BadishLeaves);
-        GoodishLeaves = BadishLeaves(subR(1, :)>Threshold); % NOT GOOD!! Need a new algorithm that takes largest chunk of correlated things
-        
-        % if there are no close relatives, remove leaf from contending
-        if numel(GoodishLeaves)<=1
-            BadishLeaves(1) = [];
-            continue
-        end
-        
-        % make new cluster of goodish leaves
+    NewSubClusters = ClusterMess(R, Threshold);
+    for Indx_sC = 1:numel(NewSubClusters)
         N_Indx = numel(NewClusters) +1;
         NewClusters(N_Indx).OriginalCluster = C;
-        NewClusters(N_Indx).Parent =  Nodes(C).Parent;
-        NewClusters(N_Indx).Leaves = Leaves(GoodishLeaves);
-        
-        % TODO if needed: calculate distance as mean distance of all
-        % leaves (same for parent)
-        
-        % remove this goodish cluster from badish leaves
-        BadishLeaves(ismember(BadishLeaves,GoodishLeaves)) = [];
+        NewClusters(N_Indx).Leaves =  Leaves(NewSubClusters(Indx_sC).Nodes);
+        NewClusters(N_Indx).Parent = Nodes(C).Parent;
     end
+    
+    
+    %     BadishLeaves = any(R<Threshold);
+    %
+    %     BestLeaves = Leaves(~BadishLeaves); % completely correlated set of leaves
+    %
+    %
+    %     % make new cluster out of best leaves
+    %     if ~isempty(BestLeaves)
+    %         NewClusters(N_Indx).OriginalCluster = C;
+    %         NewClusters(N_Indx).Leaves = BestLeaves;
+    %         NewClusters(N_Indx).Distance = Nodes(C).Distance;
+    %         NewClusters(N_Indx).Parent = Nodes(C).Parent;
+    %     elseif numel(BestLeaves) == 1
+    %         A= 1;
+    %     end
+    %
+    %     LeavesLeft = Leaves;
+    %
+    %
+    %     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %
+    %     %%% split cluster if there are "bad" leaves (sub-clusters)
+    %
+    %     BadishLeaves= find(BadishLeaves);
+    %     while ~isempty(BadishLeaves) % loop through bad leaves list, taking out correlated chunks
+    %
+    %         % get leaves most related to first in the row
+    %         subR = R(BadishLeaves, BadishLeaves);
+    %         GoodishLeaves = BadishLeaves(subR(1, :)>Threshold); % NOT GOOD!! Need a new algorithm that takes largest chunk of correlated things
+    %
+    %         % if there are no close relatives, remove leaf from contending
+    %         if numel(GoodishLeaves)<=1
+    %             BadishLeaves(1) = [];
+    %             continue
+    %         end
+    %
+    %         % make new cluster of goodish leaves
+    %         N_Indx = numel(NewClusters) +1;
+    %         NewClusters(N_Indx).OriginalCluster = C;
+    %         NewClusters(N_Indx).Parent =  Nodes(C).Parent;
+    %         NewClusters(N_Indx).Leaves = Leaves(GoodishLeaves);
+    %
+    %         % TODO if needed: calculate distance as mean distance of all
+    %         % leaves (same for parent)
+    %
+    %         % remove this goodish cluster from badish leaves
+    %         BadishLeaves(ismember(BadishLeaves,GoodishLeaves)) = [];
+    %     end
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 end
 
 %%% prune clusters & get cluster info
@@ -200,7 +212,7 @@ for Indx_C = 1:numel(NewClusters)
     end
     
     ClusterIndexes(Indx_C) = Offset; % last pair's row is the node for the whole cluster
-     Offset = Offset +1;
+    Offset = Offset +1;
 end
 
 % get matrix of links of least common ancesctors of all clusters (for
@@ -245,7 +257,7 @@ NewClusters = ClusterIndexes;
 
 % add properties to new nodes
 for Indx_N = 1:numel(NewNodes)
-L = OldLeafIndexes(NewNodes(Indx_N).Leaves);
+    L = OldLeafIndexes(NewNodes(Indx_N).Leaves);
     NewNodes(Indx_N).FFT = mean(Nodes(L).FFT, 1);
     NewNodes(Indx_N).Topo = mean(Nodes(L).Topo, 1);
     NewNodes(Indx_N).CE = mean(Nodes(L).CE);
