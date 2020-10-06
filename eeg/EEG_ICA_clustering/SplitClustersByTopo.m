@@ -144,7 +144,7 @@ for Indx_C = 1:numel(NewClusters)
     R = corrcoef(FFT');
     R(I) = nan;
     
-    NewClusters(Indx_C).FFT = mean(FFT, 1);
+    NewClusters(Indx_C).FFT = mean(FFT, 1); % MIGHT get rid of
     NewClusters(Indx_C).RFFT = nanmean(R(:));
     
     % get aggregate session information
@@ -241,6 +241,19 @@ ClusterLinks(:, 3) = mat2gray(ClusterLinks(:, 3))+max(NewLinks(:, 3))+.01; % shi
 NewLinks = cat(1, NewLinks, ClusterLinks);
 
 NewNodes = Unpack(NewLinks);
+NewClusters = ClusterIndexes;
+
+% add properties to new nodes
+for Indx_N = 1:numel(NewNodes)
+L = OldLeafIndexes(NewNodes(Indx_N).Leaves);
+    NewNodes(Indx_N).FFT = mean(Nodes(L).FFT, 1);
+    NewNodes(Indx_N).Topo = mean(Nodes(L).Topo, 1);
+    NewNodes(Indx_N).CE = mean(Nodes(L).CE);
+    NewNodes(Indx_N).SD = mean(Nodes(L).SD, 1);
+    NewNodes(Indx_N).nBadComps = sum(Nodes(L).nBadComps);
+    NewNodes(Indx_N).Sessions = unique(cat(2,Nodes(L).Sessions));
+    NewNodes(Indx_N).nSessions = numel(NewNodes(Indx_N).Sessions);
+end
 
 
 % TODO: add properties to new nodes!!
