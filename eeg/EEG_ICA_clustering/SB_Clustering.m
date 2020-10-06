@@ -53,7 +53,7 @@ end
 
 
 % appply seperately for each participant
-for Indx_P = 9
+for Indx_P = 1
     
     Participant = Participants{Indx_P};
     Path = fullfile(Paths.Preprocessed, Folder, 'Components', Task);
@@ -75,7 +75,7 @@ for Indx_P = 9
             % load EEG data
             Session = Sessions{Indx_S};
             
-            TitleTag = strjoin({Title, Participants{Indx_P}, Task, Session, Folder, 'Components'}, '_');
+            TitleTag = strjoin({Participants{Indx_P}, Task, Session, Folder, 'Components'}, '_');
             Filename = [TitleTag, '.set'];
             if ~exist(fullfile(Path, Filename), 'file')
                 continue
