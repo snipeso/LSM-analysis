@@ -51,12 +51,6 @@ Parameters(3).lp = 40; % low pass filter
 Parameters(3).hp = 0.5; % high pass filter
 Parameters(3).hp_stopband = 0.25; % high pass filter
 
-% Wake: starting data for properly cleaned wake data
-Parameters(3).Format = 'ERP'; % reference name
-Parameters(3).fs = 500; % new sampling rate
-Parameters(3).lp = 40; % low pass filter
-Parameters(3).hp = 0.1; % high pass filter
-Parameters(3).hp_stopband = 0.05; % high pass filter
 
 % ICA: heavily filtered data for getting ICA components
 Parameters(4).Format = 'ICA'; % reference name
@@ -72,6 +66,13 @@ Parameters(5).SpChannel = 6;
 Parameters(5).lp = 40; % low pass filter
 Parameters(5).hp = .5; % high pass filter
 Parameters(5).hp_stopband = .2; % high pass filter
+
+% Wake: starting data for properly cleaned wake data
+Parameters(6).Format = 'ERP'; % reference name
+Parameters(6).fs = 500; % new sampling rate
+Parameters(6).lp = 40; % low pass filter
+Parameters(6).hp = 0.1; % high pass filter
+Parameters(6).hp_stopband = 0.05; % high pass filter
 
 Trigger_Padding = 1; % amount of time in seconds to keep around start and stop triggers
 
