@@ -7,10 +7,10 @@ clc
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Task = 'LAT';
+Task = 'Standing';
 Refresh = false;
 
-Data_Type = 'ERP';
+Data_Type = 'Wake';
 % Filename = ['P09_LAT_Session1Beam_ICA_Components.set'];
 Filename = [];
 CheckOutput = true;
