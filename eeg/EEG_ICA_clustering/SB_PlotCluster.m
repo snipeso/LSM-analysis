@@ -8,13 +8,13 @@ Clustering_Parameters
 % KeepComponents = 6;
 
 % Session = 'BaselineComp';
-% KeepComponents = 10;
+% KeepComponents = 11;
 
-Participant = 'P11';
+Participant = 'P08';
 Task = 'MWT';
 Folder = 'ICA';
 Session = 'Main';
-KeepComponents = 3;
+KeepComponents = 2;
 
 Filename = [strjoin({Participant, Task, Session, Folder, 'Components'}, '_'),...
     '.set'];
@@ -44,7 +44,7 @@ Data2(abs(Data2)<Range) = nan;
 
 Pix = get(0,'screensize');
 
-eegplot(EEG.data, 'srate', EEG.srate, 'spacing', 25, 'winlength', 10, 'data2', Data2)
+eegplot(Data1, 'srate', EEG.srate, 'spacing', 25, 'winlength', 10, 'data2', Data2)
 
 
 eegplot(Data2, 'srate', EEG.srate, 'spacing', 10, 'winlength', 10)

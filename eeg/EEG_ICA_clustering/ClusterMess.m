@@ -1,5 +1,5 @@
 function NewClusters = ClusterMess(R, Threshold)
-
+% WARNING: bug made node with 1 row possible -.-
 Nodes = 1:size(R, 1);
 
 NodesLeft = Nodes;

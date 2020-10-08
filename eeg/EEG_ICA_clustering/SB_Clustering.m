@@ -53,7 +53,7 @@ end
 
 
 % appply seperately for each participant
-for Indx_P = 1
+for Indx_P = 11
     
     Participant = Participants{Indx_P};
     Path = fullfile(Paths.Preprocessed, Folder, 'Components', Task);
@@ -214,7 +214,7 @@ for Indx_P = 1
     % get figure for each cluster showing topo + topo per session,
     % stacked bar of sessions represented, line x session of CE
     PlotClusters(NewNodes, NewClusters, Freqs, StandardChanlocs, Format, Sessions, ...
-        SessionLabels, NewLabels, StructLabel, [Paths.Figures, '\', [TitleTag, 'FinalClusters']])
+        SessionLabels, NewLabels, StructLabel, [Paths.Figures, '\', [TitleTag, 'FinalClusters']]);
     
     PlotClusterDendro(NewClusters, NewLinks, NewNodes, Format, NewLabels);
     saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_FinalClusterTree.svg']))

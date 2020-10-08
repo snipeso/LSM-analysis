@@ -33,7 +33,7 @@ for Indx_C = 1:numel(Clusters)
         
         topoplot(mean(Topos, 1), Chanlocs, ...
             'style', 'map', 'headrad', 'rim', 'gridscale', 200);
-        title([SessionLabels{Indx_S}, ' (', num2str(nnz(L)), ')'])
+        title([SessionLabels{Indx_S}, ' (', num2str(nnz(L)), ')']);
         
         nSession(Indx_S) = nnz(L);
         
