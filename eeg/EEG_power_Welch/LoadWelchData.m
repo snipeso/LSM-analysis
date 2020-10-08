@@ -6,7 +6,7 @@ wp_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Scaling = 'log'; % either 'log' or 'zcore' or 'scoref'
+Scaling = 'zscore'; % either 'log' or 'zcore' or 'scoref'
 % Scaling = 'log';
 Task = 'PVT';
 Condition = 'Beam';
@@ -19,7 +19,7 @@ Title = 'Soporific';
 % Condition = '';
 % Title = 'Main';
 
-Refresh = true;
+Refresh = false;
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

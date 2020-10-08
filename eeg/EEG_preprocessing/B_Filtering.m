@@ -8,16 +8,17 @@ EEG_Parameters
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Tasks = {'LAT'}; % which tasks to convert (for now)
+Tasks = {'Sleep'}; % which tasks to convert (for now)
 % Tasks = {'MWT', 'Fixation', 'Standing', 'LAT', 'PVT'}; % which tasks to convert (for now)
 % options: 'LAT', 'PVT', 'SpFT', 'Game', 'Music', 'MWT', 'Sleep',
 % 'Fixation', 'Oddball', 'Standing', 'Questionnaire'
 
-Destination_Formats = {'ERP'}; % chooses which filtering to do
+Destination_Formats = {'Wake'}; % chooses which filtering to do
 % options: 'Scoring', 'Cleaning', 'ICA', 'Wake' 'Microsleeps'
 
 Refresh = false; % redo files that are already in destination folder
-
+Max_Size = 60; % maximum duration in minutes, after which it gets chopped up into 30 min pieaces
+Piece_Size = 30;
 SpotCheck = false; % occasionally plot results, to make sure things are ok
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -39,7 +40,7 @@ for Indx_DF = 1:numel(Destination_Formats)
     hp_stopband = Parameters(Indx).hp_stopband;
     
     
-    parfor Indx_D = 1:size(Folders.Datasets,1) % loop through participants
+    for Indx_D =  9 %1:size(Folders.Datasets,1) % loop through participants
         for Indx_F = 1:size(Folders.Subfolders, 1) % loop through all subfolders
             
             %%%%%%%%%%%%%%%%%%%%%%%%
@@ -128,19 +129,48 @@ for Indx_DF = 1:numel(Destination_Formats)
                     SpotCheckFiltered, EEG.srate, CheckChannels)
             end
             
-            % save preprocessing info in eeg structure
-            EEG.setname = Filename_Core;
-            EEG.filename = Filename_Destination;
-            EEG.original.filename = Filename_SET;
-            EEG.original.filepath = Path;
-            EEG.preprocessing = Parameters(Indx);
-            
-            % save EEG
-            pop_saveset(EEG, 'filename', Filename_Destination, ...
-                'filepath', Destination, ...
-                'check', 'on', ...
-                'savemode', 'onefile', ...
-                'version', '7.3');
+            if (EEG.pnts/EEG.srate)*60 > Max_Size % save in pieces
+                Pieces = 1:(Piece_Size*60*EEG.srate):EEG.pnts;
+                
+                for Indx_P = 1:numel(Pieces)-1
+                    
+                    if Indx_P > 1
+                        Filename_Destination = [Filename_Core{1}, '_', num2str(Indx_P, '%02.f'), '.set'];
+                    end
+                    
+                    pEEG = pop_select(EEG, 'point', [Pieces(Indx_P), Pieces(Indx_P)+1]);
+                    
+                    % save preprocessing info in eeg structure
+                    pEEG.setname = Filename_Core;
+                    pEEG.filename = Filename_Destination;
+                    pEEG.original.filename = Filename_SET;
+                    pEEG.original.filepath = Path;
+                    pEEG.preprocessing = Parameters(Indx);
+                    
+                    % save EEG
+                    pop_saveset(pEEG, 'filename', Filename_Destination, ...
+                        'filepath', Destination, ...
+                        'check', 'on', ...
+                        'savemode', 'onefile', ...
+                        'version', '7.3');
+                    
+                end
+            else % save whole
+                
+                % save preprocessing info in eeg structure
+                EEG.setname = Filename_Core;
+                EEG.filename = Filename_Destination;
+                EEG.original.filename = Filename_SET;
+                EEG.original.filepath = Path;
+                EEG.preprocessing = Parameters(Indx);
+                
+                % save EEG
+                pop_saveset(EEG, 'filename', Filename_Destination, ...
+                    'filepath', Destination, ...
+                    'check', 'on', ...
+                    'savemode', 'onefile', ...
+                    'version', '7.3');
+            end
         end
         
         disp(['************** Finished ',  Folders.Datasets{Indx_D}, '***************'])

@@ -21,7 +21,7 @@ Types = { 'Delta', 'Theta', 'Alpha', 'Beta';
     'rP300mean', 'sP300mean', '',''
     };
 PlotShortYLabels = flip({'KSS', 'Theta', 'miDuration', 'Lapses', 'meanRTs'});
-PlotLongYLabels = {'Top10', 'medianRTs', 'meanRTs','Late','Bottom10','Q1Q4RTs','stdRTs','Lapses-FA','Lapses','Hits','miTot','Difficult','Misses','miDuration','Delta','backAlpha','Beta','Motivation','Theta','KSS' };
+PlotLongYLabels = {'Top10', 'medianRTs', 'meanRTs','Late','Bottom10','Q1Q4RTs','stdRTs','Lapses-FA','Lapses','Hits','miTot','Difficult','Misses','miDuration','Delta','Beta','Motivation','Theta','KSS' };
 
 Normalizations = {true, false};
 Flip = {'Motivation', 'Hits'};
@@ -167,7 +167,7 @@ for Indx_N = 1:numel(Normalizations)
             Colors =  GetColors(YLabel, MiddleCols, Format);
             plot([0 0], [0, numel(YLabel)+1], 'k')
             PlotRanges(Pairwise{YLabel, MiddleCols}, Pairwise{YLabel, LowEndCols}, Pairwise{YLabel, HighEndCols}, YLabel, [], Colors, Format)
-            xlim([-3, 6])
+            xlim([-2, 5])
             ylim([0  numel(YLabel)+1])
             set(gca, 'FontSize', 12)
             title([PlotComparisons{Indx_PL}, Norm])

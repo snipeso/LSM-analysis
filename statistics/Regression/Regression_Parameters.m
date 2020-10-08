@@ -3,4 +3,5 @@
 run(fullfile(extractBefore(mfilename('fullpath'), 'statistics'), 'General_Parameters'))
 
 % Locations
-Paths.Data = fullfile(Paths.Analysis, 'Regression', 'SummaryData');
+Paths.Preprocessed = 'D:\Data\Preprocessed';
+Paths.Data = Paths.Preprocessed;

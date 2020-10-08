@@ -16,3 +16,6 @@ for Indx = 1:size(Colors, 1)
         h(Indx).CData = Colors(Indx, :);
     end
 end
+
+set(gca,'TickLength',[0 0])
+box off

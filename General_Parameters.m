@@ -40,7 +40,8 @@ Format.FontName = 'Tw Cen MT'; % use something else for papers
 
 % Colors
 Format.Colormap.Linear = flip(colorcet('L17'));
-Format.Colormap.Divergent = rdbu;
+Format.Colormap.Divergent = rdbu(20);
+
 Format.Colormap.Rainbow = unirainbow;
 Format.Colormap.PaleRainbow = paleunirainbow;
 
@@ -60,6 +61,8 @@ Format.Colors.LAT = [
     59, 104, 0; % post
     ]./255; % RGB to sRGB
 
+
+
 Format.Colors.LATBeam = Format.Colors.LAT([1, 3, 5], :);
 
 Format.Colors.LATSD3 = Format.Colors.LAT([4, 5, 6], :);
@@ -71,7 +74,13 @@ Format.Colors.LATBL = Format.Colors.LAT;
 
 Format.Colors.LATComp = makePale(Format.Colors.LATBeam);
 
-Format.Colors.LATAll = [Format.Colors.LATBeam; Format.Colors.LATComp];
+Format.Colors.LATAll = [Format.Colors.LATComp(1, :); % BLC
+    Format.Colors.LAT(1:2, :); % BLB, Pre
+    Format.Colors.LATComp(2, :); % S1C
+     Format.Colors.LAT(3, :); % S1B
+    Format.Colors.LATComp(3, :); % S2C
+     Format.Colors.LAT(4:7, :); % BLB, Pre 
+    ];
 Format.Colors.LATSDvBL = Format.Colors.LAT([1, 5], :);
 
 Format.Colors.PVT = [
@@ -182,6 +191,11 @@ allSessionLabels.Basic = {'BL', 'S1', 'S2'};
 % Labels for all of LAT beamer conditions
 allSessions.LATAllBeam = {'BaselineBeam', 'MainPre', 'Session1Beam', 'Session2Beam1', 'Session2Beam2', 'Session2Beam3', 'MainPost'};
 allSessionLabels.LATAllBeam = {'BL', 'Pre', 'S1', 'S2-1', 'S2-2', 'S2-3', 'Post'};
+
+allSessions.LATAll = {'BaselineComp', 'BaselineBeam',  'MainPre', ...
+     'Session1Comp', 'Session1Beam', 'Session2Comp', 'Session2Beam1', ...
+     'Session2Beam2', 'Session2Beam3', 'MainPost'};
+allSessionLabels.LATAll = {'BLc', 'BLs',  'Pre', 'S1c', 'S1s', 'S2c', 'S2-1', 'S2-2', 'S2-3', 'Post'};
 
 allSessions.LATBL = {'BaselineBeam', 'MainPre', 'MainPost'};
 allSessionLabels.LATBL = {'BL', 'Pre', 'Post'};

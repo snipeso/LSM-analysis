@@ -31,14 +31,14 @@ if ~isempty(Errors)
         x = (1:ngroups) - groupwidth/2 + (2*Indx-1) * groupwidth / (2*nbars);
         
         if ndims(Errors) == 2
-            errorbar(x, Data(:,Indx), Errors(:,Indx), 'k', 'linestyle', 'none', 'LineWidth', 2);
+            errorbar(x, Data(:,Indx), Errors(:,Indx), 'k', 'linestyle', 'none', 'LineWidth', 1.5);
         elseif ndims(Errors) == 3
             if exist('Orientation', 'var') && strcmp(Orientation, 'horizontal')
 %                 errorbar(Data(:,Indx), x, abs(Data(:,Indx)-Errors(:,Indx, 1)), ...
 %                     abs(Errors(:,Indx, 2)-Data(:,Indx)), 'k', 'horizontal', 'linestyle', 'none', 'LineWidth', 2);
 
                 errorbar(Data(:,Indx), x, Data(:,Indx)-Errors(:,Indx, 1), ...
-                    Errors(:,Indx, 2)-Data(:,Indx), 'k', 'horizontal', 'linestyle', 'none', 'LineWidth', 2);
+                    Errors(:,Indx, 2)-Data(:,Indx), 'k', 'horizontal', 'linestyle', 'none', 'LineWidth', 1.5);
 
 
             else
