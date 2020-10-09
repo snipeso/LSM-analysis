@@ -1,4 +1,4 @@
-function [R] = SnipletDecomposition(Data, Sniplets, Overlap)
+function [ConvAll, R] = SnipletDecomposition(Data, Sniplets, Overlap)
 % if sniplets is a matrix, treat each row as a sniplet
 % check that Sniplets is small enough
 
@@ -13,36 +13,84 @@ if numel(Sniplets) == 1
     for Indx_S = 1:numel(Starts)
         Sniplets(Indx_S, :) = Data(Starts(Indx_S):Stops(Indx_S));
     end
+else
+    Gap = size(Sniplets, 2);
+    Starts = 1:Gap:numel(Data)-Gap;
+    Stops = Starts+Gap-1;
 end
 
 [nSniplets, SniPoints] = size(Sniplets);
 
-R = nan(nSniplets, numel(Data));
+ConvAll = nan(nSniplets, numel(Data));
+R =  nan(nSniplets);
 
-for Indx_S = 1:nSniplets
-    G = gausswin(SniPoints);
-    Sniplet = G'.*Sniplets(Indx_S, :);
+halfsnipletsize = ceil(SniPoints/2);
+G = gausswin(SniPoints);
+Sniplets = G'.*Sniplets;
+
+for Indx_S1 = 1:nSniplets
     
-    % halfsnipletsize = ceil(length(Sniplet)/2);
+    
+    %
     % NFFT = numel(IC) + numel(Sniplet) - 1;
     % FFTIC = fft(IC, NFFT);
     %  FFTSni = fft(Sniplet, NFFT);
     %  ift = ifft(FFTIC.*FFTSni, NFFT);
     %  result2 = real(ift(halfsnipletsize:end-halfsnipletsize+1));
-    % % R = ifft(fft(IC, nIC) .* fft(Snipet, nSni), nIC);
+    % % Conv = ifft(fft(IC, nIC) .* fft(Snipet, nSni), nIC);
     
-    Overlap = conv(Data, Sniplet, 'same');
-%    R(Indx_S, :) = mat2gray(envelope(abs(Overlap), SniPoints/10, 'peak'));
+    Sniplet1 = Sniplets(Indx_S1, :);
+%     Conv = conv(Data, Sniplet1, 'same');
 
-%  R(Indx_S, :) = envelope(abs(zscore(Overlap)), SniPoints, 'analytic');
-%   R(Indx_S, :) = zscore(Overlap);
-   R(Indx_S, :) = Overlap;
+Conv = xcorr(Data, Sniplet1);
+Conv = Conv(numel(Data):end);
+    
+%     ConvAll(Indx_S1, :) = zscore(Conv);
+       ConvAll(Indx_S1, :) = Conv;
+        ConvAll(Indx_S1, :) = 1./(1+exp(Conv.*-.001));
+        A=1;
+    
+%     for Indx_S2 = Indx_S1:nSniplets
+% %         Range_S2 = Starts(Indx_S2):Stops(Indx_S2);
+% %         C = G'.*Conv(Range_S2);
+% %         [~, I] = max(C);
+% %         Indx = Range_S2(I);
+% %         Window_S2 = [Indx - halfsnipletsize, Indx + halfsnipletsize-1];
+% %         
+% %         if Window_S2(1)<1 || Window_S2(2)>numel(Data)
+% %             continue
+% %         end
+% %         
+% %         Sniplet2 = G'.*Data(Window_S2(1):Window_S2(2));
+% 
+% Sniplet2 = Data(Starts(Indx_S2):Stops(Indx_S2));
+% 
+% SR = xcorr(Sniplet1, Sniplet2, 'normalized');
+%         
+% %         if Indx_S1 == Indx_S2
+%             figure; 
+%             subplot(2, 1, 1)
+%             plot(Sniplets(Indx_S1, :))
+%             hold on
+%             plot(Sniplet2)
+%             subplot(2, 1, 2)
+%             plot(Conv(Range_S2))
+%             hold on
+%             plot(C)
+%           scatter(I, C(I), 'filled')
+%             
+%             A= 1;
+% %         end
+%         
+%         R(Indx_S1, Indx_S2) = corr(Sniplet1', Sniplet2');
+%     end
+%     
 end
 
+% ConvAll = zscore(ConvAll);
 
- Hilby = hilbert(R')';
- R = abs(Hilby);
+Hilby = hilbert(ConvAll')';
+ConvAll = abs(Hilby);
 
- 
- 
- % R = zscore(R);
+% sfotmax to get beteen 0 and 1
+
