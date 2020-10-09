@@ -52,7 +52,7 @@ result = conv(IC, Sniplet, 'same');
 
 normresult = mat2gray(abs(result));
 % R = mat2gray(envelope(abs(result), round(EEG.srate/10), 'peak'));
-R = mat2gray(envelope(abs(result), 400, 'analytic'));
+R = mat2gray(abs(hilbert(result)));
 
 t = linspace(0, numel(IC)/EEG.srate, numel(IC));
 figure
