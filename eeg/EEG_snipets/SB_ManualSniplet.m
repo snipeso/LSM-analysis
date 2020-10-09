@@ -19,11 +19,11 @@ Color = [1 1 0];
 % PlotComponent(EEG, 2)
 
 %%
-ICAEEG = EEG.data;
+shortEEG = pop_select(EEG, 'time', [9980 10100]);
+ pop_eegplot(shortEEG)
+IC = shortEEG.data(63, :);
 
-IC = ICAEEG(2, :);
-
-PrototypeTime = round([5745, 5748]*EEG.srate); % indicate time window
+PrototypeTime = round([5, 11]*EEG.srate); % indicate time window
 
 % PrototypeTime = round([1, 2.2]*EEG.srate); % indicate time window
 Prototype = IC(PrototypeTime(1):PrototypeTime(2));
@@ -39,19 +39,8 @@ t = linspace(0, numel(Sniplet)/EEG.srate, numel(Sniplet));
 plot(t,Sniplet)
 plot(t, Prototype);
 
-% 
-% halfsnipletsize = ceil(length(Sniplet)/2);
-% NFFT = numel(IC) + numel(Sniplet) - 1;
-% FFTIC = fft(IC, NFFT);
-%  FFTSni = fft(Sniplet, NFFT);
-%  ift = ifft(FFTIC.*FFTSni, NFFT);
-%  result2 = real(ift(halfsnipletsize:end-halfsnipletsize+1));
-% % R = ifft(fft(IC, nIC) .* fft(Snipet, nSni), nIC);
-
 result = conv(IC, Sniplet, 'same');
 
-normresult = mat2gray(abs(result));
-% R = mat2gray(envelope(abs(result), round(EEG.srate/10), 'peak'));
 R = mat2gray(abs(hilbert(result)));
 
 t = linspace(0, numel(IC)/EEG.srate, numel(IC));
@@ -59,6 +48,7 @@ figure
 hold on
 plot(t, mat2gray(IC))
 plot(t, R)
+plot(t, mat2gray(abs(result)))
 % plot(t, normresult)
 
 %%

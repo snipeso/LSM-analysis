@@ -35,15 +35,14 @@ for Indx_S = 1:nSniplets
 %    R(Indx_S, :) = mat2gray(envelope(abs(Overlap), SniPoints/10, 'peak'));
 
 %  R(Indx_S, :) = envelope(abs(zscore(Overlap)), SniPoints, 'analytic');
-  R(Indx_S, :) = zscore(Overlap);
+%   R(Indx_S, :) = zscore(Overlap);
    R(Indx_S, :) = Overlap;
 end
 
 
-% R = zscore(R);
-
-R = envelope(abs(R'), SniPoints, 'analytic')'; % TODO: use hilbert instead
-
-
  Hilby = hilbert(R')';
  R = abs(Hilby);
+
+ 
+ 
+ % R = zscore(R);
