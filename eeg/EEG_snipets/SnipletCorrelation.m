@@ -1,4 +1,4 @@
-function [R] = SnipletCorrelation(Data, Sniplets, Overlap)
+function [R] = SnipletCorrelation(Data, Sniplets, Overlap, Taper)
 % if sniplets is a matrix, treat each row as a sniplet
 % check that Sniplets is small enough
 
@@ -23,9 +23,10 @@ end
 
 R =  nan(nSniplets);
 
-halfsnipletsize = ceil(SniPoints/2);
-G = gausswin(SniPoints);
-Sniplets = G'.*Sniplets;
+if Taper
+    G = gausswin(SniPoints);
+    Sniplets = G'.*Sniplets;
+end
 
 FFT = fft(Sniplets');
 
