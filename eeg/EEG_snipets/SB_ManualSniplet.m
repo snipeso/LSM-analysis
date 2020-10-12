@@ -1,10 +1,11 @@
 % close all
 % clear
 % clc
-% run(fullfile(extractBefore(mfilename('fullpath'), 'eeg'), 'General_Parameters'))
+run(fullfile(extractBefore(mfilename('fullpath'), 'eeg'), 'General_Parameters'))
 
 % Filename = 'P09_Sleep_Baseline_Scoring.set';
-% Filename = 'P08_MWT_Main_ICA_Components.set';
+Filename = 'P08_MWT_Main_ICA_Components.set';
+Filename = 'P08_LAT_Session2Beam1_ICA_Components.set';
 Filepath = 'C:\Users\colas\Desktop\Temp';
 
 
@@ -13,7 +14,7 @@ Threshold = .9;
 Color = [1 1 0];
 
 % 
-Weights = EEG.icaweights*EEG.icasphere;
+Weights = EEG.icaweights*EEG.icasphere;[
 ICAEEG = Weights * EEG.data;
 
 % PlotComponent(EEG, 2)
