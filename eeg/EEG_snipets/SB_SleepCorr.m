@@ -195,6 +195,75 @@ end
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% feature selection
+
+% select snippet
+% pop_eegplot(EEG)
+
+Snippet_T = [17706 17710, 25]; % blinks
+Title = 'blink';
+% 
+% Snippet_T = [150 154, 84]; % alpha
+% Title = 'alpha';
+
+% Snippet_T = [1822 1826, 3]; % k-complex
+% Title = 'k-complex';
+
+% Snippet_T = [3541 3545, 10]; % SWA
+% Title = 'SWA';
+% 
+% Snippet_T = [19719 19723, 30]; % spindle
+% Title = 'spindle';
+
+Overlap_Small = .5;
+
+
+Ch = find(ismember({Chanlocs.labels}, string(Snippet_T(end))));
+Snippet_P = Snippet_T(1:2)*EEG.srate;
+Snippet = EEG.data(Ch, Snippet_P(1):Snippet_P(2));
+
+figure
+G = gausswin(numel(Snippet));
+Sniplet = G'.*Snippet;
+t = linspace(0, numel(Sniplet)/EEG.srate, numel(Sniplet));
+plot(t, Sniplet)
+title(Title)
+
+
+% loop through channels, get r for snippet; plot image
+Sniplet_Ch = [];
+for Indx_Ch = 1:numel(Chanlocs)
+  R = SnipletCorrelation(EEG.data(Indx_Ch, :), Snippet, Overlap_Small, true);
+Sniplet_Ch = cat(1, Sniplet_Ch, R);
+  
+end
+
+figure('units','normalized','outerposition',[0 0 1 1])
+subplot(4, 1, 1:2)
+imagesc(Sniplet_Ch)
+colorbar
+colormap(inferno)
+caxis([.6 1])
+title(Title)
+
+% subplot line of that feature in its channel
+subplot(4, 1, 3)
+TEnd = size(EEG.data, 2)/EEG.srate;
+t = linspace(0, TEnd, size(Sniplet_Ch, 2));
+hold on
+plot(t, Sniplet_Ch(Ch, :), 'Color', 'k')
+[A, MinI] = min(abs(t-Snippet_T(1)));
+scatter(t(MinI), Sniplet_Ch(Ch, MinI), 10, 'r', 'filled')
+xlim([0, TEnd])
+ylim([.6, 1])
+
+% subplot sleep scoring
+subplot(4, 1, 4)
+[visplot] = visfun.plotvis(visnum, 10);
+ plot(visplot(:,1), visplot(:,2))
+xlim([min(visplot(:,1)), max(visplot(:,1))])
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % assmeble "average per stage", run on 2 channels, and see when there's
 % most disagreement?
 
