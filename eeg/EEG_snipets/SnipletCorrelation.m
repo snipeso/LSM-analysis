@@ -1,4 +1,4 @@
-function [R] = SnipletCorrelation(Data, Sniplets, Overlap, Taper)
+function [R, Windows] = SnipletCorrelation(Data, Sniplets, Overlap, Taper)
 % if sniplets is a matrix, treat each row as a sniplet
 % check that Sniplets is small enough
 
@@ -33,4 +33,4 @@ FFT = fft(Sniplets');
 FFT = FFT(1:size(FFT,1)/2, :);
 R = corrcoef(abs(FFT));
 
-A =1;
+Windows = [Starts(:), Stops(:)];
