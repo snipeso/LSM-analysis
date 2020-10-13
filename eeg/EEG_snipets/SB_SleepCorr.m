@@ -18,89 +18,167 @@ visfilename = fullfile(Path, Filename);
 % [visplot] = visfun.plotvis(visnum, 10);
 
 Legend = {
-1, 'w';
-0, 'r';
--1, 'n1';
--2, 'n2';
--3, 'n3'
-};
+    1, 'w';
+    0, 'r';
+    -1, 'n1';
+    -2, 'n2';
+    -3, 'n3'
+    };
 
 
 Filename = 'P09_Sleep_Baseline_Scoring.set';
 Filepath = 'C:\Users\colas\Desktop\Temp';
 EEG = pop_loadset('filename', Filename, 'filepath', Filepath);
 
-EEG = pop_reref(EEG, []);
+Mastoids = [57 100];
+EEG = pop_reref(EEG, Mastoids);
+
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% correlation across channels
 
-% Ch = [11, 124, 117, 104,  98, 90, 83, 75, 70, 65, 47, 36, 28, 24];
+Format.Colormap.Linear = inferno;
+Chanlocs = EEG.chanlocs;
 
-% Ch = [15, 9 2 122 115 108 101 96 90 83 75 70 65 58 50 45 39 33 26 22];
-
-% Ch = [11, 4, 124, 117, 110, 103, 98, 92, 85, 77, 72, 67, 60, 52, 47, 41, 35, 28, 24, 19];
-
-% Ch = [4 124 104 103 98, 92, 90, 83, 75, 70, 65, 52, 47, 41, 36, 24, 19, 11];
-% 
-% Ch = flip(Ch);
-
-Ch = 1:128;
 
 DAllCh = [];
-for Indx_Ch = 1:numel(Ch)
-    [R, Windows] = SnipletCorrelation(EEG.data(Ch(Indx_Ch), :), Window*EEG.srate, Overlap, Taper);
+for Indx_Ch = 1:numel(Chanlocs)
+    [R, Windows] = SnipletCorrelation(EEG.data(Indx_Ch, :), Window*EEG.srate, Overlap, Taper);
     DAllCh = cat(1, DAllCh, squareform(1-R));
 end
 
-% get stages per window
-RPoints = size(DAllCh, 2);
-StagePoints = round(linspace(1, numel(visnum), RPoints)); % associate point of stages for every r value
-RStages = nan(1, RPoints);
-for Indx_P = 1:RPoints
-    RStages(Indx_P) = visnum(StagePoints(Indx_P));
+RPoints = size(R, 2);
+
+% plot the logic: correlation of some channels
+figure('units','normalized','outerposition',[0 0 .5 .8])
+ChLabel = [24, 124, 70, 83];
+Ch = find(ismember({Chanlocs.labels}, string(Ch)));
+for Indx_Ch = 1:numel(Ch)
+    subplot(2, 2, Indx_Ch)
+    [R, Windows] = SnipletCorrelation(EEG.data(Indx_Ch, :), Window*EEG.srate, Overlap, Taper);
+    imagesc(R)
+    colorbar
+    colormap(Format.Colormap.Linear)
+    caxis([.6, 1])
+    axis square
+    title(num2str(ChLabel(Indx_Ch)))
 end
 
+figure('units','normalized','outerposition',[0 0 .5 .8])
+imagesc(-(DAllCh-1))
+colorbar
+colormap(Format.Colormap.Linear)
+caxis([.2, 1])
 
 % whole recording
 R = corrcoef(DAllCh');
-Table = [];
-for Indx_Ch1 = 1:numel(Ch)-1
-   for Indx_Ch2 = Indx_Ch1+1:numel(Ch) 
-       Table = cat(1, Table, [Ch(Indx_Ch1), Ch(Indx_Ch2), R(Indx_Ch1, Indx_Ch2)]);
-   end
-end
 
+figure('units','normalized','outerposition',[0 0 .6 .8])
+subplot(2, 2, 1)
+PlotTopoNodes(abs(R), [.7 1.5], Chanlocs, Format)
+title('Whole Sleep FFT Correlations')
+  set(findall(gca, 'type', 'text'), 'visible', 'on',...
+        'FontName', Format.FontName, 'FontSize', 12)
+subplot(2, 2, 3)
+PlotTopoNodes(abs(R), [.7 1.5], Chanlocs, Format)
+   set(gca, 'view', [0 0])  
+    
+Rraw = corrcoef(EEG.data');
+subplot(2, 2, 2)
+PlotTopoNodes(Rraw, [.7 1.5], Chanlocs, Format)
+title('Whole Sleep Raw Correlations')
+  set(findall(gca, 'type', 'text'), 'visible', 'on',...
+        'FontName', Format.FontName, 'FontSize', 12)
+    subplot(2, 2, 4)
+PlotTopoNodes(Rraw, [.7 1.5], Chanlocs, Format)
+ set(gca, 'view', [0 0])  
 
-Table = array2table(Table);
- Table.Table1 =  string(Table.Table1);
-  Table.Table2 =  string(Table.Table2);
-  
-% figure
-% Plot_Nodes(Table, string(Ch), [0.6, 1], 30)
+% set(gca, 'view', [0 0])
+% set(gca, 'view', [0 90])
 
-Chanlocs = EEG.chanlocs;
-Chanlocs = Chanlocs(Ch);
-figure
-PlotTopoNodes(R, [.6 1], Chanlocs)
 
 % by sleep stage
 
+% get stages per window
+DPoints = size(DAllCh, 2);
+DStagePoints = round(linspace(1, numel(visnum), DPoints)); % associate point of stages for every r value
+FFTStages = nan(1, DPoints);
+for Indx_P = 1:DPoints
+    FFTStages(Indx_P) = visnum(DStagePoints(Indx_P));
+end
 
 
+nStages = size(Legend, 1);
+figure('units','normalized','outerposition',[0 0 1 .55])
+for Indx_S = 1:nStages
+    subplot(2, nStages, Indx_S)
+    Stage = Legend{Indx_S, 1}==FFTStages;
+    R = corrcoef(DAllCh(:, Stage)');
+    PlotTopoNodes(R, [.7 1.5], Chanlocs, Format)
+    title([Legend{Indx_S, 2}])
+    set(findall(gca, 'type', 'text'), 'visible', 'on',...
+        'FontName', Format.FontName, 'FontSize', 12)
+    subplot(2, nStages, Indx_S+nStages)
+    PlotTopoNodes(R, [.7 1.5], Chanlocs, Format)
+    set(gca, 'view', [0 0])
+end
+
+% raw
+
+% get stages per window
+RawPoints = size(EEG.data, 2);
+RawStagePoints = round(linspace(1, numel(visnum), RawPoints)); % associate point of stages for every r value
+RawStages = nan(1, RawPoints);
+for Indx_P = 1:RawPoints
+    RawStages(Indx_P) = visnum(RawStagePoints(Indx_P));
+end
 
 
-
+figure('units','normalized','outerposition',[0 0 1 .55])
+for Indx_S = 1:nStages
+    subplot(2, nStages, Indx_S)
+    Stage = Legend{Indx_S, 1}==RawStages;
+    R = corrcoef(EEG.data(:, Stage)');
+    PlotTopoNodes(R, [.7 1.5], Chanlocs, Format)
+    title([Legend{Indx_S, 2}, ' raw'])
+    set(findall(gca, 'type', 'text'), 'visible', 'on',...
+        'FontName', Format.FontName, 'FontSize', 12)
+    subplot(2, nStages, Indx_S+nStages)
+    PlotTopoNodes(R, [.7 1.5], Chanlocs, Format)
+    set(gca, 'view', [0 0])
+end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% correlation across stages
+%% correlation across stages
 
 
+% plot cor, sorted by sleep stages
+
+% get stages per window
+RStagePoints = round(linspace(1, numel(visnum), RPoints)); % associate point of stages for every r value
+FFTRStages = nan(1, RPoints);
+for Indx_P = 1:RPoints
+    FFTRStages(Indx_P) = visnum(RStagePoints(Indx_P));
+end
 
 
+figure('units','normalized','outerposition',[0 0 .5 .8])
+[~, Order] = sort(FFTRStages);
+for Indx_Ch = 1:numel(Ch)
+    subplot(2, 2, Indx_Ch)
+    [R, Windows] = SnipletCorrelation(EEG.data(Indx_Ch, :), Window*EEG.srate, Overlap, Taper);
+    imagesc(R(Order, :))
+    colorbar
+    colormap(Format.Colormap.Linear)
+    caxis([.6, 1])
+    axis square
+    title(num2str(ChLabel(Indx_Ch)))
+end
+ 
 
-
+ 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % assmeble "average per stage", run on 2 channels, and see when there's
 % most disagreement?
