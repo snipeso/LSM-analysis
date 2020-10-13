@@ -13,12 +13,13 @@ Tasks = {'Sleep'}; % which tasks to convert (for now)
 % options: 'LAT', 'PVT', 'SpFT', 'Game', 'Music', 'MWT', 'Sleep',
 % 'Fixation', 'Oddball', 'Standing', 'Questionnaire'
 
-Destination_Formats = {'Wake'}; % chooses which filtering to do
+Destination_Formats = {'Scoring'}; % chooses which filtering to do
 % options: 'Scoring', 'Cleaning', 'ICA', 'Wake' 'Microsleeps'
 
 Refresh = false; % redo files that are already in destination folder
 Max_Size = 60; % maximum duration in minutes, after which it gets chopped up into 30 min pieaces
-Piece_Size = 30;
+Pie6tce_Size = 30;
+Split = false;
 SpotCheck = false; % occasionally plot results, to make sure things are ok
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -129,16 +130,19 @@ for Indx_DF = 1:numel(Destination_Formats)
                     SpotCheckFiltered, EEG.srate, CheckChannels)
             end
             
-            if (EEG.pnts/EEG.srate)*60 > Max_Size % save in pieces
-                Pieces = 1:(Piece_Size*60*EEG.srate):EEG.pnts;
+            if Split && (EEG.pnts/EEG.srate)*60 > Max_Size % save in pieces
+                Pieces = 1:Piece_Size*60*EEG.srate:EEG.pnts;
+                
                 
                 for Indx_P = 1:numel(Pieces)-1
                     
-                    if Indx_P > 1
-                        Filename_Destination = [Filename_Core{1}, '_', num2str(Indx_P, '%02.f'), '.set'];
-                    end
                     
-                    pEEG = pop_select(EEG, 'point', [Pieces(Indx_P), Pieces(Indx_P)+1]);
+                    Filename_Destination = [join([Folders.Datasets{Indx_D}, ...
+                        Levels(:)', num2str(Indx_P, '%02.f'), Destination_Format], '_'), ...
+                        '.set'];
+                    
+                    
+                    pEEG = pop_select(EEG, 'point', [Pieces(Indx_P), Pieces(Indx_P+1)]);
                     
                     % save preprocessing info in eeg structure
                     pEEG.setname = Filename_Core;
