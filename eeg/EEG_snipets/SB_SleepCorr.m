@@ -1,9 +1,12 @@
+clear
+clc
+close all
 
 run(fullfile(extractBefore(mfilename('fullpath'), 'eeg'), 'General_Parameters'))
 
 Window = 30;
 Overlap = .33;
-Taper = true;
+Taper = false;
 
 Path = 'C:\Users\colas\Desktop\Temp\P09_Sleep_Baseline';
 
@@ -53,7 +56,7 @@ FFTPoints = size(R, 2);
 % plot the logic: correlation of some channels
 figure('units','normalized','outerposition',[0 0 .5 .8])
 ChLabel = [24, 124, 70, 83];
-Ch = find(ismember({Chanlocs.labels}, string(Ch)));
+Ch = find(ismember({Chanlocs.labels}, string(ChLabel)));
 for Indx_Ch = 1:numel(Ch)
     subplot(2, 2, Indx_Ch)
     [R, Windows] = SnipletCorrelation(EEG.data(Indx_Ch, :), Window*EEG.srate, Overlap, Taper);
@@ -200,8 +203,8 @@ end
 % select snippet
 % pop_eegplot(EEG)
 
-Snippet_T = [17706 17710, 25]; % blinks
-Title = 'blink';
+% Snippet_T = [17706 17710, 25]; % blinks
+% Title = 'blink';
 % 
 % Snippet_T = [150 154, 84]; % alpha
 % Title = 'alpha';
@@ -209,11 +212,11 @@ Title = 'blink';
 % Snippet_T = [1822 1826, 3]; % k-complex
 % Title = 'k-complex';
 
-% Snippet_T = [3541 3545, 10]; % SWA
+% Snippet_T = [3538 3548, 10]; % SWA
 % Title = 'SWA';
 % 
-% Snippet_T = [19719 19723, 30]; % spindle
-% Title = 'spindle';
+Snippet_T = [19718 19723.5, 30]; % spindle
+Title = 'spindle';
 
 Overlap_Small = .5;
 
