@@ -37,7 +37,7 @@ set(gca, 'FontName', Format.FontName, 'FontSize', 14)
 % subplot line of that feature in its channel
 subplot(4, 1, 3)
 TEnd = size(EEG.data, 2)/EEG.srate;
-t = linspace(0, TEnd, size(Sniplet_Ch, 2));
+t = linspace(0, TEnd, size(Sniplet_Ch, 2))/(60*60);
 hold on
 plot(t, Sniplet_Ch(Ch, :), 'Color', 'k')
 [A, MinI] = min(abs(t-Window(1)));
@@ -50,9 +50,6 @@ set(colorbar,'visible','off')
 
 % subplot sleep scoring
 subplot(4, 1, 4)
-[visplot] = visfun.plotvis(visnum, 10);
-plot(visplot(:,1), visplot(:,2), 'Color', Format.Colors.Generic.Dark1)
-xlim([min(visplot(:,1)), max(visplot(:,1))])
-set(gca, 'FontName', Format.FontName, 'FontSize', 14)
+PlotHypnogram(visnum, Format)
 colorbar
 set(colorbar,'visible','off')

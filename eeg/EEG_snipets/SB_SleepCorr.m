@@ -60,7 +60,7 @@ ChLabel = [24, 124, 70, 83];
 Ch = find(ismember({Chanlocs.labels}, string(ChLabel)));
 for Indx_Ch = 1:numel(Ch)
     subplot(2, 2, Indx_Ch)
-    [R, Windows] = SnipletCorrelation(EEG.data(Indx_Ch, :), Window*EEG.srate, Overlap, Taper);
+    [R, Windows] = SnipletCorrelation(EEG.data(Ch(Indx_Ch), :), Window*EEG.srate, Overlap, Taper);
     imagesc(R)
     colorbar
     colormap(Format.Colormap.Linear)
@@ -69,6 +69,20 @@ for Indx_Ch = 1:numel(Ch)
     title(num2str(ChLabel(Indx_Ch)))
 end
 
+figure('units','normalized','outerposition',[0 0 1 1])
+subplot(6, 1, 1:5)
+imagesc(R)
+colorbar
+colormap(Format.Colormap.Linear)
+caxis(CAxis)
+axis off
+
+subplot(6, 1, 6)
+PlotHypnogram(visnum, Format)
+colorbar
+set(colorbar,'visible','off')
+
+%%
 % figure('units','normalized','outerposition',[0 0 .5 .8])
 % imagesc(-(DAllCh-1))
 % colorbar
@@ -179,7 +193,7 @@ for Indx_Ch = 1:numel(Ch)
     switches = find(diff(FFTRStages(Order))>0);
     
     subplot(2, 2, Indx_Ch)
-    [R, Windows] = SnipletCorrelation(EEG.data(Indx_Ch, :), Window*EEG.srate, Overlap, Taper);
+    [R, Windows] = SnipletCorrelation(EEG.data(Ch(Indx_Ch), :), Window*EEG.srate, Overlap, Taper);
     
     R = R(Order, :);
     for sw = switches
@@ -209,7 +223,7 @@ Overlap_Small = .5;
 
 Snippet_T = [17706 17710, 25]; % blinks
 PlotFeatureSelection(EEG, visnum, Snippet_T, 'Blink', Overlap_Small, CAxis, Format)
-% 
+%
 Snippet_T = [150 154, 84]; % alpha
 PlotFeatureSelection(EEG, visnum, Snippet_T, 'alpha', Overlap_Small, CAxis, Format)
 
