@@ -43,7 +43,7 @@ EEG = pop_reref(EEG, Mastoids);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% correlation across channels
 
-Format.Colormap.Linear = inferno;
+% Format.Colormap.Linear = inferno;
 Chanlocs = EEG.chanlocs;
 
 DAllCh = [];
@@ -70,7 +70,7 @@ for Indx_Ch = 1:numel(Ch)
 end
 
 figure('units','normalized','outerposition',[0 0 1 1])
-subplot(6, 1, 1:5)
+% subplot(6, 1, 1:5)
 imagesc(R)
 colorbar
 colormap(Format.Colormap.Linear)

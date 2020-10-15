@@ -14,7 +14,7 @@ Threshold = .9;
 Color = [1 1 0];
 
 % 
-Weights = EEG.icaweights*EEG.icasphere;[
+Weights = EEG.icaweights*EEG.icasphere;
 ICAEEG = Weights * EEG.data;
 
 % PlotComponent(EEG, 2)
