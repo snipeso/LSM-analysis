@@ -26,7 +26,7 @@ else
     for Indx_S = 1:numel(Starts)
         Sniplets(Indx_S, :) = Data(Starts(Indx_S):Stops(Indx_S));
     end
-Sniplets = cat(1, TemplateSniplets, Sniplets);
+    Sniplets = cat(1, TemplateSniplets, Sniplets);
 end
 
 [nSniplets, SniPoints] = size(Sniplets);
@@ -36,21 +36,21 @@ if Taper
     Sniplets = G'.*Sniplets;
 end
 
-FFT = fft(Sniplets');
+FFT = fft(Sniplets');% each column indicates a sniplet
 
 FFT = FFT(1:round(size(FFT,1)/2), :);
 
-
+FFT = zscore(abs(FFT)')';
 
 if exist('nTemplates', 'var')
-  R = nan(nTemplates, numel(Starts));
-  FFT = abs(FFT);
-  for Indx_S = 1:nTemplates
-      R(Indx_S, :) = corr(FFT(:, Indx_S), FFT(:, nTemplates+1:end));
-  end
+    R = nan(nTemplates, numel(Starts));
+    
+    for Indx_S = 1:nTemplates
+        R(Indx_S, :) = corr(FFT(:, Indx_S), FFT(:, nTemplates+1:end));
+    end
 else
     
-R = corrcoef(abs(FFT));
+    R = corrcoef(FFT);
 end
 
 Windows = [Starts(:), Stops(:)];

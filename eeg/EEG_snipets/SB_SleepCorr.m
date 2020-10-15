@@ -7,6 +7,7 @@ run(fullfile(extractBefore(mfilename('fullpath'), 'eeg'), 'General_Parameters'))
 Window = 30;
 Overlap = .33;
 Taper = false;
+CAxis = [0 1];
 
 Path = 'C:\Users\colas\Desktop\Temp\P09_Sleep_Baseline';
 
@@ -63,16 +64,16 @@ for Indx_Ch = 1:numel(Ch)
     imagesc(R)
     colorbar
     colormap(Format.Colormap.Linear)
-    caxis([.6, 1])
+    caxis(CAxis)
     axis square
     title(num2str(ChLabel(Indx_Ch)))
 end
 
-figure('units','normalized','outerposition',[0 0 .5 .8])
-imagesc(-(DAllCh-1))
-colorbar
-colormap(Format.Colormap.Linear)
-caxis([.2, 1])
+% figure('units','normalized','outerposition',[0 0 .5 .8])
+% imagesc(-(DAllCh-1))
+% colorbar
+% colormap(Format.Colormap.Linear)
+% caxis([.2, 1])
 
 % whole recording
 R = corrcoef(DAllCh');
@@ -187,7 +188,7 @@ for Indx_Ch = 1:numel(Ch)
     imagesc(R)
     colorbar
     colormap(Format.Colormap.Linear)
-    caxis([.6, 1])
+    caxis(CAxis)
     axis square
     title(num2str(ChLabel(Indx_Ch)))
     
@@ -203,68 +204,25 @@ end
 % select snippet
 % pop_eegplot(EEG)
 
-% Snippet_T = [17706 17710, 25]; % blinks
-% Title = 'blink';
-% 
-% Snippet_T = [150 154, 84]; % alpha
-% Title = 'alpha';
-
-% Snippet_T = [1822 1826, 3]; % k-complex
-% Title = 'k-complex';
-
-% Snippet_T = [3538 3548, 10]; % SWA
-% Title = 'SWA';
-% 
-Snippet_T = [19718 19723.5, 30]; % spindle
-Title = 'spindle';
-
 Overlap_Small = .5;
 
 
-Ch = find(ismember({Chanlocs.labels}, string(Snippet_T(end))));
-Snippet_P = Snippet_T(1:2)*EEG.srate;
-Snippet = EEG.data(Ch, Snippet_P(1):Snippet_P(2));
+Snippet_T = [17706 17710, 25]; % blinks
+PlotFeatureSelection(EEG, visnum, Snippet_T, 'Blink', Overlap_Small, CAxis, Format)
+% 
+Snippet_T = [150 154, 84]; % alpha
+PlotFeatureSelection(EEG, visnum, Snippet_T, 'alpha', Overlap_Small, CAxis, Format)
 
-figure
-G = gausswin(numel(Snippet));
-Sniplet = G'.*Snippet;
-t = linspace(0, numel(Sniplet)/EEG.srate, numel(Sniplet));
-plot(t, Sniplet)
-title(Title)
+Snippet_T = [1822 1826, 3]; % k-complex
+PlotFeatureSelection(EEG, visnum, Snippet_T, 'K-Complex', Overlap_Small, CAxis, Format)
+
+Snippet_T = [19718 19723.5, 30]; % spindle
+PlotFeatureSelection(EEG, visnum, Snippet_T, 'Spindle', Overlap_Small, CAxis, Format)
+
+Snippet_T = [3535 3550, 10]; % SWA
+PlotFeatureSelection(EEG, visnum, Snippet_T, 'SWA', Overlap_Small, CAxis, Format)
 
 
-% loop through channels, get r for snippet; plot image
-Sniplet_Ch = [];
-for Indx_Ch = 1:numel(Chanlocs)
-  R = SnipletCorrelation(EEG.data(Indx_Ch, :), Snippet, Overlap_Small, true);
-Sniplet_Ch = cat(1, Sniplet_Ch, R);
-  
-end
-
-figure('units','normalized','outerposition',[0 0 1 1])
-subplot(4, 1, 1:2)
-imagesc(Sniplet_Ch)
-colorbar
-colormap(inferno)
-caxis([.6 1])
-title(Title)
-
-% subplot line of that feature in its channel
-subplot(4, 1, 3)
-TEnd = size(EEG.data, 2)/EEG.srate;
-t = linspace(0, TEnd, size(Sniplet_Ch, 2));
-hold on
-plot(t, Sniplet_Ch(Ch, :), 'Color', 'k')
-[A, MinI] = min(abs(t-Snippet_T(1)));
-scatter(t(MinI), Sniplet_Ch(Ch, MinI), 10, 'r', 'filled')
-xlim([0, TEnd])
-ylim([.6, 1])
-
-% subplot sleep scoring
-subplot(4, 1, 4)
-[visplot] = visfun.plotvis(visnum, 10);
- plot(visplot(:,1), visplot(:,2))
-xlim([min(visplot(:,1)), max(visplot(:,1))])
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % assmeble "average per stage", run on 2 channels, and see when there's
