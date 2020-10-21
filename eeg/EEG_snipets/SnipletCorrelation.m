@@ -37,9 +37,7 @@ if Taper
 end
 
 FFT = fft(Sniplets');% each column indicates a sniplet
-
 FFT = FFT(1:round(size(FFT,1)/2), :);
-
 FFT = zscore(abs(FFT)')';
 
 if exist('nTemplates', 'var')
@@ -49,7 +47,6 @@ if exist('nTemplates', 'var')
         R(Indx_S, :) = corr(FFT(:, Indx_S), FFT(:, nTemplates+1:end));
     end
 else
-    
     R = corrcoef(FFT);
 end
 

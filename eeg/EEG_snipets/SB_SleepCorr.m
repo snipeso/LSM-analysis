@@ -52,6 +52,7 @@ for Indx_Ch = 1:numel(Chanlocs)
     DAllCh = cat(1, DAllCh, squareform(1-R));
 end
 
+%%
 FFTPoints = size(R, 2);
 
 % plot the logic: correlation of some channels
@@ -70,11 +71,12 @@ for Indx_Ch = 1:numel(Ch)
 end
 
 figure('units','normalized','outerposition',[0 0 1 1])
-% subplot(6, 1, 1:5)
+subplot(6, 1, 1:5)
 imagesc(R)
 colorbar
-colormap(Format.Colormap.Linear)
-caxis(CAxis)
+colormap(Format.Colormap.Divergent)
+% caxis(CAxis)
+caxis([-1 1])
 axis off
 
 subplot(6, 1, 6)
@@ -239,24 +241,114 @@ PlotFeatureSelection(EEG, visnum, Snippet_T, 'SWA', Overlap_Small, CAxis, Format
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% assmeble "average per stage", run on 2 channels, and see when there's
-% most disagreement?
+%% correlate contemporary sniplets across channels
+
+% run corr
+SnipletsCorr = GlobalSnipletCorrelation(EEG.data, Window*EEG.srate, Overlap, Taper);
+
+% plot 4ch raw
+ChLabel = [24, 124, 70, 83];
+Ch = find(ismember({Chanlocs.labels}, string(ChLabel)));
+
+% t = linspace(0, EEG.pnts/EEG.srate, size(SnipetsCorr, 3));
+% SnipletsCorrZ = zscore(SnipletsCorr);
+
+% plot 4 ch z-scored
+figure('units','normalized','outerposition',[0 0 1 1])
+for Indx_Ch = 1:numel(Ch)
+    Data = squeeze(SnipletsCorr(Ch(Indx_Ch), :, :));
+    %     Data = zscore((1-abs(Data))')';
+    % Data = 1-abs(Data);
+    subplot(numel(Ch)+1, 1, Indx_Ch)
+    imagesc(Data)
+    colorbar
+    colormap(inferno)
+    title([num2str(ChLabel(Indx_Ch)), ' Correlations'])
+    caxis([0 1])
+    caxis([.9 1])
+end
+
+subplot(numel(Ch)+1, 1, Indx_Ch+1)
+PlotHypnogram(visnum, Format)
+colorbar
+set(colorbar,'visible','off')
+
+
+% plot average connections per sleep stage
+
+SnipletPoints = size(SnipletsCorr, 3);
+
+% get stages per window
+SnipletStagePoints = round(linspace(1, numel(visnum), SnipletPoints)); % associate point of stages for every r value
+
+SnipletStages = nan(1, SnipletPoints);
+for Indx_P = 1:SnipletPoints
+    SnipletStages(Indx_P) = visnum(SnipletStagePoints(Indx_P));
+end
+
+
+nStages = size(Legend, 1);
+figure('units','normalized','outerposition',[0 0 1 .55])
+for Indx_S = 1:nStages
+    subplot(2, nStages, Indx_S)
+    Stage = Legend{Indx_S, 1}==SnipletStages;
+    R = squeeze(mean(SnipletsCorr(:, :, Stage), 3));
+    PlotTopoNodes(R, [.5 1], Chanlocs, Format)
+    title([Legend{Indx_S, 2}])
+    set(findall(gca, 'type', 'text'), 'visible', 'on',...
+        'FontName', Format.FontName, 'FontSize', 12)
+    subplot(2, nStages, Indx_S+nStages)
+    PlotTopoNodes(R, [.5 1], Chanlocs, Format)
+    set(gca, 'view', [0 0])
+end
 
 
 
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% maxclustering
+% per sleep stage, for specific ch, identify drops in "global corr" (so not
+% neighboring ch), plot overlayed with global average corr (might be able
+% to ignore drops in corr if they happen all together)
+
+
+%% sort windows by corr
+
+Ch = 122;
+[R, Windows] = SnipletCorrelation(EEG.data(Ch, :), 10*EEG.srate, 0.5, true);
+
+clusters = cluster_corr(R, 0);
+[Cat, Order] = sort(clusters);
+figure;
+imagesc(R(Order, :)); colorbar;colormap(rdbu);caxis([-1 1])
+switches = find(diff(Cat)>0);
+yticks(switches)
+yticklabels(unique(Cat))
 
 
 
+% plot spectrums of all snippets in butterfly plot
+Cat = unique(Cat);
+
+Freqs = 2:.5:35;
 
 
-
-
-
-
-
-
-
+for Indx_C = 1:numel(Cat)
+    
+    subWindows = Windows(clusters==Cat(Indx_C), :);
+    if size(subWindows, 1) < 20
+        continue
+    end
+    
+  figure('units','normalized','outerposition',[0 0 .25 .5])
+     title(num2str(Cat(Indx_C)))
+    hold on
+    FFT = nan(size(subWindows, 1), numel(Freqs));
+    for Indx_W = 1:size(subWindows, 1)
+        [pxx, f] = pwelch(EEG.data(Ch, subWindows(Indx_W, 1):subWindows(Indx_W, 2)), [], 0, Freqs, EEG.srate);
+        plot(Freqs, log(pxx), 'Color', [.5 .5 .5 .2])
+        FFT(Indx_W, :) = log(pxx);
+    end
+    plot(Freqs, nanmean(FFT, 1), 'Color', Format.Colors.Generic.Red, 'LineWidth', 2)
+    xlim([Freqs(1), Freqs(end)])
+    ylim([-6 6])
+end
