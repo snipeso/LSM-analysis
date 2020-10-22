@@ -7,7 +7,7 @@ clc
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Task = 'Standing';
+Task = 'Game';
 Refresh = false;
 
 Data_Type = 'Wake';
@@ -34,7 +34,11 @@ end
 Files = deblank(cellstr(ls(Source_Comps)));
 Files(~contains(Files, '.set')) = [];
 
-for Indx_F = 1:numel(Files) % loop through files in source folder
+% randomize files list
+nFiles = numel(Files);
+Files = Files(randperm(nFiles));
+
+for Indx_F = 1:nFiles % loop through files in source folder
     
     if isempty(Filename)
         % get filenames
