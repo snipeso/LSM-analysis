@@ -47,10 +47,17 @@ NewEEG = pop_eegfiltnew(NewEEG, [], 40); % for whatever reason, sometimes ICA re
 if CheckOutput
     % % show
     Pix = get(0,'screensize');
+    try
     eegplot(Data.data(:, 100*EEG.srate:300*EEG.srate), 'spacing', 20, 'srate', NewEEG.srate, ...
         'winlength', 20, 'position', [0 Pix(4)/2 Pix(3) Pix(4)/2])
     eegplot(NewEEG.data(:, 100*EEG.srate:300*EEG.srate),'spacing', 20, 'srate', NewEEG.srate, ...
         'winlength', 20, 'position', [0 0 Pix(3) Pix(4)/2])
+    catch
+          eegplot(Data.data, 'spacing', 20, 'srate', NewEEG.srate, ...
+        'winlength', 20, 'position', [0 Pix(4)/2 Pix(3) Pix(4)/2])
+    eegplot(NewEEG.data,'spacing', 20, 'srate', NewEEG.srate, ...
+        'winlength', 20, 'position', [0 0 Pix(3) Pix(4)/2])
+    end
     
     % show
     % Pix = get(0,'screensize');

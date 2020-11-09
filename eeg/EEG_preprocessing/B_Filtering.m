@@ -8,12 +8,12 @@ EEG_Parameters
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Tasks = {'Sleep'}; % which tasks to convert (for now)
+Tasks = {'QuestionnaireEEG'}; % which tasks to convert (for now)
 % Tasks = {'MWT', 'Fixation', 'Standing', 'LAT', 'PVT'}; % which tasks to convert (for now)
 % options: 'LAT', 'PVT', 'SpFT', 'Game', 'Music', 'MWT', 'Sleep',
 % 'Fixation', 'Oddball', 'Standing', 'Questionnaire'
 
-Destination_Formats = {'Wake'}; % chooses which filtering to do
+Destination_Formats = {'Wake', 'Cleaning', 'ICA'}; % chooses which filtering to do
 % options: 'Scoring', 'Cleaning', 'ICA', 'Wake' 'Microsleeps'
 
 Refresh = false; % redo files that are already in destination folder
@@ -40,7 +40,7 @@ for Indx_DF = 1:numel(Destination_Formats)
     hp_stopband = Parameters(Indx).hp_stopband;
     
     
-    for Indx_D =  9 %1:size(Folders.Datasets,1) % loop through participants
+    parfor Indx_D =  1:size(Folders.Datasets,1) % loop through participants
         for Indx_F = 1:size(Folders.Subfolders, 1) % loop through all subfolders
             
             %%%%%%%%%%%%%%%%%%%%%%%%
@@ -129,7 +129,7 @@ for Indx_DF = 1:numel(Destination_Formats)
                     SpotCheckFiltered, EEG.srate, CheckChannels)
             end
             
-            if (EEG.pnts/EEG.srate)*60 > Max_Size % save in pieces
+            if (EEG.pnts/EEG.srate) > Max_Size*60 % save in pieces
                 Pieces = 1:(Piece_Size*60*EEG.srate):EEG.pnts;
                 
                 for Indx_P = 1:numel(Pieces)-1

@@ -7,11 +7,11 @@ clc
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Task = 'Game';
+Task = 'QuestionnaireEEG';
 Refresh = false;
 
 Data_Type = 'Wake';
-% Filename = ['P09_LAT_Session1Beam_ICA_Components.set'];
+% Filename = ['P10_Fixation_BaselinePre_ICA_Components.set'];
 Filename = [];
 CheckOutput = true;
 Automate = false;
@@ -54,8 +54,9 @@ for Indx_F = 1:nFiles % loop through files in source folder
         end
     else
         Filename_Comps = Filename;
+         Filename_Data = replace(Filename_Comps, 'ICA_Components', Data_Type);
         Filename_BadComps = [extractBefore(Filename_Comps,'.set'), '.mat'];
-        
+          Filename_Destination = [extractBefore(Filename_Data, Data_Type), 'Deblinked.set'];
     end
     
     if ~exist(fullfile(Source_Data, Filename_Data), 'file')

@@ -3,7 +3,7 @@ clc
 clear
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Targets = { 'Standing', 'Game', 'Fixation'};
+Targets = { 'QuestionnaireEEG', 'Standing', 'Game', 'Fixation', 'Match2Sample', 'Music', 'MWT', 'SpFT'};
 Refresh = false;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
