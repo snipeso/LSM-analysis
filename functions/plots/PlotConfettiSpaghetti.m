@@ -43,7 +43,7 @@ if ~isempty(YLims)
 end
 
 if exist('Labels', 'var') && ~isempty(Labels)
-    yticks(linspace(0, 100, numel(Labels)))
+    yticks(linspace(YLims(1), YLims(2), numel(Labels)))
     yticklabels(Labels)
 end
 
