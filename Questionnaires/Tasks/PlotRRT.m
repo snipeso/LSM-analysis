@@ -210,8 +210,9 @@ saveas(gcf,fullfile(Figure_Path, ['Motivation_', TitleTag, '.svg']))
 %%% plot sleep need
 [AnsAll, Labels] = TabulateAnswers(Answers, Sessions,   Participants, 'RT_TIR_5', 'numAnswer_1' );
 figure( 'units','normalized','outerposition',[0 0 .6 .5])
-PlotRadio(AnsAll, SessionLabels, 'Sleep Pressure', Labels, 'grid', Format)
-saveas(gcf,fullfile(Figure_Path, ['SleepDesire_', TitleTag, '.svg']))
+% PlotRadio(AnsAll, SessionLabels, 'Sleep Pressure', Labels, 'grid', Format)
+PlotConfettiSpaghetti(AnsAll, SessionLabels, [1 7],  Labels, Group, Format)
+saveas(gcf,fullfile(Figure_Path, ['SleepDesire_Confetti', TitleTag, '.svg']))
 
 
 %%% plot thoughts

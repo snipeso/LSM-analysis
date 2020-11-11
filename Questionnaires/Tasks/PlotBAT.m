@@ -6,6 +6,21 @@ close all
 
 Q_Parameters
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+GroupLabel = [];
+% GroupLabel = 'Gender';
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+if ~isempty(GroupLabel)
+    TitleTag = ['BAT_by_', GroupLabel];
+    Group = GroupLabels.(GroupLabel);
+else
+    TitleTag = 'BAT';
+    Group = [];
+end
+
+
 
 Figure_Path = fullfile(Paths.Figures, 'BAT');
 
@@ -44,16 +59,19 @@ for Indx_T = 1:numel(filenames)
     % Fix qID problem
     Answers.qID(strcmp(Answers.qLabels, 'Frustrating/Neutral/Relaxing')) = {'BAT_3_0'};
 
+    if nnz(strcmp(Answers.qID, 'BAT_6'))
+    Answers.qID(strcmp(Answers.qID, 'BAT_6')) = {'BAT_1'};
+    end
     Task = extractBefore(filenames{Indx_T}, '_');
     
     for Indx_Q = 1:numel(qIDs)
 
         qID = qIDs{Indx_Q};
          
-        % this was named differently just for P01
-        if strcmp(qID, 'BAT_1') && nnz(strcmp(Answers.qID, 'BAT_6'))
-            qID = 'BAT_6';
-        end
+%         % this was named differently just for P01
+%         if strcmp(qID, 'BAT_1') && nnz(strcmp(Answers.qID, 'BAT_6'))
+%             qID = 'BAT_6';
+%         end
         
         [AnsAll, Labels] = TabulateAnswers(Answers, Sessions, Participants, qID, 'numAnswer');
         AnsAll = 100*AnsAll;
@@ -64,11 +82,14 @@ for Indx_T = 1:numel(filenames)
             figure(Indx_Q)
         end
         
+
+        
         subplot(2, 3, Indx_T)
-        PlotConfettiSpaghetti(AnsAll, SessionLabels, [0 100], Task, strsplit(num2str(0:20:100)))
+        PlotConfettiSpaghetti(AnsAll, SessionLabels, [0 100], strsplit(num2str(0:20:100)), Group, Format)
+        title(Task)
         
         if Indx_T == numel(filenames)
-            FigureName =  [Titles{Indx_Q},  '_BAT.svg'];
+            FigureName =  [Titles{Indx_Q},  '_', TitleTag, '.svg'];
             saveas(gcf,fullfile(Figure_Path, FigureName))
         end
     end
