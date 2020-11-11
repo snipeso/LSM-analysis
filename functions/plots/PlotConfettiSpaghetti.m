@@ -9,17 +9,18 @@ Tot_Peeps = size(Matrix, 1); % number of participants
 
 Colors = Format.Colors.Participants;
 % select background colors for participants
-if exist('ColorGroup', 'var') && ~isempty(ColorGroups)
+if exist('ColorGroups', 'var') && ~isempty(ColorGroups)
     
     % get one color per group
     Groups = unique(ColorGroups);
     Tot_Groups = numel(Groups);
-    Unique_Colors = Colors( floor(linspace(1, size(Colors, 1), Tot_Groups)), :);
+    Unique_Colors = Colors( floor(linspace(1, size(Colors, 1), Tot_Groups+1)), :);
     
     % for each participant, assign group color
     Colors = zeros(Tot_Peeps, 3);
     for Indx_G = 1:Tot_Groups
-        Colors(ismember(ColorGroups, Groups(Indx_G)), :) = Unique_Colors(Indx_G, :);
+        G = ismember(ColorGroups, Groups(Indx_G));
+        Colors(G, :) = repmat(Unique_Colors(Indx_G, :), nnz(G), 1);
     end
 end
 
@@ -46,6 +47,10 @@ if exist('Labels', 'var') && ~isempty(Labels)
     yticks(linspace(YLims(1), YLims(2), numel(Labels)))
     yticklabels(Labels)
 end
+
+% if exist('ColorGroups', 'var') && ~isempty(ColorGroups)
+%    legend(unique(ColorGroups)) 
+% end
 
 set(gca, 'FontName', Format.FontName)
 

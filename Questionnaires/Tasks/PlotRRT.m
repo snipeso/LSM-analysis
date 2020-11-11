@@ -4,7 +4,8 @@ close all
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-GroupLabel = [];
+% GroupLabel = [];
+GroupLabel = 'Gender';
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -40,7 +41,7 @@ hold on
 PlotConfettiSpaghetti(AnsAll, SessionLabels, [0 10], Labels, Group, Format)
 title('RRT KSS')
 yticks(1:9)
-saveas(gcf,fullfile(Figure_Path, 'KSS_RRT.svg'))
+saveas(gcf,fullfile(Figure_Path, ['KSS_', TitleTag, '.svg']))
 
 
 %%% plot overview
@@ -61,7 +62,7 @@ for Indx_Q = 1:numel(qIDs)
     PlotConfettiSpaghetti(AnsAll, SessionLabels, [0 100],  Labels, Group, Format)
     title(Titles{Indx_Q})
 end
-saveas(gcf,fullfile(Figure_Path, 'Overview_RRT.svg'))
+saveas(gcf,fullfile(Figure_Path, ['Overview_', TitleTag, '.svg']))
 
 
 
@@ -81,7 +82,7 @@ for Indx = 1:numel(SubQs)
     PlotConfettiSpaghetti(AnsAll, SessionLabels, [0 100],  Labels, Group, Format)
     title(Titles{Indx})
 end
-saveas(gcf,fullfile(Figure_Path, '4Energies_RRT.svg'))
+saveas(gcf,fullfile(Figure_Path, ['4Energies_', TitleTag, '.svg']))
 
 
 
@@ -101,7 +102,7 @@ AnsAll = AnsAll.*100;
 subplot(1, 2, 2)
 PlotConfettiSpaghetti(AnsAll, SessionLabels, [0 100],  Labels, Group, Format)
 title('Focus')
-saveas(gcf,fullfile(Figure_Path, 'Alertness_RRT.svg'))
+saveas(gcf,fullfile(Figure_Path, ['Alertness_', TitleTag, '.svg']))
 
 
 %%% task difficulty Oddball
@@ -111,7 +112,7 @@ figure( 'units','normalized','outerposition',[0 0 .5 .5])
 AnsAll = AnsAll.*100;
 PlotConfettiSpaghetti(AnsAll, SessionLabels, [0 100], Labels, Group, Format)
 title( 'Oddball Difficulty')
-saveas(gcf,fullfile(Figure_Path, 'Oddballdifficulty_RRT.svg'))
+saveas(gcf,fullfile(Figure_Path, ['Oddballdifficulty_', TitleTag, '.svg']))
 
 
 
@@ -130,7 +131,7 @@ AnsAll = AnsAll.*100;
 subplot(1, 2, 2)
 PlotConfettiSpaghetti(AnsAll, SessionLabels, [0 100],  Labels, Group, Format)
 title('General Mood')
-saveas(gcf,fullfile(Figure_Path, 'GeneralFeelings_RRT.svg'))
+saveas(gcf,fullfile(Figure_Path, ['GeneralFeelings_', TitleTag, '.svg']))
 
 
 
@@ -141,7 +142,7 @@ figure( 'units','normalized','outerposition',[0 0 .5 .5])
 AnsAll = AnsAll.*100;
 PlotConfettiSpaghetti(AnsAll,  SessionLabels, [0 100],  Labels, Group, Format)
 title('Tolerence towards Experiment')
-saveas(gcf,fullfile(Figure_Path, 'Tolerance_RRT.svg'))
+saveas(gcf,fullfile(Figure_Path, ['Tolerance_', TitleTag, '.svg']))
 
 
 %%% feelings
@@ -159,7 +160,7 @@ for Indx = 1:numel(SubQs)
     PlotConfettiSpaghetti(AnsAll,  SessionLabels, [0 100], Labels, Group, Format)
     title( Titles{Indx})
 end
-saveas(gcf,fullfile(Figure_Path, 'Feelings_RRT.svg'))
+saveas(gcf,fullfile(Figure_Path, ['Feelings_', TitleTag, '.svg']))
 
 
 
@@ -182,7 +183,7 @@ for Indx = [1:3, 5]
     title(Titles{Indx})
     PltIndx = PltIndx + 1;
 end
-saveas(gcf,fullfile(Figure_Path, 'Pain_RRT.svg'))
+saveas(gcf,fullfile(Figure_Path, ['Pain_', TitleTag, '.svg']))
 
 
 
@@ -200,7 +201,7 @@ subplot(1, 2, 2)
 AnsAll = AnsAll.*100;
 PlotConfettiSpaghetti(AnsAll, SessionLabels, [0 100],  {'Not at all', 'Extremely'}, Group, Format)
 title('Motivation Feelings')
-saveas(gcf,fullfile(Figure_Path, 'Motivation_RRT.svg'))
+saveas(gcf,fullfile(Figure_Path, ['Motivation_', TitleTag, '.svg']))
 
 
 
@@ -210,7 +211,7 @@ saveas(gcf,fullfile(Figure_Path, 'Motivation_RRT.svg'))
 [AnsAll, Labels] = TabulateAnswers(Answers, Sessions,   Participants, 'RT_TIR_5', 'numAnswer_1' );
 figure( 'units','normalized','outerposition',[0 0 .6 .5])
 PlotRadio(AnsAll, SessionLabels, 'Sleep Pressure', Labels, 'grid', Format)
-saveas(gcf,fullfile(Figure_Path, 'SleepDesire_RRT.svg'))
+saveas(gcf,fullfile(Figure_Path, ['SleepDesire_', TitleTag, '.svg']))
 
 
 %%% plot thoughts
@@ -224,6 +225,6 @@ for Indx_A = 1:MaxAns
 end
 figure( 'units','normalized','outerposition',[0 0 .6 .5])
 PlotMultipleChoice(ThotAll, SessionLabels, 'Thoughts', Labels, Format)
-saveas(gcf,fullfile(Figure_Path, 'Thoughts_RRT.svg'))
+saveas(gcf,fullfile(Figure_Path, ['Thoughts_', TitleTag, '.svg']))
 
 
