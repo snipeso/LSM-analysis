@@ -1,9 +1,7 @@
 % get general parameters (script in main folder of LSM-analysis)
 run(fullfile(extractBefore(mfilename('fullpath'), 'tasks'), 'General_Parameters'))
-
-Paths.Datasets ='D:\LSM\data';
-Paths.Preprocessed = 'C:\Users\schlaf\Desktop\LSMData';
-
+Paths.Datasets = 'D:\Data\Raw';
+Paths.Preprocessed = 'D:\Data\Preprocessed\';
 
 % Locations
 
@@ -18,23 +16,24 @@ Paths.Figures = fullfile(Paths.Figures, 'PVT');
 
 % Paths.Datasets = 'L:\Somnus-Data\Data01\LSM\Data\Raw';
 % Paths.Preprocessed = 'L:\Somnus-Data\Data01\LSM\Data\Preprocessed';
-% 
+%
 % Paths.Datasets ='D:\LSM\data';
 % Paths.Preprocessed = 'C:\Users\schlaf\Desktop\LSMData';
 
 Paths.Responses = fullfile(Paths.Preprocessed, 'Tasks', 'AllAnswers');
 
+Refresh = false;
 
 % add location of subfunctions
 addpath(fullfile(Paths.Analysis,  'functions', 'tasks'))
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%%% Do stuff 
+%%% Do stuff
 
 % get response times
 PVTResponses = 'PVTAllAnswers.mat';
-if exist(fullfile(Paths.Responses, PVTResponses), 'file')
+if  ~Refresh &&  exist(fullfile(Paths.Responses, PVTResponses), 'file')
     load(fullfile(Paths.Responses, PVTResponses), 'AllAnswers')
 else
     if ~exist(Paths.Responses, 'dir')
@@ -44,6 +43,10 @@ else
 end
 
 % create figure folder
- if ~exist(Paths.Figures, 'dir')
-        mkdir(Paths.Figures)
-    end
+if ~exist(Paths.Figures, 'dir')
+    mkdir(Paths.Figures)
+end
+
+
+
+ AllAnswers.Participant = string(AllAnswers.Participant);

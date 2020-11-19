@@ -20,6 +20,7 @@ Paths.Preprocessed = 'D:\Data\Preprocessed\';
 
 
 Paths.Responses = fullfile(Paths.Preprocessed, 'Tasks', 'AllAnswers');
+Refresh = true;
 
 % add location of subfunctions
 addpath(fullfile(Paths.Analysis,  'functions', 'tasks'))
@@ -30,7 +31,7 @@ addpath(fullfile(Paths.Analysis,  'functions', 'tasks'))
 
 % get response times
 LATResponses = 'LATAllAnswers.mat';
-if exist(fullfile(Paths.Responses, LATResponses), 'file')
+if ~Refresh && exist(fullfile(Paths.Responses, LATResponses), 'file')
     load(fullfile(Paths.Responses, LATResponses), 'AllAnswers')
 else
     AllAnswers = importTask(Paths.Datasets, 'LAT', Paths.Responses); % needs to have access to raw data folder
@@ -39,3 +40,6 @@ end
 if ~exist(Paths.Figures, 'dir')
     mkdir(Paths.Figures)
 end
+
+
+ AllAnswers.Participant = string(AllAnswers.Participant);
