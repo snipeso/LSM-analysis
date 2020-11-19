@@ -28,8 +28,8 @@ end
 
 
 % All participants to include in the analysis
-% Participants = { 'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07', 'P08', 'P09', 'P10', 'P11', 'P12'};
-Participants = { 'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07', 'P08', 'P09', 'P10', 'P11', 'P12', 'P13', 'P14', 'P15'};
+Participants = { 'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07', 'P08', 'P09', 'P10', 'P11', 'P12'};
+% Participants = { 'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07', 'P08', 'P09', 'P10', 'P11', 'P12', 'P13', 'P14', 'P15'};
 
 GroupLabels = struct();
 GroupLabels.Gender = {'m','m','m', 'f','m', 'f','f', 'm','f', 'f','m', 'm','m', 'f', 'f'};
@@ -264,8 +264,8 @@ EEG_Channels.EOG1 = [  1, 125,   8, 125,   2, 125,  1, 120,  1,  32];
 EEG_Channels.EOG2 = [128,  32, 128,  25, 128,  26, 43,  32, 38, 121];
 EEG_Channels.Standard = [24, 11, 124, 36, 55, 104, 52, 62, 92, 70, 75, 83];
 
-EEG_Channels.Hotspot = [3:7, 9:13, 15, 16, 18:20, 24, 106, 111, 112, 117, 118, 123, 124];
-EEG_Channels.Backspot = [EEG_Channels.O1, EEG_Channels.O2];
+EEG_Channels.Hotspot = [2:6, 9:13, 15, 16, 18:20, 23, 24, 26:29, 111, 112, 117, 118, 123, 124];
+EEG_Channels.Backspot = [EEG_Channels.O1, EEG_Channels.O2, 72, 75];
 
 %%% EEG triggers
 

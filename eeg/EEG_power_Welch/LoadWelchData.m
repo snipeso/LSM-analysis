@@ -1,55 +1,24 @@
-clear
-clc
-close all
 
-wp_Parameters
+function [PowerStruct, Chanlocs, Quantiles] = LoadWelchData(Paths, Tasks, Sessions, Participants, Scaling)
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-Scaling = 'zscore'; % either 'log' or 'zcore' or 'scoref'
-% Scaling = 'log';
-Task = 'PVT';
-Condition = 'Beam';
-Title = 'Soporific';
-
-% Condition = 'Comp';
-% Title = 'Classic';
-
-% Task = 'Fixation';
-% Condition = '';
-% Title = 'Main';
-
-Refresh = false;
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-Sessions = allSessions.([Task,Condition]);
-SessionLabels = allSessionLabels.([Task, Condition]);
-
-Paths.Figures = fullfile(Paths.Figures, Task);
-if ~exist(Paths.Figures, 'dir')
-    mkdir(Paths.Figures)
-end
 
 %%% Get data
-FFT_Path = fullfile(Paths.Summary, [Task, '_FFT.mat']);
-if ~exist(FFT_Path, 'file') || Refresh
-    disp('*************Creating allFFT********************')
-    [allFFT, Categories] = LoadAllFFT(fullfile(Paths.WelchPower, Task), 'Power');
-    save(FFT_Path, 'allFFT', 'Categories')
-else
-    disp('***************Loading allFFT*********************')
-    load(FFT_Path, 'allFFT', 'Categories')
+allCategories = [];
+for Indx_T = 1:numel(Tasks)
+    [FFT, Categories] = LoadAllFFT(fullfile(Paths.WelchPower, Tasks{Indx_T}), 'Power');
+    
+    if ~exist('allFFT', 'var')
+        allFFT = FFT;
+    else
+    allFFT = cat(2, allFFT, FFT);
+    end
+
+    
+    allCategories = cat(2, allCategories, Categories);
 end
 
+
 Chanlocs = allFFT(1).Chanlocs;
-Freqs = allFFT(1).Freqs;
-TotChannels = size(Chanlocs, 2);
-
-
-
-TitleTag = [Task, '_', Title, '_', Scaling];
 
 % apply scaling
 switch Scaling
@@ -57,24 +26,19 @@ switch Scaling
         for Indx_F = 1:size(allFFT, 2)
             allFFT(Indx_F).FFT = log(allFFT(Indx_F).FFT + 1);
         end
-        PowerStruct = GetPowerStruct(allFFT, Categories, Sessions, Participants);
-
-        YLabel = 'Log Power Density';
+        PowerStruct = GetPowerStruct(allFFT, allCategories, Sessions, Participants);
         disp('********* Log transforming *******')
     case 'none'
-       YLabel = 'Power Density';
-       PowerStruct = GetPowerStruct(allFFT, Categories, Sessions, Participants);
+        PowerStruct = GetPowerStruct(allFFT, allCategories, Sessions, Participants);
         disp('********* No transforming *******')
     case 'zscore'
-        PowerStruct = GetPowerStruct(allFFT, Categories, Sessions, Participants);
+        PowerStruct = GetPowerStruct(allFFT, allCategories, Sessions, Participants);
         PowerStruct = ZScoreFFT(PowerStruct);
-        YLabel = 'Power Density (z scored)';
-         disp('********* ZScore transforming *******')
+        disp('********* ZScore transforming *******')
 end
 
 
-
-% get limits per participant
+% get quantiles per participant
 Quantiles = nan(numel(Participants), numel(Sessions), 2);
 for Indx_P = 1:numel(Participants)
     for Indx_S = 1:numel(Sessions)
@@ -83,6 +47,3 @@ for Indx_P = 1:numel(Participants)
         Quantiles(Indx_P, Indx_S, 2) =  quantile(A(:), .99);
     end
 end
-
-YLims = squeeze(nanmean(nanmean(Quantiles(:, :, :), 2),1));
-

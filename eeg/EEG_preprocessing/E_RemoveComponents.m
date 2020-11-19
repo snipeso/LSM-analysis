@@ -7,7 +7,7 @@ clc
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Task = 'QuestionnaireEEG';
+Task = 'Oddball';
 Refresh = false;
 
 Data_Type = 'Wake';
@@ -28,6 +28,7 @@ Destination = fullfile(Paths.Preprocessed, 'ICA', ['Deblinked_',Data_Type], Task
 if ~exist(Destination, 'dir')
     mkdir(Destination)
 end
+
 
 
 

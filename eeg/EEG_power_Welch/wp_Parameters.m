@@ -20,6 +20,8 @@ Freqs = [1:FreqRes:30];
 Window = 4; % window for epochs when looking at general power;
 
 
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Do stuff
 
@@ -27,6 +29,21 @@ if ~exist(Paths.Summary, 'dir')
     mkdir(Paths.Summary)
 end
 
+if ~exist('Sessions', 'var')
+Sessions = allSessions.([Task,Condition]);
+SessionLabels = allSessionLabels.([Task, Condition]);
+else
+   
+SessionLabels = allSessionLabels.(Sessions);
+ Sessions = allSessions.(Sessions);
+end
+
+
+Paths.Figures = fullfile(Paths.Figures, join(Tasks, '_'));
+Paths.Figures = string(Paths.Figures );
 if ~exist(Paths.Figures, 'dir')
     mkdir(Paths.Figures)
 end
+
+
+TitleTag = [Task, '_', Title, '_', Scaling];
