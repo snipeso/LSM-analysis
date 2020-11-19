@@ -42,7 +42,11 @@ end
 Quantiles = nan(numel(Participants), numel(Sessions), 2);
 for Indx_P = 1:numel(Participants)
     for Indx_S = 1:numel(Sessions)
+        try
         A = PowerStruct(Indx_P).(Sessions{Indx_S});
+        catch
+            a=1;
+        end
         Quantiles(Indx_P, Indx_S, 1) =  quantile(A(:), .01);
         Quantiles(Indx_P, Indx_S, 2) =  quantile(A(:), .99);
     end

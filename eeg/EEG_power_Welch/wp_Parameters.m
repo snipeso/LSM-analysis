@@ -4,11 +4,7 @@ run(fullfile(extractBefore(mfilename('fullpath'), 'eeg'), 'General_Parameters'))
 addpath(fullfile(Paths.Analysis, 'functions','eeg'))
 
 %%% locations
-Paths.Preprocessed = 'C:\Users\colas\Desktop\LSMData'; % Sophia laptop
-
-% Paths.Preprocessed = 'L:\Somnus-Data\Data01\LSM\Data\Preprocessed'; % Work desktop
-
-% Paths.Preprocessed = 'C:\Users\schlaf\Desktop\LSMData'; % the Brick
+Paths.Preprocessed = 'D:\Data\Preprocessed'; % Sophia laptop
 
 Paths.Summary = fullfile(mfilename('fullpath'), 'SummaryData');
 Paths.WelchPower = fullfile(Paths.Preprocessed, 'Power', 'WelchPower');
@@ -29,13 +25,12 @@ if ~exist(Paths.Summary, 'dir')
     mkdir(Paths.Summary)
 end
 
-if ~exist('Sessions', 'var')
-Sessions = allSessions.([Task,Condition]);
-SessionLabels = allSessionLabels.([Task, Condition]);
-else
-   
-SessionLabels = allSessionLabels.(Sessions);
- Sessions = allSessions.(Sessions);
+if ~exist('Sessions', 'var') &&  exist('Task', 'var')
+    Sessions = allSessions.([Task,Condition]);
+    SessionLabels = allSessionLabels.([Task, Condition]);
+elseif exist('Sessions', 'var')
+        SessionLabels = allSessionLabels.(Sessions);
+    Sessions = allSessions.(Sessions);
 end
 
 
@@ -44,6 +39,3 @@ Paths.Figures = string(Paths.Figures );
 if ~exist(Paths.Figures, 'dir')
     mkdir(Paths.Figures)
 end
-
-
-TitleTag = [Task, '_', Title, '_', Scaling];

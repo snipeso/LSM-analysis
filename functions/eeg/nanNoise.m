@@ -14,8 +14,13 @@ end
         Ends =  convertFS(Cuts(:, 2), fs, EEG.srate);
         
         if any(Ends>size(EEG.data, 2))
-            Diff = Ends(end) - size(EEG.data, 2);
+            Diff = max(Ends) - size(EEG.data, 2);
             warning([num2str(Diff), ' extra samples'])
+            
+            if Diff < 0
+                
+                A=1
+            end
             
             % set end to file end
             Ends(Ends>size(EEG.data, 2)) = size(EEG.data, 2);
