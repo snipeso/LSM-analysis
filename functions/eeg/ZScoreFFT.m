@@ -1,7 +1,8 @@
 function PowerStruct = ZScoreFFT(PowerStruct)
 
 Tasks = fieldnames(PowerStruct);
-Sessions = fieldnames(PowerStruct.(Tasks{1}));
+A = PowerStruct.(Tasks{1}); % don't know why, but it didn't work nested
+Sessions = fieldnames(A);
 FreqsTot = size(PowerStruct(1).(Tasks{1}).(Sessions{1}), 2);
 
 for Indx_P = 1:size(PowerStruct, 2)
@@ -12,11 +13,18 @@ for Indx_P = 1:size(PowerStruct, 2)
     N = 0;
     
     for Indx_T = 1:numel(Tasks) % loop through all tasks
-        
-        Sessions = fieldnames(PowerStruct.(Tasks{Indx_T}));
+        A = PowerStruct.(Tasks{Indx_T});
+        Sessions = fieldnames(A);
         
         for Indx_S = 1:numel(Sessions) % loop through all sessions of that task
-            FFT = PowerStruct(Indx_P).(Tasks{Indx_T}).(Sessions{Indx_S})(:, :, :);
+         
+            try
+            FFT = PowerStruct(Indx_P).(Tasks{Indx_T}).(Sessions{Indx_S});
+            catch
+                 PowerStruct(Indx_P).(Tasks{Indx_T}).(Sessions{Indx_S}) = [];
+                continue % TEMP!
+            end
+            
             if isempty(FFT)
                 continue
             end
@@ -36,8 +44,8 @@ for Indx_P = 1:size(PowerStruct, 2)
     
     % zscore each session
     for Indx_T = 1:numel(Tasks) % loop through all tasks
-        
-        Sessions = fieldnames(PowerStruct.(Tasks{Indx_T}));
+          A = PowerStruct.(Tasks{Indx_T});
+        Sessions = fieldnames(A);
         for Indx_S = 1:numel(Sessions)
             for Indx_F = 1:numel(SUM)
                 if ~isempty(PowerStruct(Indx_P).(Tasks{Indx_T}).(Sessions{Indx_S}))

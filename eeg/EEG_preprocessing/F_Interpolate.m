@@ -10,7 +10,8 @@ clear
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Tasks = {'Oddball', 'Fixation', 'Standing'}; % specify folder for analysis
+% Tasks = {'Oddball', 'Fixation', 'Standing'}; % specify folder for analysis
+Tasks = {'Music'};
 DataType = 'Wake';
 Refresh = false;
 SpotCheck = false;
