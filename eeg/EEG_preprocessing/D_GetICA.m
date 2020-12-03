@@ -4,7 +4,7 @@ clear
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Targets = { 'QuestionnaireEEG', 'Standing', 'Game', 'Fixation', 'Match2Sample', 'Music', 'MWT', 'SpFT'};
-Targets = {'Oddball'};
+Targets = {'QuestionnaireEEG'};
 Refresh = false;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -7,7 +7,7 @@ clc
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Task = 'Oddball';
+Task = 'QuestionnaireEEG';
 Refresh = false;
 
 Data_Type = 'Wake';

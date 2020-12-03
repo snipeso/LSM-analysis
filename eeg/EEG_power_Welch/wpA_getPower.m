@@ -6,7 +6,7 @@ close all
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Tasks = {'Music'};
+Tasks = {'SpFT'};
 Refresh = false;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -20,7 +20,7 @@ for Indx_T = 1:numel(Tasks)
     % get files and paths
     Source = fullfile(Paths.Preprocessed, 'Interpolated', 'Wake', Task);
     Source_Cuts = fullfile(Paths.Preprocessed, 'Cleaning', 'Cuts', Task);
-    Destination= fullfile(Paths.WelchPower, Task);
+    Destination = fullfile(Paths.WelchPower, Task);
     
     if ~exist(Destination, 'dir')
         mkdir(Destination)
@@ -30,7 +30,7 @@ for Indx_T = 1:numel(Tasks)
     Files(~contains(Files, '.set')) = [];
     
     parfor Indx_F = 1:numel(Files)
-        try
+    
             File = Files{Indx_F};
             Filename = [extractBefore(File, '_Clean.set'), '_wp.mat'];
             
@@ -75,7 +75,7 @@ for Indx_T = 1:numel(Tasks)
             parsave(fullfile(Destination, Filename), Power)
             disp(['*************finished ',Filename '*************'])
         end
-    end
+    
 end
 
 function parsave(fname, Power)

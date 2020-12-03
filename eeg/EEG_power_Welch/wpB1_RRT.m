@@ -10,14 +10,15 @@ if Reload
     % set parameters
     Scaling = 'log'; % either 'log' or 'zcore' or 'scoref'
     
-    Tasks = {'Fixation', 'Standing'};
-%     Tasks = {'Music'};
-    Title = 'Main';
-    Sessions = 'RRT';
+%     Tasks = {'Fixation', 'Standing', 'Oddball'};
+    Tasks = {'Game', 'Match2Sample', 'SpFT', 'LAT', 'PVT', 'Music'};
+%     Title = 'Main';
+    Sessions = 'Basic';
     
-    Refresh = false;
+%  Sessions = 'RRT_Brief';
+    Refresh = true;
     
-    TitleTag = 'RRT_Power';
+    TitleTag = ['TasksBack_', Scaling];
     
     XLims = [1, 30];
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -44,7 +45,7 @@ YLims = [nanmean(Quantiles(:, :, :, 1), 'all'), nanmean(Quantiles(:, :, :, 2), '
 TotChannels = size(Chanlocs, 2);
 
 
-plotChannels = EEG_Channels.Hotspot; % hotspot
+plotChannels = EEG_Channels.Backspot; % hotspot
 ChanIndx = ismember( str2double({Chanlocs.labels}), plotChannels);
 
 allFFT = nan(numel(Participants), numel(Tasks), numel(Sessions), TotChannels, numel(Freqs));
@@ -140,8 +141,9 @@ for Indx_T = 1:numel(Tasks)
             Indx = Indx+1;
         end
     end
+    colormap(Format.Colormap.Linear)
 end
-colormap(Format.Colormap.Linear)
+
 % saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_PowerTopoplots.svg']))
 
 

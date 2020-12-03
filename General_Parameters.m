@@ -28,8 +28,8 @@ end
 
 
 % All participants to include in the analysis
-% Participants = { 'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07', 'P08', 'P09', 'P10', 'P11', 'P12'};
-Participants = { 'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07', 'P08', 'P09', 'P10', 'P11', 'P12', 'P13', 'P14', 'P15'};
+Participants = { 'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07', 'P08', 'P09', 'P10', 'P11', 'P12'};
+% Participants = { 'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07', 'P08', 'P09', 'P10', 'P11', 'P12', 'P13', 'P14', 'P15'};
 
 GroupLabels = struct();
 GroupLabels.Gender = {'m','m','m', 'f','m', 'f','f', 'm','f', 'f','m', 'm','m', 'f', 'f'};
@@ -231,6 +231,16 @@ allSessionLabels.RRT = {'BL-Pre', 'BL-Post' ...
     '4:30', '7:30', '10:00', ...
     '15:00', '17:30', '20:30', ...
     '23:00', '2:40', 'Post'};
+
+
+allSessions.RRT_Brief = {'BaselinePre', 'BaselinePost', ...
+    'MainPre', ...
+    'Main1', 'Main8', 'MainPost'};
+allSessionLabels.RRT_Brief = {'BL-Pre', 'BL-Post' ...
+    'Pre', ...
+    '4:30', '2:40', 'Post'};
+
+
 
 % Labels for temp standing
 allSessions.Standing = {

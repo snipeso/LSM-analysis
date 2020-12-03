@@ -8,9 +8,15 @@ close all
 wp_Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Tasks = {'LAT', 'PVT'};
+% Tasks = {'LAT', 'PVT'};
+% Conditions = {'Beam', 'Comp'};
+% ConditionTitles = {'Soporific', 'Classic'};
+
+
+Tasks = {'Music', '' 'LAT', 'PVT'};
 Conditions = {'Beam', 'Comp'};
 ConditionTitles = {'Soporific', 'Classic'};
+
 
 Refresh = false;
 

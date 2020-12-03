@@ -18,6 +18,9 @@ for Indx_T = 1:numel(Tasks)
 end
 
 
+allCategories = replace(allCategories, 'BaselineComp', 'Baseline');
+allCategories = replace(allCategories, 'Session1Comp', 'Session1');
+allCategories = replace(allCategories, 'Session2Comp', 'Session2');
 Chanlocs = allFFT(1).Chanlocs;
 
 % apply scaling
