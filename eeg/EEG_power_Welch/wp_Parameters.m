@@ -24,14 +24,14 @@ Window = 4; % window for epochs when looking at general power;
 if ~exist(Paths.Summary, 'dir')
     mkdir(Paths.Summary)
 end
-
-if ~exist('Sessions', 'var') &&  exist('Task', 'var')
-    Sessions = allSessions.([Task,Condition]);
-    SessionLabels = allSessionLabels.([Task, Condition]);
-elseif exist('Sessions', 'var')
-        SessionLabels = allSessionLabels.(Sessions);
-    Sessions = allSessions.(Sessions);
-end
+% 
+% if ~exist('Sessions', 'var') &&  exist('Task', 'var')
+%     Sessions = allSessions.([Task,Condition]);
+%     SessionLabels = allSessionLabels.([Task, Condition]);
+% elseif exist('Sessions', 'var')
+%         SessionLabels = allSessionLabels.(Sessions);
+%     Sessions = allSessions.(Sessions);
+% end
 
 
 Paths.Figures = fullfile(Paths.Figures, join(Tasks, '_'));

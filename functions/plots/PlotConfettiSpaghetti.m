@@ -1,4 +1,4 @@
-function PlotConfettiSpaghetti(Matrix, SessionLabels, YLims, Labels, ColorGroups, Format)
+function PlotConfettiSpaghetti(Matrix, SessionLabels, YLims, Labels, ColorGroups, Format, Stats)
 % PlotConfettiSpaghetti(Matrix, SessionLabels, YLims, Title, Labels, ColorGroups)
 % plots a speghetti plot based on the matrix, with sessions on the x axis.
 % A faded color indicates participants; either a unique color per person,
@@ -67,6 +67,22 @@ else
     plot(nanmean(Matrix, 1), 'o-', 'LineWidth', 2.5, 'Color', 'k',  'MarkerFaceColor', 'k')
 end
 
+if exist('Stats', 'var') && Stats
+    Pairs = {};
+    pValues = [];
+    for Indx_S1 = 1:numel(SessionLabels)-1
+       for Indx_S2 = Indx_S1+1:numel(SessionLabels)
+              [~, pValue] = ttest(Matrix(:, Indx_S1), Matrix(:, Indx_S2));
+              if pValue < .05
+                 Pairs = cat(1, Pairs, [Indx_S1, Indx_S2]);
+                 pValues = cat(1, pValues, pValue);
+              end
+    end
+    end
+ 
+    
+    sigstar(Pairs, pValues, repmat({[0 0 0]}, size(Pairs)))
+end
 
 if exist('Labels', 'var') && ~isempty(Labels)
     yticks(linspace(YLims(1), YLims(2), numel(Labels)))
@@ -78,6 +94,8 @@ end
 % end
 
 set(gca, 'FontName', Format.FontName)
+
+
 
 end
 

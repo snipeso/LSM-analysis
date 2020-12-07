@@ -3,25 +3,7 @@ function [PowerStruct, Chanlocs, Quantiles] = LoadWelchData(Paths, Tasks, Sessio
 
 
 %%% Get data
-allCategories = [];
-for Indx_T = 1:numel(Tasks)
-    [FFT, Categories] = LoadAllFFT(fullfile(Paths.WelchPower, Tasks{Indx_T}), 'Power');
-    
-    if ~exist('allFFT', 'var')
-        allFFT = FFT;
-    else
-        allFFT = cat(2, allFFT, FFT);
-    end
-    
-    
-    allCategories = cat(2, allCategories, Categories);
-end
-
-
-allCategories = replace(allCategories, 'BaselineComp', 'Baseline');
-allCategories = replace(allCategories, 'Session1Comp', 'Session1');
-allCategories = replace(allCategories, 'Session2Comp', 'Session2');
-Chanlocs = allFFT(1).Chanlocs;
+[allFFT, allCategories] = LoadAll(Paths, Tasks);
 
 % apply scaling
 switch Scaling
@@ -36,10 +18,41 @@ switch Scaling
         disp('********* No transforming *******')
     case 'zscore'
         PowerStruct = GetPowerStruct(allFFT, allCategories, Sessions, Participants);
-        PowerStruct = ZScoreFFT(PowerStruct);
+        PowerStruct = ZScoreFFT(PowerStruct, Sessions);
         disp('********* ZScore transforming *******')
+        
+    case 'zscore_all'
+        AllZScoreFile = fullfile(Paths.Summary, 'AllZScoreParameters.m');
+        if ~Refresh && exist(AllZScoreFile, 'file')
+            PowerStruct = GetPowerStruct(allFFT, allCategories, Sessions, Participants);
+            load(AllZScoreFile, 'ZScoreParameters')
+            [PowerStruct, ZScoreParameters] = ZScoreFFT(PowerStruct, Sessions, ZScoreParameters);
+        else
+            
+            % load all at once
+            allTasks = string(ls(Paths.WelchPower));
+            allTasks(contains(allTasks, '.')) = [];
+            
+            disp('Loading all tasks for z scoring:')
+            disp(allTasks)
+            [allFFT, allCategories] = LoadAll(Paths, allTasks);
+            
+            Sessions = unique(allCategories(3, :));
+            
+            MegaPowerStruct = GetPowerStruct(allFFT, allCategories, Sessions, Participants);
+            
+            % z-score
+             [MegaPowerStruct, ZScoreParameters] = ZScoreFFT(MegaPowerStruct, Sessions);
+            
+            % then select only fields of interest
+            OtherTasks = setdiff(allTasks, Tasks);
+            PowerStruct = rmfield(MegaPowerStruct, OtherTasks);
+        end
+        
+        save(AllZScoreFile, 'ZScoreParameters')
 end
 
+Chanlocs = allFFT(1).Chanlocs;
 
 % get quantiles per participant
 Quantiles = nan(numel(Participants), numel(Tasks), numel(Sessions), 2);
@@ -51,8 +64,30 @@ for Indx_P = 1:numel(Participants)
             catch
                 a=1;
             end
-            Quantiles(Indx_P, Indx_T, Indx_S, 1) =  quantile(A(:), .01);
-            Quantiles(Indx_P, Indx_T, Indx_S, 2) =  quantile(A(:), .99);
+            Quantiles(Indx_P, Indx_T, Indx_S, 1) =  quantile(A(:), .05);
+            Quantiles(Indx_P, Indx_T, Indx_S, 2) =  quantile(A(:), .95);
         end
     end
+end
+
+end
+
+function [allFFT, allCategories] = LoadAll(Paths, Tasks)
+
+allCategories = [];
+for Indx_T = 1:numel(Tasks)
+    [FFT, Categories] = LoadAllFFT(fullfile(Paths.WelchPower, Tasks{Indx_T}), 'Power');
+    
+    if ~exist('allFFT', 'var')
+        allFFT = FFT;
+    else
+        allFFT = cat(2, allFFT, FFT);
+    end
+    allCategories = cat(2, allCategories, Categories);
+end
+
+allCategories = replace(allCategories, 'BaselineComp', 'Baseline');
+allCategories = replace(allCategories, 'Session1Comp', 'Session1');
+allCategories = replace(allCategories, 'Session2Comp', 'Session2');
+
 end
