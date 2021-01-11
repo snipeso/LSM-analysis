@@ -8,7 +8,7 @@ Stats_Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-Task1 = 'LAT';
+Task1 = 'PVT';
 
 Analysis = 'classicVsoporific';
 
@@ -94,6 +94,13 @@ if ~exist(fullfile(Figure_Path), 'dir')
     mkdir(Figure_Path)
 end
 
+Results_Path = fullfile(Paths.Results, 'anova2way');
+
+if ~exist(fullfile(Results_Path), 'dir')
+    mkdir(Results_Path)
+end
+
+
 for Indx_T = 1:numel(Types)
     YLabel = YLabels{Indx_T};
     for Indx_N = 1:size(Normalizations, 2)
@@ -132,7 +139,6 @@ for Indx_T = 1:numel(Types)
         % handle nans
         Nans = any(isnan(ClassicMatrix), 2) | any(isnan(SopoMatrix), 2);
         if any(Nans)
-            
             ParticipantsLeft(Nans) = [];
             ClassicMatrix(Nans, :) = [];
             SopoMatrix(Nans, :) = [];
@@ -157,7 +163,7 @@ for Indx_T = 1:numel(Types)
         
         
         anova2way(ClassicMatrix, SopoMatrix, ParticipantsLeft, Type, Task,...
-            TitleTag, YLabelNew, Figure_Path, Format);
+            TitleTag, YLabelNew, Figure_Path, Results_Path, Format);
 
     end
 end

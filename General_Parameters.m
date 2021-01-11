@@ -9,6 +9,7 @@ Paths.Analysis = extractBefore(Paths.Analysis, 'General_Parameters');
 
 % get related paths
 Paths.Figures = fullfile(Paths.Analysis, 'figures');
+Paths.Results = fullfile(Paths.Analysis, 'results');
 
 
 % add location of subfunctions

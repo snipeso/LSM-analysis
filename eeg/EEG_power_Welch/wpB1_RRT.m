@@ -8,14 +8,15 @@ if Reload
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % set parameters
-    Scaling = 'log'; % either 'log' or 'zcore' or 'scoref'
+    Scaling = 'zscore'; % either 'log' or 'zcore' or 'scoref'
     
-%     Tasks = {'Fixation', 'Standing', 'Oddball'};
-        Tasks = {'Game', 'LAT', 'PVT',  'Match2Sample', 'Music',  'SpFT'};
-        Title = 'Main';
-        Sessions = 'Basic';
-%     Sessions = 'RRT';
-    plotChannelsLabels = 'Hotspot';
+    Tasks = {'Fixation', 'Standing', 'Oddball'};
+%         Tasks = {'Game', 'LAT', 'PVT',  'Match2Sample', 'Music',  'SpFT'};
+        Title = 'RRT';
+%         Sessions = 'Basic';
+    Sessions = 'RRT';
+
+    plotChannelsLabels = 'Backspot';
     
     
     Refresh = true;
@@ -27,6 +28,9 @@ if Reload
     
     Task = Tasks{1}; % TEMP
     wp_Parameters
+    
+        SessionLabels = allSessionLabels.(Sessions); %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    Sessions = allSessions.(Sessions);
     
     switch Scaling
         case 'log'
