@@ -5,6 +5,7 @@ addpath(fullfile(Paths.Analysis, 'functions','eeg'))
 
 %%% locations
 Paths.Preprocessed = 'D:\Data\Preprocessed'; % Sophia laptop
+Paths.Results = 'D:\Data\Results'; 
 
 Paths.Summary = fullfile(mfilename('fullpath'), 'SummaryData');
 Paths.WelchPower = fullfile(Paths.Preprocessed, 'Power', 'WelchPower');
@@ -39,3 +40,5 @@ Paths.Figures = string(Paths.Figures );
 if ~exist(Paths.Figures, 'dir')
     mkdir(Paths.Figures)
 end
+
+
