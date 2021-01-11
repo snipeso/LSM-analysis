@@ -286,6 +286,15 @@ EEG_Channels.EOG1 = [  1, 125,   8, 125,   2, 125,  1, 120,  1,  32];
 EEG_Channels.EOG2 = [128,  32, 128,  25, 128,  26, 43,  32, 38, 121];
 EEG_Channels.Standard = [24, 11, 124, 36, 55, 104, 52, 62, 92, 70, 75, 83];
 
+EEG_Channels.Frontal = [11, 22, 9, 24, 124, 33, 122];
+EEG_Channels.Labels.Frontal = {'Fz', 'Fp1', 'Fp2', 'F3', 'F4', 'F7', 'F8'};
+EEG_Channels.Central = [7, 36, 104, 45, 108]; % TODO: switch to 129 when interpolated!
+EEG_Channels.Labels.Central = {'Cz', 'C3', 'C4', 'T7', 'T8'};
+EEG_Channels.Posterior = [62, 75, 52, 92, 58, 96, 70, 83];
+EEG_Channels.Labels.Posterior = ['Pz', 'Oz', 'P3', 'P4', 'P7', 'P8', 'O1', 'O2'];
+EEG_Channels.Standard = [EEG_Channels.Frontal, EEG_Channels.Central, EEG_Channels.Posterior];
+EEG_Channels.Labels.Standard = [EEG_Channels.Labels.Frontal, EEG_Channels.Labels.Central, EEG_Channels.Labels.Posterior];
+
 EEG_Channels.Hotspot = [2:6, 9:13, 15, 16, 18:20, 23, 24, 26:29, 111, 112, 117, 118, 123, 124];
 EEG_Channels.Backspot = [EEG_Channels.O1, EEG_Channels.O2, 72, 75];
 

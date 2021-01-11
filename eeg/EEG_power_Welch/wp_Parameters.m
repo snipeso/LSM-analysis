@@ -34,11 +34,11 @@ end
 %     Sessions = allSessions.(Sessions);
 % end
 
-
-Paths.Figures = fullfile(Paths.Figures, join(Tasks, '_'));
-Paths.Figures = string(Paths.Figures );
-if ~exist(Paths.Figures, 'dir')
-    mkdir(Paths.Figures)
-end
-
+% 
+% Paths.Figures = fullfile(Paths.Figures, join(Tasks, '_'));
+% Paths.Figures = string(Paths.Figures );
+% if ~exist(Paths.Figures, 'dir')
+%     mkdir(Paths.Figures)
+% end
+% 
 

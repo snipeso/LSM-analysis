@@ -63,4 +63,4 @@ else
     xticklabels(Labels)
 end
 
-set(gca, FontName, Format.FontName)
+set(gca, 'FontName', Format.FontName)

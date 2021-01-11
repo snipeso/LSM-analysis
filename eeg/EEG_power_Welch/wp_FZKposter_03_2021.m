@@ -3,10 +3,14 @@ clear
 clc
 close all
 
+
+wp_Parameters
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% set parameters
 
 Scaling = 'zscore'; % 'zscore', 'log', 'none'
+YLimBand = [-1, 6 ];
 Refresh = true;
 Tasks = {'LAT', 'PVT', 'Match2Sample', 'SpFT', 'Game', 'Music'};
 TasksLabels = {'LAT', 'PVT', 'WM', 'Speech', 'Game', 'Music'};
@@ -18,14 +22,14 @@ Band = 'theta';
 Hotspot = 'Hotspot'; % TODO: make sure this is in apporpriate figure name
 TitleTag = ['FZK_', Band, '_', Scaling];
 
-Indexes_10_20 = [11, 75];
+Indexes_10_20 = EEG_Channels.Standard;
+ChannelLabels = EEG_Channels.Labels.Standard;
 
 Sessions_Tasks_Title = 'Basic';
 CompareTaskSessions = {'Baseline', 'Session2'};
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-wp_Parameters
 
 Paths.Results = fullfile(Paths.Results, 'FZK_03-2021');
 Paths.Results = string(Paths.Results);
@@ -66,6 +70,11 @@ nAllTasks = numel(AllTasks);
 n10_20 = numel(Indexes_10_20);
 FreqsIndxBand =  dsearchn( Freqs', Bands.(Band)');
 Indexes_10_20 =  ismember( str2double({Chanlocs.labels}), Indexes_10_20); % TODO: make sure in order!
+
+%%
+ChannelLabels = {Chanlocs.labels}; % TEMP! Problem is getting the actual string labels
+ChannelLabels = ChannelLabels(Indexes_10_20);
+
 Indexes_Hotspot =  ismember( str2double({Chanlocs.labels}), EEG_Channels.(Hotspot));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -113,44 +122,47 @@ for Indx_P = 1:nParticipants
     
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% Plots
+%%% Plots & Stats
 Colors = [];
 
 for Indx_T = 1:nAllTasks
-   Colors = cat(1, Colors, Format.Colors.Tasks.(AllTasks{Indx_T})) ;
+    Colors = cat(1, Colors, Format.Colors.Tasks.(AllTasks{Indx_T})) ;
 end
 
 
-%%% Plot 
+%%% Plot single channels
+
+for Indx_Ch = 1:n10_20
+    figure('units','normalized','outerposition',[0 0 .2 .4])
+    PlotSpaghettiOs(squeeze(Theta_10_20_Tasks(:, :, :, Indx_Ch)), 1,  Sessions_Tasks, Tasks, Colors, Format)
+    title([ChannelLabels{Indx_Ch}, ' ', Band])
+    ylim(YLimBand)
+    if Indx_Ch > 1
+        legend off
+    end
+    
+    saveas(gcf,fullfile(Paths.Results, [TitleTag,  '_ ',ChannelLabels{Indx_Ch}, 'Tasks.svg']))
+end
 
 
 
 
 
-
-
-
-
-
-%%
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% statistics
-
+%%% Effect Sizes
 BL_SD_Hotspot = struct();
 for Indx_T = 1:nAllTasks
     BL = squeeze(Theta_Hotspot(:, 1, Indx_T));
     SD2 = squeeze(Theta_Hotspot(:, 2, Indx_T));
- statsHedges = mes( SD2, BL, 'hedgesg', 'isDep', 1, 'nBoot', 1000);
- BL_SD_Hotspot(Indx_T).task = Tasks{Indx_T};
- BL_SD_Hotspot(Indx_T).mean = nanmean(Theta_Hotspot(:, :, Indx_T),'all');
- BL_SD_Hotspot(Indx_T).p = statsHedges.t.p;
-BL_SD_Hotspot(Indx_T).HedgesG = statsHedges.hedgesg;
-BL_SD_Hotspot(Indx_T).HedgesCI_Low = statsHedges.hedgesgCi(1);
-BL_SD_Hotspot(Indx_T).HedgesCI_High = statsHedges.hedgesgCi(2);
-
-% TODO: normality tests?
-
+    statsHedges = mes( SD2, BL, 'hedgesg', 'isDep', 1, 'nBoot', 1000);
+    BL_SD_Hotspot(Indx_T).task = Tasks{Indx_T};
+    BL_SD_Hotspot(Indx_T).mean = nanmean(Theta_Hotspot(:, :, Indx_T),'all');
+    BL_SD_Hotspot(Indx_T).p = statsHedges.t.p;
+    BL_SD_Hotspot(Indx_T).HedgesG = statsHedges.hedgesg;
+    BL_SD_Hotspot(Indx_T).HedgesCI_Low = statsHedges.hedgesgCi(1);
+    BL_SD_Hotspot(Indx_T).HedgesCI_High = statsHedges.hedgesgCi(2);
+    
+    % TODO: normality tests?
+    
 end
 
 
@@ -162,5 +174,5 @@ writetable(BL_SD_Hotspot, fullfile(Paths.Results, [TitleTag, '_', Hotspot,'_Effe
 % correct for multiple comparisons
 
 figure
-PlotBars(BL_SD_Hotspot.HedgesG, [BL_SD_Hotspot.HedgesCI_Low,BL_SD_Hotspot.HedgesCI_High ], Tasks, Colors, 'vertical', Format)
+PlotBars(BL_SD_Hotspot.HedgesG, [BL_SD_Hotspot.HedgesCI_Low,BL_SD_Hotspot.HedgesCI_High ], TasksLabels, Colors, 'vertical', Format)
 ylabel('Hedges g')
