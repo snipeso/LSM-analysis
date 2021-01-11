@@ -54,22 +54,22 @@ end
 
 Chanlocs = allFFT(1).Chanlocs;
 
-% get quantiles per participant
-Quantiles = nan(numel(Participants), numel(Tasks), numel(Sessions), 2);
-for Indx_P = 1:numel(Participants)
-    for Indx_T = 1:numel(Tasks)
-        for Indx_S = 1:numel(Sessions)
-            try
-                A = PowerStruct(Indx_P).(Tasks{Indx_T}).(Sessions{Indx_S});
-            catch
-                a=1;
-            end
-            Quantiles(Indx_P, Indx_T, Indx_S, 1) =  quantile(A(:), .05);
-            Quantiles(Indx_P, Indx_T, Indx_S, 2) =  quantile(A(:), .95);
-        end
-    end
-end
-
+% % get quantiles per participant
+% Quantiles = nan(numel(Participants), numel(Tasks), numel(Sessions), 2);
+% for Indx_P = 1:numel(Participants)
+%     for Indx_T = 1:numel(Tasks)
+%         for Indx_S = 1:numel(Sessions)
+%             try
+%                 A = PowerStruct(Indx_P).(Tasks{Indx_T}).(Sessions{Indx_S});
+%             catch
+%                 a=1;
+%             end
+%             Quantiles(Indx_P, Indx_T, Indx_S, 1) =  quantile(A(:), .05);
+%             Quantiles(Indx_P, Indx_T, Indx_S, 2) =  quantile(A(:), .95);
+%         end
+%     end
+% end
+Quantiles = 1;
 end
 
 function [allFFT, allCategories] = LoadAll(Paths, Tasks)

@@ -122,10 +122,19 @@ Format.Colors.Generic.Dark2 = [145 26 150]/255; % purple
 Format.Colors.Sessions = [Format.Colors.Generic.Dark1; Format.Colors.Generic.Red; Format.Colors.Generic.Pale2 ];
 Format.Colors.Tally = [34 168 136; 244, 204, 32; 228, 103, 90 ]/255; % correct, late, missed
 
-Format.Colors.Tasks.LAT = Format.Colors.LATBeam(2, :);
-Format.Colors.Tasks.PVT = Format.Colors.PVTBeam(2, :);
-Format.Colors.Tasks.AllTasks = Format.Colors.Generic.Red;
-% Format.Colors.Tasks.AllTasks = [230 164 46]/255; % yellow for microsleeps presentation
+
+Format.Colors.Tasks.PVT = [244, 204, 32]/255;
+Format.Colors.Tasks.LAT = [246, 162, 75]/255;
+Format.Colors.Tasks.Match2Sample = [228, 104, 90]/255;
+
+Format.Colors.Tasks.SpFT = [185, 204, 38]/255;
+Format.Colors.Tasks.Game = [44, 190, 107]/255;
+Format.Colors.Tasks.Music = [22, 144, 167]/255;
+
+Format.Colors.Tasks.Oddball = [222, 122, 184]/255;
+Format.Colors.Tasks.Fixation = [172, 86, 224]/255;
+Format.Colors.Tasks.Standing = [99, 88, 226]/255;
+
 
 Format.Colors.DarkParticipants = Format.Colormap.Rainbow(floor(linspace(1, ...
     size(Format.Colormap.Rainbow, 1), numel(Participants))), :);
