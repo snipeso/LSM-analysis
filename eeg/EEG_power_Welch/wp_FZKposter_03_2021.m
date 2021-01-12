@@ -10,7 +10,7 @@ wp_Parameters
 %%% set parameters
 
 Scaling = 'zscore'; % 'zscore', 'log', 'none'
-YLimBand = [-1, 6 ];
+YLimBand = [-2, 6 ];
 YLimSpectrum = [-.5, 1.2];
 
 Refresh = true;
@@ -177,7 +177,7 @@ end
 
 
 
-
+%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Plots & Stats
 Colors = [];
@@ -204,8 +204,8 @@ end
 
 % plot RRT
 for Indx_Ch = 1:n10_20
-    figure('units','normalized','outerposition',[0 0 .2 .4])
-    PlotSpaghettiOs(squeeze(Band_10_20_RRT(:, :, :, Indx_Ch)), 1,  Sessions_RRT, RRT, Colors, Format)
+    figure('units','normalized','outerposition',[0 0 .5 .4])
+    PlotSpaghettiOs(squeeze(Band_10_20_RRT(:, :, :, Indx_Ch)), 1,  Sessions_RRT, RRT, Colors(end-3:end, :), Format)
     title([ChannelLabels{Indx_Ch}, ' ', BandLabel])
     ylim(YLimBand)
     if Indx_Ch > 1
@@ -242,11 +242,11 @@ figure('units','normalized','outerposition',[0 0 1 1])
 Indx = 1;
 for Indx_T = 1:nRRT
     for Indx_SR = [1, 3:nSessions_RRT]
-        subplot(nRRT, nSessions_RRT, Indx)
+        subplot(nRRT, nSessions_RRT-1, Indx)
         M1 = squeeze(Band_Topo_RRT(:, :, 2, Indx_T)); % baseline session
         M2 = squeeze(Band_Topo_RRT(:, :, Indx_SR, Indx_T));
         PlotTopoDiff(M1, M2, Chanlocs, CLims, Format)
-        title([RRTLabels{Indx_T}, ' ', Sessions_Tasks{Indx_SR}])
+        title([RRTLabels{Indx_T}, ' ', Sessions_RRT{Indx_SR}])
         
         Indx = Indx+1;
     end
@@ -267,21 +267,21 @@ for Indx_T = 1:nTasks
 end
 
 % plot RRT as difference from baseline of M7/M8
-for Indx_T = 1:nTasks
+for Indx_R = 1:nRRT
     figure('units','normalized','outerposition',[0 0 .2 .4])
     
-    M1 = squeeze(Band_Topo_Tasks(:, :, 1, Indx_T)); % baseline session
+    M1 = squeeze(Band_Topo_RRT(:, :, 1, Indx_R)); % baseline session
     SD_Indx = ismember(Sessions_RRT, {'Main7', 'Main8'});
-    M2 = squeeze(nanmean(Band_Topo_RRT(:, :, SD_Indx, Indx_T), 2));
+    M2 = squeeze(nanmean(Band_Topo_RRT(:, :, SD_Indx, Indx_R), 2));
     PlotTopoDiff(M1, M2, Chanlocs, CLims, Format)
     colorbar off
     saveas(gcf,fullfile(Paths.Results, [TitleTag, '_SD2-BL_Topo_RRT_', ...
-        num2str(CLims(1)), '_', num2str(CLims(2)), '_' Tasks{Indx_T}, '.svg']))
+        num2str(CLims(1)), '_', num2str(CLims(2)), '_' RRT{Indx_R}, '.svg']))
 end
 
 
 
-
+%%
 %%% Plot change in spectrum from BL to SD2 for hotspot
 for Indx_T = 1:nAllTasks
     C = Format.Colors.Tasks.(AllTasks{Indx_T});
@@ -311,12 +311,14 @@ for Indx_T = 1:nAllTasks
     set(gca, 'FontName', Format.FontName, 'FontSize', 12)
     xlabel('Frequency (Hz)',  'FontSize', 14)
     title(AllTasksLabels{Indx_T}, 'FontSize', 20)
+    axis square
     
     saveas(gcf,fullfile(Paths.Results, [TitleTag, '_SD2-BL_Freqs_', ...
         AllTasks{Indx_T}, '.svg']))
     
 end
 
+%%
 
 %%% Effect Sizes
 BL_SD_Hotspot = struct();
@@ -324,7 +326,7 @@ for Indx_T = 1:nAllTasks
     BL = squeeze(Band_Hotspot(:, 1, Indx_T));
     SD2 = squeeze(Band_Hotspot(:, 2, Indx_T));
     statsHedges = mes( SD2, BL, 'hedgesg', 'isDep', 1, 'nBoot', 1000);
-    BL_SD_Hotspot(Indx_T).task = Tasks{Indx_T};
+    BL_SD_Hotspot(Indx_T).task = AllTasks{Indx_T};
     BL_SD_Hotspot(Indx_T).mean = nanmean(Band_Hotspot(:, :, Indx_T),'all');
     BL_SD_Hotspot(Indx_T).p = statsHedges.t.p;
     BL_SD_Hotspot(Indx_T).HedgesG = statsHedges.hedgesg;
@@ -344,5 +346,5 @@ writetable(BL_SD_Hotspot, fullfile(Paths.Results, [TitleTag, '_', Hotspot,'_Effe
 % correct for multiple comparisons
 
 figure
-PlotBars(BL_SD_Hotspot.HedgesG, [BL_SD_Hotspot.HedgesCI_Low,BL_SD_Hotspot.HedgesCI_High ], TasksLabels, Colors, 'vertical', Format)
+PlotBars(BL_SD_Hotspot.HedgesG, [BL_SD_Hotspot.HedgesCI_Low,BL_SD_Hotspot.HedgesCI_High ], AllTasksLabels, Colors, 'vertical', Format)
 ylabel('Hedges g')
