@@ -11,6 +11,7 @@ wp_Parameters
 
 Scaling = 'zscore'; % 'zscore', 'log', 'none'
 YLimBand = [-1, 6 ];
+
 Refresh = true;
 Tasks = {'LAT', 'PVT', 'Match2Sample', 'SpFT', 'Game', 'Music'};
 TasksLabels = {'LAT', 'PVT', 'WM', 'Speech', 'Game', 'Music'};
@@ -67,6 +68,7 @@ nSessions_Tasks = numel(Sessions_Tasks);
 nTasks = numel(Tasks);
 nRRT = numel(RRT);
 nAllTasks = numel(AllTasks);
+nChannels = numel(Chanlocs);
 n10_20 = numel(Indexes_10_20);
 FreqsIndxBand =  dsearchn( Freqs', Bands.(Band)');
 Indexes_10_20 =  ismember( str2double({Chanlocs.labels}), Indexes_10_20); % TODO: make sure in order!
@@ -81,9 +83,11 @@ Indexes_Hotspot =  ismember( str2double({Chanlocs.labels}), EEG_Channels.(Hotspo
 %%% Gather data
 
 % FZ, CZ, PZ, OZ (eventually do 10-20 grid) theta across sessions
-Theta_10_20_Tasks = nan(nParticipants, nSessions_Tasks, nTasks, n10_20);
+Band_10_20_Tasks = nan(nParticipants, nSessions_Tasks, nTasks, n10_20);
 
 % BL + SD2 topography
+Band_Topo_Tasks = nan(nParticipants, nChannels, nSessions_Tasks, nTasks);
+
 % BL + SD2 spectrums of frontal cluster (+ occipital cluster for
 % comparison); special averaging of R7 and R8 for RRT
 % from above, get theta range, and calculate effect size
@@ -106,7 +110,10 @@ for Indx_P = 1:nParticipants
             % get theta power
             FFT = FFT(:, FreqsIndxBand(1):FreqsIndxBand(2), :);
             Theta = nansum(nanmean(FFT, 3), 2).*FreqRes;
-            Theta_10_20_Tasks(Indx_P, Indx_ST, Indx_T, :) = squeeze(Theta(Indexes_10_20));
+            
+            Band_Topo_Tasks(Indx_P, :, Indx_ST, Indx_T) = Theta;
+            
+            Band_10_20_Tasks(Indx_P, Indx_ST, Indx_T, :) = squeeze(Theta(Indexes_10_20));
             
             
             Theta_Hotspot(Indx_P, ismember(CompareTaskSessions, Sessions_Tasks{Indx_ST}), Indx_AllT) = ...
@@ -121,6 +128,10 @@ for Indx_P = 1:nParticipants
     
     
 end
+
+
+
+%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Plots & Stats
 Colors = [];
@@ -134,7 +145,7 @@ end
 
 for Indx_Ch = 1:n10_20
     figure('units','normalized','outerposition',[0 0 .2 .4])
-    PlotSpaghettiOs(squeeze(Theta_10_20_Tasks(:, :, :, Indx_Ch)), 1,  Sessions_Tasks, Tasks, Colors, Format)
+    PlotSpaghettiOs(squeeze(Band_10_20_Tasks(:, :, :, Indx_Ch)), 1,  Sessions_Tasks, Tasks, Colors, Format)
     title([ChannelLabels{Indx_Ch}, ' ', Band])
     ylim(YLimBand)
     if Indx_Ch > 1
@@ -144,10 +155,32 @@ for Indx_Ch = 1:n10_20
     saveas(gcf,fullfile(Paths.Results, [TitleTag,  '_ ',ChannelLabels{Indx_Ch}, 'Tasks.svg']))
 end
 
+%%
+
+%%% plot topographies
+CLims = [-5 5];
+
+% plot tasks as change from BL of S1 and S2
+figure('units','normalized','outerposition',[0 0 1 .4])
+Indx = 1;
+for Indx_ST = 2:3
+    for Indx_T = 1:nTasks
+        subplot(2, nTasks, Indx)
+        M1 = squeeze(Band_Topo_Tasks(:, :, 1, Indx_T)); % baseline session
+        M2 = squeeze(Band_Topo_Tasks(:, :, Indx_ST, Indx_T));
+        PlotTopoDiff(M1, M2, Chanlocs, CLims, Format)
+        title([TasksLabels{Indx_T}, ' ', Sessions_Tasks{Indx_ST}])
+        
+        Indx = Indx+1;
+    end
+end
+saveas(gcf,fullfile(Paths.Results, [TitleTag,  '_ TasksTopos.svg']))
+
+% plot RRT as difference from baseline
 
 
 
-
+%%
 %%% Effect Sizes
 BL_SD_Hotspot = struct();
 for Indx_T = 1:nAllTasks
