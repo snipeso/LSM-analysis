@@ -85,9 +85,12 @@ for Indx_T = 1:numel(Tasks)
     end
     allCategories = cat(2, allCategories, Categories);
 end
-
+try
 allCategories = replace(allCategories, 'BaselineComp', 'Baseline');
 allCategories = replace(allCategories, 'Session1Comp', 'Session1');
 allCategories = replace(allCategories, 'Session2Comp', 'Session2');
+catch
+    a=1
+end
 
 end
