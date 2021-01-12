@@ -11,6 +11,7 @@ wp_Parameters
 
 Scaling = 'zscore'; % 'zscore', 'log', 'none'
 YLimBand = [-1, 6 ];
+YLimSpectrum = [-.5, 1.2];
 
 Refresh = true;
 Tasks = {'LAT', 'PVT', 'Match2Sample', 'SpFT', 'Game', 'Music'};
@@ -63,12 +64,14 @@ SessionLabels_Tasks = allSessionLabels.(Sessions_Tasks_Title);
 
 
 AllTasks = [Tasks, RRT];
+AllTasksLabels = [TasksLabels, RRTLabels];
 nParticipants = numel(Participants);
 nSessions_Tasks = numel(Sessions_Tasks);
 nTasks = numel(Tasks);
 nRRT = numel(RRT);
 nAllTasks = numel(AllTasks);
 nChannels = numel(Chanlocs);
+nFreqs = numel(Freqs);
 n10_20 = numel(Indexes_10_20);
 FreqsIndxBand =  dsearchn( Freqs', Bands.(Band)');
 Indexes_10_20 =  ismember( str2double({Chanlocs.labels}), Indexes_10_20); % TODO: make sure in order!
@@ -90,6 +93,9 @@ Band_Topo_Tasks = nan(nParticipants, nChannels, nSessions_Tasks, nTasks);
 
 % BL + SD2 spectrums of frontal cluster (+ occipital cluster for
 % comparison); special averaging of R7 and R8 for RRT
+Hotspot_Spectrum = nan(nParticipants, nFreqs, 2, nAllTasks);
+
+
 % from above, get theta range, and calculate effect size
 Theta_Hotspot = nan(nParticipants, 2, nAllTasks);
 
@@ -107,6 +113,12 @@ for Indx_P = 1:nParticipants
                 continue
             end
             
+            % get hotspot spectrum
+            if  any(ismember(CompareTaskSessions, Sessions_Tasks{Indx_ST}))
+                Hotspot_Spectrum(Indx_P, :, ismember(CompareTaskSessions, Sessions_Tasks{Indx_ST}), Indx_AllT) = ...
+                    nanmean(nanmean(FFT(Indexes_Hotspot, :, :), 1),3);
+            end
+            
             % get theta power
             FFT = FFT(:, FreqsIndxBand(1):FreqsIndxBand(2), :);
             Theta = nansum(nanmean(FFT, 3), 2).*FreqRes;
@@ -115,15 +127,16 @@ for Indx_P = 1:nParticipants
             
             Band_10_20_Tasks(Indx_P, Indx_ST, Indx_T, :) = squeeze(Theta(Indexes_10_20));
             
-            
             Theta_Hotspot(Indx_P, ismember(CompareTaskSessions, Sessions_Tasks{Indx_ST}), Indx_AllT) = ...
                 squeeze(nanmean(Theta(Indexes_Hotspot)));
+            
+            
             
         end
         Indx_AllT = Indx_AllT + 1;
     end
     
-    
+    % do RRT stuff
     
     
     
@@ -178,19 +191,56 @@ saveas(gcf,fullfile(Paths.Results, [TitleTag,  '_TasksTopos.svg']))
 
 
 % plot individual tasks
-    for Indx_T = 1:nTasks
-        figure('units','normalized','outerposition',[0 0 .2 .4])
-        M1 = squeeze(Band_Topo_Tasks(:, :, 1, Indx_T)); % baseline session
-        M2 = squeeze(Band_Topo_Tasks(:, :, end, Indx_T));
-        PlotTopoDiff(M1, M2, Chanlocs, CLims, Format)
-        colorbar off
-        saveas(gcf,fullfile(Paths.Results, [TitleTag, '_SD2-BL_Topo_', ...
-            num2str(CLims(1)), '_', num2str(CLims(2)), '_' Tasks{Indx_T}, '.svg']))
-    end
+for Indx_T = 1:nTasks
+    figure('units','normalized','outerposition',[0 0 .2 .4])
+    M1 = squeeze(Band_Topo_Tasks(:, :, 1, Indx_T)); % baseline session
+    M2 = squeeze(Band_Topo_Tasks(:, :, end, Indx_T));
+    PlotTopoDiff(M1, M2, Chanlocs, CLims, Format)
+    colorbar off
+    saveas(gcf,fullfile(Paths.Results, [TitleTag, '_SD2-BL_Topo_', ...
+        num2str(CLims(1)), '_', num2str(CLims(2)), '_' Tasks{Indx_T}, '.svg']))
+end
 
 % plot RRT as difference from baseline
 
 
+
+%%
+
+%%% Plot change in spectrum from BL to SD2 for hotspot
+for Indx_T = 1:nAllTasks
+    C = Format.Colors.Tasks.(AllTasks{Indx_T});
+    S_BL = squeeze(Hotspot_Spectrum(:, :, 1, Indx_T));
+    S_SD = squeeze(Hotspot_Spectrum(:, :, 2, Indx_T));
+    
+    figure('units','normalized','outerposition',[0 0 .2 .4])
+    hold on
+    plot(Freqs, zeros(size(Freqs)), ':', 'LineWidth', .1, 'Color', 'k')
+    % plot baseline
+    plot(Freqs, nanmean(S_BL, 1), 'LineWidth', 1.5, 'Color', [.6 .6 .6])
+    plot(Freqs(FreqsIndxBand(1):FreqsIndxBand(2)), ...
+        nanmean(S_BL(:, FreqsIndxBand(1):FreqsIndxBand(2)), 1), ...
+        'Color',C, 'LineWidth', 4)
+    
+    % plot main
+      plot(Freqs, nanmean(S_SD, 1), 'LineWidth', 1.5, 'Color', [0 0 0])
+         plot(Freqs(FreqsIndxBand(1):FreqsIndxBand(2)), ...
+        nanmean(S_SD(:, FreqsIndxBand(1):FreqsIndxBand(2)), 1), ...
+        'Color',C, 'LineWidth', 4)
+     TimeSeriesStats(cat(3, S_BL, S_SD), Freqs, 100);
+     clc
+    ylim(YLimSpectrum)
+    xlim([1 25])
+    ylabel(YLabel)
+
+    set(gca, 'FontName', Format.FontName, 'FontSize', 12)
+        xlabel('Frequency (Hz)',  'FontSize', 14)
+    title(AllTasksLabels{Indx_T}, 'FontSize', 20)
+    
+     saveas(gcf,fullfile(Paths.Results, [TitleTag, '_SD2-BL_Freqs_', ...
+        AllTasks{Indx_T}, '.svg']))
+    
+end
 
 %%
 %%% Effect Sizes
