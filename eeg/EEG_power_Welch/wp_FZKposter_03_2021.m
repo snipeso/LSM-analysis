@@ -155,10 +155,10 @@ for Indx_Ch = 1:n10_20
     saveas(gcf,fullfile(Paths.Results, [TitleTag,  '_ ',ChannelLabels{Indx_Ch}, 'Tasks.svg']))
 end
 
-%%
 
 %%% plot topographies
 CLims = [-5 5];
+
 
 % plot tasks as change from BL of S1 and S2
 figure('units','normalized','outerposition',[0 0 1 .4])
@@ -174,7 +174,19 @@ for Indx_ST = 2:3
         Indx = Indx+1;
     end
 end
-saveas(gcf,fullfile(Paths.Results, [TitleTag,  '_ TasksTopos.svg']))
+saveas(gcf,fullfile(Paths.Results, [TitleTag,  '_TasksTopos.svg']))
+
+
+% plot individual tasks
+    for Indx_T = 1:nTasks
+        figure('units','normalized','outerposition',[0 0 .2 .4])
+        M1 = squeeze(Band_Topo_Tasks(:, :, 1, Indx_T)); % baseline session
+        M2 = squeeze(Band_Topo_Tasks(:, :, end, Indx_T));
+        PlotTopoDiff(M1, M2, Chanlocs, CLims, Format)
+        colorbar off
+        saveas(gcf,fullfile(Paths.Results, [TitleTag, '_SD2-BL_Topo_', ...
+            num2str(CLims(1)), '_', num2str(CLims(2)), '_' Tasks{Indx_T}, '.svg']))
+    end
 
 % plot RRT as difference from baseline
 
