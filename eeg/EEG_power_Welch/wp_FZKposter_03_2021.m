@@ -59,10 +59,21 @@ end
 % load power data
 Sessions_Tasks = allSessions.(Sessions_Tasks_Title);
 SessionLabels_Tasks = allSessionLabels.(Sessions_Tasks_Title);
-[PowerStructTasks, Chanlocs, Quantiles] = LoadWelchData(Paths, Tasks, Sessions_Tasks, Participants, Scaling);
 Sessions_RRT = allSessions.(Sessions_RRT_Title);
 SessionLabels_RRT = allSessionLabels.(Sessions_RRT_Title);
-[PowerStructRRT, ~, ~] = LoadWelchData(Paths, RRT, Sessions_RRT, Participants, Scaling);
+
+if strcmp(Scaling, 'zscore')
+    [PowerStructTasks, Chanlocs, ~] = LoadWelchData(Paths, Tasks, Sessions_Tasks, Participants, 'none');
+    [PowerStructRRT, ~, ~] = LoadWelchData(Paths, RRT, Sessions_RRT, Participants, 'none');
+    Pre  = {PowerStructTasks, PowerStructRRT};
+    PowerStructListZScored = ZScoreFFTList(Pre, Freqs);
+    PowerStructTasks = PowerStructListZScored{1};
+    PowerStructRRT = PowerStructListZScored{2};
+    
+else
+    [PowerStructTasks, Chanlocs, Quantiles] = LoadWelchData(Paths, Tasks, Sessions_Tasks, Participants, Scaling);
+    [PowerStructRRT, ~, ~] = LoadWelchData(Paths, RRT, Sessions_RRT, Participants, Scaling);
+end
 
 %%
 
@@ -266,7 +277,7 @@ for Indx_T = 1:nTasks
         num2str(CLims(1)), '_', num2str(CLims(2)), '_' Tasks{Indx_T}, '.svg']))
 end
 
-%%
+
 % plot RRT as difference from baseline of M7/M8
 for Indx_R = 1:nRRT
     figure('units','normalized','outerposition',[0 0 .2 .4])
@@ -281,7 +292,7 @@ for Indx_R = 1:nRRT
 end
 
 
-
+%%
 
 %%% Plot change in spectrum from BL to SD2 for hotspot
 for Indx_T = 1:nAllTasks
@@ -318,6 +329,8 @@ for Indx_T = 1:nAllTasks
         AllTasks{Indx_T}, '.svg']))
     
 end
+
+
 
 
 %%% Effect Sizes

@@ -4,7 +4,6 @@ function [PowerStruct] = ZScoreFFT(PowerStruct, Sessions, Freqs)
 
 Tasks = fieldnames(PowerStruct);
 Participants = size(PowerStruct, 2);
-
 FreqsTot = numel(Freqs);
 
 for Indx_P = 1:Participants % loop through participants
@@ -46,8 +45,7 @@ for Indx_P = 1:Participants % loop through participants
                     
                     PowerStruct(Indx_P).(Tasks{Indx_T}).(Sessions{Indx_S})(:, Indx_F, :) = ...
                         (PowerStruct(Indx_P).(Tasks{Indx_T}).(Sessions{Indx_S})(:, Indx_F, :)-MEAN(Indx_F))./SD(Indx_F);
-                else
-                    A=1;
+          
                 end
             end
         end
