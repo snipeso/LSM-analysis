@@ -9,11 +9,11 @@ wp_Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% set parameters
 
-Scaling = 'zscore'; % 'zscore', 'log', 'none'
+Scaling = 'zscore_all'; % 'zscore', 'log', 'none'
 YLimBand = [-2, 6 ];
 YLimSpectrum = [-.5, 1.2];
 
-Refresh = true;
+Refresh = false;
 Tasks = {'LAT', 'PVT', 'Match2Sample', 'SpFT', 'Game', 'Music'};
 TasksLabels = {'LAT', 'PVT', 'WM', 'Speech', 'Game', 'Music'};
 
@@ -60,10 +60,10 @@ end
 % load power data
 Sessions_Tasks = allSessions.(Sessions_Tasks_Title);
 SessionLabels_Tasks = allSessionLabels.(Sessions_Tasks_Title);
-[PowerStructTasks, Chanlocs, Quantiles] = LoadWelchData(Paths, Tasks, Sessions_Tasks, Participants, Scaling);
+[PowerStructTasks, Chanlocs, Quantiles] = LoadWelchData(Paths, Tasks, Sessions_Tasks, Participants, Scaling, Refresh);
 Sessions_RRT = allSessions.(Sessions_RRT_Title);
 SessionLabels_RRT = allSessionLabels.(Sessions_RRT_Title);
-[PowerStructRRT, ~, ~] = LoadWelchData(Paths, RRT, Sessions_RRT, Participants, Scaling);
+[PowerStructRRT, ~, ~] = LoadWelchData(Paths, RRT, Sessions_RRT, Participants, Scaling, Refresh);
 
 
 AllTasks = [Tasks, RRT];
