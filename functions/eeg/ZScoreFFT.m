@@ -1,4 +1,3 @@
-
 function [PowerStruct] = ZScoreFFT(PowerStruct, Sessions, Freqs)
 % Z-score for each participant and each frequency, across all windows and
 % channels
@@ -18,8 +17,12 @@ for Indx_P = 1:Participants % loop through participants
     for Indx_T = 1:numel(Tasks) % loop through all tasks
         for Indx_S = 1:numel(Sessions) % loop through all sessions of that task
             
-            
-            FFT = PowerStruct(Indx_P).(Tasks{Indx_T}).(Sessions{Indx_S});
+            try
+                FFT = PowerStruct(Indx_P).(Tasks{Indx_T}).(Sessions{Indx_S});
+            catch
+%                 warning(strjoin(['Problem with', Participants{Indx_P}, Tasks{Indx_T}, Sessions{Indx_S}]))
+                FFT = [];
+            end
             
             if ~isempty(FFT)
                 SUM =SUM + squeeze(nansum(nansum(FFT, 1), 3)); % sum windows and channels
@@ -29,17 +32,22 @@ for Indx_P = 1:Participants % loop through participants
         end
     end
     
-        % calculate mean and std for every frequency
+    % calculate mean and std for every frequency
     MEAN = SUM/N;
     SD = sqrt((SUMSQ - N.*(MEAN.^2))./(N - 1));
     
-        %%% zscore each session
+    %%% zscore each session
     for Indx_T = 1:numel(Tasks) % loop through all tasks
         for Indx_S = 1:numel(Sessions)
             for Indx_F = 1:FreqsTot
-                if ~isempty(PowerStruct(Indx_P).(Tasks{Indx_T}).(Sessions{Indx_S}))
+            
+                if isfield(PowerStruct(Indx_P).(Tasks{Indx_T}), Sessions{Indx_S}) ...
+                        && ~isempty(PowerStruct(Indx_P).(Tasks{Indx_T}).(Sessions{Indx_S}))
+                    
                     PowerStruct(Indx_P).(Tasks{Indx_T}).(Sessions{Indx_S})(:, Indx_F, :) = ...
                         (PowerStruct(Indx_P).(Tasks{Indx_T}).(Sessions{Indx_S})(:, Indx_F, :)-MEAN(Indx_F))./SD(Indx_F);
+                else
+                    A=1;
                 end
             end
         end

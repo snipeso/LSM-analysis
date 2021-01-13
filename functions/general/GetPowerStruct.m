@@ -9,17 +9,19 @@ for Indx_P = 1:numel(Participants)
     for Indx_T = 1:numel(Tasks)
         for Indx_S = 1:numel(Sessions)
             try
-            FileIndx = strcmp(Categories(3, :), Sessions{Indx_S}) & ...
-                strcmp(Categories(2, :), Tasks{Indx_T}) & ...
-                strcmp(Categories(1, :), Participants{Indx_P});
+                FileIndx = strcmp(Categories(3, :), Sessions{Indx_S}) & ...
+                    strcmp(Categories(2, :), Tasks{Indx_T}) & ...
+                    strcmp(Categories(1, :), Participants{Indx_P});
             catch
                 a=1
             end
             if nnz(FileIndx) > 1
                 warning(['Too many files for ', Participants{Indx_P}, ' ',  Sessions{Indx_S}, '; concatenating' ])
                 
-                PowerStruct(Indx_P).(Sessions{Indx_S}) =  cat(3, allFFT(FileIndx).FFT);
+                PowerStruct(Indx_P).(Tasks{Indx_T}).(Sessions{Indx_S}) =  cat(3, allFFT(FileIndx).FFT);
+                
             elseif nnz(FileIndx) < 1
+                PowerStruct(Indx_P).(Tasks{Indx_T}).(Sessions{Indx_S}) = [];
                 warning(['Could not find ', Participants{Indx_P}, ' ',  Sessions{Indx_S} ])
                 continue
             else

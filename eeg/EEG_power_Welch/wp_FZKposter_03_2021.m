@@ -9,7 +9,7 @@ wp_Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% set parameters
 
-Scaling = 'zscore_all'; % 'zscore', 'log', 'none'
+Scaling = 'zscore'; % 'zscore', 'log', 'none'
 YLimBand = [-2, 6 ];
 YLimSpectrum = [-.5, 1.2];
 
@@ -28,8 +28,7 @@ TitleTag = ['FZK_', BandLabel, '_', Scaling];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Indexes_10_20 = EEG_Channels.Standard;
-ChannelLabels = EEG_Channels.Labels.Standard;
+Channels_10_20 = EEG_Channels.Standard;
 
 Sessions_Tasks_Title = 'Basic';
 Sessions_RRT_Title = 'RRT';
@@ -60,11 +59,12 @@ end
 % load power data
 Sessions_Tasks = allSessions.(Sessions_Tasks_Title);
 SessionLabels_Tasks = allSessionLabels.(Sessions_Tasks_Title);
-[PowerStructTasks, Chanlocs, Quantiles] = LoadWelchData(Paths, Tasks, Sessions_Tasks, Participants, Scaling, Refresh);
+[PowerStructTasks, Chanlocs, Quantiles] = LoadWelchData(Paths, Tasks, Sessions_Tasks, Participants, Scaling);
 Sessions_RRT = allSessions.(Sessions_RRT_Title);
 SessionLabels_RRT = allSessionLabels.(Sessions_RRT_Title);
-[PowerStructRRT, ~, ~] = LoadWelchData(Paths, RRT, Sessions_RRT, Participants, Scaling, Refresh);
+[PowerStructRRT, ~, ~] = LoadWelchData(Paths, RRT, Sessions_RRT, Participants, Scaling);
 
+%%
 
 AllTasks = [Tasks, RRT];
 AllTasksLabels = [TasksLabels, RRTLabels];
@@ -76,11 +76,11 @@ nRRT = numel(RRT);
 nAllTasks = numel(AllTasks);
 nChannels = numel(Chanlocs);
 nFreqs = numel(Freqs);
-n10_20 = numel(Indexes_10_20);
+n10_20 = numel(Channels_10_20);
 FreqsIndxBand =  dsearchn( Freqs', Bands.(BandLabel)');
-Indexes_10_20 =  ismember( str2double({Chanlocs.labels}), Indexes_10_20); % TODO: make sure in order!
+Indexes_10_20 =  ismember( str2double({Chanlocs.labels}), Channels_10_20); % TODO: make sure in order!
 
-%%
+
 ChannelLabels = {Chanlocs.labels}; % TEMP! Problem is getting the actual string labels
 ChannelLabels = ChannelLabels(Indexes_10_20);
 
@@ -177,7 +177,7 @@ end
 
 
 
-%%
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Plots & Stats
 Colors = [];
@@ -266,13 +266,14 @@ for Indx_T = 1:nTasks
         num2str(CLims(1)), '_', num2str(CLims(2)), '_' Tasks{Indx_T}, '.svg']))
 end
 
+%%
 % plot RRT as difference from baseline of M7/M8
 for Indx_R = 1:nRRT
     figure('units','normalized','outerposition',[0 0 .2 .4])
     
     M1 = squeeze(Band_Topo_RRT(:, :, 1, Indx_R)); % baseline session
     SD_Indx = ismember(Sessions_RRT, {'Main7', 'Main8'});
-    M2 = squeeze(nanmean(Band_Topo_RRT(:, :, SD_Indx, Indx_R), 2));
+    M2 = squeeze(nanmean(Band_Topo_RRT(:, :, SD_Indx, Indx_R), 3));
     PlotTopoDiff(M1, M2, Chanlocs, CLims, Format)
     colorbar off
     saveas(gcf,fullfile(Paths.Results, [TitleTag, '_SD2-BL_Topo_RRT_', ...
@@ -281,7 +282,7 @@ end
 
 
 
-%%
+
 %%% Plot change in spectrum from BL to SD2 for hotspot
 for Indx_T = 1:nAllTasks
     C = Format.Colors.Tasks.(AllTasks{Indx_T});
@@ -318,7 +319,6 @@ for Indx_T = 1:nAllTasks
     
 end
 
-%%
 
 %%% Effect Sizes
 BL_SD_Hotspot = struct();

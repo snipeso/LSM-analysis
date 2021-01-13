@@ -1,5 +1,5 @@
 
-function [PowerStruct, Chanlocs, Quantiles] = LoadWelchData(Paths, Tasks, Sessions, Participants, Scaling, Refresh)
+function [PowerStruct, Chanlocs, Quantiles] = LoadWelchData(Paths, Tasks, Sessions, Participants, Scaling)
 
 
 %%% Get data
