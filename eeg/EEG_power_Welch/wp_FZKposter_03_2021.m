@@ -23,7 +23,7 @@ RRTLabels = RRT;
 BandLabel = 'theta';
 Hotspot = 'Hotspot'; % TODO: make sure this is in apporpriate figure name
 TitleTag = ['FZK_', BandLabel, '_', Scaling];
-
+Plot_Single_Topos = false;
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -216,7 +216,7 @@ end
 % plot RRT
 for Indx_Ch = 1:n10_20
     figure('units','normalized','outerposition',[0 0 .5 .4])
-    PlotSpaghettiOs(squeeze(Band_10_20_RRT(:, :, :, Indx_Ch)), 1,  Sessions_RRT, RRT, Colors(end-3:end, :), Format)
+    PlotSpaghettiOs(squeeze(Band_10_20_RRT(:, :, :, Indx_Ch)), 1,  Sessions_RRT, RRT, Colors(end-2:end, :), Format)
     title([ChannelLabels{Indx_Ch}, ' ', BandLabel])
     ylim(YLimBand)
     if Indx_Ch > 1
@@ -265,7 +265,7 @@ end
 saveas(gcf,fullfile(Paths.Results, [TitleTag,  '_RRTTopos.svg']))
 
 
-
+if Plot_Single_Topos
 % plot individual tasks
 for Indx_T = 1:nTasks
     figure('units','normalized','outerposition',[0 0 .2 .4])
@@ -291,7 +291,7 @@ for Indx_R = 1:nRRT
         num2str(CLims(1)), '_', num2str(CLims(2)), '_' RRT{Indx_R}, '.svg']))
 end
 
-
+end
 %%
 
 %%% Plot change in spectrum from BL to SD2 for hotspot
