@@ -7,12 +7,12 @@ clc
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Task = 'QuestionnaireEEG';
+Task = 'Oddball';
 Refresh = false;
 
 Data_Type = 'Wake';
-% Filename = ['P10_Fixation_BaselinePre_ICA_Components.set'];
-Filename = [];
+Filename = ['P07_Oddball_Main5_ICA_Components.set'];
+% Filename = [];
 CheckOutput = true;
 Automate = false;
 

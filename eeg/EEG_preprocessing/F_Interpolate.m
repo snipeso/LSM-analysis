@@ -11,7 +11,7 @@ clear
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Tasks = {'Oddball', 'Fixation', 'Standing'}; % specify folder for analysis
-Tasks = {'SpFT'};
+Tasks = {'Oddball'};
 DataType = 'Wake';
 Refresh = false;
 SpotCheck = false;
