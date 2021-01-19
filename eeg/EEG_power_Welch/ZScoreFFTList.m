@@ -56,8 +56,6 @@ for Indx_P = 1:Participants
                         
                         PowerStruct(Indx_P).(Tasks{Indx_T}).(Sessions{Indx_S})(:, Indx_F, :) = ...
                             (PowerStruct(Indx_P).(Tasks{Indx_T}).(Sessions{Indx_S})(:, Indx_F, :)-MEAN(Indx_F))./SD(Indx_F);
-                    else
-                        A =1
                     end
                 end
             end

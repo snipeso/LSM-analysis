@@ -22,7 +22,7 @@ for Indx_P = 1:numel(Participants)
                 
             elseif nnz(FileIndx) < 1
                 PowerStruct(Indx_P).(Tasks{Indx_T}).(Sessions{Indx_S}) = [];
-                warning(['Could not find ', Participants{Indx_P}, ' ',  Sessions{Indx_S} ])
+                warning(['Could not find ', Participants{Indx_P}, ' ',  Sessions{Indx_S}, ' ', Tasks{Indx_T}])
                 continue
             else
                 
