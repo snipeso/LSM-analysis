@@ -290,7 +290,7 @@ end
 saveas(gcf,fullfile(Paths.Results, [TitleTag,  '_RRTTopos.svg']))
 
 
-%%
+
 Scale = 500;
 Low = -2;
 if Plot_Single_Topos
@@ -371,28 +371,32 @@ end
 
 
 %%% plot subjects S2 hotspot
-% for Indx_T = 1:nAllTasks
-% figure('units','normalized','outerposition',[0 0 .5 .4])
-% hold on
-% for Indx_P = 1:nParticipants
-%     
-%      P_SD = squeeze(Hotspot_Spectrum(:, :, 2, Indx_T));
-%      plot(Freqs, P_SD, 'Color',C, 'LineWidth', 4)
-%     
-% end
-% 
-% xlabel('Frequency (Hz)')
-% ylabel(YLabel)
-% set(gca, 'FontName', Format.FontName, 'FontSize', 14)
-% 
-% title([AllTasksLabels{Indx_T}, ' SD2'])
-% 
-%  saveas(gcf,fullfile(Paths.Results, [TitleTag, '_SD2-BL_Freqs_', ...
-%         AllTasks{Indx_T}, '.svg']))
-% 
-% end
+for Indx_T = 1:nAllTasks
+figure('units','normalized','outerposition',[0 0 .5 .8])
 
-%%
+for Indx_S = 1:2
+    subplot(2, 1, Indx_S)
+hold on
+for Indx_P = 1:nParticipants
+    
+    C = [Format.Colors.DarkParticipants(Indx_P, :), .5];
+     P_SD = squeeze(Hotspot_Spectrum(Indx_P, :, Indx_S, Indx_T));
+     plot(Freqs, P_SD, 'Color',C, 'LineWidth', 3)
+    
+end
+
+xlabel('Frequency (Hz)')
+ylabel(YLabel)
+ylim([min(Hotspot_Spectrum, [], 'all'), max(Hotspot_Spectrum, [], 'all')])
+set(gca, 'FontName', Format.FontName, 'FontSize', 14)
+
+title([AllTasksLabels{Indx_T}, ' ', CompareTaskSessions{Indx_S}])
+end
+ saveas(gcf,fullfile(Paths.Results, [TitleTag, AllTasks{Indx_T}, '_Participants.svg']))
+
+end
+
+
 
 %%% Plot change in spectrum from BL to SD2 for hotspot
 for Indx_T = 1:nAllTasks
