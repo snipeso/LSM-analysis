@@ -65,11 +65,9 @@ if ismember('cutData', {Content.name}) % check if there are cuts
                 continue
             end
             Ch = RemoveChannelsIndx(Indx_Ch); %TODO: check if correct channels are selected
-            try
+
             EEGnew.data(Ch, Start:End) = EEGmini.data(Ch, :);
-            catch
-                a=1
-            end
+            
         end
     end
 end

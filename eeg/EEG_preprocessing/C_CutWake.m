@@ -19,12 +19,12 @@ clc
 close all
 EEG_Parameters
 
-Filename = 'P07_Oddball_Main5_Cleaning.set'; % choose this if you want to clean a specific file
+Filename = 'P04_Oddball_MainPre_Cleaning.set'; % choose this if you want to clean a specific file
 % Filename = []; % choose this if you want to randomly select a file to clean from the list
 Folder = 'Oddball';
 
 Source = fullfile(Paths.Preprocessed, 'Cleaning', 'SET', Folder);
-Destination = fullfile(Paths.Preprocessed, 'Cleaning', 'Cuts', Folder);
+Destination = fullfile(Paths.Preprocessed, 'Cleaning', 'CutsDemo2', Folder);
 
 EEG = loadEEGtoCut(Source, Destination, Filename, EEG_Triggers); % load file
 m = matfile(EEG.CutFilepath,'Writable',true); % create cuts file, load it to current workspace

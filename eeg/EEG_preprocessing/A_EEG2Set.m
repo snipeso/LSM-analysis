@@ -75,8 +75,6 @@ for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
                 'check', 'on', ...
                 'savemode', 'onefile', ...
                 'version', '7.3');
-            converted(end + 1).path = Path; %#ok<SAGROW>
-            converted(end).filename = Filename.SET;
         catch
             warning(['Failed to save ', Filename.Core])
         end

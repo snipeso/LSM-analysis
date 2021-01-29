@@ -61,7 +61,7 @@ for Indx_T = 1:numel(Tasks)
         
         % clean data segments
         [EEGnew, badchans] = InterpolateSegments(EEG, fullfile(Source_Cuts, Filename_Cuts), EEG_Channels);
-          
+   
         
         % interpolate bad channels
         RemoveChannels =  labels2indexes(unique([badchans(:); EEG_Channels.notEEG(:)]), EEGnew.chanlocs);

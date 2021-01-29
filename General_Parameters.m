@@ -177,6 +177,9 @@ clear Measures MeasureTypes M T
 Format.Legend.Tally = {'Hits', 'Late', 'Misses'};
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+allTasks = {'Game', 'SpFT', 'LAT', 'PVT', 'Match2Sample', 'Music';
+    'MWT', 'Standing', 'QuestionnaireEEG', 'Oddball', 'Fixation', 'TV'};
+
 % Sessions
 allSessions = struct(); % labels used in saving data
 allSessionLabels = struct(); % labels used to display in plots

@@ -2,7 +2,8 @@ function PlotSegment(EEG, Start, Stop, Channels, ProtoChannel, Color)
 % channels is a cell array of lists of channel numbers
 
 Freqs = 1:0.5:30;
-plotFreqs = [2:2:15, 20];
+plotFreqs = [2:2:15, 25];
+% plotFreqs = [ 20, 25];
 fs = EEG.srate;
 Colormap = flipud(colorcet('L17'));
 
@@ -38,7 +39,7 @@ figure('units','normalized','outerposition',[0 0 1 .3])
 FreqsIndx =  dsearchn( Freqs', plotFreqs');
 for Indx = 1:numel(plotFreqs)
     subplot(1, numel(plotFreqs), Indx)
-    topoplot(10*log(FFT(FreqsIndx(Indx), :)), EEG.chanlocs, 'style', 'map', 'headrad', 'rim');
+    topoplot(10*log(FFT(FreqsIndx(Indx), :)), EEG.chanlocs, 'style', 'map', 'headrad', 'rim', 'electrodes', 'on');
     colorbar
     title([num2str(plotFreqs(Indx)), 'Hz'])
     
