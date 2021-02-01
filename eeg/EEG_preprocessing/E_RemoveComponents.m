@@ -11,7 +11,7 @@ Task = '';
 Refresh = true;
 
 Data_Type = 'Wake';
-% Filename = ['P04_Oddball_Main8_ICA_Components.set'];
+% Filename = ['P01_PVT_Session2Comp_ICA_Components.set'];
 Filename = [];
 CheckOutput = true;
 Automate = false;
@@ -21,7 +21,7 @@ EEG_Parameters
 
 % choose a random task
 if isempty(Task)
-   Task = allTasks(randi(numel(allTasks))); 
+   Task = allTasks{randi(numel(allTasks))}; 
 end
     
 
