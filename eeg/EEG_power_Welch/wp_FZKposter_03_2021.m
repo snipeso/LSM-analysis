@@ -290,11 +290,12 @@ end
 saveas(gcf,fullfile(Paths.Results, [TitleTag,  '_RRTTopos.svg']))
 
 
-
+%%
 
 Scale = 500;
 Low = -2;
 if Plot_Single_Topos
+    
     
     % plot individual tasks
     Destination = fullfile(Paths.Results, 'Simple Topo');
@@ -351,6 +352,10 @@ if Plot_Single_Topos
     %%%%%%%%%%%%%%%%%%%%%
     
     % plot individual tasks differences
+    
+    Band_Topo_All = nan(nParticipants, nChannels, 2, nAllTasks);
+    Indx_B = 1;
+    
     Destination = fullfile(Paths.Results, 'SD2 vs BL');
     if ~exist(Destination, 'dir')
         mkdir(Destination)
@@ -364,6 +369,10 @@ if Plot_Single_Topos
         colorbar off
         saveas(gcf,fullfile(Destination, [TitleTag, '_SD2-BL_Topo_Tasks_', ...
             num2str(CLims(1)), '_', num2str(CLims(2)), '_' Tasks{Indx_T}, '.svg']))
+        
+        Band_Topo_All(:, :, 1, Indx_B) = M1;
+        Band_Topo_All(:, :, 2, Indx_B) = M2;
+        Indx_B = Indx_B+1;
     end
     
     
@@ -378,19 +387,73 @@ if Plot_Single_Topos
         colorbar off
         saveas(gcf,fullfile(Destination, [TitleTag, '_SD2-BL_Topo_RRT_', ...
             num2str(CLims(1)), '_', num2str(CLims(2)), '_' RRT{Indx_R}, '.svg']))
+        
+        Band_Topo_All(:, :, 1, Indx_B) = M1;
+        Band_Topo_All(:, :, 2, Indx_B) = M2;
+        Indx_B = Indx_B+1;
     end
+    
+    % save colorbar separatesly
+    figure
+    h = colorbar;
+    colormap(Format.Colormap.Divergent)
+    caxis([CLims])
+    set(gca, 'FontName', Format.FontName, 'FontSize', 22)
+    ylabel(h, 't values', 'FontSize', 30)
+    axis off
+    saveas(gcf,fullfile(Destination, [TitleTag, '_TaskTopos_Colorbar.svg']))
+    
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    Destination = fullfile(Paths.Results, 'TaskDiffs');
+    if ~exist(Destination, 'dir')
+        mkdir(Destination)
+    end
+    
+    %%% plot tasks difference within each session
+    %%% Plot diff from Fixation
+    FixIndx = ismember(AllTasks, 'Fixation');
+    Others = find(~FixIndx);
+    for Indx_S = 1:2
+        M0 = Band_Topo_All(:, :, Indx_S, FixIndx);
+        for Indx_O = Others
+            figure('units','normalized','outerposition',[0 0 .2 .4])
+            M1 = Band_Topo_All(:, :, Indx_S, Indx_O);
+            PlotTopoDiff(M0, M1, Chanlocs, CLims, Format)
+            colorbar off
+            saveas(gcf,fullfile(Destination, [TitleTag, '_TaskDiffs_', CompareTaskSessions{Indx_S}, '_', ...
+                num2str(CLims(1)), '_', num2str(CLims(2)), '_' AllTasks{Indx_O}, '.svg']))
+            
+            
+        end
+    end
+    
+    
+    %%
+    for Indx_S = 1:2
+        figure('units','normalized','outerposition',[0 0 1 1])
+        M0 = Band_Topo_All(:, :, Indx_S, FixIndx);
+        for Indx_O = Others
+            
+            subplot(3, 3, Indx_O)
+            M1 = Band_Topo_All(:, :, Indx_S, Indx_O);
+            PlotTopoDiff(M0, M1, Chanlocs, CLims, Format)
+            colorbar off
+            title([AllTasksLabels{Indx_O}, ' ' num2str(Indx_S)])
+            
+        end
+    end
+    
+    
 end
 
-% save colorbar separatesly
-figure
-h = colorbar;
-colormap(Format.Colormap.Divergent)
-caxis([CLims])
-set(gca, 'FontName', Format.FontName, 'FontSize', 22)
-ylabel(h, 't values', 'FontSize', 30)
-axis off
-saveas(gcf,fullfile(Destination, [TitleTag, '_TaskTopos_Colorbar.svg']))
 
+
+
+
+
+%%
 
 %%% plot subjects S2 hotspot
 for Indx_T = 1:nAllTasks
