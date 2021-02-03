@@ -289,14 +289,7 @@ for Indx_T = 1:nRRT
 end
 saveas(gcf,fullfile(Paths.Results, [TitleTag,  '_RRTTopos.svg']))
 
-% save colorbar separatesly
-figure
-colorbar
-colormap(Format.Colormap.Divergent)
-caxis([CLims])
-set(gca, 'FontName', Format.FontName, 'FontSize', 22)
-axis off
-saveas(gcf,fullfile(Destination, [TitleTag, '_TaskTopos_Colorbar.svg']))
+
 
 
 Scale = 500;
@@ -344,10 +337,11 @@ if Plot_Single_Topos
     
     % save colorbar separatesly
     figure
-    colorbar
+    h = colorbar;
     colormap(Format.Colormap.Linear)
     caxis([Low, CLims(2)])
     set(gca, 'FontName', Format.FontName, 'FontSize', 22)
+    ylabel(h, 'z scores', 'FontSize', 30)
     axis off
     saveas(gcf,fullfile(Destination, [TitleTag, '_Topo_RRT_', ...
         num2str(Low), '_', num2str(CLims(2)), '_Colorbar.svg']))
@@ -385,10 +379,17 @@ if Plot_Single_Topos
         saveas(gcf,fullfile(Destination, [TitleTag, '_SD2-BL_Topo_RRT_', ...
             num2str(CLims(1)), '_', num2str(CLims(2)), '_' RRT{Indx_R}, '.svg']))
     end
-    
-    
-    
 end
+
+% save colorbar separatesly
+figure
+h = colorbar;
+colormap(Format.Colormap.Divergent)
+caxis([CLims])
+set(gca, 'FontName', Format.FontName, 'FontSize', 22)
+ylabel(h, 't values', 'FontSize', 30)
+axis off
+saveas(gcf,fullfile(Destination, [TitleTag, '_TaskTopos_Colorbar.svg']))
 
 
 %%% plot subjects S2 hotspot
