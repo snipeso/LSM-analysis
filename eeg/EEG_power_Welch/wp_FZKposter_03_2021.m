@@ -289,6 +289,14 @@ for Indx_T = 1:nRRT
 end
 saveas(gcf,fullfile(Paths.Results, [TitleTag,  '_RRTTopos.svg']))
 
+% save colorbar separatesly
+figure
+colorbar
+colormap(Format.Colormap.Divergent)
+caxis([CLims])
+set(gca, 'FontName', Format.FontName, 'FontSize', 22)
+axis off
+saveas(gcf,fullfile(Destination, [TitleTag, '_TaskTopos_Colorbar.svg']))
 
 
 Scale = 500;
@@ -309,9 +317,9 @@ if Plot_Single_Topos
             topoplot(M, Chanlocs, 'maplimits', [Low, CLims(2)], 'style', 'map', 'headrad', 'rim', ...
                 'gridscale', Scale)
             colormap(Format.Colormap.Linear)
-    
+            
             saveas(gcf,fullfile(Destination, [TitleTag, '_', CompareTaskSessions{Indx_S}, '_Topo_Tasks_', ...
-               num2str(Low),'_', num2str(CLims(2)), '_' Tasks{Indx_T}, '.svg']))
+                num2str(Low),'_', num2str(CLims(2)), '_' Tasks{Indx_T}, '.svg']))
         end
         
         
@@ -327,11 +335,24 @@ if Plot_Single_Topos
             topoplot(M, Chanlocs, 'maplimits', [Low, CLims(2)], 'style', 'map', 'headrad', 'rim', ...
                 'gridscale', Scale)
             colormap(Format.Colormap.Linear)
-         
+            
             saveas(gcf,fullfile(Destination, [TitleTag, '_', CompareTaskSessions{Indx_S}, '_Topo_RRT_', ...
                 num2str(Low), '_', num2str(CLims(2)), '_' RRT{Indx_R}, '.svg']))
         end
     end
+    
+    
+    % save colorbar separatesly
+    figure
+    colorbar
+    colormap(Format.Colormap.Linear)
+    caxis([Low, CLims(2)])
+    set(gca, 'FontName', Format.FontName, 'FontSize', 22)
+    axis off
+    saveas(gcf,fullfile(Destination, [TitleTag, '_Topo_RRT_', ...
+        num2str(Low), '_', num2str(CLims(2)), '_Colorbar.svg']))
+    
+    
     
     %%%%%%%%%%%%%%%%%%%%%
     
@@ -372,28 +393,28 @@ end
 
 %%% plot subjects S2 hotspot
 for Indx_T = 1:nAllTasks
-figure('units','normalized','outerposition',[0 0 .5 .8])
-
-for Indx_S = 1:2
-    subplot(2, 1, Indx_S)
-hold on
-for Indx_P = 1:nParticipants
+    figure('units','normalized','outerposition',[0 0 .5 .8])
     
-    C = [Format.Colors.DarkParticipants(Indx_P, :), .5];
-     P_SD = squeeze(Hotspot_Spectrum(Indx_P, :, Indx_S, Indx_T));
-     plot(Freqs, P_SD, 'Color',C, 'LineWidth', 3)
+    for Indx_S = 1:2
+        subplot(2, 1, Indx_S)
+        hold on
+        for Indx_P = 1:nParticipants
+            
+            C = [Format.Colors.DarkParticipants(Indx_P, :), .5];
+            P_SD = squeeze(Hotspot_Spectrum(Indx_P, :, Indx_S, Indx_T));
+            plot(Freqs, P_SD, 'Color',C, 'LineWidth', 3)
+            
+        end
+        
+        xlabel('Frequency (Hz)')
+        ylabel(YLabel)
+        ylim([min(Hotspot_Spectrum, [], 'all'), max(Hotspot_Spectrum, [], 'all')])
+        set(gca, 'FontName', Format.FontName, 'FontSize', 14)
+        
+        title([AllTasksLabels{Indx_T}, ' ', CompareTaskSessions{Indx_S}])
+    end
+    saveas(gcf,fullfile(Paths.Results, [TitleTag, AllTasks{Indx_T}, '_Participants.svg']))
     
-end
-
-xlabel('Frequency (Hz)')
-ylabel(YLabel)
-ylim([min(Hotspot_Spectrum, [], 'all'), max(Hotspot_Spectrum, [], 'all')])
-set(gca, 'FontName', Format.FontName, 'FontSize', 14)
-
-title([AllTasksLabels{Indx_T}, ' ', CompareTaskSessions{Indx_S}])
-end
- saveas(gcf,fullfile(Paths.Results, [TitleTag, AllTasks{Indx_T}, '_Participants.svg']))
-
 end
 
 
