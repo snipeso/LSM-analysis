@@ -18,7 +18,7 @@ Tasks = {'LAT', 'PVT', 'Match2Sample', 'SpFT', 'Game', 'Music'};
 TasksLabels = {'LAT', 'PVT', 'WMT', 'Speech', 'Game', 'Music'};
 
 
-RRT = { 'Oddball', 'Fixation',  'Standing'};
+RRT = { 'Oddball', 'Fixation',  'QuestionnaireEEG'};
 RRTLabels = RRT;
 BandLabel = 'theta';
 Hotspot = 'Hotspot'; % TODO: make sure this is in apporpriate figure name
@@ -199,6 +199,9 @@ for Indx_P = 1:nParticipants
         
         
         if ReplaceBL
+            if isempty(EmergencyBL_Spectrum)
+                continue
+            end
             Hotspot_Spectrum(Indx_P, :, 1, Indx_AllT) =  EmergencyBL_Spectrum;
             Band_Hotspot(Indx_P, 1, Indx_AllT) =  EmergencyBL_Band;
         end
@@ -210,6 +213,7 @@ for Indx_P = 1:nParticipants
 end
 
 
+%%
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -453,7 +457,6 @@ end
 
 
 
-%%
 
 %%% plot subjects S2 hotspot
 for Indx_T = 1:nAllTasks

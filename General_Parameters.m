@@ -134,6 +134,7 @@ Format.Colors.Tasks.Music = [22, 144, 167]/255;
 Format.Colors.Tasks.Oddball = [222, 122, 184]/255;
 Format.Colors.Tasks.Fixation = [172, 86, 224]/255;
 Format.Colors.Tasks.Standing = [99, 88, 226]/255;
+Format.Colors.Tasks.QuestionnaireEEG = [0 0 0];
 
 
 Format.Colors.DarkParticipants = Format.Colormap.Rainbow(floor(linspace(1, ...

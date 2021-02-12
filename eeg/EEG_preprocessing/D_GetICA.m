@@ -52,9 +52,9 @@ for Indx_T = 1:numel(Targets)
         % remove bad channels
         badchans(badchans<1 | badchans>128) = [];
         EEG = pop_select(EEG, 'nochannel', unique(badchans));
-        
-              % clean data segments
-              error("to fix")
+%         
+%               % clean data segments
+%               error("to fix")
         [EEGnew, badchans] = InterpolateSegments(EEG, fullfile(Source_Cuts, Filename_Cuts), EEG_Channels);
    
         

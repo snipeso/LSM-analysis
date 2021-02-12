@@ -7,7 +7,7 @@ close all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Tasks = {'Standing', 'Oddball', 'Fixation'};
-Tasks = {'Oddball', 'Standing', 'Fixation'};
+Tasks = {'QuestionnaireEEG'};
 Refresh = false;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

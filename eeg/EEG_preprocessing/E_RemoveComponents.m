@@ -7,8 +7,8 @@ clc
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Task = '';
-Refresh = true;
+Task = 'QuestionnaireEEG';
+Refresh = false;
 
 Data_Type = 'Wake';
 % Filename = ['P01_PVT_Session2Comp_ICA_Components.set'];
