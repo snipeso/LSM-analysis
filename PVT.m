@@ -31,56 +31,56 @@ Shift_Colors = [    0.8941    0.4078    0.3529;
     0.7373    0.3373    0.8784;
     0.8745    0.4824    0.7216];
 
-histogram
+% histogram
 
 
 BL = pearsrnd(BL_mu,BL_sigma,BL_skew,BL_kurt,m,n);
 SD = pearsrnd(SD_mu,SD_sigma,SD_skew,SD_kurt,m,n);
-figure('units','normalized','outerposition',[0 0 1 1])
-subplot(2, 2, 1)
-histogram(BL, 'BinEdges', 0:.02:1, 'EdgeColor', 'none', 'FaceColor', BL_Color, 'FaceAlpha', .5)
-hold on
-histogram(SD, 'BinEdges', 0:.02:1, 'EdgeColor', 'none', 'FaceColor', SD_Color, 'FaceAlpha', .5)
-xlim([.1 1])
-yticks([])
-xlabel('RT (s)')
-title('Reaction Times')
-set(gca, 'FontSize', 12, 'FontName', 'Arial Nova')
-box off
-axis square
-legend({'Baseline', 'Sleep Deprivation'})
-
-subplot(2,2, 2)
-histogram(1./BL, 'BinEdges', 0:.1:6, 'EdgeColor', 'none', 'FaceColor', BL_Color, 'FaceAlpha', .5)
-hold on
-histogram(1./SD, 'BinEdges', 0:.1:6, 'EdgeColor', 'none', 'FaceColor', SD_Color, 'FaceAlpha', .5)
-
-yticks([])
-xlabel('Speed (1/s)')
-title('Speed')
-set(gca, 'FontSize', 12, 'FontName', 'Arial Nova')
-box off
-axis square
-
-
-subplot(2,2, 3)
-histogram(SD-BL, 'BinEdges', -1:.03:1, 'EdgeColor', 'none', 'FaceColor', [0 0 0], 'FaceAlpha', .5)
-yticks([])
-xlabel('RT difference (s)')
-title('SD - BL')
-set(gca, 'FontSize', 12, 'FontName', 'Arial Nova')
-box off
-axis square
-
-
-subplot(2,2, 4)
-histogram((1./SD)-(1./BL), 'BinEdges', -3:.1:3, 'EdgeColor', 'none', 'FaceColor', [0 0 0], 'FaceAlpha', .5)
-yticks([])
-xlabel('RT difference (s)')
-title('SD - BL')
-set(gca, 'FontSize', 12, 'FontName', 'Arial Nova')
-box off
-axis square
+% figure('units','normalized','outerposition',[0 0 1 1])
+% subplot(2, 2, 1)
+% histogram(BL, 'BinEdges', 0:.02:1, 'EdgeColor', 'none', 'FaceColor', BL_Color, 'FaceAlpha', .5)
+% hold on
+% histogram(SD, 'BinEdges', 0:.02:1, 'EdgeColor', 'none', 'FaceColor', SD_Color, 'FaceAlpha', .5)
+% xlim([.1 1])
+% yticks([])
+% xlabel('RT (s)')
+% title('Reaction Times')
+% set(gca, 'FontSize', 12, 'FontName', 'Arial Nova')
+% box off
+% axis square
+% legend({'Baseline', 'Sleep Deprivation'})
+% 
+% subplot(2,2, 2)
+% histogram(1./BL, 'BinEdges', 0:.1:6, 'EdgeColor', 'none', 'FaceColor', BL_Color, 'FaceAlpha', .5)
+% hold on
+% histogram(1./SD, 'BinEdges', 0:.1:6, 'EdgeColor', 'none', 'FaceColor', SD_Color, 'FaceAlpha', .5)
+% 
+% yticks([])
+% xlabel('Speed (1/s)')
+% title('Speed')
+% set(gca, 'FontSize', 12, 'FontName', 'Arial Nova')
+% box off
+% axis square
+% 
+% 
+% subplot(2,2, 3)
+% histogram(SD-BL, 'BinEdges', -1:.03:1, 'EdgeColor', 'none', 'FaceColor', [0 0 0], 'FaceAlpha', .5)
+% yticks([])
+% xlabel('RT difference (s)')
+% title('SD - BL')
+% set(gca, 'FontSize', 12, 'FontName', 'Arial Nova')
+% box off
+% axis square
+% 
+% 
+% subplot(2,2, 4)
+% histogram((1./SD)-(1./BL), 'BinEdges', -3:.1:3, 'EdgeColor', 'none', 'FaceColor', [0 0 0], 'FaceAlpha', .5)
+% yticks([])
+% xlabel('RT difference (s)')
+% title('SD - BL')
+% set(gca, 'FontSize', 12, 'FontName', 'Arial Nova')
+% box off
+% axis square
 
 
 
@@ -88,7 +88,9 @@ axis square
 
 % Shifting means results in very different speeds
 % Shifts = -.075:.025:.1;
-Shifts = [0, .025, .2, .225];
+% Shifts = [0, .025, .2, .225];
+
+Shifts = [0, .03, .2, .23];
 
 Shift_Colors = [   213, 104, 101;
     234, 177, 176;
@@ -103,10 +105,18 @@ hold on
 x = linspace(.1, 1, 1000);
 y = 1./x;
 ylim([0, 10])
-xlim([.1 .65])
-ylim([1.3 5.6])
+xlim([.1 .7])
+xticks(.1:.1:.7)
+ylim([1 7])
 plot(x, y, 'LineWidth', 2.5, 'Color', [0 0 0])
 hold on
+
+for Indx_S = 1:numel(Shifts)
+    x =  BL_mu+Shifts(Indx_S);
+    y=  1/x;
+    plot([0, x], [y, y], ':', 'Color', [.75 .75 .75], 'Linewidth',1 )
+    plot([x, x], [0, y], ':', 'Color', [.75 .75 .75],'Linewidth',1 )
+end
 scatter(BL_mu+Shifts, 1./(BL_mu+Shifts), 100, Shift_Colors,  'filled')
 xlabel('RT(s)')
 ylabel('Speed')
@@ -124,22 +134,22 @@ for Indx_S = 1:numel(Shifts)
     xlabel('RT (s)')
    
     set(gca, 'FontSize', 12, 'FontName', 'Arial Nova')
-     title('Reaction times, shifted by 25ms', 'FontSize', 18)
+     title('Reaction times, shifted by 30ms', 'FontSize', 18)
     box off
     Mean = mean(BL+Shifts(Indx_S));
-    plot([Mean, Mean], [0, 7000], 'Color', Shift_Colors(Indx_S, :), 'LineWidth', 2)
+    plot([Mean, Mean], [0, 7000], 'Color', Shift_Colors(Indx_S, :), 'LineWidth', 2.5)
     ylim( [0, 7000])
-    xlim([.16, .65])
+    xlim([.16, .6])
     
     subplot(2,1, 2)
     hold on
     histogram(1./(BL+Shifts(Indx_S)), 'BinEdges', 0:.05:6, 'EdgeColor', 'none', 'FaceColor', Shift_Colors(Indx_S, :), 'FaceAlpha', .75)
     
     Mean = mean(1./(BL+Shifts(Indx_S)));
-    plot([Mean, Mean], [0, 13000], 'Color', Shift_Colors(Indx_S, :), 'LineWidth', 2)
+    plot([Mean, Mean], [0, 13000], 'Color', Shift_Colors(Indx_S, :), 'LineWidth', 2.5)
     yticks([])
     ylim([0, 13000])
-    xlim([1.3, 5.6])
+    xlim([1.3, 5.5])
     xlabel('1/RT (s^-^1)')
   
     set(gca, 'FontSize', 12, 'FontName', 'Arial Nova')
@@ -149,32 +159,32 @@ for Indx_S = 1:numel(Shifts)
     
 end
 
-
-%%
-
-% plot RT vs Speeds, and slowest/fastest 10%
-
-
-figure('units','normalized','outerposition',[0 0 1 .5])
-
-subplot(1, 3, 1)
-hold on
-x = linspace(.1, 1, 1000);
-y = 1./x;
-plot(x, y, 'LineWidth', 2, 'Color', BL_Color)
-xlabel('RT(s)')
-ylabel('Speed')
-% title('Reciprocal Transform from Delays to Speed')
-axis square
-set(gca, 'FontSize', 12, 'FontName', 'Arial Nova')
-
-
-subplot(1, 3, 1)
-hold on
-x = linspace(.1, 1, 1000);
-y = 1./x;
-plot(x, y, 'LineWidth', 2, 'Color', BL_Color)
-xlabel('RT(s)')
-ylabel('Speed')
-axis square
-set(gca, 'FontSize', 12, 'FontName', 'Arial Nova')
+% 
+% %%
+% 
+% % plot RT vs Speeds, and slowest/fastest 10%
+% 
+% 
+% figure('units','normalized','outerposition',[0 0 1 .5])
+% 
+% subplot(1, 3, 1)
+% hold on
+% x = linspace(.1, 1, 1000);
+% y = 1./x;
+% plot(x, y, 'LineWidth', 2, 'Color', BL_Color)
+% xlabel('RT(s)')
+% ylabel('Speed')
+% % title('Reciprocal Transform from Delays to Speed')
+% axis square
+% set(gca, 'FontSize', 12, 'FontName', 'Arial Nova')
+% 
+% 
+% subplot(1, 3, 1)
+% hold on
+% x = linspace(.1, 1, 1000);
+% y = 1./x;
+% plot(x, y, 'LineWidth', 2, 'Color', BL_Color)
+% xlabel('RT(s)')
+% ylabel('Speed')
+% axis square
+% set(gca, 'FontSize', 12, 'FontName', 'Arial Nova')
