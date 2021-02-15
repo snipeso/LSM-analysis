@@ -67,7 +67,7 @@ end
 CLims = zeros(numel(Labels), 2);
 for Indx_L = 1:numel(Labels)
     All = Data( :, :, Indx_L);
-    CLims(Indx_L, :) = [quantile(All(:), .005), quantile(All(:), .995)];
+    CLims(Indx_L, :) = quantile(All(:), [.005, .995]);
 end
 CLims = [min(CLims(:, 1)), max(CLims(:, 2))];
 

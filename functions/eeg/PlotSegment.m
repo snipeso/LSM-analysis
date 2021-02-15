@@ -15,7 +15,6 @@ end
     
  figure('units','normalized','outerposition',[0 0 .6 .3])
 ProtoChannel = labels2indexes(ProtoChannel, EEG.chanlocs);
-
 hold on
 plot(Data', 'Color', [.7 .7 .7])
 plot(Data(ProtoChannel, :), 'Color', Color, 'LineWidth', 2)
