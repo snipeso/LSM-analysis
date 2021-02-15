@@ -35,7 +35,7 @@ for F = Frames
     subplot(1, 2, 1)
       topoplot(Data(:, F), Chanlocs, 'maplimits', CLims, ...
             'style', 'map', 'headrad', 'rim', 'colormap', colormap(Colormap), ...
-            'gridscale', 50);
+            'gridscale', 100);
         
         
         subplot(1, 2, 2)     
@@ -59,6 +59,6 @@ hold off
     else
         imwrite(imind,cm,Filepath,'gif','WriteMode','append','DelayTime',Gap);
     end
-    
+    clf
 end
 close all
