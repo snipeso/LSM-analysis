@@ -2,8 +2,8 @@
 run(fullfile(extractBefore(mfilename('fullpath'), 'eeg'), 'General_Parameters'))
 addpath(fullfile(Paths.Analysis, 'functions','eeg'))
 
-EEG = pop_loadset('P10_Game_Session2_Deblinked.set');
-    BL = pop_loadset('P10_Game_Baseline_Deblinked.set');
+EEG = pop_loadset('P01_LAT_Session2Beam3_Deblinked.set');
+    BL = pop_loadset('P10_Match2Sample_Baseline_Deblinked.set');
     
 
 % pop_eegplot(EEG)
@@ -80,7 +80,7 @@ Bands.all = [4 15];
 % so >.4s
 
 
-C = 2;
+C = 8;
 
 MinAmp = 2;
 MinP = 0.25*EEG.srate;
@@ -141,7 +141,7 @@ plot(t, Data)
         
 
 
-C = 5;
+C = 1;
 Data =HilbertPower_2.all(C, :);
 Data = smooth(Data, 1*BL.srate)';
 Windows = BurstDetection(Data, MinAmp, MinP, x);
@@ -155,7 +155,4 @@ Bursts = windows2data(Comps_2.data(C, :), Windows);
 plot(t, Bursts);
 
 plot(t, Data)
-
- PlotComponent(EEG, 2)
- 
-        
+  
