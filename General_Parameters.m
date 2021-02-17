@@ -48,7 +48,7 @@ Keep = round(linspace(1, size(Format.Colormap.Linear, 1), 20));
 Format.Colormap.Linear = Format.Colormap.Linear(Keep, :);
 
 Format.Colormap.Divergent = rdbu(20);
- Format.Colors.Divergent = Format.Colormap.Divergent([2, end-1], :);
+Format.Colors.Divergent = Format.Colormap.Divergent([2, end-1], :);
 Format.Colormap.Rainbow = unirainbow;
 Format.Colormap.PaleRainbow = paleunirainbow;
 
@@ -84,9 +84,9 @@ Format.Colors.LATComp = makePale(Format.Colors.LATBeam);
 Format.Colors.LATAll = [Format.Colors.LATComp(1, :); % BLC
     Format.Colors.LAT(1:2, :); % BLB, Pre
     Format.Colors.LATComp(2, :); % S1C
-     Format.Colors.LAT(3, :); % S1B
+    Format.Colors.LAT(3, :); % S1B
     Format.Colors.LATComp(3, :); % S2C
-     Format.Colors.LAT(4:7, :); % BLB, Pre 
+    Format.Colors.LAT(4:7, :); % BLB, Pre
     ];
 Format.Colors.LATSDvBL = Format.Colors.LAT([1, 5], :);
 
@@ -169,7 +169,7 @@ Measures.Questionnaires = {  'KSS', 'Motivation', 'Effortful', 'Focused',  'Diff
 MeasureTypes = fieldnames(Measures);
 for M = MeasureTypes'
     for T =Measures.(M{1})
-    Format.MeasuresDict(T{1}) = M{1};
+        Format.MeasuresDict(T{1}) = M{1};
     end
 end
 
@@ -180,41 +180,47 @@ Format.Legend.Tally = {'Hits', 'Late', 'Misses'};
 
 allTasks = {'Game', 'SpFT', 'LAT', 'PVT', 'Match2Sample', 'Music';
     'MWT', 'Standing', 'QuestionnaireEEG', 'Oddball', 'Fixation', 'TV'};
+TaskBlock = {'Game', 'SpFT', 'LAT', 'PVT', 'Match2Sample', 'Music'};
+RRTBlock = {'Standing', 'QuestionnaireEEG', 'Oddball', 'Fixation'};
 
 % Sessions
 allSessions = struct(); % labels used in saving data
 allSessionLabels = struct(); % labels used to display in plots
 
-% Labels for task battery
-allSessions.BAT = {'Baseline', 'Session1', 'Session2'};
-allSessionLabels.BAT = {'BL', 'S1', 'S2'};
+
+for Indx_T = 1:numel(TaskBlock)
+    allSessions.(TaskBlock{Indx_T}) = {'Baseline', 'Session1', 'Session2'};
+    allSessionLabels.(TaskBlock{Indx_T}) = {'BL', 'S1', 'S2'};
+end
+
+for Indx_T = 1:numel(RRTBlock)
+    allSessions.(RRTBlock{Indx_T}) = {'Baseline', 'Session1', 'Session2'};
+    allSessionLabels.(RRTBlock{Indx_T}) = {'BL', 'S1', 'S2'};
+end
+
 
 % Labels for LAT "beamer" condition; a.k.a. "soporific"
 allSessions.LATBeam = {'BaselineBeam', 'Session1Beam', 'Session2Beam1'};
 allSessionLabels.LATBeam = {'S-BL', 'S-S1', 'S-S2'};
 
 % Labels for LAT "computer" condition, a.k.a. "classic"
-allSessions.LATComp =  {'BaselineComp', 'Session1Comp', 'Session2Comp'};
-allSessionLabels.LATComp = {'C-BL', 'C-S1', 'C-S2'};
+allSessions.LAT =  {'BaselineComp', 'Session1Comp', 'Session2Comp'};
+allSessionLabels.LAT = {'C-BL', 'C-S1', 'C-S2'};
 
 % Labels for PVT beamer (comp is same as LAT)
 allSessions.PVTBeam = {'BaselineBeam', 'Session1Beam', 'Session2Beam'};
 allSessionLabels.PVTBeam = allSessionLabels.LATBeam;
 
-allSessions.PVTComp =  allSessions.LATComp;
-allSessionLabels.PVTComp = allSessionLabels.LATComp;
-
-allSessions.Basic =  {'Baseline', 'Session1', 'Session2'};
-allSessionLabels.Basic = {'BL', 'S1', 'S2'};
-
+allSessions.PVT =  allSessions.LAT;
+allSessionLabels.PVT = allSessionLabels.LAT;
 
 % Labels for all of LAT beamer conditions
 allSessions.LATAllBeam = {'BaselineBeam', 'MainPre', 'Session1Beam', 'Session2Beam1', 'Session2Beam2', 'Session2Beam3', 'MainPost'};
 allSessionLabels.LATAllBeam = {'BL', 'Pre', 'S1', 'S2-1', 'S2-2', 'S2-3', 'Post'};
 
 allSessions.LATAll = {'BaselineComp', 'BaselineBeam',  'MainPre', ...
-     'Session1Comp', 'Session1Beam', 'Session2Comp', 'Session2Beam1', ...
-     'Session2Beam2', 'Session2Beam3', 'MainPost'};
+    'Session1Comp', 'Session1Beam', 'Session2Comp', 'Session2Beam1', ...
+    'Session2Beam2', 'Session2Beam3', 'MainPost'};
 allSessionLabels.LATAll = {'BLc', 'BLs',  'Pre', 'S1c', 'S1s', 'S2c', 'S2-1', 'S2-2', 'S2-3', 'Post'};
 
 allSessions.LATBL = {'BaselineBeam', 'MainPre', 'MainPost'};
@@ -222,13 +228,8 @@ allSessionLabels.LATBL = {'BL', 'Pre', 'Post'};
 
 
 % Labels for only LAT beamer conditions
-allSessions.LATSD3 = {'Session2Beam1', 'Session2Beam2', 'Session2Beam3'};
-allSessionLabels.LATSD3 = {'S1', 'S2', 'S3'};
-
-allSessions.LATSDvBL = {'BaselineBeam',  'MainPre',  'MainPost';
-    'Session2Beam1', 'Session2Beam2', 'Session2Beam3'};
-allSessionLabels.LATSDvBL = {'BL', 'SD'};
-
+allSessions.LATSD = {'Session2Beam1', 'Session2Beam2', 'Session2Beam3'};
+allSessionLabels.LATSD = {'S1', 'S2', 'S3'};
 
 % Labels for all PVT beamer conditions
 allSessions.PVTAllBeam = {'BaselineBeam', 'MainPre', 'Session1Beam', 'Session2Beam', 'MainPost'};
@@ -255,17 +256,6 @@ allSessionLabels.RRT_Brief = {'BL-Pre', 'BL-Post' ...
     '4:30', '2:40', 'Post'};
 
 
-
-% Labels for temp standing
-allSessions.Standing = {
-    'Main1',  'Main8'};
-allSessionLabels.Standing = {'4:30','2:40'};
-
-% Labels for msin fixation
-allSessions.Fixation = {
-    'Main1', 'Main2',  'Main7', 'Main8'};
-allSessionLabels.Fixation = {
-    '4:30', '7:30',  '23:00', '2:40'};
 
 
 
