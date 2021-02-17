@@ -35,8 +35,7 @@ Sessions_RRT_Title = 'RRT';
 CompareTaskSessions = {'Baseline', 'Session2'};
 
 
-Paths.Results = fullfile(Paths.Results, 'FZK_03-2021');
-Paths.Results = string(Paths.Results);
+Paths.Results = string(fullfile(Paths.Results, 'FZK_03-2021'));
 if ~exist(Paths.Results, 'dir')
     mkdir(Paths.Results)
 end
