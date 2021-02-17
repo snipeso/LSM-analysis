@@ -13,7 +13,7 @@ Paths.Figures = fullfile(Paths.Figures, 'Welch');
 
 % Parameters
 FreqRes = 0.25;
-Freqs = [1:FreqRes:30];
+Freqs = [1:FreqRes:40];
 Window = 4; % window for epochs when looking at general power;
 
 

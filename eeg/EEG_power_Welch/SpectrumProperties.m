@@ -1,5 +1,5 @@
-function [Intercept, Slope, Peak, Amplitude] = SpectrumProperties(Power, Freqs, FreqRes)
-
+function [Intercept, Slope, Peaks, Amplitudes, FWHM] = SpectrumProperties(Power, Freqs, FreqRes)
+% Peak is a 2 element vector, the first is theta, the second is alpha
 
 FlatFreqs = [1.5:FreqRes:4, 15:FreqRes:30];
 
@@ -59,18 +59,65 @@ hold on
 [pks,locs,w,p] = findpeaks(y_white, Freqs, 'MinPeakDistance', FreqRes*2, 'WidthReference','halfheight');
 scatter(locs, pks)
 
-figure
-findpeaks(y_white, Freqs, 'MinPeakDistance', FreqRes*2, 'WidthReference','halfheight', 'Annotate','extents')
-xlim([4 15])
-A = 1;
+% figure
+% findpeaks(y_white, Freqs, 'MinPeakDistance', FreqRes*2, 'WidthReference','halfheight', 'Annotate','extents')
+% xlim([4 15])
+
 % identify peaks between 4-15 Hz
+rm = locs<4 | locs>15;
+pks(rm) = [];
+locs(rm) = [];
+w(rm) = [];
+p(rm) = [];
 
 % if there's no peak, leave as nan;
+Peaks = nan(1, 2);
+Amplitudes = Peaks;
+FWHM = Peaks;
+if numel(pks) > 2
+    warning('Too many peaks!')
+    figure
+    findpeaks(y_white, Freqs, 'MinPeakDistance', FreqRes*2, 'WidthReference','halfheight', 'Annotate','extents')
+    xlim([4 15])
+    % get theta peak as max in theta range
+    [Amplitudes(1), Indx] = max(pks(locs<=8));
+    Peaks(1) = locs(Indx);
+    FWHM(1) = w(Indx);
+    
+    rm = locs <=8;
+    pks(rm) = [];
+    locs(rm) = [];
+    w(rm) = [];
+    p(rm) = [];
+    
+    % get alpha peak as max in alpha range
+    [Amplitudes(2), Indx] = max(pks);
+    Peaks(2) = locs(Indx);
+    FWHM(2) = w(Indx);
+    
+    
+elseif numel(pks) == 2
+    % if there's 2 peaks, assign first to theta, second to alpha
+    Peaks = locs;
+    Amplitudes = pks;
+    FWHM = w;
+    
+elseif numel(pks) == 1
+    % if there's 1 peak, assign to theta if it's between 4-8 Hz, or alpha if
+    % between 8 and 15 Hz.
+    if locs <= 8
+        Peaks(1) = locs;
+        Amplitudes(1) = pks;
+        FWHM(1) = w;
+    else
+        Peaks(2) = locs;
+        Amplitudes(2) = pks;
+        FWHM(2) = w;
+    end
+end
 
-% if there's 2 peaks, assign first to theta, second to alpha
 
-% if there's 1 peak, assign to theta if it's between 4-8 Hz, or alpha if
-% between 8 and 15 Hz. 
+
 
 % if there's more peaks, make a figure and send out a warning, then take
 % the two highest peaks in the theta range and alpha range
