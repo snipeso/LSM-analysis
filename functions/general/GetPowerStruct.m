@@ -8,13 +8,9 @@ Tasks = unique(Categories(2, :));
 for Indx_P = 1:numel(Participants)
     for Indx_T = 1:numel(Tasks)
         for Indx_S = 1:numel(Sessions)
-            try
-                FileIndx = strcmp(Categories(3, :), Sessions{Indx_S}) & ...
-                    strcmp(Categories(2, :), Tasks{Indx_T}) & ...
-                    strcmp(Categories(1, :), Participants{Indx_P});
-            catch
-                a=1
-            end
+            FileIndx = strcmp(Categories(3, :), Sessions{Indx_S}) & ...
+                strcmp(Categories(2, :), Tasks{Indx_T}) & ...
+                strcmp(Categories(1, :), Participants{Indx_P});
             if nnz(FileIndx) > 1
                 warning(['Too many files for ', Participants{Indx_P}, ' ',  Sessions{Indx_S}, '; concatenating' ])
                 
