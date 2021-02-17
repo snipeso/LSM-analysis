@@ -8,13 +8,13 @@ Paths.Preprocessed = 'D:\Data\Preprocessed'; % Sophia laptop
 Paths.Results = 'D:\Data\Results'; 
 
 Paths.Summary = fullfile(mfilename('fullpath'), 'SummaryData');
-Paths.WelchPower = fullfile(Paths.Preprocessed, 'Power', 'WelchPower');
+Paths.WelchPower = fullfile(Paths.Preprocessed, 'Power', 'WelchPower_Peaks');
 Paths.Figures = fullfile(Paths.Figures, 'Welch');
 
 % Parameters
-FreqRes = 0.25;
+FreqRes = 0.1;
 Freqs = [1:FreqRes:40];
-Window = 4; % window for epochs when looking at general power;
+Window = 5; % window for epochs when looking at general power;
 
 
 

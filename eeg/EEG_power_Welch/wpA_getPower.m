@@ -4,15 +4,18 @@ clear
 clc
 close all
 
+wp_Parameters
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Tasks = {'Standing', 'Oddball', 'Fixation'};
-Tasks = {'QuestionnaireEEG'};
-Refresh = false;
+Tasks = allTasks;
+Refresh = true;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-wp_Parameters
+
 
 for Indx_T = 1:numel(Tasks)
     

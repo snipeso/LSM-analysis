@@ -1,31 +1,10 @@
-function [Intercept, Slope, Peaks, Amplitudes, FWHM] = SpectrumProperties(Power, Freqs, FreqRes)
-% Peak is a 2 element vector, the first is theta, the second is alpha
+function [Intercept, Slope, Peaks, Amplitudes, FWHM] = ...
+    SpectrumProperties(Power, Freqs, FreqRes, ToPlot)
+% Peaks, Amplitude and FWHM is a 2 element vector, the first is theta, the second is alpha
 
-FlatFreqs = [1.5:FreqRes:4, 15:FreqRes:30];
+FlatFreqs = [1.5:FreqRes:4, 25:FreqRes:40];
 
 FlatFreqs =  dsearchn( Freqs',FlatFreqs');
-
-
-
-Line = nan(size(Power));
-LineFreqs = Line;
-LineFreqs(FlatFreqs) = Freqs(FlatFreqs);
-Line(FlatFreqs) = Power(FlatFreqs);
-
-figure
-subplot(1, 3, 1)
-plot(Freqs, Power)
-hold on
-plot(LineFreqs, Line)
-
-
-subplot(1, 3, 2)
-plot(log(Freqs), log(Power))
-hold on
-plot(log(LineFreqs), log(Line))
-
-
-
 
 
 % interpolate line based on 1-4Hz, 15-30Hz
@@ -40,28 +19,13 @@ Slope = c(1);
 Intercept = c(2);
 
 
-y_fit = polyval(c,log(Freqs));
-plot(log(Freqs),y_fit,'r--','LineWidth',2)
-
-y_fit = exp(y_fit);
-
-subplot(1, 3, 1)
-plot(Freqs,y_fit,'r--','LineWidth',2)
-
-
 % subtract line, get "whitened" spectrum
+y_fit = polyval(c,log(Freqs));
+y_fit = exp(y_fit);
 y_white = Power - y_fit;
 
-subplot(1, 3, 3)
-plot(Freqs, y_white)
-hold on
 
 [pks,locs,w,p] = findpeaks(y_white, Freqs, 'MinPeakDistance', FreqRes*2, 'WidthReference','halfheight');
-scatter(locs, pks)
-
-% figure
-% findpeaks(y_white, Freqs, 'MinPeakDistance', FreqRes*2, 'WidthReference','halfheight', 'Annotate','extents')
-% xlim([4 15])
 
 % identify peaks between 4-15 Hz
 rm = locs<4 | locs>15;
@@ -75,14 +39,20 @@ Peaks = nan(1, 2);
 Amplitudes = Peaks;
 FWHM = Peaks;
 if numel(pks) > 2
-    warning('Too many peaks!')
-    figure
-    findpeaks(y_white, Freqs, 'MinPeakDistance', FreqRes*2, 'WidthReference','halfheight', 'Annotate','extents')
-    xlim([4 15])
+    %     warning('Too many peaks!')
+    %     figure
+    %     findpeaks(y_white, Freqs, 'MinPeakDistance', FreqRes*2, 'WidthReference','halfheight', 'Annotate','extents')
+    %     xlim([4 15])
+    
     % get theta peak as max in theta range
-    [Amplitudes(1), Indx] = max(pks(locs<=8));
-    Peaks(1) = locs(Indx);
-    FWHM(1) = w(Indx);
+    
+    [Amp, Indx] = max(pks(locs<=8));
+    if ~isempty(Amp)
+        
+        Amplitudes(1) = Amp;
+        Peaks(1) = locs(Indx);
+        FWHM(1) = w(Indx);
+    end
     
     rm = locs <=8;
     pks(rm) = [];
@@ -91,9 +61,13 @@ if numel(pks) > 2
     p(rm) = [];
     
     % get alpha peak as max in alpha range
-    [Amplitudes(2), Indx] = max(pks);
-    Peaks(2) = locs(Indx);
-    FWHM(2) = w(Indx);
+    [Amp, Indx] = max(pks);
+    
+    if ~isempty(Amp)
+        Amplitudes(2) = Amp;
+        Peaks(2) = locs(Indx);
+        FWHM(2) = w(Indx);
+    end
     
     
 elseif numel(pks) == 2
@@ -118,12 +92,34 @@ end
 
 
 
-
-% if there's more peaks, make a figure and send out a warning, then take
-% the two highest peaks in the theta range and alpha range
-
-
-% for both theta and alpha, save:
-% amplitude
-% peak frequency
-% FWHM
+if exist('ToPlot', 'var') && ToPlot
+    Line = nan(size(Power));
+    LineFreqs = Line;
+    LineFreqs(FlatFreqs) = Freqs(FlatFreqs);
+    Line(FlatFreqs) = Power(FlatFreqs);
+    
+    
+    figure('units','normalized','outerposition',[0 0 1 .5])
+    subplot(1, 3, 1)
+    plot(Freqs, Power)
+    hold on
+    plot(LineFreqs, Line)
+    
+    
+    subplot(1, 3, 2)
+    plot(log(Freqs), log(Power))
+    hold on
+    plot(log(LineFreqs), log(Line))
+    plot(log(Freqs),log(y_fit),'r--','LineWidth',2)
+    
+    subplot(1, 3, 1)
+    plot(Freqs,y_fit,'r--','LineWidth',2)
+    
+    
+    subplot(1, 3, 3)
+    
+    findpeaks(y_white, Freqs, 'MinPeakDistance', FreqRes*2,  'WidthReference','halfheight', 'Annotate','extents')
+    xlim([4 15])
+    
+end
+A =1;
