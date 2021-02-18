@@ -7,18 +7,18 @@ wp_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Tasks = {'LAT', 'PVT', 'Match2Sample', 'SpFT', 'Game', 'Music', 'Oddball', 'Fixation', 'Standing',  'QuestionnaireEEG'};
-% TasksLabels = {'LAT', 'PVT', 'WMT', 'Speech', 'Game', 'Music', 'Oddball', 'Fixation', 'EC', 'Q'};
-% %
+Tasks = {'LAT', 'PVT', 'Match2Sample', 'SpFT', 'Game', 'Music', 'Oddball', 'Fixation', 'Standing',  'QuestionnaireEEG'};
+TasksLabels = {'LAT', 'PVT', 'WMT', 'Speech', 'Game', 'Music', 'Oddball', 'Fixation', 'EC', 'Q'};
+%
 % Tasks = { 'Fixation', 'Oddball', 'Standing'};
 % TasksLabels = {'EO', 'Oddball', 'EC'};
 
-Tasks = {'Oddball'};
-TasksLabels = { 'Oddball'};
+% Tasks = {'LAT', 'PVT'};
+% TasksLabels = { 'LAT', 'PVT'};
 
 Refresh = false;
-PlotSpectrums = true;
-Normalization = 'zscore';
+PlotSpectrums = false;
+Normalization = '';
 Condition = '';
 
 
@@ -29,7 +29,7 @@ Hotspot = 'Hotspot'; % TODO: make sure this is in apporpriate figure name
 
 TitleTag = ['PowerPeaks', Normalization, Condition];
 
-Paths.Results = string(fullfile(Paths.Results, 'FZK_03-2021'));
+Paths.Results = string(fullfile(Paths.Results, 'PowerPeaks'));
 if ~exist(Paths.Results, 'dir')
     mkdir(Paths.Results)
 end
@@ -45,10 +45,10 @@ for Indx_T = 1:numel(Tasks)
     Task = Tasks{Indx_T};
     
     % in loop, load all files
-    PeaksPath = fullfile(Paths.Summary, [Task, '_PowerPeaks.mat']);
+    PeaksPath = fullfile(Paths.Summary, [Task, Condition, '_PowerPeaks.mat']);
     PowerPath = fullfile(Paths.WelchPower, Task);
-    Sessions = allSessions.(Task);
-    SessionLabels = allSessionLabels.(Task);
+    Sessions = allSessions.([Task, Condition]);
+    SessionLabels = allSessionLabels.([Task, Condition]);
     
     if Refresh || ~exist(PeaksPath, 'file')
         
