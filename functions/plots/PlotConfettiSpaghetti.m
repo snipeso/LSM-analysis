@@ -7,8 +7,7 @@ function PlotConfettiSpaghetti(Matrix, SessionLabels, YLims, Labels, ColorGroups
 
 Tot_Peeps = size(Matrix, 1); % number of participants
 
-Colors = Format.Colors.Participants;
-DarkColors =  Format.Colors.DarkParticipants;
+Colors =  Format.Colors.DarkParticipants;
 % select background colors for participants
 if exist('ColorGroups', 'var') && ~isempty(ColorGroups)
     
@@ -16,7 +15,7 @@ if exist('ColorGroups', 'var') && ~isempty(ColorGroups)
     Groups = unique(ColorGroups);
     Tot_Groups = numel(Groups);
     Unique_Colors = Colors( floor(linspace(1, size(Colors, 1), Tot_Groups+1)), :);
-    Unique_DarkColors = DarkColors( floor(linspace(1, size(Colors, 1), Tot_Groups+1)), :);
+    Unique_DarkColors = Colors( floor(linspace(1, size(Colors, 1), Tot_Groups+1)), :);
     
     % for each participant, assign group color
     Colors = zeros(Tot_Peeps, 3);
@@ -30,8 +29,13 @@ end
 % plot each participant
 hold on
 for Indx_P = 1:Tot_Peeps
-    plot(Matrix(Indx_P, :), 'o-', 'LineWidth', .7, ...
-        'MarkerFaceColor', Colors(Indx_P, :), 'Color', Colors(Indx_P, :))
+%     plot(Matrix(Indx_P, :), 'o-', 'LineWidth', .7, ...
+%         'MarkerFaceColor', Colors(Indx_P, :), 'MarkerFaceAlpha', .5, 'Color', Colors(Indx_P, :))
+
+ plot(Matrix(Indx_P, :), 'LineWidth', .7, 'Color', [Colors(Indx_P, :), .2])
+ scatter(1:numel(SessionLabels), Matrix(Indx_P, :), 50, ...
+     'MarkerFaceColor', Colors(Indx_P, :), 'MarkerFaceAlpha', .2, ...
+     'MarkerEdgeAlpha', .2, 'MarkerEdgeColor', Colors(Indx_P, :))
 end
 
 
