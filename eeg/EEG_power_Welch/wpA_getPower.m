@@ -11,7 +11,7 @@ wp_Parameters
 
 % Tasks = {'Standing', 'Oddball', 'Fixation'};
 Tasks = allTasks;
-Refresh = true;
+Refresh = false;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

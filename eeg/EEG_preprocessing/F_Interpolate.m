@@ -11,7 +11,7 @@ clear
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Tasks = {'Oddball', 'Fixation', 'Standing'}; % specify folder for analysis
-Tasks = {'QuestionnaireEEG'};
+Tasks = {'PVT'};
 DataType = 'Wake';
 Refresh = false;
 SpotCheck = false;

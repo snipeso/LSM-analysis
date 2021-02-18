@@ -1,10 +1,20 @@
-function [Intercept, Slope, Peaks, Amplitudes, FWHM] = ...
+function [Intercept, Slope, Peaks, Amplitudes, FWHM, Spectrum] = ...
     SpectrumProperties(Power, Freqs, FreqRes, ToPlot)
 % Peaks, Amplitude and FWHM is a 2 element vector, the first is theta, the second is alpha
 
-FlatFreqs = [1.5:FreqRes:4, 25:FreqRes:40];
+MinFreq = 4;
+SplitFreq = 8;
+MaxFreq = 13;
 
+FlatFreqs = [1:FreqRes:MinFreq, 25:FreqRes:40];
 FlatFreqs =  dsearchn( Freqs',FlatFreqs');
+
+ThetaFreqs = [MinFreq:SplitFreq];
+AlphaFreqs = [SplitFreq+FreqRes:MaxFreq];
+ThetaFreqs =  dsearchn( Freqs',ThetaFreqs');
+AlphaFreqs =  dsearchn( Freqs',AlphaFreqs');
+
+PeakFreqs = [ThetaFreqs; AlphaFreqs];
 
 
 % interpolate line based on 1-4Hz, 15-30Hz
@@ -25,10 +35,14 @@ y_fit = exp(y_fit);
 y_white = Power - y_fit;
 
 
+% shift whitened spectrum, so nothing is below 0
+Shift = min(y_white(PeakFreqs));
+y_white = y_white-Shift;
+
 [pks,locs,w,p] = findpeaks(y_white, Freqs, 'MinPeakDistance', FreqRes*2, 'WidthReference','halfheight');
 
 % identify peaks between 4-15 Hz
-rm = locs<4 | locs>15;
+rm = locs<MinFreq | locs>MaxFreq;
 pks(rm) = [];
 locs(rm) = [];
 w(rm) = [];
@@ -90,7 +104,18 @@ elseif numel(pks) == 1
     end
 end
 
+% if there's no peak, provide the average of the theta and alpha ranges
+if isnan(Amplitudes(1))
+   Amplitudes(1) = mean(y_white(ThetaFreqs)); 
+end
 
+if isnan(Amplitudes(2))
+   Amplitudes(2) = mean(y_white(AlphaFreqs)); 
+end
+
+
+Amplitudes = Amplitudes + Shift;
+Spectrum = y_white + Shift;
 
 if exist('ToPlot', 'var') && ToPlot
     Line = nan(size(Power));
