@@ -1,5 +1,5 @@
 % get general parameters (script in main folder of LSM-analysis)
-run(fullfile(extractBefore(mfilename('fullpath'), 'eeg'), 'General_Parameters'))
+run(fullfile(extractBefore(mfilename('fullpath'), 'statistics'), 'General_Parameters'))
 addpath(fullfile(Paths.Analysis, 'functions','eeg'))
 
 %%% locations

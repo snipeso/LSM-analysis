@@ -10,10 +10,10 @@ ttest_Parameters
 
 Tag = 'PowerPeaksBAT';
 
-
-
+Normalization = ''; % '', 'zscore';
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 
 
