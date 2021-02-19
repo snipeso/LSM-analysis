@@ -34,7 +34,7 @@ if ~exist(Paths.Results, 'dir')
     mkdir(Paths.Results)
 end
 
-Paths.Stats = string(fullfile(Paths.Analysis, 'statistics', 'Data', 'PowerPeaks'));
+Paths.Stats = fullfile(Paths.Stats, 'PowerPeaks');
 if ~exist(Paths.Stats, 'dir')
     mkdir(Paths.Stats)
 end
@@ -120,23 +120,32 @@ for Indx_T = 1:numel(Tasks)
         load(PeaksPath)
     end
     
-    % export relevant matrices to Statistics folder
+    
     
     
     % plot confetti spaghetti of different variables across sessions
-    figure('units','normalized','outerposition',[0 0 1 .5])
     Variables = fieldnames(PowerPeaks_Hotspot);
+    figure('units','normalized','outerposition',[0 0 1 .5])
     for Indx_V = 1:numel(Variables)
         
-        Data = PowerPeaks_Hotspot.(Variables{Indx_V});
+        Matrix = PowerPeaks_Hotspot.(Variables{Indx_V});
+        
+        % export relevant matrices to Statistics folder
+        Filename_Hotspot = ['PowerPeaks', '_Hotspot_', Task, '_', Variables{Indx_V}, '.mat' ];
+        save(fullfile(Paths.Stats, Filename_Hotspot), 'Matrix', 'Sessions', 'SessionLabels')
+        
+        
         if strcmp(Normalization, 'zscore')
-        Data = (Data - nanmean(Data, 2))./nanstd(Data, 0, 2);
+            Matrix = (Matrix - nanmean(Matrix, 2))./nanstd(Matrix, 0, 2);
         end
         
         subplot(1, numel(Variables), Indx_V)
-        PlotConfettiSpaghetti(Data, SessionLabels,[], {}, [], Format)
+        PlotConfettiSpaghetti(Matrix, SessionLabels,[], {}, [], Format)
         Title = [Task, ' ', Variables{Indx_V}];
         title(Title)
+        
+        
+        
     end
     saveas(gcf,fullfile(Paths.Results, [TitleTag,  '_', Task, '_Hotspot.svg']))
     

@@ -6,6 +6,7 @@ addpath(fullfile(Paths.Analysis, 'functions','eeg'))
 %%% locations
 Paths.Preprocessed = 'D:\Data\Preprocessed'; % Sophia laptop
 Paths.Results = 'D:\Data\Results'; 
+Paths.Stats = string(fullfile(Paths.Preprocessed, 'Statistics'));
 
 Paths.Summary = fullfile(mfilename('fullpath'), 'SummaryData');
 Paths.WelchPower = fullfile(Paths.Preprocessed, 'Power', 'WelchPower_Peaks');

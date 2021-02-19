@@ -34,8 +34,6 @@ for Indx_T = 1:numel(TextTrials)
         Struct.(Field{1}) = nan;
     end
     
-
-    
     % add current structure to ongoing trials structure
     TrialStruct(Indx_T)  = Struct;
     
