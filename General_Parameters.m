@@ -181,7 +181,8 @@ Format.Legend.Tally = {'Hits', 'Late', 'Misses'};
 Format.Tasks.All = {'Game', 'SpFT', 'LAT', 'PVT', 'Match2Sample', 'Music',...
     'MWT', 'Standing', 'QuestionnaireEEG', 'Oddball', 'Fixation', 'TV'};
 Format.Tasks.BAT = {'Game', 'SpFT', 'LAT', 'PVT', 'Match2Sample', 'Music'};
-Format.Tasks.RRT = {'Standing', 'QuestionnaireEEG', 'Oddball', 'Fixation'};
+% Format.Tasks.RRT = {'Standing', 'QuestionnaireEEG', 'Oddball', 'Fixation'};
+Format.Tasks.RRT = {'Standing', 'Oddball', 'Fixation'};
 
 for Indx_T = 1:numel(Format.Tasks.BAT)
     Format.Labels.(Format.Tasks.BAT{Indx_T}).BAT.Sessions = {'Baseline', 'Session1', 'Session2'};
@@ -212,14 +213,12 @@ Format.Labels.LAT.Beam.Plot =  {'S-BL', 'S-S1', 'S-S2'};
 
 % Labels for LAT "computer" condition, a.k.a. "classic"
 Format.Labels.LAT.BAT.Sessions =  {'BaselineComp', 'Session1Comp', 'Session2Comp'};
-Format.Labels.LAT.BAT.Plot = {'C-BL', 'C-S1', 'C-S2'};
 
 % Labels for PVT beamer (comp is same as LAT)
 Format.Labels.PVT.Beam.Sessions = {'BaselineBeam', 'Session1Beam', 'Session2Beam'};
 Format.Labels.PVT.Beam.Plot = Format.Labels.LAT.Beam.Plot;
 
-Format.Labels.PVT.BAT.Sessions =  Format.Labels.PVT.BAT.Sessions;
-Format.Labels.PVT.BAT.Plot = Format.Labels.LAT.BAT.Plot;
+Format.Labels.PVT.BAT.Sessions =   {'BaselineComp', 'Session1Comp', 'Session2Comp'};
 
 
 % Labels for all of LAT beamer conditions

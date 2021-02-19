@@ -6,20 +6,20 @@ close all
 wp_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-Tasks = {'LAT', 'PVT', 'Match2Sample', 'SpFT', 'Game', 'Music', 'Oddball', 'Fixation', 'Standing'};
-TasksLabels = {'LAT', 'PVT', 'WMT', 'Speech', 'Game', 'Music', 'Oddball', 'Fixation', 'EC'};
-%
+% 
+% Tasks = {'LAT', 'PVT', 'Match2Sample', 'SpFT', 'Game', 'Music'};
+% TasksLabels = {'LAT', 'PVT', 'WMT', 'Speech', 'Game', 'Music'};
+% %
 % Tasks = { 'Fixation', 'Oddball', 'Standing'};
 % TasksLabels = {'EO', 'Oddball', 'EC'};
 
-% Tasks = {'LAT', 'PVT'};
-% TasksLabels = { 'LAT', 'PVT'};
+Tasks = {'Music'};
+TasksLabels = { 'Music'};
 
-Refresh = false;
-PlotSpectrums = false;
+Refresh = true;
+PlotSpectrums = true;
 Normalization = '';
-Condition = '';
+Condition = 'BAT';
 
 Tag = 'PowerPeaksBAT';
 Hotspot = 'Hotspot'; % TODO: make sure this is in apporpriate figure name
@@ -45,10 +45,10 @@ for Indx_T = 1:numel(Tasks)
     Task = Tasks{Indx_T};
     
     % in loop, load all files
-    PeaksPath = fullfile(Paths.Summary, [Task, Condition, '_PowerPeaks.mat']);
+    PeaksPath = fullfile(Paths.Summary, [Task, '_' Condition, '_PowerPeaks.mat']);
     PowerPath = fullfile(Paths.WelchPower, Task);
-    Sessions = allSessions.([Task, Condition]);
-    SessionLabels = allSessionLabels.([Task, Condition]);
+    Sessions = Format.Labels.(Task).(Condition).Sessions;
+    SessionLabels = Format.Labels.(Task).(Condition).Plot;
     
     if Refresh || ~exist(PeaksPath, 'file')
         
@@ -115,7 +115,7 @@ for Indx_T = 1:numel(Tasks)
                 WhiteSpectrum_Hotspot(Indx_P, Indx_S, 1:numel(Freqs)) = Spectrum;
             end
         end
-        save(PeaksPath, Tag, 'PowerPeaks_Hotspot', 'WhiteSpectrum', 'WhiteSpectrum_Hotspot', 'Freqs', 'Chanlocs', 'Sessions')
+        save(PeaksPath, 'PowerPeaks', 'PowerPeaks_Hotspot', 'WhiteSpectrum', 'WhiteSpectrum_Hotspot', 'Freqs', 'Chanlocs', 'Sessions')
     else
         load(PeaksPath)
     end
@@ -131,7 +131,7 @@ for Indx_T = 1:numel(Tasks)
         Matrix = PowerPeaks_Hotspot.(Variables{Indx_V});
         
         % export relevant matrices to Statistics folder
-        Filename_Hotspot = [Tag, '_Hotspot_', Task, '_', Variables{Indx_V}, '.mat' ];
+        Filename_Hotspot = [Tag, '_', Task, '_Hotspot_', Variables{Indx_V}, '.mat' ];
         save(fullfile(Paths.Stats, Filename_Hotspot), 'Matrix', 'Sessions', 'SessionLabels')
         
         

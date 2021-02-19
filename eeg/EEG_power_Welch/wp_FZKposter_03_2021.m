@@ -30,7 +30,7 @@ Plot_Single_Topos = true;
 
 Channels_10_20 = EEG_Channels.Standard;
 
-Sessions_Tasks_Title = 'Basic';
+Sessions_Tasks_Title = 'BAT';
 Sessions_RRT_Title = 'RRT';
 CompareTaskSessions = {'Baseline', 'Session2'};
 
@@ -56,10 +56,8 @@ end
 % and z-scored for stats)
 
 % load power data
-Sessions_Tasks = allSessions.(Sessions_Tasks_Title);
-SessionLabels_Tasks = allSessionLabels.(Sessions_Tasks_Title);
-Sessions_RRT = allSessions.(Sessions_RRT_Title);
-SessionLabels_RRT = allSessionLabels.(Sessions_RRT_Title);
+Sessions_Tasks = Format.Labels.(Tasks{1}).(Sessions_Tasks_Title).Sessions;
+Sessions_RRT = Format.Labels.(RRT{1}).(Sessions_Tasks_Title).Sessions;
 
 if strcmp(Scaling, 'zscore')
     [PowerStructTasks, Chanlocs, ~] = LoadWelchData(Paths, Tasks, Sessions_Tasks, Participants, 'none');

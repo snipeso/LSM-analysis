@@ -8,7 +8,8 @@ Paths.Preprocessed = 'D:\Data\Preprocessed'; % Sophia laptop
 Paths.Results = 'D:\Data\Results'; 
 Paths.Stats = string(fullfile(Paths.Preprocessed, 'Statistics'));
 
-Paths.Summary = fullfile(mfilename('fullpath'), 'SummaryData');
+CD = extractBefore(mfilename('fullpath'), 'wp_Parameters');
+Paths.Summary = fullfile(CD, 'SummaryData');
 Paths.WelchPower = fullfile(Paths.Preprocessed, 'Power', 'WelchPower_Peaks');
 Paths.Figures = fullfile(Paths.Figures, 'Welch');
 

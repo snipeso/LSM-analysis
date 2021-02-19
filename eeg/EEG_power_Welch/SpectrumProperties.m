@@ -52,65 +52,40 @@ p(rm) = [];
 Peaks = nan(1, 2);
 Amplitudes = Peaks;
 FWHM = Peaks;
-if numel(pks) > 2
-    %     warning('Too many peaks!')
-    %     figure
-    %     findpeaks(y_white, Freqs, 'MinPeakDistance', FreqRes*2, 'WidthReference','halfheight', 'Annotate','extents')
-    %     xlim([4 15])
+
+
+
+[Amp, Indx] = max(pks(locs<=8));
+if ~isempty(Amp)
     
-    % get theta peak as max in theta range
-    
-    [Amp, Indx] = max(pks(locs<=8));
-    if ~isempty(Amp)
-        
-        Amplitudes(1) = Amp;
-        Peaks(1) = locs(Indx);
-        FWHM(1) = w(Indx);
-    end
-    
-    rm = locs <=8;
-    pks(rm) = [];
-    locs(rm) = [];
-    w(rm) = [];
-    p(rm) = [];
-    
-    % get alpha peak as max in alpha range
-    [Amp, Indx] = max(pks);
-    
-    if ~isempty(Amp)
-        Amplitudes(2) = Amp;
-        Peaks(2) = locs(Indx);
-        FWHM(2) = w(Indx);
-    end
-    
-    
-elseif numel(pks) == 2
-    % if there's 2 peaks, assign first to theta, second to alpha
-    Peaks = locs;
-    Amplitudes = pks;
-    FWHM = w;
-    
-elseif numel(pks) == 1
-    % if there's 1 peak, assign to theta if it's between 4-8 Hz, or alpha if
-    % between 8 and 15 Hz.
-    if locs <= 8
-        Peaks(1) = locs;
-        Amplitudes(1) = pks;
-        FWHM(1) = w;
-    else
-        Peaks(2) = locs;
-        Amplitudes(2) = pks;
-        FWHM(2) = w;
-    end
+    Amplitudes(1) = Amp;
+    Peaks(1) = locs(Indx);
+    FWHM(1) = w(Indx);
 end
+
+rm = locs <=8;
+pks(rm) = [];
+locs(rm) = [];
+w(rm) = [];
+p(rm) = [];
+
+% get alpha peak as max in alpha range
+[Amp, Indx] = max(pks);
+
+if ~isempty(Amp)
+    Amplitudes(2) = Amp;
+    Peaks(2) = locs(Indx);
+    FWHM(2) = w(Indx);
+end
+
 
 % if there's no peak, provide the average of the theta and alpha ranges
 if isnan(Amplitudes(1))
-   Amplitudes(1) = mean(y_white(ThetaFreqs)); 
+    Amplitudes(1) = mean(y_white(ThetaFreqs));
 end
 
 if isnan(Amplitudes(2))
-   Amplitudes(2) = mean(y_white(AlphaFreqs)); 
+    Amplitudes(2) = mean(y_white(AlphaFreqs));
 end
 
 
