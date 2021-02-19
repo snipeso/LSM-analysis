@@ -7,8 +7,8 @@ wp_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Tasks = {'LAT', 'PVT', 'Match2Sample', 'SpFT', 'Game', 'Music', 'Oddball', 'Fixation', 'Standing',  'QuestionnaireEEG'};
-TasksLabels = {'LAT', 'PVT', 'WMT', 'Speech', 'Game', 'Music', 'Oddball', 'Fixation', 'EC', 'Q'};
+Tasks = {'LAT', 'PVT', 'Match2Sample', 'SpFT', 'Game', 'Music', 'Oddball', 'Fixation', 'Standing'};
+TasksLabels = {'LAT', 'PVT', 'WMT', 'Speech', 'Game', 'Music', 'Oddball', 'Fixation', 'EC'};
 %
 % Tasks = { 'Fixation', 'Oddball', 'Standing'};
 % TasksLabels = {'EO', 'Oddball', 'EC'};
@@ -21,20 +21,20 @@ PlotSpectrums = false;
 Normalization = '';
 Condition = '';
 
-
+Tag = 'PowerPeaksBAT';
 Hotspot = 'Hotspot'; % TODO: make sure this is in apporpriate figure name
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-TitleTag = ['PowerPeaks', Normalization, Condition];
+TitleTag = [Tag, Normalization, Condition];
 
-Paths.Results = string(fullfile(Paths.Results, 'PowerPeaks'));
+Paths.Results = string(fullfile(Paths.Results, Tag));
 if ~exist(Paths.Results, 'dir')
     mkdir(Paths.Results)
 end
 
-Paths.Stats = fullfile(Paths.Stats, 'PowerPeaks');
+Paths.Stats = fullfile(Paths.Stats, Tag);
 if ~exist(Paths.Stats, 'dir')
     mkdir(Paths.Stats)
 end
@@ -115,7 +115,7 @@ for Indx_T = 1:numel(Tasks)
                 WhiteSpectrum_Hotspot(Indx_P, Indx_S, 1:numel(Freqs)) = Spectrum;
             end
         end
-        save(PeaksPath, 'PowerPeaks', 'PowerPeaks_Hotspot', 'WhiteSpectrum', 'WhiteSpectrum_Hotspot', 'Freqs', 'Chanlocs', 'Sessions')
+        save(PeaksPath, Tag, 'PowerPeaks_Hotspot', 'WhiteSpectrum', 'WhiteSpectrum_Hotspot', 'Freqs', 'Chanlocs', 'Sessions')
     else
         load(PeaksPath)
     end
@@ -131,7 +131,7 @@ for Indx_T = 1:numel(Tasks)
         Matrix = PowerPeaks_Hotspot.(Variables{Indx_V});
         
         % export relevant matrices to Statistics folder
-        Filename_Hotspot = ['PowerPeaks', '_Hotspot_', Task, '_', Variables{Indx_V}, '.mat' ];
+        Filename_Hotspot = [Tag, '_Hotspot_', Task, '_', Variables{Indx_V}, '.mat' ];
         save(fullfile(Paths.Stats, Filename_Hotspot), 'Matrix', 'Sessions', 'SessionLabels')
         
         

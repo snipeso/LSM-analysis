@@ -178,97 +178,74 @@ clear Measures MeasureTypes M T
 Format.Legend.Tally = {'Hits', 'Late', 'Misses'};
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-allTasks = {'Game', 'SpFT', 'LAT', 'PVT', 'Match2Sample', 'Music';
+Format.Tasks.All = {'Game', 'SpFT', 'LAT', 'PVT', 'Match2Sample', 'Music',...
     'MWT', 'Standing', 'QuestionnaireEEG', 'Oddball', 'Fixation', 'TV'};
-TaskBlock = {'Game', 'SpFT', 'LAT', 'PVT', 'Match2Sample', 'Music'};
-RRTBlock = {'Standing', 'QuestionnaireEEG', 'Oddball', 'Fixation'};
+Format.Tasks.BAT = {'Game', 'SpFT', 'LAT', 'PVT', 'Match2Sample', 'Music'};
+Format.Tasks.RRT = {'Standing', 'QuestionnaireEEG', 'Oddball', 'Fixation'};
 
-% Sessions
-allSessions = struct(); % labels used in saving data
-allSessionLabels = struct(); % labels used to display in plots
-
-
-for Indx_T = 1:numel(TaskBlock)
-    allSessions.(TaskBlock{Indx_T}) = {'Baseline', 'Session1', 'Session2'};
-    allSessionLabels.(TaskBlock{Indx_T}) = {'BL', 'S1', 'S2'};
+for Indx_T = 1:numel(Format.Tasks.BAT)
+    Format.Labels.(Format.Tasks.BAT{Indx_T}).BAT.Sessions = {'Baseline', 'Session1', 'Session2'};
+    Format.Labels.(Format.Tasks.BAT{Indx_T}).BAT.Plot = {'BL', 'S1', 'S2'};
 end
 
-for Indx_T = 1:numel(RRTBlock)
-    allSessions.(RRTBlock{Indx_T}) =  {'BaselinePre', 'BaselinePost', ...
+for Indx_T = 1:numel(Format.Tasks.RRT)
+    Format.Labels.(Format.Tasks.RRT{Indx_T}).RRT.Sessions =  {'BaselinePre', 'BaselinePost', ...
     'MainPre', ...
     'Main1', 'Main2', 'Main3', ...
     'Main4', 'Main5', 'Main6', ...
     'Main7', 'Main8', 'MainPost'};
-    allSessionLabels.(RRTBlock{Indx_T}) = {'BL-Pre', 'BL-Post' ...
+   Format.Labels.(Format.Tasks.RRT{Indx_T}).RRT.Plot = {'BL-Pre', 'BL-Post' ...
     'Pre', ...
     '4:30', '7:30', '10:00', ...
     '15:00', '17:30', '20:30', ...
     '23:00', '2:40', 'Post'};
-end
 
+ Format.Labels.(Format.Tasks.RRT{Indx_T}).Brief.Sessions =  ...
+     {'BaselinePre', 'BaselinePost', 'MainPre', 'Main1', 'Main8', 'MainPost'};
+ Format.Labels.(Format.Tasks.RRT{Indx_T}).Brief.Plot = ...
+     {'BL-Pre', 'BL-Post', 'Pre', '4:30', '2:40', 'Post'};
+end
 
 % Labels for LAT "beamer" condition; a.k.a. "soporific"
-allSessions.LATBeam = {'BaselineBeam', 'Session1Beam', 'Session2Beam1'};
-allSessionLabels.LATBeam = {'S-BL', 'S-S1', 'S-S2'};
+Format.Labels.LAT.Beam.Sessions = {'BaselineBeam', 'Session1Beam', 'Session2Beam1'};
+Format.Labels.LAT.Beam.Plot =  {'S-BL', 'S-S1', 'S-S2'};
 
 % Labels for LAT "computer" condition, a.k.a. "classic"
-allSessions.LAT =  {'BaselineComp', 'Session1Comp', 'Session2Comp'};
-allSessionLabels.LAT = {'C-BL', 'C-S1', 'C-S2'};
+Format.Labels.LAT.BAT.Sessions =  {'BaselineComp', 'Session1Comp', 'Session2Comp'};
+Format.Labels.LAT.BAT.Plot = {'C-BL', 'C-S1', 'C-S2'};
 
 % Labels for PVT beamer (comp is same as LAT)
-allSessions.PVTBeam = {'BaselineBeam', 'Session1Beam', 'Session2Beam'};
-allSessionLabels.PVTBeam = allSessionLabels.LATBeam;
+Format.Labels.PVT.Beam.Sessions = {'BaselineBeam', 'Session1Beam', 'Session2Beam'};
+Format.Labels.PVT.Beam.Plot = Format.Labels.LAT.Beam.Plot;
 
-allSessions.PVT =  allSessions.LAT;
-allSessionLabels.PVT = allSessionLabels.LAT;
+Format.Labels.PVT.BAT.Sessions =  Format.Labels.PVT.BAT.Sessions;
+Format.Labels.PVT.BAT.Plot = Format.Labels.LAT.BAT.Plot;
+
 
 % Labels for all of LAT beamer conditions
-allSessions.LATAllBeam = {'BaselineBeam', 'MainPre', 'Session1Beam', 'Session2Beam1', 'Session2Beam2', 'Session2Beam3', 'MainPost'};
-allSessionLabels.LATAllBeam = {'BL', 'Pre', 'S1', 'S2-1', 'S2-2', 'S2-3', 'Post'};
+Format.Labels.LAT.AllBeam.Sessions = {'BaselineBeam', 'MainPre', 'Session1Beam', ...
+    'Session2Beam1', 'Session2Beam2', 'Session2Beam3', 'MainPost'};
+Format.Labels.LAT.AllBeam.Plot = {'BL', 'Pre', 'S1', 'S2-1', 'S2-2', 'S2-3', 'Post'};
 
-allSessions.LATAll = {'BaselineComp', 'BaselineBeam',  'MainPre', ...
+Format.Labels.PVT.AllBeam.Sessions = {'BaselineBeam', 'MainPre', 'Session1Beam', ...
+    'Session2Beam', 'MainPost'};
+Format.Labels.PVT.AllBeam.Plot =  {'BL', 'Pre', 'S1', 'S2', 'Post'};
+
+Format.Labels.LAT.All.Sessions = {'BaselineComp', 'BaselineBeam',  'MainPre', ...
     'Session1Comp', 'Session1Beam', 'Session2Comp', 'Session2Beam1', ...
     'Session2Beam2', 'Session2Beam3', 'MainPost'};
-allSessionLabels.LATAll = {'BLc', 'BLs',  'Pre', 'S1c', 'S1s', 'S2c', 'S2-1', 'S2-2', 'S2-3', 'Post'};
+Format.Labels.LAT.All.Plot = {'BLc', 'BLs',  'Pre', 'S1c', 'S1s', 'S2c', ...
+    'S2-1', 'S2-2', 'S2-3', 'Post'};
 
-allSessions.PVTAll = {'BaselineComp', 'BaselineBeam',  'MainPre', ...
+Format.Labels.PVT.All.Sessions =  {'BaselineComp', 'BaselineBeam',  'MainPre', ...
     'Session1Comp', 'Session1Beam', 'Session2Comp', 'Session2Beam', 'MainPost'};
-allSessionLabels.PVTAll = {'BLc', 'BLs',  'Pre', 'S1c', 'S1s', 'S2c', 'S2s', 'Post'};
+Format.Labels.PVT.All.Plot = {'BLc', 'BLs',  'Pre', 'S1c', 'S1s', 'S2c', 'S2s', 'Post'};
 
-allSessions.LATBL = {'BaselineBeam', 'MainPre', 'MainPost'};
-allSessionLabels.LATBL = {'BL', 'Pre', 'Post'};
+Format.Labels.LAT.BL.Sessions = {'BaselineBeam', 'MainPre', 'MainPost'};
+Format.Labels.LAT.BL.Plot = {'BL', 'Pre', 'Post'};
 
-
-% Labels for only LAT beamer conditions
-allSessions.LATSD = {'Session2Beam1', 'Session2Beam2', 'Session2Beam3'};
-allSessionLabels.LATSD = {'S1', 'S2', 'S3'};
-
-% Labels for all PVT beamer conditions
-allSessions.PVTAllBeam = {'BaselineBeam', 'MainPre', 'Session1Beam', 'Session2Beam', 'MainPost'};
-allSessionLabels.PVTAllBeam = {'BL', 'Pre', 'S1', 'S2', 'Post'};
-
-% Labels for all RRT recordings
-allSessions.RRT = {'BaselinePre', 'BaselinePost', ...
-    'MainPre', ...
-    'Main1', 'Main2', 'Main3', ...
-    'Main4', 'Main5', 'Main6', ...
-    'Main7', 'Main8', 'MainPost'};
-allSessionLabels.RRT = {'BL-Pre', 'BL-Post' ...
-    'Pre', ...
-    '4:30', '7:30', '10:00', ...
-    '15:00', '17:30', '20:30', ...
-    '23:00', '2:40', 'Post'};
-
-
-allSessions.RRT_Brief = {'BaselinePre', 'BaselinePost', ...
-    'MainPre', ...
-    'Main1', 'Main8', 'MainPost'};
-allSessionLabels.RRT_Brief = {'BL-Pre', 'BL-Post' ...
-    'Pre', ...
-    '4:30', '2:40', 'Post'};
-
-
-
+Format.Labels.LAT.SD.Sessions = {'Session2Beam1', 'Session2Beam2', 'Session2Beam3'};
+Format.Labels.LAT.SD.Plot = {'S1', 'S2', 'S3'};
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
