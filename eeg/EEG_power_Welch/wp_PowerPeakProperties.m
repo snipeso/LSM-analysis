@@ -6,28 +6,21 @@ close all
 wp_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
-Tasks = {'LAT', 'PVT', 'Match2Sample', 'SpFT', 'Game', 'Music'};
-TasksLabels = {'LAT', 'PVT', 'WMT', 'Speech', 'Game', 'Music'};
-% %
-% Tasks = { 'Fixation', 'Oddball', 'Standing'};
-% TasksLabels = {'EO', 'Oddball', 'EC'};
-
-% Tasks = {'Music'};
-% TasksLabels = { 'Music'};
 
 Refresh = false;
 PlotSpectrums = false;
 Normalization = '';
-Condition = 'BAT';
+Condition = 'RRT';
 
-Tag = 'PowerPeaksBAT';
+Tag = 'PowerPeaks';
 Hotspot = 'Hotspot'; % TODO: make sure this is in apporpriate figure name
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-TitleTag = [Tag, Normalization, Condition];
+Tasks = Format.Tasks.(Condition);
+
+TitleTag = strjoin({Tag, Normalization, Condition}, '_');
 
 Paths.Results = string(fullfile(Paths.Results, Tag));
 if ~exist(Paths.Results, 'dir')
@@ -131,7 +124,8 @@ for Indx_T = 1:numel(Tasks)
         Matrix = PowerPeaks_Hotspot.(Variables{Indx_V});
         
         % export relevant matrices to Statistics folder
-        Filename_Hotspot = [Tag, '_', Task, '_Hotspot_', Variables{Indx_V}, '.mat' ];
+        Filename_Hotspot = strjoin({Tag, Condition, Task, Hotspot, ...
+            [Variables{Indx_V}, '.mat']}, '_');
         save(fullfile(Paths.Stats, Filename_Hotspot), 'Matrix', 'Sessions', 'SessionLabels')
         
         

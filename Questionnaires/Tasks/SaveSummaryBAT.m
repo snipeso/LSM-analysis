@@ -6,9 +6,13 @@ Q_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Tasks = {'LAT', 'PVT'};
-Conditions = {'Beam', 'Comp'};
-ConditionTitles = {'Soporific', 'Classic'};
+% Tasks = {'LAT', 'PVT'};
+% Conditions = {'Beam', 'Comp'};
+% ConditionTitles = {'Soporific', 'Classic'};
+
+Tasks = {'LAT', 'PVT', 'Match2Sample', 'SpFT', 'Game', 'Music'};
+TasksLabels = {'LAT', 'PVT', 'WMT', 'Speech', 'Game', 'Music'};
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

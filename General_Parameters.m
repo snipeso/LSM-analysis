@@ -184,6 +184,9 @@ Format.Tasks.BAT = {'Game', 'SpFT', 'LAT', 'PVT', 'Match2Sample', 'Music'};
 % Format.Tasks.RRT = {'Standing', 'QuestionnaireEEG', 'Oddball', 'Fixation'};
 Format.Tasks.RRT = {'Standing', 'Oddball', 'Fixation'};
 
+Format.Labels.BAT = {'Game', 'Speech', 'LAT', 'PVT', 'WMT', 'Music'};
+Format.Labels.RRT = {'EC', 'Oddball', 'EO'};
+
 for Indx_T = 1:numel(Format.Tasks.BAT)
     Format.Labels.(Format.Tasks.BAT{Indx_T}).BAT.Sessions = {'Baseline', 'Session1', 'Session2'};
     Format.Labels.(Format.Tasks.BAT{Indx_T}).BAT.Plot = {'BL', 'S1', 'S2'};
