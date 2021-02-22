@@ -7,17 +7,17 @@ wp_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 
-% Tasks = {'LAT', 'PVT', 'Match2Sample', 'SpFT', 'Game', 'Music'};
-% TasksLabels = {'LAT', 'PVT', 'WMT', 'Speech', 'Game', 'Music'};
+Tasks = {'LAT', 'PVT', 'Match2Sample', 'SpFT', 'Game', 'Music'};
+TasksLabels = {'LAT', 'PVT', 'WMT', 'Speech', 'Game', 'Music'};
 % %
 % Tasks = { 'Fixation', 'Oddball', 'Standing'};
 % TasksLabels = {'EO', 'Oddball', 'EC'};
 
-Tasks = {'Music'};
-TasksLabels = { 'Music'};
+% Tasks = {'Music'};
+% TasksLabels = { 'Music'};
 
-Refresh = true;
-PlotSpectrums = true;
+Refresh = false;
+PlotSpectrums = false;
 Normalization = '';
 Condition = 'BAT';
 
@@ -140,7 +140,7 @@ for Indx_T = 1:numel(Tasks)
         end
         
         subplot(1, numel(Variables), Indx_V)
-        PlotConfettiSpaghetti(Matrix, SessionLabels,[], {}, [], Format)
+        PlotConfettiSpaghetti(Matrix, SessionLabels,[], {}, [], Format, true)
         Title = [Task, ' ', Variables{Indx_V}];
         title(Title)
         

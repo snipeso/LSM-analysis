@@ -10,7 +10,7 @@ ttest_Parameters
 
 Tag = 'PowerPeaksBAT';
 
-Normalization = 'zscore'; % '', 'zscore';
+Normalization = ''; % '', 'zscore';
 
 % Measures = {'Amplitude', 'Intercept', 'Slope', 'Peak'};
 Measures = append( 'Hotspot_', {'Amplitude', 'Intercept', 'Slope', 'Peak'});
@@ -64,39 +64,49 @@ for Indx_M = 1:numel(Measures)
     % merge both?
     if strcmp(Normalization, 'zscore')
         All = [reshape(Matrix_Tasks, 12, []), reshape(Matrix_RRT, 12, [])];
-       Mean = nanmean(All, 2);
-       SD = nanstd(All, 0, 2);
-       
-       Matrix_Tasks = (Matrix_Tasks-Mean)./SD;
-       Matrix_RRT =  (Matrix_RRT-Mean)./SD;
-       
-       YLims = quantile([Matrix_Tasks(:); Matrix_RRT(:)], [.02, .98]);
+        Mean = nanmean(All, 2);
+        SD = nanstd(All, 0, 2);
+        
+        Matrix_Tasks = (Matrix_Tasks-Mean)./SD;
+        Matrix_RRT =  (Matrix_RRT-Mean)./SD;
+        
+        YLims = quantile([Matrix_Tasks(:); Matrix_RRT(:)], [.02, .98]);
     else
         YLims = quantile([Matrix_Tasks(:); Matrix_RRT(:)], [.05, .95]);
     end
-
+    
     %%% Plot tasks
     figure('units','normalized','outerposition',[0 0 .2 .4])
     PlotSpaghettiOs(Matrix_Tasks, 1,  TaskSessionLabels, Tasks, TaskColors, Format)
     title([replace(Measures{Indx_M}, '_', ' '), ' ' Normalization])
     ylim(YLims)
-    
+     set(gca, 'FontSize', 14)
     saveas(gcf,fullfile(Paths.Results, strjoin({TitleTag, Measures{Indx_M}, 'Tasks.svg'}, '_')))
     
     %%% Plot RRT
     figure('units','normalized','outerposition',[0 0 .5 .4])
     PlotSpaghettiOs(Matrix_RRT, 2,  RRTSessionLabels, RRT, RRTColors, Format)
-    title([replace(Measures{Indx_M}, '_', ' ')])
+    title([replace(Measures{Indx_M}, '_', ' '), ' ', Normalization])
     ylim(YLims)
-    
+     set(gca, 'FontSize', 14)
     saveas(gcf,fullfile(Paths.Results, strjoin({TitleTag, Measures{Indx_M}, 'RRT.svg'}, '_')))
     
     %%% Plot both
     
-    % plot task averages
     
     % plot confetti spaghetti subplot by session, to see within subject
     % variability.
+    figure('units','normalized','outerposition',[0 0 1 .5])
+    for Indx_S = 1:numel(TaskSessions)
+        
+        Matrix = squeeze(Matrix_Tasks(:, Indx_S, :));
+        subplot(1, numel(TaskSessions), Indx_S)
+        PlotConfettiSpaghetti(Matrix, Tasks, [], [], [], Format, true)
+        title([replace(Measures{Indx_M}, '_', ' '), ' ', TaskSessionLabels{Indx_S}, ' ' Normalization])
+        set(gca, 'FontSize', 14)
+    end
+    NewLims = SetLims(1, numel(TaskSessions), 'y');
+    saveas(gcf,fullfile(Paths.Results, strjoin({TitleTag, Measures{Indx_M}, 'TaskComparisons.svg'}, '_')))
     
     
     
