@@ -57,7 +57,7 @@ for Indx_T = 1:numel(Tasks)
     % Fix qID problem
     Answers.qID(strcmp(Answers.qLabels, 'Frustrating/Neutral/Relaxing')) = {'BAT_3_0'};
     
-     figure('units','normalized','outerposition',[0 0 1 .5])
+    figure('units','normalized','outerposition',[0 0 1 .5])
     for Indx_Q = 1:numel(qIDs)
         
         qID = qIDs{Indx_Q};
@@ -76,20 +76,18 @@ for Indx_T = 1:numel(Tasks)
         save(fullfile(Paths.Stats, Filename), 'Matrix', 'Sessions', 'SessionLabels', 'YLabels')
         
         % plot it
-        if strcmp(Normalization, 'zscore')
-            Matrix = (Matrix - nanmean(Matrix, 2))./nanstd(Matrix, 0, 2);
-        end
         
         subplot(1, numel(qIDs), Indx_Q)
-         if strcmp(Normalization, 'zscore')
-                PlotConfettiSpaghetti(Matrix, SessionLabels, [], {}, [], Format, true)
-         else
-        PlotConfettiSpaghetti(Matrix, SessionLabels, [0 100], {}, [], Format, true)
-         end
+        if strcmp(Normalization, 'zscore')
+            Matrix = (Matrix - nanmean(Matrix, 2))./nanstd(Matrix, 0, 2);
+            PlotConfettiSpaghetti(Matrix, SessionLabels, [], {}, [], Format, true)
+        else
+            PlotConfettiSpaghetti(Matrix, SessionLabels, [0 100], {}, [], Format, true)
+        end
         Title = [Task, ' ', Titles{Indx_Q}];
         title(Title)
     end
-     saveas(gcf,fullfile(Paths.Results, [TitleTag,  '_', Task, '.svg']))
+    saveas(gcf,fullfile(Paths.Results, [TitleTag,  '_', Task, '.svg']))
 end
 
 % TODO: stacked bar on falling asleep
