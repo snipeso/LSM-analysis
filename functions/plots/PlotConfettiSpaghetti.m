@@ -71,6 +71,14 @@ else
     plot(nanmean(Matrix, 1), 'o-', 'LineWidth', 2.5, 'Color', 'k',  'MarkerFaceColor', 'k')
 end
 
+
+if exist('Labels', 'var') && ~isempty(Labels)
+    yticks(linspace(YLims(1), YLims(2), numel(Labels)))
+    yticklabels(Labels)
+end
+%
+
+
 if exist('Stats', 'var') && Stats
     Pairs = {};
     pValues = [];
@@ -88,11 +96,7 @@ if exist('Stats', 'var') && Stats
     sigstar(Pairs, pValues, repmat({[0 0 0]}, size(Pairs)))
 end
 
-if exist('Labels', 'var') && ~isempty(Labels)
-    yticks(linspace(YLims(1), YLims(2), numel(Labels)))
-    yticklabels(Labels)
-end
-%
+
 % if exist('ColorGroups', 'var') && ~isempty(ColorGroups)
 %    legend(unique())
 % end
