@@ -19,9 +19,9 @@ Hotspot = 'Hotspot'; % TODO: make sure this is in apporpriate figure name
 
 
 Tasks = Format.Tasks.(Condition);
-
 TitleTag = strjoin({Tag, Normalization, Condition}, '_');
 
+% make destination folders
 Paths.Results = string(fullfile(Paths.Results, Tag));
 if ~exist(Paths.Results, 'dir')
     mkdir(Paths.Results)
