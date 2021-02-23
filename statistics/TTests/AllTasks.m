@@ -8,13 +8,13 @@ ttest_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Tag = 'PowerPeaksBAT';
+Tag = 'Power';
 
 Normalization = ''; % '', 'zscore';
 
 % Measures = {'Amplitude', 'Intercept', 'Slope', 'Peak'};
-Measures = append( 'Hotspot_', {'Amplitude', 'Intercept', 'Slope', 'Peak'});
-
+% Measures = append( 'Hotspot_', {'Amplitude', 'Intercept', 'Slope', 'Peak'});
+Measures = {'Hotspot_Theta'};
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -44,7 +44,7 @@ for Indx_M = 1:numel(Measures)
     
     TaskColors = [];
     for Indx_T = 1:numel(Tasks)
-        Filename = strjoin({Tag, Tasks{Indx_T}, [Measures{Indx_M}, '.mat']}, '_');
+        Filename = strjoin({Tag, 'BAT', Tasks{Indx_T}, [Measures{Indx_M}, '.mat']}, '_');
         load(fullfile(Paths.Stats, Filename), 'Matrix')
         
         Matrix_Tasks(:, :, Indx_T) = Matrix;
@@ -53,7 +53,7 @@ for Indx_M = 1:numel(Measures)
     
     RRTColors = [];
     for Indx_R = 1:numel(RRT)
-        Filename = strjoin({Tag, RRT{Indx_R}, [Measures{Indx_M}, '.mat']}, '_');
+        Filename = strjoin({Tag, 'RRT', RRT{Indx_R}, [Measures{Indx_M}, '.mat']}, '_');
         load(fullfile(Paths.Stats, Filename), 'Matrix')
         
         Matrix_RRT(:, :, Indx_R) = Matrix;
@@ -75,6 +75,7 @@ for Indx_M = 1:numel(Measures)
         YLims = quantile([Matrix_Tasks(:); Matrix_RRT(:)], [.05, .95]);
     end
     
+    YLims = [1 6];
     %%% Plot tasks
     figure('units','normalized','outerposition',[0 0 .2 .4])
     PlotSpaghettiOs(Matrix_Tasks, 1,  TaskSessionLabels, Tasks, TaskColors, Format)

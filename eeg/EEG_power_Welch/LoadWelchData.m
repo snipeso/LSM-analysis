@@ -22,36 +22,6 @@ switch Scaling
         PowerStruct = GetPowerStruct(allFFT, allCategories, Sessions, Participants);
         PowerStruct = ZScoreFFT(PowerStruct, Sessions, Freqs);
         disp('********* ZScore transforming *******')
-        
-        %     case 'zscore_all'
-        %         AllZScoreFile = fullfile(Paths.Summary, 'AllZScoreParameters.m');
-        %         if  ~Refresh && exist(AllZScoreFile, 'file')
-        %             PowerStruct = GetPowerStruct(allFFT, allCategories, Sessions, Participants); % get all data
-        %             load(AllZScoreFile, 'ZScoreParameters') % get z-scores
-        %             [PowerStruct, ~] = ZScoreFFT(PowerStruct, Sessions, ZScoreParameters);
-        %         else
-        %
-        %             % load all at once
-        %             allTasks = string(ls(Paths.WelchPower));
-        %             allTasks(contains(allTasks, '.')) = [];
-        %
-        %             disp('Loading all tasks for z scoring:')
-        %             disp(allTasks)
-        %             [allFFT, allCategories] = LoadAll(Paths, allTasks);
-        %
-        %             Sessions = unique(allCategories(3, :));
-        %
-        %             MegaPowerStruct = GetPowerStruct(allFFT, allCategories, Sessions, Participants);
-        %
-        %             % z-score
-        %              [MegaPowerStruct, ZScoreParameters] = ZScoreFFT(MegaPowerStruct, Sessions);
-        %
-        %             % then select only fields of interest
-        %             OtherTasks = setdiff(allTasks, Tasks);
-        %             PowerStruct = rmfield(MegaPowerStruct, OtherTasks);
-        %         end
-        %
-        %         save(AllZScoreFile, 'ZScoreParameters')
 end
 
 Chanlocs = allFFT(1).Chanlocs;

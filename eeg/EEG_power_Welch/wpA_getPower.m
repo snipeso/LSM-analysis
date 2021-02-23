@@ -9,8 +9,8 @@ wp_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Tasks = {'Standing', 'Oddball', 'Fixation'};
-Tasks = allTasks;
+Tasks = {'Standing', 'Oddball', 'Fixation'};
+% Tasks = {'Game'};
 Refresh = false;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -33,7 +33,7 @@ for Indx_T = 1:numel(Tasks)
     Files = deblank(cellstr(ls(Source)));
     Files(~contains(Files, '.set')) = [];
     
-    parfor Indx_F = 1:numel(Files)
+    for Indx_F = 1:numel(Files)
         
         File = Files{Indx_F};
         Filename = [extractBefore(File, '_Clean.set'), '_wp.mat'];

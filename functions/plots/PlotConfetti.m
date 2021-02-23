@@ -1,5 +1,4 @@
 function PlotConfetti(X, Y, C, Format, SpotSize, GroupColors)
-
 Tot_Peeps = numel(X); % number of participants
 
 % select background colors
@@ -59,10 +58,10 @@ axis square
 xlim([min(X(:)), max(X(:))])
 ylim([min(Y(:)), max(Y(:))])
 
-if  ~exist('GroupColors', 'var') || isempty(GroupColors) 
-elseif GroupColors == 0
-else
-legend(flip(L(2:end)), Groups)
-end
+% if  ~exist('GroupColors', 'var') || isempty(GroupColors) 
+% elseif GroupColors == 0
+% else
+% legend(flip(L(2:end)), Groups)
+% end
 
 end

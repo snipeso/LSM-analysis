@@ -180,11 +180,11 @@ Format.Legend.Tally = {'Hits', 'Late', 'Misses'};
 
 Format.Tasks.All = {'Game', 'SpFT', 'LAT', 'PVT', 'Match2Sample', 'Music',...
     'MWT', 'Standing', 'QuestionnaireEEG', 'Oddball', 'Fixation', 'TV'};
-Format.Tasks.BAT = {'Game', 'SpFT', 'LAT', 'PVT', 'Match2Sample', 'Music'};
+Format.Tasks.BAT = {'Match2Sample','LAT', 'PVT',  'SpFT', 'Game', 'Music'};
 % Format.Tasks.RRT = {'Standing', 'QuestionnaireEEG', 'Oddball', 'Fixation'};
 Format.Tasks.RRT = {'Standing', 'Oddball', 'Fixation'};
 
-Format.Labels.BAT = {'Game', 'Speech', 'LAT', 'PVT', 'WMT', 'Music'};
+Format.Labels.BAT = {'WMT', 'LAT', 'PVT', 'Speech', 'Game', 'Music'};
 Format.Labels.RRT = {'EC', 'Oddball', 'EO'};
 
 for Indx_T = 1:numel(Format.Tasks.BAT)
@@ -304,10 +304,10 @@ EEG_Triggers.LAT.Tone = 'S 12';
 
 
 Bands = struct();
-Bands.delta = [1 4];
-Bands.theta = [4.5 8];
-Bands.alpha = [8.1 13];
-Bands.beta = [14 25];
+Bands.Delta = [1 4];
+Bands.Theta = [4 8];
+Bands.Alpha = [8 14];
+Bands.Beta = [14 25];
 BandNames = fieldnames(Bands);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
