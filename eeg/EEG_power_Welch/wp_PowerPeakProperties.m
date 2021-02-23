@@ -111,7 +111,8 @@ for Indx_T = 1:numel(Tasks)
         save(PeaksPath, 'PowerPeaks', 'PowerPeaks_Hotspot', ...
             'WhiteSpectrum', 'WhiteSpectrum_Hotspot', 'Freqs', 'Chanlocs', 'Sessions')
     else
-        load(PeaksPath)
+        load(PeaksPath, 'PowerPeaks', 'PowerPeaks_Hotspot', ...
+            'WhiteSpectrum', 'WhiteSpectrum_Hotspot', 'Freqs', 'Chanlocs', 'Sessions')
     end
     
     
@@ -145,29 +146,7 @@ for Indx_T = 1:numel(Tasks)
     saveas(gcf,fullfile(Paths.Results, [TitleTag,  '_', Task, '_Hotspot.svg']))
     
    
-    % plot a figure of variable x session raw values (or z scored)
-    
-    
-    
-    % plot a figure of 
-    
-    
-    %     % plot topoplots of powerpeaks, and change across sessions
-    %     figure
-    %
-    %     Topo = squeeze(PowerPeaks.Peak(11, 3, :));
-    %      topoplot(Topo, Chanlocs, 'maplimits', [4 8], 'style', 'map', 'headrad', 'rim', ...
-    %                 'gridscale', 150)
-    %             colorbar
-    %             colormap(Format.Colormap.Linear)
-    %
-    %                Topo = squeeze(PowerPeaks.Amplitude(11, 3, :));
-    %      topoplot(Topo, Chanlocs, 'maplimits', [0 3], 'style', 'map', 'headrad', 'rim', ...
-    %                 'gridscale', 150)
-    %             colorbar
-    %             colormap(Format.Colormap.Linear)
-    %
-    
+
     % average per task
     
     % plot whitened spectrum per task
@@ -181,15 +160,3 @@ for Indx_T = 1:numel(Tasks)
     
 end
 
-% exiting loop, plot all tasks, split by session
-
-
-
-
-% ToDo:
-% plot spaghettiOs for all tasks
-
-% plot whitened spectrums
-
-
-%

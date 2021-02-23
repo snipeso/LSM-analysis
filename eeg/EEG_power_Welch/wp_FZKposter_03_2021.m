@@ -55,7 +55,6 @@ if ~exist(Paths.Stats, 'dir')
     mkdir(Paths.Stats)
 end
 
-Results = struct();
 
 switch Normalization
     case 'log'
@@ -539,12 +538,9 @@ for Indx_B = 1:numel(AllBands)
         S_BL = squeeze(Hotspot_Spectrum(:, :, 1, Indx_T));
         S_SD = squeeze(Hotspot_Spectrum(:, :, 2, Indx_T));
         
-        Matrix = squeeze(Hotspot_Spectrum(:, :, 1:2, Indx_T));
-        Matrix = permute(Matrix, [1 3 2]);
-        
         figure('units','normalized','outerposition',[0 0 .25 .4])
-        PlotPowerHighlight(Matrix, Freqs, FreqsIndxBand, ...
-            Format.Colors.Tasks.(AllTasks{Indx_T}), Format)
+       PlotPowerHighlight(WhiteSpectrum_Hotspot, Freqs, FreqsIndxBand, ...
+        Format.Colors.(Condition).Sessions, Format)
         
         ylabel(YLabel)
         ylim(YLimSpectrum)
