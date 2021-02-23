@@ -7,10 +7,10 @@ wp_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Refresh = true;
-PlotSpectrums = true;
-Normalization = '';
-Condition = 'BAT';
+Refresh = false;
+PlotSpectrums = false;
+Normalization = 'zscore';
+Condition = 'RRT';
 
 Tag = 'PowerPeaks';
 Hotspot = 'Hotspot'; % TODO: make sure this is in apporpriate figure name
@@ -144,6 +144,14 @@ for Indx_T = 1:numel(Tasks)
     end
     saveas(gcf,fullfile(Paths.Results, [TitleTag,  '_', Task, '_Hotspot.svg']))
     
+   
+    % plot a figure of variable x session raw values (or z scored)
+    
+    
+    
+    % plot a figure of 
+    
+    
     %     % plot topoplots of powerpeaks, and change across sessions
     %     figure
     %
@@ -162,7 +170,14 @@ for Indx_T = 1:numel(Tasks)
     
     % average per task
     
-    
+    % plot whitened spectrum per task
+    FreqsIndxBand =  dsearchn( Freqs', Bands.Theta');
+    figure('units','normalized','outerposition',[0 0 .25 .4])
+    PlotPowerHighlight(WhiteSpectrum_Hotspot, Freqs, FreqsIndxBand, ...
+        Format.Colors.(Condition).Sessions, Format)
+    title(['Whitened Spectrum', Hotspot, ' ', Task, ' ', Normalization])
+    ylabel('Amplitude')
+    saveas(gcf,fullfile(Paths.Results, [TitleTag,  '_', Task, '_HotspotPowerChange.svg']))
     
 end
 

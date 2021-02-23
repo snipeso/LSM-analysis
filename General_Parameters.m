@@ -119,9 +119,25 @@ Format.Colors.Generic.Pale2 = [244 178 119]/255; % orange
 Format.Colors.Generic.Pale3 = [242, 208, 147]/255; % gold
 Format.Colors.Generic.Dark1 = [24 41 166]/255; % blue
 Format.Colors.Generic.Dark2 = [145 26 150]/255; % purple
-Format.Colors.Sessions = [Format.Colors.Generic.Dark1; Format.Colors.Generic.Red; Format.Colors.Generic.Pale2 ];
 Format.Colors.Tally = [34 168 136; 244, 204, 32; 228, 103, 90 ]/255; % correct, late, missed
 
+
+Format.Colors.BAT.Sessions = [Format.Colors.Generic.Dark1; Format.Colors.Generic.Red; Format.Colors.Generic.Pale2 ];
+
+Format.Colors.RRT.Sessions =[
+7, 2, 114;  % Bl pre
+15, 3, 156; % bl post
+66, 1, 162; % main pre
+123, 5, 165; % m1
+157, 30, 149; % m2
+187, 53, 134; % m3
+209, 82, 111; % m4
+230, 110, 90; % m5
+240, 133, 74; % m6
+250, 156, 59; % m7
+252, 193, 40; % m8
+59, 104, 0; % post
+]/255;
 
 Format.Colors.Tasks.PVT = [244, 204, 32]/255;
 Format.Colors.Tasks.LAT = [246, 162, 75]/255;

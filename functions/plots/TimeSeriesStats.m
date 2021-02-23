@@ -1,5 +1,4 @@
 function TimeSeriesStats(Matrix, t, PeriodLength)
-
 % Matrix is participants x time x group
 
 % get mini window for test

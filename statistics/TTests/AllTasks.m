@@ -13,8 +13,8 @@ Tag = 'Power';
 Normalization = ''; % '', 'zscore';
 
 % Measures = {'Amplitude', 'Intercept', 'Slope', 'Peak'};
-% Measures = append( 'Hotspot_', {'Amplitude', 'Intercept', 'Slope', 'Peak'});
-Measures = {'Hotspot_Theta'};
+Measures = append( 'Hotspot_', {'Amplitude', 'Intercept', 'Slope', 'Peak', 'FWHM'});
+% Measures = {'Hotspot_Theta'};
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
