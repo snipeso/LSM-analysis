@@ -7,10 +7,10 @@ wp_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Refresh = false;
-PlotSpectrums = false;
+Refresh = true;
+PlotSpectrums = true;
 Normalization = '';
-Condition = 'RRT';
+Condition = 'BAT';
 
 Tag = 'PowerPeaks';
 Hotspot = 'Hotspot'; % TODO: make sure this is in apporpriate figure name
@@ -108,7 +108,8 @@ for Indx_T = 1:numel(Tasks)
                 WhiteSpectrum_Hotspot(Indx_P, Indx_S, 1:numel(Freqs)) = Spectrum;
             end
         end
-        save(PeaksPath, 'PowerPeaks', 'PowerPeaks_Hotspot', 'WhiteSpectrum', 'WhiteSpectrum_Hotspot', 'Freqs', 'Chanlocs', 'Sessions')
+        save(PeaksPath, 'PowerPeaks', 'PowerPeaks_Hotspot', ...
+            'WhiteSpectrum', 'WhiteSpectrum_Hotspot', 'Freqs', 'Chanlocs', 'Sessions')
     else
         load(PeaksPath)
     end

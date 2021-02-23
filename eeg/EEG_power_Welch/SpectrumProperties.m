@@ -89,8 +89,19 @@ if isnan(Amplitudes(2))
 end
 
 
+% get integral of FWHM area (or until edges
+% for theta
+FWHM(1) = GetFWHM(y_white, FreqRes, find(Peaks(1)==Freqs), ...
+    round(FWHM(1)/FreqRes), ThetaFreqs);
+
+% for alpha
+FWHM(2) = GetFWHM(y_white, FreqRes, find(Peaks(2)==Freqs), ...
+    round(FWHM(2)/FreqRes), AlphaFreqs);
+
+% Adjust values by shift
 Amplitudes = Amplitudes + Shift;
 Spectrum = y_white + Shift;
+FWHM = FWHM + Shift;
 
 if exist('ToPlot', 'var') && ToPlot
     Line = nan(size(Power));
@@ -122,4 +133,29 @@ if exist('ToPlot', 'var') && ToPlot
     xlim([4 15])
     
 end
-A =1;
+
+
+end
+
+function Power = GetFWHM(Data, FreqRes, Peak, Width, Range)
+% Width and range in points, not frequency
+
+if ~isnan(Width)
+    F1 = Peak - Width/2;
+    F2 =  Peak + Width/2;
+    
+    if F1 < Range(1)
+        F1 = Range(1);
+    end
+    
+    if F2 > Range(end)
+        F2 = Range(end);
+    end
+else
+    F1 = Range(1);
+    F2 = Range(end);
+end
+
+Power = sum(Data(round(F1:F2)))*FreqRes;
+
+end
