@@ -63,7 +63,7 @@ switch Normalization
     case 'zscore'
         YLabel = 'Power Density (z scored)';
     otherwise
-           YLabel = 'Power Density';
+        YLabel = 'Power Density';
 end
 
 % load all tasks (optional z-scored or not, so have both raw theta values
@@ -71,16 +71,14 @@ end
 
 % load power data
 
-BATPowerPath = fullfile(Paths.Summary, strjoin({'BAT', Normalization, 'Power.mat'}, '_'));
-RRTPowerPath = fullfile(Paths.Summary, strjoin({'RRT', Normalization, 'Power.mat'}, '_'));
-if  RefreshMatrices || ~exist(BATPowerPath, 'file') || ~exist(RRTPowerPath, 'file')
+if  RefreshMatrices
     
-      [PowerStructBAT, Chanlocs, Freqs] = LoadAllPower(Paths.WelchPower, ...
-            Participants, 'BAT', Sessions_BAT, Format);
-        
-        [PowerStructRRT, ~, ~] = LoadAllPower(Paths.WelchPower, ...
-            Participants, 'RRT', Sessions_RRT, Format);
-        
+    [PowerStructBAT, Chanlocs, Freqs] = LoadAllPower(Paths.WelchPower, ...
+        Participants, 'BAT', Sessions_BAT, Format);
+    
+    [PowerStructRRT, ~, ~] = LoadAllPower(Paths.WelchPower, ...
+        Participants, 'RRT', Sessions_RRT, Format);
+    
     if strcmp(Normalization, 'zscore')
         
         [PowerStructBAT, Chanlocs, Freqs] = LoadAllPower(Paths.WelchPower, ...
@@ -93,13 +91,12 @@ if  RefreshMatrices || ~exist(BATPowerPath, 'file') || ~exist(RRTPowerPath, 'fil
         PowerStructListZScored = ZScoreFFTList(Pre, Freqs);
         PowerStructBAT = PowerStructListZScored{1};
         PowerStructRRT = PowerStructListZScored{2};
-   
+        
     end
     
 end
 
 %%
-
 AllBands = fieldnames(Bands);
 
 for Indx_B = 1:numel(AllBands)
@@ -114,15 +111,10 @@ for Indx_B = 1:numel(AllBands)
     nTasks = numel(Tasks);
     nRRT = numel(RRT);
     nAllTasks = numel(AllTasks);
-    nChannels = numel(Chanlocs);
-    nFreqs = numel(Freqs);
-    n10_20 = numel(Channels_10_20);
-    FreqsIndxBand =  dsearchn( Freqs', Bands.(Variable)');
-    Indexes_10_20 =  ismember( str2double({Chanlocs.labels}), Channels_10_20); % TODO: make sure in order!
     
     
     ChannelLabels = {Chanlocs.labels}; % TEMP! Problem is getting the actual string labels
-    ChannelLabels = ChannelLabels(Indexes_10_20);
+    
     
     Indexes_Hotspot =  ismember( str2double({Chanlocs.labels}), EEG_Channels.(Hotspot));
     
@@ -132,6 +124,13 @@ for Indx_B = 1:numel(AllBands)
     FZKPowerPath = fullfile(Paths.Summary, strjoin({'FZK', Variable, Hotspot, Normalization, 'Data.mat'}, '_'));
     
     if RefreshMatrices || ~exist(FZKPowerPath, 'file')
+        
+        nChannels = numel(Chanlocs);
+        nFreqs = numel(Freqs);
+        n10_20 = numel(Channels_10_20);
+        FreqsIndxBand =  dsearchn( Freqs', Bands.(Variable)');
+        Indexes_10_20 =  ismember( str2double({Chanlocs.labels}), Channels_10_20); % TODO: make sure in order!
+        ChannelLabels = ChannelLabels(Indexes_10_20);
         
         % FZ, CZ, PZ, OZ (eventually do 10-20 grid) theta across sessions
         Band_10_20_Tasks = nan(nParticipants, nSessions_Tasks, nTasks, n10_20);
@@ -251,7 +250,8 @@ for Indx_B = 1:numel(AllBands)
         save(FZKPowerPath, 'Band_Hotspot', 'Hotspot_Spectrum', ...
             'Band_10_20_Tasks', 'Band_10_20_RRT', ...
             'Band_Topo_RRT', 'Band_Topo_Tasks', ...
-            'Band_Hotspot_BAT', 'Band_Hotspot_RRT')
+            'Band_Hotspot_BAT', 'Band_Hotspot_RRT', ...
+            'Chanlocs', 'Freqs')
         
         
         
@@ -260,7 +260,16 @@ for Indx_B = 1:numel(AllBands)
         disp('Loading matrices')
         load(FZKPowerPath, 'Band_Hotspot', 'Hotspot_Spectrum', ...
             'Band_10_20_Tasks', 'Band_10_20_RRT', ...
-            'Band_Topo_RRT', 'Band_Topo_Tasks')
+            'Band_Topo_RRT', 'Band_Topo_Tasks', ...
+            'Band_Hotspot_BAT', 'Band_Hotspot_RRT')
+        
+        
+        nChannels = numel(Chanlocs);
+        nFreqs = numel(Freqs);
+        n10_20 = numel(Channels_10_20);
+        FreqsIndxBand =  dsearchn( Freqs', Bands.(Variable)');
+        Indexes_10_20 =  ismember( str2double({Chanlocs.labels}), Channels_10_20); % TODO: make sure in order!
+        
         
     end
     
@@ -503,7 +512,7 @@ for Indx_B = 1:numel(AllBands)
         end
         
         
-        %%
+        
         for Indx_S = 1:2
             figure('units','normalized','outerposition',[0 0 1 1])
             M0 = Band_Topo_All(:, :, Indx_S, FixIndx);
@@ -524,68 +533,21 @@ for Indx_B = 1:numel(AllBands)
     
     
     
-    
-    
-    
-    %%% plot subjects S2 hotspot
-    for Indx_T = 1:nAllTasks
-        figure('units','normalized','outerposition',[0 0 .5 .8])
-        
-        for Indx_S = 1:2
-            subplot(2, 1, Indx_S)
-            hold on
-            for Indx_P = 1:nParticipants
-                
-                C = [Format.Colors.DarkParticipants(Indx_P, :), .5];
-                P_SD = squeeze(Hotspot_Spectrum(Indx_P, :, Indx_S, Indx_T));
-                plot(Freqs, P_SD, 'Color',C, 'LineWidth', 3)
-                
-            end
-            
-            xlabel('Frequency (Hz)')
-            ylabel(YLabel)
-            ylim([min(Hotspot_Spectrum, [], 'all'), max(Hotspot_Spectrum, [], 'all')])
-            set(gca, 'FontName', Format.FontName, 'FontSize', 14)
-            
-            title([AllTasksLabels{Indx_T}, ' ', CompareTaskSessions{Indx_S}])
-        end
-        saveas(gcf,fullfile(Paths.Results, [TitleTag, AllTasks{Indx_T}, '_Participants.svg']))
-        
-    end
-    
-    
-    
     %%% Plot change in spectrum from BL to SD2 for hotspot
     for Indx_T = 1:nAllTasks
         C = Format.Colors.Tasks.(AllTasks{Indx_T});
         S_BL = squeeze(Hotspot_Spectrum(:, :, 1, Indx_T));
         S_SD = squeeze(Hotspot_Spectrum(:, :, 2, Indx_T));
         
+        Matrix = squeeze(Hotspot_Spectrum(:, :, 1:2, Indx_T));
+        Matrix = permute(Matrix, [1 3 2]);
+        
         figure('units','normalized','outerposition',[0 0 .25 .4])
-        hold on
-        plot(Freqs, zeros(size(Freqs)), ':', 'LineWidth', .1, 'Color', 'k')
-        % plot baseline
-        plot(Freqs, nanmean(S_BL, 1), 'LineWidth', 1.5, 'Color', [.6 .6 .6])
-        plot(Freqs(FreqsIndxBand(1):FreqsIndxBand(2)), ...
-            nanmean(S_BL(:, FreqsIndxBand(1):FreqsIndxBand(2)), 1), ...
-            'Color',C, 'LineWidth', 4)
+        PlotPowerHighlight(Matrix, Freqs, FreqsIndxBand, ...
+            Format.Colors.Tasks.(AllTasks{Indx_T}), Format)
         
-        % plot main
-        plot(Freqs, nanmean(S_SD, 1), 'LineWidth', 1.5, 'Color', [0 0 0])
-        plot(Freqs(FreqsIndxBand(1):FreqsIndxBand(2)), ...
-            nanmean(S_SD(:, FreqsIndxBand(1):FreqsIndxBand(2)), 1), ...
-            'Color',C, 'LineWidth', 4)
-        TimeSeriesStats(cat(3, S_BL, S_SD), Freqs, 100);
-        clc
-        ylim(YLimSpectrum)
-        xlim([1 25])
         ylabel(YLabel)
-        
-        set(gca, 'FontName', Format.FontName, 'FontSize', 12)
-        xlabel('Frequency (Hz)',  'FontSize', 14)
-        %     title(AllTasksLabels{Indx_T}, 'FontSize', 20)
-        %     axis square
-        
+        ylim(YLimSpectrum)
         saveas(gcf,fullfile(Paths.Results, [TitleTag, '_SD2-BL_Freqs_', ...
             AllTasks{Indx_T}, '.svg']))
         
@@ -629,3 +591,31 @@ for Indx_B = 1:numel(AllBands)
     
     
 end
+
+
+%%% plot subjects S2 hotspot
+for Indx_T = 1:nAllTasks
+    figure('units','normalized','outerposition',[0 0 .5 .8])
+    
+    for Indx_S = 1:2
+        subplot(2, 1, Indx_S)
+        hold on
+        for Indx_P = 1:nParticipants
+            
+            C = [Format.Colors.DarkParticipants(Indx_P, :), .5];
+            P_SD = squeeze(Hotspot_Spectrum(Indx_P, :, Indx_S, Indx_T));
+            plot(Freqs, P_SD, 'Color',C, 'LineWidth', 3)
+            
+        end
+        
+        xlabel('Frequency (Hz)')
+        ylabel(YLabel)
+        ylim([min(Hotspot_Spectrum, [], 'all'), max(Hotspot_Spectrum, [], 'all')])
+        set(gca, 'FontName', Format.FontName, 'FontSize', 14)
+        
+        title([AllTasksLabels{Indx_T}, ' ', CompareTaskSessions{Indx_S}])
+    end
+    saveas(gcf,fullfile(Paths.Results, [TitleTag, AllTasks{Indx_T}, '_Participants.svg']))
+    
+end
+
