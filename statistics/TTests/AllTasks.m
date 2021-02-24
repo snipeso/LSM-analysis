@@ -4,17 +4,17 @@ close all
 clear
 clc
 
-ttest_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ttest_Parameters
 
-Tag = 'Power';
+Tag = 'PowerPeaks';
 
-Normalization = ''; % '', 'zscore';
+Normalization = 'zscore'; % '', 'zscore';
 
 % Measures = {'Amplitude', 'Intercept', 'Slope', 'Peak'};
-Measures = append( 'Hotspot_', {'Amplitude', 'Intercept', 'Slope', 'Peak', 'FWHM'});
-% Measures = {'Hotspot_Theta'};
+% Measures = append( 'Hotspot_', {'Amplitude', 'Intercept', 'Slope', 'Peak', 'FWHM'});
+Measures = {'Hotspot_FWHM'};
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -75,7 +75,7 @@ for Indx_M = 1:numel(Measures)
         YLims = quantile([Matrix_Tasks(:); Matrix_RRT(:)], [.05, .95]);
     end
     
-    YLims = [1 6];
+%     YLims = [1 6];
     %%% Plot tasks
     figure('units','normalized','outerposition',[0 0 .2 .4])
     PlotSpaghettiOs(Matrix_Tasks, 1,  TaskSessionLabels, Tasks, TaskColors, Format)

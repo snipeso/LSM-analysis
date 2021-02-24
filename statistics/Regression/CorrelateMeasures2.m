@@ -16,17 +16,37 @@ Regression_Parameters
 Normalization = 'zscoreP'; %'zscoreS&P' 'zscoreP', 'none'
 % Normalization = 'none'; %'zscoreS&P' 'zscoreP', 'none'
 
-Condition = 'BAT';
+% Condition = 'BAT';
+% 
+% Plot = struct();
+% Plot.Power = {'Hotspot_Delta', 'Hotspot_Theta', 'Hotspot_Alpha', 'Hotspot_Beta'};
+% Plot.Questionnaires = {'KSS', 'Difficult', 'Effortful', 'Focused', 'Motivation', 'Relaxing'};
+% Plot.PowerPeaks = {'Hotspot_Amplitude', 'Hotspot_Peak', 'Hotspot_Slope', 'Hotspot_Intercept', 'Hotspot_FWHM' };
+
+
+% Condition = 'BAT';
+% 
+% Plot = struct();
+% Plot.Power = {'Hotspot_Delta', 'Hotspot_Theta', 'Hotspot_Alpha', 'Hotspot_Beta'};
+% Plot.Questionnaires = {'KSS', 'Difficult', 'Effortful', 'Focused', 'Motivation', 'Relaxing'};
+% Plot.PowerPeaks = {'Hotspot_Amplitude', 'Hotspot_Peak', 'Hotspot_Slope', 'Hotspot_Intercept', 'Hotspot_FWHM' };
+% 
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Tasks = Format.Tasks.(Condition);
+
+Condition = 'RRT';
 
 Plot = struct();
-
-Plot.Power = {'Hotspot_Delta', 'Hotspot_Theta', 'Hotspot_Alpha', 'Hotspot_Beta'};
-Plot.Questionnaires = {'KSS', 'Difficult', 'Effortful', 'Focused', 'Motivation', 'Relaxing'};
-Plot.PowerPeaks = {'Hotspot_Amplitude', 'Hotspot_Peak', 'Hotspot_Slope', 'Hotspot_Intercept' };
+Plot.Power = {'Hotspot_Theta', 'Hotspot_Beta'};
+Plot.Questionnaires = {'KSS', 'Alertness', 'Anger', 'Difficulty', 'EmotionEnergy', 'Enjoyment', 'Fear', 'FixatingDifficulty', ...
+    'Focus', 'Happiness', 'Hunger', 'Mood', 'Motivation', 'Other Pain', 'PhysicEnergy', 'PsychEnergy', 'Relxation', 'Sadness', ...
+    'SpiritEnergy', 'Stress', 'Thirst', 'Tolerance', 'WakeDifficulty'};
+Plot.PowerPeaks = {'Hotspot_Amplitude', 'Hotspot_Intercept', 'Hotspot_FWHM' };
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Tasks = {'Fixation'};
 
-Tasks = Format.Tasks.(Condition);
 TitleTag = strjoin({'Regression', Normalization, Condition}, '_');
 
 SessionLabels = Format.Labels.(Tasks{1}).(Condition).Plot;
@@ -98,14 +118,14 @@ for Indx_M = 1:numel(Measures)
                     STD = nanstd(T(:));
                     AllTasks(Indx_P, :, :) = (T-Mean)./STD;
                     
-
+                    
                 end
                 
                 if Indx_M == numel(Measures) && Indx_V == numel(Variables)
                     ScatterGroup = nan(size(AllTasks));
                     for Indx_S = 1:numel(SessionLabels)
                         ScatterGroup(:, Indx_S, :) = Indx_S*ones(numel(Participants), numel(Tasks));
-                       
+                        
                     end
                     
                     ScatterGroup = ScatterGroup(:); % list of sessions
@@ -116,7 +136,7 @@ for Indx_M = 1:numel(Measures)
                 PlotMeasures = cat(2, PlotMeasures, Variable);
                 
                 
-                ScatterColors = Format.Colors.Sessions;
+                ScatterColors = Format.Colors.(Condition).Sessions;
             otherwise
                 
                 if Indx_M == numel(Measures) && Indx_V == numel(Variables)
@@ -128,7 +148,7 @@ for Indx_M = 1:numel(Measures)
                     ScatterGroup = ScatterGroup(:); % list of sessions
                 end
                 ScatterColors = [];
-                    PlotMeasures = cat(2, PlotMeasures, Variable);
+                PlotMeasures = cat(2, PlotMeasures, Variable);
         end
         
         
@@ -137,7 +157,7 @@ end
 
 Title = [Condition];
 
-    PlotMeasures = replace(PlotMeasures, '_', ' ');
+PlotMeasures = replace(PlotMeasures, '_', ' ');
 
 [R,P, CI_Low, CI_Up] = corrcoef( All_Measures, 'Rows','pairwise');
 figure('units','normalized','outerposition',[0 0 .4 .7])
@@ -166,16 +186,16 @@ InterIndx = find(strcmpi(PlotMeasures, 'miDuration'));
 % PlotGroups = [true, false];
 PlotGroups = [true];
 
-    
+
 for Plotting = PlotGroups
-  
-      if Plotting
+    
+    if Plotting
         TitleTagNew = [TitleTag, '_', Normalization, '_PlotGroups'];
         ScatterColorsTemp = ScatterColors;
     else
         TitleTagNew = [TitleTag, '_', Normalization];
         ScatterColorsTemp = 0;
-  end
+    end
     
     figure('units','normalized','outerposition',[0 0 1 1])
     FigIndx = 1;
@@ -191,7 +211,7 @@ for Plotting = PlotGroups
             end
             subplot(3, 5, Indx)
             PlotConfetti(All_Measures(:, Indx_X), All_Measures(:, Indx_Y), ...
-               ScatterGroup, Format, [], ScatterColorsTemp)
+                ScatterGroup, Format, [], ScatterColorsTemp)
             xlabel(PlotMeasures{Indx_X})
             ylabel(PlotMeasures{Indx_Y})
             title(['R=', num2str(R(Indx_X, Indx_Y), '%.2f'), ' p=', num2str(P(Indx_X, Indx_Y), '%.2f')])
@@ -200,7 +220,7 @@ for Plotting = PlotGroups
         
     end
     saveas(gcf,fullfile(Paths.Results, [TitleTagNew, '_ScatterAll', num2str(FigIndx), '.svg']))
-   
+    
 end
 
 
@@ -233,43 +253,53 @@ saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_R_PeakAmplitude_v_intercept.svg'
 
 
 figure('units','normalized','outerposition',[0 0 1, .5])
-subplot(1, 3, 1)
- PlotConfetti(All_Measures(:, ThetaIndx), All_Measures(:, KSSIndx), ...
-       ScatterGroup, Format, 40, ScatterColorsTemp)
-    xlabel('Theta')
-    ylabel('KSS')
-    
-    title(['Correlation Theta and KSS (R=', num2str(R(ThetaIndx, KSSIndx), '%.2f'),...
-        ' p=', num2str(P(ThetaIndx, KSSIndx), '%.2f'), ' ', Normalization, ')'])
-    set(gca, 'FontName', Format.FontName, 'FontSize', 16)
-    
-    
-    subplot(1, 3, 2)
- PlotConfetti(All_Measures(:, AmpIndx), All_Measures(:, KSSIndx), ...
-       ScatterGroup, Format, 40, ScatterColorsTemp)
-    xlabel('Theta Peak Amplitude')
-    ylabel('KSS')
-    
-    title(['Correlation Theta Peak Amplitude and KSS (R=', num2str(R(AmpIndx, KSSIndx), '%.2f'),...
-        ' p=', num2str(P(AmpIndx, KSSIndx), '%.2f'), ' ', Normalization, ')'])
-    set(gca, 'FontName', Format.FontName, 'FontSize', 16)
-    
-    
-    subplot(1, 3, 3)
- PlotConfetti(All_Measures(:, InterIndx), All_Measures(:, KSSIndx), ...
-       ScatterGroup, Format, 40, ScatterColorsTemp)
-    xlabel('Intercept')
-    ylabel('KSS')
-    
-    title(['Correlation Intercept and KSS (R=', num2str(R(InterIndx, KSSIndx), '%.2f'),...
-        ' p=', num2str(P(InterIndx, KSSIndx), '%.2f'), ' ', Normalization, ')'])
-    set(gca, 'FontName', Format.FontName, 'FontSize', 16)
-    
-    
-    
-           
-    
-    saveas(gcf,fullfile(Paths.Results, [TitleTag, '_Corr_Theta_v_KSS.svg']))
+subplot(1, 4, 1)
+PlotConfetti(All_Measures(:, ThetaIndx), All_Measures(:, KSSIndx), ...
+    ScatterGroup, Format, 40, ScatterColorsTemp)
+xlabel('Theta')
+ylabel('KSS')
+
+title(['Theta and KSS (R=', num2str(R(ThetaIndx, KSSIndx), '%.2f'),...
+    ' p=', num2str(P(ThetaIndx, KSSIndx), '%.2f'), ' ', Normalization, ')'])
+set(gca, 'FontName', Format.FontName, 'FontSize', 16)
+
+
+subplot(1, 4, 2)
+PlotConfetti(All_Measures(:, AmpIndx), All_Measures(:, KSSIndx), ...
+    ScatterGroup, Format, 40, ScatterColorsTemp)
+xlabel('Theta Peak Amplitude')
+ylabel('KSS')
+
+title(['Theta Peak Amplitude and KSS (R=', num2str(R(AmpIndx, KSSIndx), '%.2f'),...
+    ' p=', num2str(P(AmpIndx, KSSIndx), '%.2f'), ' ', Normalization, ')'])
+set(gca, 'FontName', Format.FontName, 'FontSize', 16)
+
+
+subplot(1, 4, 3)
+PlotConfetti(All_Measures(:, InterIndx), All_Measures(:, KSSIndx), ...
+    ScatterGroup, Format, 40, ScatterColorsTemp)
+xlabel('Intercept')
+ylabel('KSS')
+
+title(['Intercept and KSS (R=', num2str(R(InterIndx, KSSIndx), '%.2f'),...
+    ' p=', num2str(P(InterIndx, KSSIndx), '%.2f'), ' ', Normalization, ')'])
+set(gca, 'FontName', Format.FontName, 'FontSize', 16)
+
+
+FWHMIndx = find(strcmpi(PlotMeasures, 'Hotspot FWHM'));
+
+subplot(1, 4, 4)
+PlotConfetti(All_Measures(:, FWHMIndx), All_Measures(:, KSSIndx), ...
+    ScatterGroup, Format, 40, ScatterColorsTemp)
+xlabel('FWHM')
+ylabel('KSS')
+
+title(['FWHM and KSS (R=', num2str(R(FWHMIndx, KSSIndx), '%.2f'),...
+    ' p=', num2str(P(FWHMIndx, KSSIndx), '%.2f'), ' ', Normalization, ')'])
+set(gca, 'FontName', Format.FontName, 'FontSize', 16)
+
+
+saveas(gcf,fullfile(Paths.Results, [TitleTag, '_Corr_Theta_v_KSS.svg']))
 
 
 
