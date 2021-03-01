@@ -56,8 +56,9 @@ Sig_pValuesFDR(pValuesFDR>.05) = nan;
 
 % plot significance bars
 hold on
-plot(linspace(t(1), t(end), numel(Sig_pValues)), Sig_pValues, 'LineWidth', 4, 'Color', [.7 0.7 0.7])
-plot(linspace(t(1), t(end), numel(Sig_pValuesFDR)), Sig_pValuesFDR, 'LineWidth', 4, 'Color', [0 0 0])
+t_pValues = linspace(t(1), t(end), numel(Sig_pValues));
+plot(t_pValues, Sig_pValues, 'LineWidth', 4, 'Color', [.7 0.7 0.7])
+plot(t_pValues, Sig_pValuesFDR, 'LineWidth', 4, 'Color', [0 0 0])
 
 
 % plot 0 line, because this is what the stats were compared to

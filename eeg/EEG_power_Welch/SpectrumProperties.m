@@ -2,6 +2,9 @@ function [Intercept, Slope, Peaks, Amplitudes, FWHM, Spectrum] = ...
     SpectrumProperties(Power, Freqs, FreqRes, ToPlot)
 % Peaks, Amplitude and FWHM is a 2 element vector, the first is theta, the second is alpha
 
+% make sure there are no 0s
+Power(Power<=0) = nan;
+
 MinFreq = 4;
 SplitFreq = 8;
 MaxFreq = 13;

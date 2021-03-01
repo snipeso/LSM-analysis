@@ -1,8 +1,14 @@
 function PlotPowerHighlight(Matrix, Freqs, FreqsIndxBand, HighlightColor, Format, Legend)
 % Matrix is participant x session (or task, or whatever) x frequencies
 
+if ndims(Matrix) > 2
 nLines = size(Matrix, 2);
 LineColors = linspace(0, .8, size(Matrix, 2));
+else
+    nLines = size(Matrix, 1);
+LineColors = linspace(0, .8, size(Matrix, 1));
+    
+end
 
 hold on
 plot(Freqs, zeros(size(Freqs)), ':', 'LineWidth', .1, 'Color', 'k') % plot the 0 axis
@@ -13,13 +19,16 @@ for Indx_L = 1:nLines
     else
         HC = HighlightColor;
     end
-    
+    if ndims(Matrix) > 2
     Line = squeeze(nanmean(Matrix(:, Indx_L, :), 1));
+    else
+        Line = Matrix(Indx_L, :);
+    end
     
     plot(Freqs, Line, '--', 'LineWidth', 1.5, 'Color', LineColors(Indx_L)*ones(1,3))
     
     plot(Freqs(FreqsIndxBand(1):FreqsIndxBand(2)), ...
-        Line(FreqsIndxBand(1):FreqsIndxBand(2), 1), ...
+        Line(FreqsIndxBand(1):FreqsIndxBand(2)), ...
         'Color', HC, 'LineWidth', 4)
     
 end

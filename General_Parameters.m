@@ -173,6 +173,7 @@ Format.Colors.Behavior.LAT.Classic = [205 224 227]/255;
 Format.Colors.Questionnaires.LAT.Soporific = [166 100 128]/255;
 Format.Colors.Questionnaires.LAT.Classic = [228 208 217]/255;
 
+Format.Colors.Night.Sessions = [Format.Colors.Generic.Dark1;Format.Colors.Generic.Red];
 
 Format.MeasuresDict = containers.Map;
 Measures.EEG = {'Delta', 'Theta', 'Alpha', 'Beta',...
@@ -199,6 +200,7 @@ Format.Tasks.All = {'Game', 'SpFT', 'LAT', 'PVT', 'Match2Sample', 'Music',...
 Format.Tasks.BAT = {'Match2Sample','LAT', 'PVT',  'SpFT', 'Game', 'Music'};
 % Format.Tasks.RRT = {'Standing', 'QuestionnaireEEG', 'Oddball', 'Fixation'};
 Format.Tasks.RRT = {'Standing', 'Oddball', 'Fixation'};
+Format.Tasks.Night = {'PVT', 'LAT'};
 
 Format.Labels.BAT = {'WMT', 'LAT', 'PVT', 'Speech', 'Game', 'Music'};
 Format.Labels.RRT = {'EC', 'Oddball', 'EO'};
@@ -264,6 +266,14 @@ Format.Labels.LAT.BL.Plot = {'BL', 'Pre', 'Post'};
 
 Format.Labels.LAT.SD.Sessions = {'Session2Beam1', 'Session2Beam2', 'Session2Beam3'};
 Format.Labels.LAT.SD.Plot = {'S1', 'S2', 'S3'};
+
+Format.Labels.PVT.Night.Sessions = {'Session2Beam', 'MainPost'};
+Format.Labels.PVT.Night.Plot = {'Evening', 'Morning'};
+
+Format.Labels.LAT.Night.Sessions = {'Session2Beam1', 'MainPost'};
+Format.Labels.LAT.Night.Plot = {'Evening', 'Morning'};
+
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
