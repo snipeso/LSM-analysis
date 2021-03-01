@@ -10,7 +10,7 @@ wp_Parameters
 Refresh = false;
 PlotSpectrums = false;
 Normalization = 'zscore';
-Condition = 'RRT';
+Condition = 'BAT';
 
 Tag = 'PowerPeaks';
 Hotspot = 'Hotspot'; % TODO: make sure this is in apporpriate figure name
@@ -156,6 +156,8 @@ for Indx_T = 1:numel(Tasks)
         Format.Colors.(Condition).Sessions, Format)
     title(['Whitened Spectrum', Hotspot, ' ', Task, ' ', Normalization])
     ylabel('Amplitude')
+    xlim([1 25])
+
     saveas(gcf,fullfile(Paths.Results, [TitleTag,  '_', Task, '_HotspotPowerChange.svg']))
     
 end

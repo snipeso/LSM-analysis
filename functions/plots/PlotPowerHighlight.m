@@ -30,7 +30,6 @@ if ndims(Matrix) > 2
     TimeSeriesStats(Matrix, Freqs, 100);
 end
 clc
-xlim([1 25])
 
 
 set(gca, 'FontName', Format.FontName, 'FontSize', 12)
