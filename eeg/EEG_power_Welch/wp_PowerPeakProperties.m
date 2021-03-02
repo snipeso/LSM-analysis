@@ -13,7 +13,7 @@ Normalization = 'zscore';
 Condition = 'RRT';
 
 Tag = 'PowerPeaks';
-Hotspot = 'PZ'; % TODO: make sure this is in apporpriate figure name
+Hotspot = 'Hotspot'; % TODO: make sure this is in apporpriate figure name
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -68,7 +68,7 @@ for Indx_T = 1:numel(Tasks)
                 
                 load(fullfile(PowerPath, Filename), 'Power')
                 
-                FFT = nanmean(Power.FFT, 3);
+                FFT = Power.FFT;
                 Freqs = Power.Freqs;
                 Chanlocs = Power.Chanlocs;
                 
