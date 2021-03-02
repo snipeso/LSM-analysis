@@ -10,10 +10,10 @@ wp_Parameters
 Refresh = true;
 PlotSpectrums = false;
 Normalization = 'zscore';
-Condition = 'Night';
+Condition = 'RRT';
 
 Tag = 'PowerPeaks';
-Hotspot = 'Hotspot'; % TODO: make sure this is in apporpriate figure name
+Hotspot = 'PZ'; % TODO: make sure this is in apporpriate figure name
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

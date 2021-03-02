@@ -309,6 +309,10 @@ EEG_Channels.Labels.Standard = [EEG_Channels.Labels.Frontal, EEG_Channels.Labels
 EEG_Channels.Hotspot = [2:6, 9:13, 15, 16, 18:20, 23, 24, 26:29, 111, 112, 117, 118, 123, 124];
 EEG_Channels.Backspot = [EEG_Channels.O1, EEG_Channels.O2, 72, 75];
 
+EEG_Channels.CZ = [36, 104];
+EEG_Channels.FZ = [11];
+EEG_Channels.OZ = [70 83];
+EEG_Channels.PZ = [52 92];
 %%% EEG triggers
 
 % main

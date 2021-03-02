@@ -10,11 +10,11 @@ wp_Parameters
 % Condition = 'BAT';
 
 %
-Task = 'PVT';
-Condition = 'Night';
+Task = 'Oddball';
+Condition = 'RRT';
 
 
-Channels = EEG_Channels.Hotspot;
+Channels = EEG_Channels.CZ;
 Normalization = '';
 ToPlot = false; % individual spectrums
 
@@ -71,10 +71,13 @@ for Indx_P = 1:numel(Participants)
         % save
         RawData(Indx_P, Indx_S, 1:numel(Freqs)) = squeeze(nanmean(nanmean(FFT(Indexes_Hotspot, :, :), 3),1));
         
-        SUM =SUM + squeeze(nansum(nansum(FFT, 1), 3)); % sum windows and channels
-        SUMSQ = SUMSQ + squeeze(nansum(nansum(FFT.^2, 1), 3));
-        N = N + nnz(~isnan(reshape(FFT(:, 1, :), 1, [])));
+        %         SUM =SUM + squeeze(nansum(nansum(FFT, 1), 3)); % sum windows and channels
+        %         SUMSQ = SUMSQ + squeeze(nansum(nansum(FFT.^2, 1), 3));
+        %         N = N + nnz(~isnan(reshape(FFT(:, 1, :), 1, [])));
         
+        SUM =SUM + squeeze(nansum(nanmean(FFT, 3), 1)); % sum windows and channels
+        SUMSQ = SUMSQ + squeeze(nansum(nanmean(FFT, 3).^2, 1));
+        N = N + nnz(~isnan(reshape(nanmean(FFT(:, 1, :),3), 1, [])));
         
         %         % get peak parameters
         %         [Intercept, Slope, Peaks, Amplitudes, FWHM, Spectrum] = ...
