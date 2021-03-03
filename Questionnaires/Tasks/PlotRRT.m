@@ -10,7 +10,7 @@ GroupLabel = 'Gender';
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Q_Parameters
-Figure_Path = fullfile(Paths.Figures, 'RRT');
+Figure_Path = fullfile(Paths.Results, 'RRT');
 
 if ~exist(Figure_Path, 'dir')
     mkdir(Figure_Path)

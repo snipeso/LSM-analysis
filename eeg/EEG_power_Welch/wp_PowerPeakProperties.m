@@ -7,7 +7,7 @@ wp_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Refresh = true;
+Refresh = false;
 PlotSpectrums = false;
 Normalization = 'zscore';
 Condition = 'RRT';

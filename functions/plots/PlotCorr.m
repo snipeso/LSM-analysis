@@ -29,7 +29,7 @@ end
 
 
 image(CorrMatrix, 'CDataMapping', 'scaled')
-colormap(Format.Colormap.Divergent)
+colormap(Format.Colormap.Divergent_HD)
 caxis([-1 1])
 xticks(1:numel(Labels))
 xlim([.5, numel(Labels)+.5])

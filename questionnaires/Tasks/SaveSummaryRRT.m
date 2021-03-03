@@ -10,6 +10,7 @@ Normalization = 'zscore'; % 'zscore'
 
 Condition = 'RRT';
 Tag = 'Questionnaires';
+PlotStats = true;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -63,7 +64,7 @@ for Indx_Q = 1:numel(qIDs)
         Matrix = (Matrix - nanmean(Matrix, 2))./nanstd(Matrix, 0, 2);
         PlotConfettiSpaghetti(Matrix, SessionLabels, [], {}, [], Format, true)
     else
-        PlotConfettiSpaghetti(AnsAll, SessionLabels, [0 100],  YLabels, [], Format, true)
+        PlotConfettiSpaghetti(AnsAll, SessionLabels, [0 100],  YLabels, [], Format, PlotStats)
     end
     title([Condition,' ', Titles{Indx_Q}])
 end
@@ -96,7 +97,7 @@ for Indx_Q = 1:numel(SubQs)
         Matrix = (Matrix - nanmean(Matrix, 2))./nanstd(Matrix, 0, 2);
         PlotConfettiSpaghetti(Matrix, SessionLabels, [], {}, [], Format, true)
     else
-        PlotConfettiSpaghetti(AnsAll, SessionLabels, [0 100],  YLabels, [], Format, true)
+        PlotConfettiSpaghetti(AnsAll, SessionLabels, [0 100],  YLabels, [], Format, PlotStats)
     end
     title([Condition, ' ', Titles{Indx_Q}])
 end
@@ -125,9 +126,9 @@ for Indx_Q = 1:numel(SubQs)
     subplot(2, 2, Indx_Q)
     if strcmp(Normalization, 'zscore')
         Matrix = (Matrix - nanmean(Matrix, 2))./nanstd(Matrix, 0, 2);
-        PlotConfettiSpaghetti(Matrix, SessionLabels, [], {}, [], Format, true)
+        PlotConfettiSpaghetti(Matrix, SessionLabels, [], {}, [], Format, PlotStats)
     else
-        PlotConfettiSpaghetti(AnsAll,  SessionLabels, [0 100], YLabels, [], Format, true)
+        PlotConfettiSpaghetti(AnsAll,  SessionLabels, [0 100], YLabels, [], Format, PlotStats)
     end
     title([Condition, ' ', Titles{Indx_Q}])
 end
@@ -162,7 +163,7 @@ for Indx_Q = [1:3, 5]
         Matrix = (Matrix - nanmean(Matrix, 2))./nanstd(Matrix, 0, 2);
         PlotConfettiSpaghetti(Matrix, SessionLabels, [], {}, [], Format, true)
     else
-        PlotConfettiSpaghetti(AnsAll, SessionLabels, [0 100],  {'Not at all', 'Extremely'}, [], Format, true)
+        PlotConfettiSpaghetti(AnsAll, SessionLabels, [0 100],  {'Not at all', 'Extremely'}, [], Format, PlotStats)
     end
     title([Condition, ' ', Titles{Indx_Q}])
     PltIndx = PltIndx + 1;
@@ -192,12 +193,12 @@ for Indx_Q = 1:numel(qIDs)
         save(fullfile(Paths.Stats, Filename), 'Matrix', 'Sessions', 'SessionLabels', 'YLabels')
     end
     
-    figure( 'units','normalized','outerposition',[0 0 .5 .5])
+    figure( 'units','normalized','outerposition',[0 0 .25 .5])
     if strcmp(Normalization, 'zscore')
         Matrix = (Matrix - nanmean(Matrix, 2))./nanstd(Matrix, 0, 2);
-        PlotConfettiSpaghetti(Matrix, SessionLabels, [], {}, [], Format, true)
+        PlotConfettiSpaghetti(Matrix, SessionLabels, [], {}, [], Format, PlotStats)
     else
-        PlotConfettiSpaghetti(AnsAll,  SessionLabels, [0 100],  YLabels, [], Format, true)
+        PlotConfettiSpaghetti(AnsAll,  SessionLabels, [0 100],  YLabels, [], Format, PlotStats)
     end
     title([Condition, ' ', Titles{Indx_Q}])
     saveas(gcf,fullfile(Paths.Results, [TitleTag, '_', Titles{Indx_Q}, '.svg']))

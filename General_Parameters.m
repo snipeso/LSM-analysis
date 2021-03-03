@@ -48,6 +48,7 @@ Keep = round(linspace(1, size(Format.Colormap.Linear, 1), 20));
 Format.Colormap.Linear = Format.Colormap.Linear(Keep, :);
 
 Format.Colormap.Divergent = rdbu(20);
+Format.Colormap.Divergent_HD = rdbu;
 Format.Colors.Divergent = Format.Colormap.Divergent([2, end-1], :);
 Format.Colormap.Rainbow = unirainbow;
 Format.Colormap.PaleRainbow = paleunirainbow;

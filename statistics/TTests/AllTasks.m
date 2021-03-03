@@ -8,13 +8,13 @@ clc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ttest_Parameters
 
-Tag = 'PowerPeaks';
+Tag = 'Questionnaires';
 
 Normalization = 'zscore'; % '', 'zscore';
 
-% Measures = {'Amplitude', 'Intercept', 'Slope', 'Peak'};
+Measures = {'KSS'};
 % Measures = append( 'Hotspot_', {'Amplitude', 'Intercept', 'Slope', 'Peak', 'FWHM'});
-Measures = {'Hotspot_FWHM'};
+% Measures = {'Hotspot_Delta', 'Hotspot_Theta', 'Hotspot_Alpha', 'Hotspot_Beta'};
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -77,7 +77,7 @@ for Indx_M = 1:numel(Measures)
     
 %     YLims = [1 6];
     %%% Plot tasks
-    figure('units','normalized','outerposition',[0 0 .2 .4])
+    figure('units','normalized','outerposition',[0 0 .2 .5])
     PlotSpaghettiOs(Matrix_Tasks, 1,  TaskSessionLabels, Tasks, TaskColors, Format)
     title([replace(Measures{Indx_M}, '_', ' '), ' ' Normalization])
     ylim(YLims)
@@ -85,7 +85,7 @@ for Indx_M = 1:numel(Measures)
     saveas(gcf,fullfile(Paths.Results, strjoin({TitleTag, Measures{Indx_M}, 'Tasks.svg'}, '_')))
     
     %%% Plot RRT
-    figure('units','normalized','outerposition',[0 0 .5 .4])
+    figure('units','normalized','outerposition',[0 0 .3 .5])
     PlotSpaghettiOs(Matrix_RRT, 2,  RRTSessionLabels, RRT, RRTColors, Format)
     title([replace(Measures{Indx_M}, '_', ' '), ' ', Normalization])
     ylim(YLims)

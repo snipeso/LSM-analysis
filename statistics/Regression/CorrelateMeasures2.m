@@ -39,9 +39,12 @@ Condition = 'RRT';
 
 Plot = struct();
 Plot.Power = {'Hotspot_Theta', 'Hotspot_Beta'};
-Plot.Questionnaires = {'KSS', 'Alertness', 'Anger', 'Difficulty', 'EmotionEnergy', 'Enjoyment', 'Fear', 'FixatingDifficulty', ...
-    'Focus', 'Happiness', 'Hunger', 'Mood', 'Motivation', 'Other Pain', 'PhysicEnergy', 'PsychEnergy', 'Relxation', 'Sadness', ...
-    'SpiritEnergy', 'Stress', 'Thirst', 'Tolerance', 'WakeDifficulty'};
+Plot.Questionnaires = {'KSS', 'Alertness',   'WakeDifficulty', 'Difficulty', 'FixatingDifficulty', ...
+   'Focus', 'Motivation', ...
+    'Hunger',  'Thirst', 'Other Pain',  ...
+    'PhysicEnergy', 'EmotionEnergy', 'SpiritEnergy',  'PsychEnergy',  ...
+     'Sadness', 'Anger',  'Fear',  'Happiness', 'Mood', ...
+    'Stress', 'Tolerance',}; % extras:  'Enjoyment',  'Relxation', 
 Plot.PowerPeaks = {'Hotspot_Amplitude', 'Hotspot_Intercept', 'Hotspot_FWHM' };
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -225,8 +228,8 @@ end
 
 
 
-AmpIndx = find(strcmpi(PlotMeasures, 'Hotspot Intercept'));
-InterIndx = find(strcmpi(PlotMeasures, 'Hotspot Amplitude'));
+AmpIndx = find(strcmpi(PlotMeasures, 'Hotspot Amplitude'));
+InterIndx = find(strcmpi(PlotMeasures, 'Hotspot Intercept'));
 
 
 
