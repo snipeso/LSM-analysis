@@ -6,7 +6,7 @@ wp_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-Task = 'Game';
+Task = 'PVT';
 Condition = 'BAT';
 
 %
@@ -18,8 +18,15 @@ Channels = EEG_Channels.FZ;
 Normalization = '';
 ToPlot = false; % individual spectrums
 
+Title = 'Finelli';
+BL_Indx = 1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% make destination folders
+Paths.Results = string(fullfile(Paths.Results, 'CheckSpectrum'));
+if ~exist(Paths.Results, 'dir')
+    mkdir(Paths.Results)
+end
 
 FreqsTot= 391;
 
@@ -103,6 +110,7 @@ RawData(RawData==0) = nan;
 FreqsIndxBand =  dsearchn( Freqs', Bands.Theta');
 
 
+%%
 
 
 figure('units','normalized','outerposition',[0 0 1 1])
@@ -118,42 +126,128 @@ end
 
 
 
-figure('units','normalized','outerposition',[0 0 1 1])
-subplot(1, 3, 1)
-PlotPowerHighlight(log(RawData), log(Freqs), FreqsIndxBand, ...
-    Format.Colors.(Condition).Sessions, Format)
-title(['Log Log Spectrum ', Task, ' ', Normalization])
-ylabel('log(Amplitude)')
-xlabel('log(Frequency)')
-xlim([0, log(Freqs(end))])
+figure('units','normalized','outerposition',[0 0 1 .7])
+% subplot(1, 3, 1)
+% PlotPowerHighlight(log(RawData), log(Freqs), FreqsIndxBand, ...
+%     Format.Colors.(Condition).Sessions, Format)
+% title(['Log Log Spectrum ', Task, ' ', Normalization])
+% ylabel('log(Amplitude)')
+% xlabel('log(Frequency)')
+% xlim([0, log(Freqs(end))])
 
+
+% uncorrected
+subplot(1, 3, 1)
+PlotPowerHighlight(RawData, Freqs, FreqsIndxBand, ...
+    Format.Colors.(Condition).Sessions, Format)
+title(['Power Spectrum ', Task, ' ', Normalization])
+ylabel('Amplitude')
+xlabel('Frequency')
+% xlim([0, Freqs(end)])
+xlim([0 30])
+
+
+% baseline corrected
+subplot(1, 3, 2)
+BLData = RawData;
+for Indx_P = 1:numel(Participants)
+for Indx_S = 1:numel(Sessions)
+    
+BL = RawData(Indx_P, BL_Indx, :);
+BLData(Indx_P, Indx_S, :) = (RawData(Indx_P, Indx_S, :)-BL)./BL;
+end
+    
+end
+PlotPowerHighlight(BLData, Freqs, FreqsIndxBand, ...
+    Format.Colors.(Condition).Sessions, Format)
+title(['BL corrected Spectrum ', Task, ' ', Normalization])
+ylabel('Amplitude (%)')
+xlabel('Frequency')
+% xlim([0, Freqs(end)])
+xlim([0 30])
 
 %plot z-score from all ch
-subplot(1, 3, 2)
+subplot(1, 3, 3)
 PlotPowerHighlight(ZData1, Freqs, FreqsIndxBand, ...
     Format.Colors.(Condition).Sessions, Format)
 title(['ZScore Ch&S Spectrum ', Task, ' ', Normalization])
 ylabel('zscore(Amplitude)')
 xlabel('Frequency')
-xlim(Freqs([1, end]))
+% xlim(Freqs([1, end]))
+xlim([0 30])
 
 
-% plot zscore
-ZData = nan(size(RawData));
-for Indx_P = 1:numel(Participants)
-    D = squeeze(RawData(Indx_P, :, :));
-    Mean = nanmean(D, 1);
-    STD = nanstd(D, 0, 1);
-    
-    ZData(Indx_P, :, :) = (D-Mean)./STD;
-end
+% 
+% 
+% % plot zscore
+% ZData = nan(size(RawData));
+% for Indx_P = 1:numel(Participants)
+%     D = squeeze(RawData(Indx_P, :, :));
+%     Mean = nanmean(D, 1);
+%     STD = nanstd(D, 0, 1);
+%     
+%     ZData(Indx_P, :, :) = (D-Mean)./STD;
+% end
+% 
+% 
+% subplot(1,3,3)
+% PlotPowerHighlight(ZData, Freqs, FreqsIndxBand, ...
+%     Format.Colors.(Condition).Sessions, Format)
+% title(['ZScore Hotspot Spectrum ', Task, ' ', Normalization])
+% ylabel('zscore(Amplitude)')
+% xlabel('Frequency')
+% xlim(Freqs([1, end]))
+xlim([0 30])
+
+ saveas(gcf,fullfile(Paths.Results, [Title, '_', Task, '_', Condition, '_Hotspot_Transformations.svg']))
 
 
-subplot(1,3,3)
-PlotPowerHighlight(ZData, Freqs, FreqsIndxBand, ...
-    Format.Colors.(Condition).Sessions, Format)
-title(['ZScore Hotspot Spectrum ', Task, ' ', Normalization])
-ylabel('zscore(Amplitude)')
-xlabel('Frequency')
-xlim(Freqs([1, end]))
+ %%
+ for Indx_S = 1:numel(Sessions)
+ figure('units','normalized','outerposition',[0 0 1 .3])
+ subplot(1, 3, 1)
+ hold on
+ for Indx_P = 1:numel(Participants)
+      C = [Format.Colors.DarkParticipants(Indx_P, :), .3];
+            P_SD = squeeze(RawData(Indx_P, Indx_S, :));
+            plot(Freqs, P_SD, 'Color',C, 'LineWidth', 2)
+     
+ end
+ title(['Uncorrected ', SessionLabels{Indx_S}])
+ xlabel('Frequency')
+ ylabel('Amplitude')
+   set(gca, 'FontName', Format.FontName)
+ 
+  subplot(1, 3, 2)
+ hold on
+ for Indx_P = 1:numel(Participants)
+      C = [Format.Colors.DarkParticipants(Indx_P, :), .3];
+            P_SD = squeeze(BLData(Indx_P, Indx_S, :));
+            plot(Freqs, P_SD, 'Color',C, 'LineWidth', 2)
+     
+ end
+ title(['BL Corrected ', SessionLabels{Indx_S}])
+ xlabel('Frequency')
+ ylabel('Amplitude (%)')
+   set(gca, 'FontName', Format.FontName)
+ 
+ 
+  subplot(1, 3, 3)
+ hold on
+ for Indx_P = 1:numel(Participants)
+      C = [Format.Colors.DarkParticipants(Indx_P, :), .3];
+            P_SD = squeeze(ZData1(Indx_P, Indx_S, :));
+            plot(Freqs, P_SD, 'Color',C, 'LineWidth', 2)
+     
+ end
+ title(['ZScored ', SessionLabels{Indx_S}])
+ xlabel('Frequency')
+ ylabel('Amplitude')
+  set(gca, 'FontName', Format.FontName)
 
+  saveas(gcf,fullfile(Paths.Results, [Title, '_', Task, '_', Condition, ...
+      '_',SessionLabels{Indx_S}, '_Hotspot_Transformations.svg']))
+
+
+ end
+ 

@@ -160,7 +160,7 @@ for Indx_V = 1:numel(Variables)
             M1 = squeeze( AllPowerPeaks_Tasks.(V)(:, 1, :, Indx_T)); % baseline session
             M2 = squeeze( AllPowerPeaks_Tasks.(V)(:, Indx_ST, :, Indx_T));
             PlotTopoDiff(M1, M2, Chanlocs, CLims, Format)
-            title([TasksLabels{Indx_T}, ' ', V, ' ', Sessions_BAT{Indx_ST}])
+            title([TasksLabels{Indx_T}, ' ', V, ' ', SessionLabels_BAT{Indx_ST}])
             
             Indx = Indx+1;
         end
@@ -178,7 +178,7 @@ for Indx_V = 1:numel(Variables)
             M2 = squeeze(AllPowerPeaks_RRT.(V)(:, Indx_SR, :, Indx_T));
             PlotTopoDiff(M1, M2, Chanlocs, CLims, Format)
             colorbar off
-            title([RRTLabels{Indx_T}, ' ', V, ' ', Sessions_RRT{Indx_SR}])
+            title([RRTLabels{Indx_T}, ' ', V, ' ', SessionLabels_RRT{Indx_SR}])
             
             Indx = Indx+1;
         end

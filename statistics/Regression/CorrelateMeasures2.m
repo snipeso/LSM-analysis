@@ -39,18 +39,19 @@ Condition = 'RRT';
 
 Plot = struct();
 Plot.Power = {'Hotspot_Theta', 'Hotspot_Beta'};
-Plot.Questionnaires = {'KSS', 'Alertness',   'WakeDifficulty', 'Difficulty', 'FixatingDifficulty', ...
-   'Focus', 'Motivation', ...
-    'Hunger',  'Thirst', 'Other Pain',  ...
-    'PhysicEnergy', 'EmotionEnergy', 'SpiritEnergy',  'PsychEnergy',  ...
-     'Sadness', 'Anger',  'Fear',  'Happiness', 'Mood', ...
-    'Stress', 'Tolerance',}; % extras:  'Enjoyment',  'Relxation', 
 Plot.PowerPeaks = {'Hotspot_Amplitude', 'Hotspot_Intercept', 'Hotspot_FWHM' };
+Plot.Questionnaires = {'KSS', 'WakeDifficulty', 'Difficulty', 'FixatingDifficulty', ...
+    'Alertness',  'Focus', 'Motivation', ...
+    'PhysicEnergy', 'EmotionEnergy', 'SpiritEnergy',  'PsychEnergy',  ...
+    'Happiness', 'Mood',   'Sadness',  'Fear', 'Anger', ...
+    'Stress', 'Tolerance',  'Other Pain'}; % extras:  'Enjoyment',  'Relxation',  'Hunger',  'Thirst',
+
+Tasks = {'Oddball'};
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Tasks = {'Fixation'};
 
-TitleTag = strjoin({'Regression', Normalization, Condition}, '_');
+
+TitleTag = strjoin({'Regression', Normalization, Condition, Tasks{1}}, '_');
 
 SessionLabels = Format.Labels.(Tasks{1}).(Condition).Plot;
 
@@ -189,42 +190,42 @@ InterIndx = find(strcmpi(PlotMeasures, 'miDuration'));
 % PlotGroups = [true, false];
 PlotGroups = [true];
 
-
-for Plotting = PlotGroups
-    
-    if Plotting
-        TitleTagNew = [TitleTag, '_', Normalization, '_PlotGroups'];
-        ScatterColorsTemp = ScatterColors;
-    else
-        TitleTagNew = [TitleTag, '_', Normalization];
-        ScatterColorsTemp = 0;
-    end
-    
-    figure('units','normalized','outerposition',[0 0 1 1])
-    FigIndx = 1;
-    Indx = 1;
-    for Indx_X = 1:numel(PlotMeasures)
-        for Indx_Y = Indx_X+1:numel(PlotMeasures)
-            
-            if Indx > 3*5 % loop through subplots until run out, then start new figure
-                saveas(gcf,fullfile(Paths.Results, [TitleTagNew, '_ScatterAll', num2str(FigIndx),'.svg']))
-                figure('units','normalized','outerposition',[0 0 1 1])
-                Indx = 1;
-                FigIndx = FigIndx + 1;
-            end
-            subplot(3, 5, Indx)
-            PlotConfetti(All_Measures(:, Indx_X), All_Measures(:, Indx_Y), ...
-                ScatterGroup, Format, [], ScatterColorsTemp)
-            xlabel(PlotMeasures{Indx_X})
-            ylabel(PlotMeasures{Indx_Y})
-            title(['R=', num2str(R(Indx_X, Indx_Y), '%.2f'), ' p=', num2str(P(Indx_X, Indx_Y), '%.2f')])
-            Indx = Indx+1;
-        end
-        
-    end
-    saveas(gcf,fullfile(Paths.Results, [TitleTagNew, '_ScatterAll', num2str(FigIndx), '.svg']))
-    
-end
+% 
+% for Plotting = PlotGroups
+%     
+%     if Plotting
+%         TitleTagNew = [TitleTag, '_', Normalization, '_PlotGroups'];
+%         ScatterColorsTemp = ScatterColors;
+%     else
+%         TitleTagNew = [TitleTag, '_', Normalization];
+%         ScatterColorsTemp = 0;
+%     end
+%     
+%     figure('units','normalized','outerposition',[0 0 1 1])
+%     FigIndx = 1;
+%     Indx = 1;
+%     for Indx_X = 1:numel(PlotMeasures)
+%         for Indx_Y = Indx_X+1:numel(PlotMeasures)
+%             
+%             if Indx > 3*5 % loop through subplots until run out, then start new figure
+%                 saveas(gcf,fullfile(Paths.Results, [TitleTagNew, '_ScatterAll', num2str(FigIndx),'.svg']))
+%                 figure('units','normalized','outerposition',[0 0 1 1])
+%                 Indx = 1;
+%                 FigIndx = FigIndx + 1;
+%             end
+%             subplot(3, 5, Indx)
+%             PlotConfetti(All_Measures(:, Indx_X), All_Measures(:, Indx_Y), ...
+%                 ScatterGroup, Format, [], ScatterColorsTemp)
+%             xlabel(PlotMeasures{Indx_X})
+%             ylabel(PlotMeasures{Indx_Y})
+%             title(['R=', num2str(R(Indx_X, Indx_Y), '%.2f'), ' p=', num2str(P(Indx_X, Indx_Y), '%.2f')])
+%             Indx = Indx+1;
+%         end
+%         
+%     end
+%     saveas(gcf,fullfile(Paths.Results, [TitleTagNew, '_ScatterAll', num2str(FigIndx), '.svg']))
+%     
+% end
 
 
 
@@ -251,14 +252,15 @@ ylim([-1 1])
 ylabel('R')
 title(['Intercept vs Theta peak Amplitude R values ', Normalization])
 legend({'Theta Amplitude', 'Intercept'})
-set(gca, 'FontName', Format.FontName, 'FontSize', 13)
-saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_R_PeakAmplitude_v_intercept.svg']))
+set(gca, 'FontName', Format.FontName, 'FontSize', 15)
+xtickangle(45)
+saveas(gcf,fullfile(Paths.Results, [TitleTag, '_R_PeakAmplitude_v_intercept.svg']))
 
 
 figure('units','normalized','outerposition',[0 0 1, .5])
 subplot(1, 4, 1)
 PlotConfetti(All_Measures(:, ThetaIndx), All_Measures(:, KSSIndx), ...
-    ScatterGroup, Format, 40, ScatterColorsTemp)
+    ScatterGroup, Format, 40, ScatterColors)
 xlabel('Theta')
 ylabel('KSS')
 
@@ -269,7 +271,7 @@ set(gca, 'FontName', Format.FontName, 'FontSize', 16)
 
 subplot(1, 4, 2)
 PlotConfetti(All_Measures(:, AmpIndx), All_Measures(:, KSSIndx), ...
-    ScatterGroup, Format, 40, ScatterColorsTemp)
+    ScatterGroup, Format, 40, ScatterColors)
 xlabel('Theta Peak Amplitude')
 ylabel('KSS')
 
@@ -280,7 +282,7 @@ set(gca, 'FontName', Format.FontName, 'FontSize', 16)
 
 subplot(1, 4, 3)
 PlotConfetti(All_Measures(:, InterIndx), All_Measures(:, KSSIndx), ...
-    ScatterGroup, Format, 40, ScatterColorsTemp)
+    ScatterGroup, Format, 40, ScatterColors)
 xlabel('Intercept')
 ylabel('KSS')
 
@@ -293,7 +295,7 @@ FWHMIndx = find(strcmpi(PlotMeasures, 'Hotspot FWHM'));
 
 subplot(1, 4, 4)
 PlotConfetti(All_Measures(:, FWHMIndx), All_Measures(:, KSSIndx), ...
-    ScatterGroup, Format, 40, ScatterColorsTemp)
+    ScatterGroup, Format, 40, ScatterColors)
 xlabel('FWHM')
 ylabel('KSS')
 

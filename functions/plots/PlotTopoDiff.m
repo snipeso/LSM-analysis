@@ -28,7 +28,8 @@ topoplot(Diff, Chanlocs, 'maplimits', CLims, ...
     'style', 'map', 'headrad', 'rim', 'gridscale', 500, 'emarker2', {Indexes(logical(Sig)), 'o', 'w', 3, .01});
 h = colorbar;
 ylabel(h, CLabel, 'FontName', Format.FontName, 'FontSize', 14)
-set(gca, 'FontSize', 14, 'FontName', Format.FontName)
+% set(gca, 'FontSize', 14, 'FontName', Format.FontName)
+set(gca, 'FontName', Format.FontName)
 colormap(Format.Colormap.Divergent)
 
 
