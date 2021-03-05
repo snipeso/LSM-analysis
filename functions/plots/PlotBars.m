@@ -9,13 +9,13 @@ else
     h = bar(Data, 'grouped', 'EdgeColor', 'none', 'FaceColor', 'flat');
 end
 
-if size(Data, 1) ~= size(Colors, 1)
-for Indx = 1:size(Data, 2)
-    h(Indx).CData = Colors(Indx, :);
-end
-else
-    h.CData = Colors;
-end
+% if size(Data, 1) == size(Colors, 1)
+    for Indx = 1:size(Data, 2)
+        h(Indx).CData = Colors(Indx, :);
+    end
+% else
+%     h.CData = Colors;
+% end
 
 hold on
 
@@ -38,13 +38,13 @@ if ~isempty(Errors)
             errorbar(x, Data(:,Indx),  Data(:,Indx)-Errors(:, 1),  Errors(:,2)-Data(:,Indx), 'k', 'linestyle', 'none', 'LineWidth', 1.5);
         elseif ndims(Errors) == 3
             if exist('Orientation', 'var') && strcmp(Orientation, 'horizontal')
-%                 errorbar(Data(:,Indx), x, abs(Data(:,Indx)-Errors(:,Indx, 1)), ...
-%                     abs(Errors(:,Indx, 2)-Data(:,Indx)), 'k', 'horizontal', 'linestyle', 'none', 'LineWidth', 2);
-
+                %                 errorbar(Data(:,Indx), x, abs(Data(:,Indx)-Errors(:,Indx, 1)), ...
+                %                     abs(Errors(:,Indx, 2)-Data(:,Indx)), 'k', 'horizontal', 'linestyle', 'none', 'LineWidth', 2);
+                
                 errorbar(Data(:,Indx), x, Data(:,Indx)-Errors(:,Indx, 1), ...
                     Errors(:,Indx, 2)-Data(:,Indx), 'k', 'horizontal', 'linestyle', 'none', 'LineWidth', 1.5);
-
-
+                
+                
             else
                 errorbar(x, Data(:,Indx), abs(Data(:,Indx)-Errors(:,Indx, 1)), ...
                     abs(Errors(:,Indx, 2)-Data(:,Indx)), 'k', 'linestyle', 'none', 'LineWidth', 2); % TODO: CHECK!

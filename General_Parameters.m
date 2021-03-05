@@ -174,15 +174,17 @@ Format.Colors.Behavior.LAT.Classic = [205 224 227]/255;
 Format.Colors.Questionnaires.LAT.Soporific = [166 100 128]/255;
 Format.Colors.Questionnaires.LAT.Classic = [228 208 217]/255;
 
-Format.Colors.Night.Sessions = [Format.Colors.Generic.Dark1;Format.Colors.Generic.Red];
+Format.Colors.OneNight.Sessions = [Format.Colors.Generic.Red; Format.Colors.Generic.Dark1];
+Format.Colors.Morning.Sessions = Format.Colors.BAT.Sessions;
+Format.Colors.Evening.Sessions = Format.Colors.Morning.Sessions;
 
 Format.MeasuresDict = containers.Map;
 Measures.EEG = {'Delta', 'Theta', 'Alpha', 'Beta',...
     'backDelta', 'backTheta', 'backAlpha', 'backBeta',...
-    'miTot', 'miDuration', 'miStart',   'rP300mean', 'sP300mean'};
+    'miTot', 'miDuration', 'miStart',   'rP300mean', 'sP300mean', 'Power', 'PowerPeaks'};
 Measures.Behavior = { 'Hits', 'Misses', 'Late', 'Lapses-FA', ...
     'FA', 'Lapses', 'meanRTs', 'medianRTs',...
-    'stdRTs', 'Q1Q4RTs', 'Top10', 'Bottom10' };
+    'stdRTs', 'Q1Q4RTs', 'Top10', 'Bottom10'};
 Measures.Questionnaires = {  'KSS', 'Motivation', 'Effortful', 'Focused',  'Difficult'};
 MeasureTypes = fieldnames(Measures);
 for M = MeasureTypes'
@@ -201,7 +203,9 @@ Format.Tasks.All = {'Game', 'SpFT', 'LAT', 'PVT', 'Match2Sample', 'Music',...
 Format.Tasks.BAT = {'Match2Sample','LAT', 'PVT',  'SpFT', 'Game', 'Music'};
 % Format.Tasks.RRT = {'Standing', 'QuestionnaireEEG', 'Oddball', 'Fixation'};
 Format.Tasks.RRT = {'Standing', 'Oddball', 'Fixation'};
-Format.Tasks.Night = {'PVT', 'LAT'};
+Format.Tasks.OneNight = {'PVT', 'LAT', 'Fixation'};
+Format.Tasks.Morning = ['PVT', 'LAT', Format.Tasks.RRT];
+Format.Tasks.Evening = Format.Tasks.Morning;
 
 Format.Labels.BAT = {'WMT', 'LAT', 'PVT', 'Speech', 'Game', 'Music'};
 Format.Labels.RRT = {'EC', 'Oddball', 'EO'};
@@ -211,7 +215,7 @@ for Indx_T = 1:numel(Format.Tasks.BAT)
     Format.Labels.(Format.Tasks.BAT{Indx_T}).BAT.Plot = {'BL', 'S1', 'S2'};
 end
 
-for Indx_T = 1:numel(Format.Tasks.RRT)
+for Indx_T = 1:numel(Format.Tasks.RRT) % TODO: make it just for fixation; I later copy it for the other two
     Format.Labels.(Format.Tasks.RRT{Indx_T}).RRT.Sessions =  {'BaselinePre', 'BaselinePost', ...
     'MainPre', ...
     'Main1', 'Main2', 'Main3', ...
@@ -268,11 +272,32 @@ Format.Labels.LAT.BL.Plot = {'BL', 'Pre', 'Post'};
 Format.Labels.LAT.SD.Sessions = {'Session2Beam1', 'Session2Beam2', 'Session2Beam3'};
 Format.Labels.LAT.SD.Plot = {'S1', 'S2', 'S3'};
 
-Format.Labels.PVT.Night.Sessions = {'Session2Beam', 'MainPost'};
-Format.Labels.PVT.Night.Plot = {'Evening', 'Morning'};
+Format.Labels.PVT.OneNight.Sessions = {'Session2Beam', 'MainPost'};
+Format.Labels.PVT.OneNight.Plot = {'Evening', 'Morning'};
 
-Format.Labels.LAT.Night.Sessions = {'Session2Beam1', 'MainPost'};
-Format.Labels.LAT.Night.Plot = {'Evening', 'Morning'};
+Format.Labels.LAT.OneNight.Sessions = {'Session2Beam1', 'MainPost'};
+Format.Labels.LAT.OneNight.Plot = {'Evening', 'Morning'};
+
+Format.Labels.Fixation.OneNight.Sessions = {'Main7', 'MainPost'};
+Format.Labels.Fixation.OneNight.Plot = {'Evening', 'Morning'};
+
+% sessions for comparing overnight changes
+Format.Labels.PVT.Morning.Sessions = {'Session1Beam', 'MainPost'};
+Format.Labels.PVT.Morning.Plot = {'Pre', 'Post'};
+Format.Labels.PVT.Evening.Sessions = {'MainPre', 'Session2Beam'};
+Format.Labels.PVT.Evening.Plot = {'Pre', 'Post'};
+
+Format.Labels.LAT.Morning = Format.Labels.PVT.Morning;
+Format.Labels.LAT.Evening.Sessions =  {'MainPre', 'Session2Beam1'};
+Format.Labels.LAT.Evening.Plot = {'Pre', 'Post'};
+
+Format.Labels.Fixation.Morning.Sessions = { 'BaselinePost', 'Main1', 'MainPost'};
+Format.Labels.Fixation.Morning.Plot = {'BL', 'Pre', 'Post'};
+Format.Labels.Fixation.Evening.Sessions = {'BaselinePre', 'MainPre', 'Main8'};
+Format.Labels.Fixation.Evening.Plot = {'BL', 'Pre', 'Post'};
+
+Format.Labels.Oddball = Format.Labels.Fixation;
+Format.Labels.Standing = Format.Labels.Fixation;
 
 
 
@@ -338,7 +363,7 @@ Bands = struct();
 Bands.Delta = [1 4];
 Bands.Theta = [4 8];
 Bands.Alpha = [8 14];
-Bands.Beta = [14 25];
+Bands.Beta = [15 25];
 BandNames = fieldnames(Bands);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
