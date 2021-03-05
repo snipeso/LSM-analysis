@@ -119,7 +119,7 @@ for Indx_S = 1:numel(Shifts)
 end
 scatter(BL_mu+Shifts, 1./(BL_mu+Shifts), 100, Shift_Colors,  'filled')
 xlabel('RT(s)')
-ylabel('Speed')
+ylabel('Speed (1/s)')
 axis square
 set(gca, 'FontSize', 15, 'FontName', 'Arial Nova')
 title('1/RT', 'FontSize', 18)
@@ -140,7 +140,7 @@ for Indx_S = 1:numel(Shifts)
     plot([Mean, Mean], [0, 7000], 'Color', Shift_Colors(Indx_S, :), 'LineWidth', 2.5)
     ylim( [0, 7000])
     xlim([.16, .6])
-    
+    ylabel('# RTs')
     subplot(2,1, 2)
     hold on
     histogram(1./(BL+Shifts(Indx_S)), 'BinEdges', 0:.05:6, 'EdgeColor', 'none', 'FaceColor', Shift_Colors(Indx_S, :), 'FaceAlpha', .75)
@@ -149,6 +149,7 @@ for Indx_S = 1:numel(Shifts)
     plot([Mean, Mean], [0, 13000], 'Color', Shift_Colors(Indx_S, :), 'LineWidth', 2.5)
     yticks([])
     ylim([0, 13000])
+     ylabel('# RTs')
     xlim([1.3, 5.5])
     xlabel('1/RT (s^-^1)')
   
