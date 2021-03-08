@@ -3,7 +3,7 @@ function PlotScales(Matrix1, Matrix2, SessionLabels, MatrixLabels, ColorGroups, 
 % more than 2, then jut do PlotBars.
 
 Tot_Peeps = size(Matrix1, 1); % number of participants
-Colors = Format.Colors.Participants;
+Colors =  Format.Colors.DarkParticipants;
 % select background colors for participants
 if exist('ColorGroup', 'var') && ~isempty(ColorGroups)
  
@@ -28,12 +28,14 @@ for Indx_P = 1:Tot_Peeps
     for Indx_S = 1:numel(SessionLabels)
         X = Indx_S + [-.2, .2];
         Y = [Matrix1(Indx_P, Indx_S), Matrix2(Indx_P, Indx_S)];
-        plot(X, Y, 'o-', 'LineWidth', 1, ...
-            'MarkerFaceColor', Colors(Indx_P, :), 'Color', Colors(Indx_P, :))
+        plot(X, Y, 'LineWidth', 1, ...
+           'Color', [Colors(Indx_P, :), Format.Alpha.Participants])
+       scatter(X, Y, 50,  'MarkerFaceColor', Colors(Indx_P, :), 'MarkerFaceAlpha',  Format.Alpha.Participants, ...
+     'MarkerEdgeAlpha',  Format.Alpha.Participants, 'MarkerEdgeColor', Colors(Indx_P, :))
     end
     
     plot(1:numel(SessionLabels), (Matrix1(Indx_P, :)+Matrix2(Indx_P,:))./2, ':', 'LineWidth', 1, ...
-        'MarkerFaceColor', Colors(Indx_P, :), 'Color', Colors(Indx_P, :))
+        'Color', [Colors(Indx_P, :),  Format.Alpha.Participants])
 end
 
 % plot mean

@@ -32,10 +32,10 @@ for Indx_P = 1:Tot_Peeps
 %     plot(Matrix(Indx_P, :), 'o-', 'LineWidth', .7, ...
 %         'MarkerFaceColor', Colors(Indx_P, :), 'MarkerFaceAlpha', .5, 'Color', Colors(Indx_P, :))
 
- plot(Matrix(Indx_P, :), 'LineWidth', .7, 'Color', [Colors(Indx_P, :), .2])
+ plot(Matrix(Indx_P, :), 'LineWidth', .7, 'Color', [Colors(Indx_P, :),  Format.Alpha.Participants])
  scatter(1:numel(SessionLabels), Matrix(Indx_P, :), 50, ...
-     'MarkerFaceColor', Colors(Indx_P, :), 'MarkerFaceAlpha', .2, ...
-     'MarkerEdgeAlpha', .2, 'MarkerEdgeColor', Colors(Indx_P, :))
+     'MarkerFaceColor', Colors(Indx_P, :), 'MarkerFaceAlpha',  Format.Alpha.Participants, ...
+     'MarkerEdgeAlpha',  Format.Alpha.Participants, 'MarkerEdgeColor', Colors(Indx_P, :))
 end
 
 

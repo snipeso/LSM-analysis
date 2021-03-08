@@ -70,7 +70,7 @@ Format.Colors.LAT = [
     ]./255; % RGB to sRGB
 
 
-
+Format.Alpha.Participants = .3;
 Format.Colors.LATBeam = Format.Colors.LAT([1, 3, 5], :);
 
 Format.Colors.LATSD3 = Format.Colors.LAT([4, 5, 6], :);
@@ -177,6 +177,8 @@ Format.Colors.Questionnaires.LAT.Classic = [228 208 217]/255;
 Format.Colors.OneNight.Sessions = [Format.Colors.Generic.Red; Format.Colors.Generic.Dark1];
 Format.Colors.Morning.Sessions = Format.Colors.BAT.Sessions;
 Format.Colors.Evening.Sessions = Format.Colors.Morning.Sessions;
+Format.Colors.Soporific.Sessions = Format.Colors.BAT.Sessions;
+Format.Colors.Classic.Sessions = makePale(Format.Colors.BAT.Sessions); % TODO: make pake
 
 Format.MeasuresDict = containers.Map;
 Measures.EEG = {'Delta', 'Theta', 'Alpha', 'Beta',...
@@ -185,7 +187,7 @@ Measures.EEG = {'Delta', 'Theta', 'Alpha', 'Beta',...
 Measures.Behavior = { 'Hits', 'Misses', 'Late', 'Lapses-FA', ...
     'FA', 'Lapses', 'meanRTs', 'medianRTs',...
     'stdRTs', 'Q1Q4RTs', 'Top10', 'Bottom10'};
-Measures.Questionnaires = {  'KSS', 'Motivation', 'Effortful', 'Focused',  'Difficult'};
+Measures.Questionnaires = { 'Questionnaires', 'KSS', 'Motivation', 'Effortful', 'Focused',  'Difficult'};
 MeasureTypes = fieldnames(Measures);
 for M = MeasureTypes'
     for T =Measures.(M{1})
@@ -201,14 +203,20 @@ Format.Legend.Tally = {'Hits', 'Late', 'Misses'};
 Format.Tasks.All = {'Game', 'SpFT', 'LAT', 'PVT', 'Match2Sample', 'Music',...
     'MWT', 'Standing', 'QuestionnaireEEG', 'Oddball', 'Fixation', 'TV'};
 Format.Tasks.BAT = {'Match2Sample','LAT', 'PVT',  'SpFT', 'Game', 'Music'};
+Format.Labels.BAT = {'WMT', 'LAT', 'PVT', 'Speech', 'Game', 'Music'};
 % Format.Tasks.RRT = {'Standing', 'QuestionnaireEEG', 'Oddball', 'Fixation'};
 Format.Tasks.RRT = {'Standing', 'Oddball', 'Fixation'};
+Format.Labels.RRT = {'EC', 'Oddball', 'EO'};
+
 Format.Tasks.OneNight = {'PVT', 'LAT', 'Fixation'};
 Format.Tasks.Morning = ['PVT', 'LAT', Format.Tasks.RRT];
 Format.Tasks.Evening = Format.Tasks.Morning;
+Format.Tasks.Classic = {'PVT', 'LAT'};
+Format.Tasks.Soporific = {'PVT', 'LAT'};
+Format.Labels.Classic = {'PVT', 'LAT'};
+Format.Labels.Soporific = {'PVT', 'LAT'};
 
-Format.Labels.BAT = {'WMT', 'LAT', 'PVT', 'Speech', 'Game', 'Music'};
-Format.Labels.RRT = {'EC', 'Oddball', 'EO'};
+
 
 for Indx_T = 1:numel(Format.Tasks.BAT)
     Format.Labels.(Format.Tasks.BAT{Indx_T}).BAT.Sessions = {'Baseline', 'Session1', 'Session2'};
@@ -234,18 +242,19 @@ for Indx_T = 1:numel(Format.Tasks.RRT) % TODO: make it just for fixation; I late
 end
 
 % Labels for LAT "beamer" condition; a.k.a. "soporific"
-Format.Labels.LAT.Beam.Sessions = {'BaselineBeam', 'Session1Beam', 'Session2Beam1'};
-Format.Labels.LAT.Beam.Plot =  {'S-BL', 'S-S1', 'S-S2'};
+Format.Labels.LAT.Soporific.Sessions = {'BaselineBeam', 'Session1Beam', 'Session2Beam1'};
+Format.Labels.LAT.Soporific.Plot =  {'S-BL', 'S-S1', 'S-S2'};
 
 % Labels for LAT "computer" condition, a.k.a. "classic"
 Format.Labels.LAT.BAT.Sessions =  {'BaselineComp', 'Session1Comp', 'Session2Comp'};
+Format.Labels.LAT.Classic = Format.Labels.LAT.BAT;
 
 % Labels for PVT beamer (comp is same as LAT)
-Format.Labels.PVT.Beam.Sessions = {'BaselineBeam', 'Session1Beam', 'Session2Beam'};
-Format.Labels.PVT.Beam.Plot = Format.Labels.LAT.Beam.Plot;
+Format.Labels.PVT.Soporific.Sessions = {'BaselineBeam', 'Session1Beam', 'Session2Beam'};
+Format.Labels.PVT.Soporific.Plot = Format.Labels.LAT.Soporific.Plot;
 
 Format.Labels.PVT.BAT.Sessions =   {'BaselineComp', 'Session1Comp', 'Session2Comp'};
-
+Format.Labels.PVT.Classic = Format.Labels.PVT.BAT;
 
 % Labels for all of LAT beamer conditions
 Format.Labels.LAT.AllBeam.Sessions = {'BaselineBeam', 'MainPre', 'Session1Beam', ...

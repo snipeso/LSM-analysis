@@ -10,8 +10,8 @@ Stats_Parameters
 Normalization = 'zscore';
 
 Tag = 'Overnight';
-DataType = 'Power';
-Variable = 'Hotspot_Theta';
+DataType = 'Questionnaires';
+Variable = 'KSS';
 
 Task = 'Fixation';
 YLabel = 'Amplitude';

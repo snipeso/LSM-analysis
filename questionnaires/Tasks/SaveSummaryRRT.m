@@ -8,7 +8,7 @@ Q_Parameters
 
 Normalization = 'zscore'; % 'zscore'
 
-Condition = 'RRT';
+Condition = 'Evening';
 Tag = 'Questionnaires';
 PlotStats = true;
 
@@ -16,6 +16,7 @@ PlotStats = true;
 
 % get labels
 Tasks = Format.Tasks.(Condition);
+Tasks = {'Fixation'};
 TitleTag = strjoin({Tag, Normalization, Condition}, '_');
 Sessions = Format.Labels.(Tasks{1}).(Condition).Sessions;
 SessionLabels = Format.Labels.(Tasks{1}).(Condition).Plot;

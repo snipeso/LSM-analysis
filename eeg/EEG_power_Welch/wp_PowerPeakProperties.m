@@ -7,10 +7,10 @@ wp_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Refresh = true;
+Refresh = false;
 PlotSpectrums = false;
-Normalization = '';
-Condition = 'Morning';
+Normalization = 'zscore';
+Condition = 'Classic';
 
 Tag = 'PowerPeaks';
 Hotspot = 'Hotspot'; % TODO: make sure this is in apporpriate figure name

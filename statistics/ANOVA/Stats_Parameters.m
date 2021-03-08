@@ -3,3 +3,4 @@ run(fullfile(extractBefore(mfilename('fullpath'), 'statistics'), 'General_Parame
 
 Paths.Datasets = 'D:\Data\Raw';
 Paths.Preprocessed = 'D:\Data\Preprocessed\';
+Paths.Results = 'D:\Data\Results';
