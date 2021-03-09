@@ -10,8 +10,9 @@ clear
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Tasks = {'LAT',}; % specify folder for analysis
-DataType = 'ERP';
+% Tasks = {'Oddball', 'Fixation', 'Standing'}; % specify folder for analysis
+Tasks = {'PVT'};
+DataType = 'Wake';
 Refresh = false;
 SpotCheck = false;
 
@@ -60,10 +61,10 @@ for Indx_T = 1:numel(Tasks)
         
         % clean data segments
         [EEGnew, badchans] = InterpolateSegments(EEG, fullfile(Source_Cuts, Filename_Cuts), EEG_Channels);
-          
+   
         
         % interpolate bad channels
-        RemoveChannels =  labels2indexes(unique([badchans, EEG_Channels.notEEG]), EEGnew.chanlocs);
+        RemoveChannels =  labels2indexes(unique([badchans(:); EEG_Channels.notEEG(:)]), EEGnew.chanlocs);
         EEGnew = pop_select(EEGnew, 'nochannel', RemoveChannels); % NOTE: this also takes out the not EEG channels and interpolates them; this is fine, we ignore it, but you have to remove them because otherwise they contribute to the interpolation
         EEGnew = pop_interp(EEGnew, StandardChanlocs);
         
@@ -77,6 +78,6 @@ for Indx_T = 1:numel(Tasks)
         
         
         clear badchans cutData filename filepath TMPREJ
+
     end
 end
-% TODO, create a log for this?

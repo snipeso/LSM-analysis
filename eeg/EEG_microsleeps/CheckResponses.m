@@ -88,6 +88,8 @@ end
 
 RestHits = 100*((Tot(:, :, 2)-Micro(:, :, 2))./(Tot(:, :, 1)-Micro(:, :, 1)));
 
+RestMisses = 100*((Tot(:, :, 2)-Micro(:, :, 2))./(Tot(:, :, 1)-Micro(:, :, 1)));
+
 Filename = [Task, '_Hits_NotMi.mat'];
 Matrix = RestHits;
 save(fullfile(Destination, Filename), 'Matrix')
@@ -106,6 +108,17 @@ title(['% Responses in microsleeps in ', replace(TitleTag, '_', ' ')], 'FontSize
 ylabel('% Hits')
 set(gca, 'FontSize', 13)
 saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_miHits.svg']))
+
+
+% plot misses in LAT
+figure('units','normalized','outerposition',[0 0 .5 .5])
+PlotScales(RestMisses, MicroMisses, SessionLabels, {'OtherMisses', 'miMisses'}, [], Format)
+title(['% Misses in microsleeps in ', replace(TitleTag, '_', ' ')], 'FontSize', 14)
+ylabel('% Misses')
+set(gca, 'FontSize', 13)
+saveas(gcf,fullfile(Paths.Figures, [TitleTag, '_miMisses.svg']))
+
+
 
 Filename = [Task, '_RTs_Micro.mat'];
 Matrix = RTs(:, :, 2);

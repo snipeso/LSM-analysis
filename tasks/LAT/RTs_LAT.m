@@ -40,7 +40,7 @@ for Indx_C = 1:numel(Conditions)
         for Indx_S = 1:numel(Sessions)
             
             RTs = cell2mat(AllAnswers.rt(strcmp(AllAnswers.Session, Sessions{Indx_S}) & ...
-                strcmp(AllAnswers.Participant, Participants{Indx_P})));
+                strcmp(AllAnswers.Participant, Participants{Indx_P}) ));
             RTs(isnan(RTs)) = [];
             RTs(RTs < 0.1) = [];
             if size(RTs, 1) < 1

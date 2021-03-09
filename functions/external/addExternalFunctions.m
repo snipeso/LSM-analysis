@@ -8,3 +8,4 @@ Path = extractBefore(Path, 'addExternalFunctions');
 addpath(fullfile(Path, 'hhentschke-measures-of-effect-size-toolbox-3d90ae5'))
 addpath(fullfile(Path, 'levene'))
 addpath(fullfile(Path, 'colormaps'))
+addpath(fullfile(Path, 'hubersleeplab'))

@@ -20,7 +20,7 @@ Folders.RRT(contains(Folders.RRT, '.')) = [];
 
 StartTime = datestr(now, 'yy-mm-dd_HH-MM');
 
-for Indx_D = 1:size(Folders.Datasets,1) % loop through participants
+for Indx_D = 11:12 %1:size(Folders.Datasets,1) % loop through participants
     
     for Indx_F = 1:numel(Folders.RRT)
         Paths_Fixation = fullfile(Paths.Datasets, Folders.Datasets{Indx_D}, ...

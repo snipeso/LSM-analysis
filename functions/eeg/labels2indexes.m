@@ -8,6 +8,9 @@ ChanLabels = string({Chanlocs.labels});
 
 [Members, Indexes] = ismember(Labels, ChanLabels);
 
+Members = Members(:)';
+Labels = Labels';
+
 Indexes(Indexes == 0) = [];
 
 if any(not(Members))

@@ -10,9 +10,6 @@ Stats_Parameters
 
 Task1 = 'LAT';
 
-Analysis = 'classicVsoporific';
-
-DataPath = fullfile(Paths.Preprocessed, 'Statistics', Analysis, Task1); % for statistics
 
 Task = Task1;
 
@@ -38,13 +35,22 @@ Task = Task1;
 %     false, false; % loggify
 %     false, true % zscore
 %     ];
-% 
-Types = {'KSS', 'Lapses', 'miDuration', 'Theta', 'meanRTs'};
-YLabels = {'VAS Score', '#', '%', 'Power Density', 'Seconds'};
+%
+% Types = {'KSS', 'Lapses', 'miDuration', 'Theta', 'meanRTs'};
+% YLabels = {'VAS Score', '#', '%', 'Power Density', 'Seconds'};
+% Normalizations = [
+%     false, false; % loggify
+%     false, true % zscore
+%     ];
+% Analysis = 'Questionnaires';
+
+Types = append( 'Hotspot_', {'Amplitude', 'Intercept', 'Slope', 'Peak', 'FWHM'});
+YLabels = {'Amplitude', 'Amplitude', 'Angle', 'Amplitude', 'Amplitude'};
 Normalizations = [
     false, false; % loggify
     false, true % zscore
     ];
+Analysis = 'PowerPeaks';
 
 % Types = {'Delta', 'Theta', 'Alpha', 'Beta'};
 
@@ -88,11 +94,14 @@ Normalizations = [
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Figure_Path = fullfile(Paths.Figures, 'anova2way');
 
-if ~exist(fullfile(Figure_Path), 'dir')
-    mkdir(Figure_Path)
+DataPath = fullfile(Paths.Preprocessed, 'Statistics', Analysis); % for statistics
+
+Results_Path = fullfile(Paths.Results, 'anova2way');
+if ~exist(fullfile(Results_Path), 'dir')
+    mkdir(Results_Path)
 end
+
 
 for Indx_T = 1:numel(Types)
     YLabel = YLabels{Indx_T};
@@ -102,12 +111,13 @@ for Indx_T = 1:numel(Types)
         ZScore = Normalizations(2, Indx_N);
         ParticipantsLeft = Participants;
         
-        TitleTag = [Task, '_', Type];
+        TitleTag = [Analysis, '_', Task, '_', Type];
         
         YLabelNew = [YLabel];
         
         % load classic matrix
-        load(fullfile(DataPath, [Task, '_', Type, '_Classic.mat']), 'Matrix')
+        Filename = strjoin({Analysis, 'Classic', Task, [Type, '.mat']}, '_');
+        load(fullfile(DataPath, Filename), 'Matrix')
         ClassicMatrix = Matrix;
         
         if Loggify
@@ -120,7 +130,8 @@ for Indx_T = 1:numel(Types)
         end
         
         % load soporific matrix
-        load(fullfile(DataPath, [Task, '_', Type, '_Soporific.mat']), 'Matrix')
+        Filename = strjoin({Analysis, 'Soporific', Task, [Type, '.mat']}, '_');
+        load(fullfile(DataPath, Filename), 'Matrix')
         SopoMatrix = Matrix;
         
         if Loggify
@@ -132,7 +143,6 @@ for Indx_T = 1:numel(Types)
         % handle nans
         Nans = any(isnan(ClassicMatrix), 2) | any(isnan(SopoMatrix), 2);
         if any(Nans)
-            
             ParticipantsLeft(Nans) = [];
             ClassicMatrix(Nans, :) = [];
             SopoMatrix(Nans, :) = [];
@@ -155,9 +165,9 @@ for Indx_T = 1:numel(Types)
         Levenetest([ClassicMatrix(:), Groups(:); SopoMatrix(:), 3+Groups(:)],.05)
         pause(2)
         
+        XLabels = Format.Labels.(Task).Soporific.Plot;
+        anova2way(ClassicMatrix, SopoMatrix, ParticipantsLeft, Analysis, Task,...
+            TitleTag, XLabels, YLabelNew, {'Classic', 'Soporific'}, Results_Path, Format);
         
-        anova2way(ClassicMatrix, SopoMatrix, ParticipantsLeft, Type, Task,...
-            TitleTag, YLabelNew, Figure_Path, Format);
-
     end
 end

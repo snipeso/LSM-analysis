@@ -1,4 +1,4 @@
-function [Twoway, Pairwise] = anova2way(ClassicMatrix, SopoMatrix, Participants, Type, Task, TitleTag, YLabel, Figure_Path, Format)
+function [Twoway, Pairwise] = anova2way(Matrix1, Matrix2, Participants, Type, Task, TitleTag, XLabels, YLabel, Legend, Figure_Path, Format, ColorPair)
 % if format is skipped or empty, won't include plots
 
 % Twoway.Type = Type;
@@ -8,21 +8,21 @@ function [Twoway, Pairwise] = anova2way(ClassicMatrix, SopoMatrix, Participants,
 MES = 'eta2';
 
 % get mean and SEM for plots
-SopMeans = nanmean(SopoMatrix);
-SopSEM = std(SopoMatrix)./sqrt(size(SopoMatrix, 1));
+SopMeans = nanmean(Matrix2);
+SopSEM = std(Matrix2)./sqrt(size(Matrix2, 1));
 
-ClassicMeans = nanmean(ClassicMatrix);
-ClassicSEM = nanstd(ClassicMatrix)./sqrt(size(ClassicMatrix, 1));
+ClassicMeans = nanmean(Matrix1);
+ClassicSEM = nanstd(Matrix1)./sqrt(size(Matrix1, 1));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% create table for MATLAB anova (used as basis for multiple comparisons)
 
 % convert to table
-Soporific = mat2table(SopoMatrix, Participants, {'s4', 's5', 's6'}, 'Participant', [], Type);
-Classic = mat2table(ClassicMatrix, Participants, {'s1', 's2', 's3'}, 'Participant', [], Type);
+Table2 = mat2table(Matrix2, Participants, {'s4', 's5', 's6'}, 'Participant', [], Type);
+Table1 = mat2table(Matrix1, Participants, {'s1', 's2', 's3'}, 'Participant', [], Type);
 
 % create design tables
-Between = [Classic, Soporific(:, 2:end)];
+Between = [Table1, Table2(:, 2:end)];
 Within = table();
 
 Within.Session = {'B'; 'S1'; 'S2'; 'B'; 'S1'; 'S2'};
@@ -61,8 +61,10 @@ C_S1vS2= SxC.pValue(strcmp(SxC.Condition, 'C')&strcmp(SxC.Session_1, 'S1')& strc
 if exist('Format', 'var') && ~isempty(Format)
     
     Measure = Format.MeasuresDict(Type);
+    if ~exist('ColorPair', 'var')
     ColorPair = [  Format.Colors.(Measure).(Task).Classic;
         Format.Colors.(Measure).(Task).Soporific];
+    end
     
     % pairwise significance tests
     comparisons = {
@@ -84,7 +86,7 @@ if exist('Format', 'var') && ~isempty(Format)
     %%% plot just means
 %    figure('units','normalized','outerposition',[0 0 .3 .34])
    figure('units','normalized','Position',[ 0.1898    0.3597    0.1531    0.1542])
-    PlotBars([ClassicMeans; SopMeans]', [ClassicSEM; SopSEM]', {'BL', 'S1', 'S2'}, ColorPair)
+    PlotBars([ClassicMeans; SopMeans]', [ClassicSEM; SopSEM]', {'BL', 'S1', 'S2'}, ColorPair, 'vertical', Format)
     
 %     title([Task, ' ', Type])
 %     ylabel(YLabel)
@@ -123,9 +125,9 @@ if exist('Format', 'var') && ~isempty(Format)
     % plot barplots
     figure('units','normalized','outerposition',[0 0 .55 .4])
     subplot(1, 3, 1)
-    PlotBars([ClassicMeans; SopMeans]', [ClassicSEM; SopSEM]', {'BL', 'S1', 'S2'}, ColorPair)
-    legend({'Classic', 'Soporific'}, 'Location', 'southeast','AutoUpdate','off')
-    title([Task, ' ', Type])
+    PlotBars([ClassicMeans; SopMeans]', [ClassicSEM; SopSEM]', XLabels, ColorPair, 'vertical', Format)
+    legend(Legend, 'Location', 'southeast','AutoUpdate','off')
+    title(replace(TitleTag, '_', ' '))
     ylabel(YLabel)
     box off
     set(gca, 'FontName', Format.FontName, 'FontSize',12)
@@ -142,11 +144,11 @@ end
 % uses the MES toolbox, so data needs to be restructured
 
 
-ClassicTable = mat2table(ClassicMatrix, Participants, [1:size(ClassicMatrix, 2)]', ...
+ClassicTable = mat2table(Matrix1, Participants, [1:size(Matrix1, 2)]', ...
     'Participant', 'Session', 'Data');
 ClassicTable.Condition = zeros(size(ClassicTable.Session));
 
-SopoTable = mat2table(SopoMatrix, Participants, [1:size(SopoMatrix, 2)]', ...
+SopoTable = mat2table(Matrix2, Participants, [1:size(Matrix2, 2)]', ...
     'Participant', 'Session', 'Data');
 SopoTable.Condition = ones(size(SopoTable.Session));
 
@@ -211,11 +213,11 @@ Hedges = nan(2, 3);
 HedgesCI = nan(2, 3, 2);
 for Indx = 1:3
     if Indx == 1
-        Matrix = ClassicMatrix;
+        Matrix = Matrix1;
     elseif Indx ==2
-        Matrix = SopoMatrix;
+        Matrix = Matrix2;
     else
-        Matrix = (SopoMatrix +ClassicMatrix)./2;
+        Matrix = (Matrix2 +Matrix1)./2;
     end
     
     statsHedges = mes(Matrix(:, 2), Matrix(:, 1), 'hedgesg', 'isDep', 1, 'nBoot', 1000);
@@ -229,7 +231,9 @@ end
 
 if exist('Format', 'var') && ~isempty(Format)
     subplot(1, 3, 3)
-    PlotBars(Hedges(:, 1:2), HedgesCI(:, 1:2, :), {'BLvsS1','S1vsS2'},  ColorPair)
+    XL = {[XLabels{1}, 'vs', XLabels{2}], [XLabels{2}, 'vs', XLabels{3}]};
+    PlotBars(Hedges(:, 1:2), HedgesCI(:, 1:2, :), XL,  ColorPair, 'vertical', Format)
+%      PlotBars(Hedges(:, 1:2), HedgesCI(:, 1:2, :), {'BLvsS1','S1vsS2'},  CurlyColorPair, 'vertical', Format)
     title(['Hedges g'])
     set(gca, 'FontName', Format.FontName, 'FontSize',12)
     box off
@@ -240,9 +244,9 @@ if exist('Format', 'var') && ~isempty(Format)
     
     % plot all values in same plot
     figure('units','normalized','outerposition',[0 0 .4 .44])
-    PlotScales(ClassicMatrix, SopoMatrix, {'BL', 'S1', 'S2'}, {'Class', 'Sopo'}, [], Format)
+    PlotScales(Matrix1, Matrix2, XLabels, Legend, [], Format)
     ylabel(YLabel)
-    title([Task, ' ', Type])
+    title(replace(TitleTag, '_', ' '))
     set(gca, 'FontSize',12)
     box off
     
@@ -260,6 +264,7 @@ if exist('Format', 'var') && ~isempty(Format)
         %         [2.2, 3.2], S_S1vS2, SigColor
         };
     
+    comparisons(cell2mat(comparisons(:, 2))> .1, :) = [];
     
     if size(comparisons, 1) > 0
         sigstar(comparisons(:, 1),[comparisons{:, 2}]', comparisons(:, 3))
@@ -305,11 +310,11 @@ for Indx = 2:4 % loop through session, condition and interaction
         ', p = ', num2str(pValue), '', ', eta2 = ', num2str(stats.(MES)(Indx-1))]))
 end
 
-Conditions = {'Classic', 'Soporific'};
+Conditions = Legend;
 for Indx = 1:2
-    disp(['Hedges g for BL vs S1 in condition ', Conditions{Indx},' is: ', ...
+    disp(['Hedges g for ',XLabels{1}, ' vs ', XLabels{2},' in condition ', Conditions{Indx},' is: ', ...
         num2str(Hedges(1, Indx)), ' CI: ', num2str(HedgesCI(1, Indx, 1)), ' ', num2str(HedgesCI(1, Indx, 2)) ])
-    disp(['Hedges g for S1 vs S2 in condition ', Conditions{Indx},' is: ', ...
+    disp(['Hedges g for ',XLabels{2}, ' vs ',XLabels{3}, ' in condition ', Conditions{Indx},' is: ', ...
         num2str(Hedges(2, Indx)), ' CI: ', num2str(HedgesCI(2, Indx, 1)), ' ', num2str(HedgesCI(2, Indx, 2))  ])
 end
 

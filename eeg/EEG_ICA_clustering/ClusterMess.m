@@ -1,10 +1,11 @@
 function NewClusters = ClusterMess(R, Threshold)
+% clusters data such that all clusters are internally correlated by
+% >Threshold, 
 % WARNING: bug made node with 1 row possible -.-
 Nodes = 1:size(R, 1);
 
 NodesLeft = Nodes;
 
-% Correlations = triu(R, 1); % get only corr values with other leaves
 Correlations = R;
 Correlations(Correlations==0) = nan;
 

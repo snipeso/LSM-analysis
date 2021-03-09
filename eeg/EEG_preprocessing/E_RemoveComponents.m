@@ -7,11 +7,11 @@ clc
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Task = 'Standing';
+Task = 'QuestionnaireEEG';
 Refresh = false;
 
 Data_Type = 'Wake';
-% Filename = ['P09_LAT_Session1Beam_ICA_Components.set'];
+% Filename = ['P01_PVT_Session2Comp_ICA_Components.set'];
 Filename = [];
 CheckOutput = true;
 Automate = false;
@@ -19,6 +19,11 @@ Automate = false;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 EEG_Parameters
 
+% choose a random task
+if isempty(Task)
+   Task = allTasks{randi(numel(allTasks))}; 
+end
+    
 
 % get files and paths
 Source_Comps = fullfile(Paths.Preprocessed, 'ICA', 'Components', Task);
@@ -31,10 +36,15 @@ end
 
 
 
+
 Files = deblank(cellstr(ls(Source_Comps)));
 Files(~contains(Files, '.set')) = [];
 
-for Indx_F = 1:numel(Files) % loop through files in source folder
+% randomize files list
+nFiles = numel(Files);
+Files = Files(randperm(nFiles));
+
+for Indx_F = 1:nFiles % loop through files in source folder
     
     if isempty(Filename)
         % get filenames
@@ -50,8 +60,9 @@ for Indx_F = 1:numel(Files) % loop through files in source folder
         end
     else
         Filename_Comps = Filename;
+        Filename_Data = replace(Filename_Comps, 'ICA_Components', Data_Type);
         Filename_BadComps = [extractBefore(Filename_Comps,'.set'), '.mat'];
-        
+        Filename_Destination = [extractBefore(Filename_Data, Data_Type), 'Deblinked.set'];
     end
     
     if ~exist(fullfile(Source_Data, Filename_Data), 'file')
@@ -62,9 +73,9 @@ for Indx_F = 1:numel(Files) % loop through files in source folder
         continue
     end
     
-   
+    
     Data = pop_loadset('filepath', Source_Data, 'filename', Filename_Data);
-     EEG = pop_loadset('filepath', Source_Comps, 'filename', Filename_Comps);
+    EEG = pop_loadset('filepath', Source_Comps, 'filename', Filename_Comps);
     
     % remove channels from Data that aren't in EEG
     Data = pop_select(Data, 'channel', labels2indexes({EEG.chanlocs.labels}, Data.chanlocs));
@@ -76,5 +87,5 @@ for Indx_F = 1:numel(Files) % loop through files in source folder
     if Break
         break
     end
-
+    
 end

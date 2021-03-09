@@ -5,3 +5,5 @@ run(fullfile(extractBefore(mfilename('fullpath'), 'statistics'), 'General_Parame
 % Locations
 Paths.Preprocessed = 'D:\Data\Preprocessed';
 Paths.Data = Paths.Preprocessed;
+Paths.Results = 'D:\Data\Results'; 
+Paths.Stats = string(fullfile(Paths.Preprocessed, 'Statistics'));

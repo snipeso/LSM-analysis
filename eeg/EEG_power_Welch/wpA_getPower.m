@@ -4,23 +4,27 @@ clear
 clc
 close all
 
+wp_Parameters
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Tasks = { 'Fixation'};
+Tasks = {'Standing', 'Oddball', 'Fixation'};
+% Tasks = {'Game'};
 Refresh = false;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-wp_Parameters
+
 
 for Indx_T = 1:numel(Tasks)
     
     Task = Tasks{Indx_T};
     
     % get files and paths
-    Source = fullfile(Paths.Preprocessed, 'Interpolated', 'SET', Task);
+    Source = fullfile(Paths.Preprocessed, 'Interpolated', 'Wake', Task);
     Source_Cuts = fullfile(Paths.Preprocessed, 'Cleaning', 'Cuts', Task);
-    Destination= fullfile(Paths.WelchPower, Task);
+    Destination = fullfile(Paths.WelchPower, Task);
     
     if ~exist(Destination, 'dir')
         mkdir(Destination)
@@ -29,7 +33,8 @@ for Indx_T = 1:numel(Tasks)
     Files = deblank(cellstr(ls(Source)));
     Files(~contains(Files, '.set')) = [];
     
-    parfor Indx_F = 1:numel(Files)
+    for Indx_F = 1:numel(Files)
+        
         File = Files{Indx_F};
         Filename = [extractBefore(File, '_Clean.set'), '_wp.mat'];
         
@@ -55,9 +60,14 @@ for Indx_T = 1:numel(Tasks)
             EEG.data(:, [1:round(StartPoint),  round(EndPoint):end]) = nan;
         end
         
+        try
         % set to nan all cut data
         Cuts_Filepath = fullfile(Source_Cuts, [extractBefore(File, '_Clean'), '_Cleaning_Cuts.mat']);
         EEG = nanNoise(EEG, Cuts_Filepath);
+        catch
+            warning(['SKIPPING ', EEG.filename])
+            continue
+        end
         
         
         %%% get power
@@ -73,8 +83,8 @@ for Indx_T = 1:numel(Tasks)
         
         parsave(fullfile(Destination, Filename), Power)
         disp(['*************finished ',Filename '*************'])
-        
     end
+    
 end
 
 function parsave(fname, Power)

@@ -38,6 +38,9 @@ if ismember('cutData', {Content.name}) % check if there are cuts
         
         EEGmini =  pop_select(EEG, 'point', [Start, End]);
         
+        if  isempty(EEGmini.data)
+            continue
+        end
         
         % select channels that won't be used for interpolation
         RemoveChannels = string(unique([badchans, Clusters(Indx_C).Channels, notEEG]));
@@ -62,7 +65,9 @@ if ismember('cutData', {Content.name}) % check if there are cuts
                 continue
             end
             Ch = RemoveChannelsIndx(Indx_Ch); %TODO: check if correct channels are selected
+
             EEGnew.data(Ch, Start:End) = EEGmini.data(Ch, :);
+            
         end
     end
 end

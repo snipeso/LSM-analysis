@@ -1,4 +1,4 @@
-function PlotBars(Data, Errors, Labels, Colors, Orientation)
+function PlotBars(Data, Errors, Labels, Colors, Orientation, Format)
 % PValues is a cell array with 2 elements, the first contains a list of pvalues
 % for the major segments
 
@@ -9,9 +9,13 @@ else
     h = bar(Data, 'grouped', 'EdgeColor', 'none', 'FaceColor', 'flat');
 end
 
-for Indx = 1:size(Data, 2)
-    h(Indx).CData = Colors(Indx, :);
-end
+% if size(Data, 1) == size(Colors, 1)
+    for Indx = 1:size(Data, 2)
+        h(Indx).CData = Colors(Indx, :);
+    end
+% else
+%     h.CData = Colors;
+% end
 
 hold on
 
@@ -31,16 +35,16 @@ if ~isempty(Errors)
         x = (1:ngroups) - groupwidth/2 + (2*Indx-1) * groupwidth / (2*nbars);
         
         if ndims(Errors) == 2
-            errorbar(x, Data(:,Indx), Errors(:,Indx), 'k', 'linestyle', 'none', 'LineWidth', 1.5);
+            errorbar(x, Data(:,Indx),  Data(:,Indx)-Errors(:, 1),  Errors(:,2)-Data(:,Indx), 'k', 'linestyle', 'none', 'LineWidth', 1.5);
         elseif ndims(Errors) == 3
             if exist('Orientation', 'var') && strcmp(Orientation, 'horizontal')
-%                 errorbar(Data(:,Indx), x, abs(Data(:,Indx)-Errors(:,Indx, 1)), ...
-%                     abs(Errors(:,Indx, 2)-Data(:,Indx)), 'k', 'horizontal', 'linestyle', 'none', 'LineWidth', 2);
-
+                %                 errorbar(Data(:,Indx), x, abs(Data(:,Indx)-Errors(:,Indx, 1)), ...
+                %                     abs(Errors(:,Indx, 2)-Data(:,Indx)), 'k', 'horizontal', 'linestyle', 'none', 'LineWidth', 2);
+                
                 errorbar(Data(:,Indx), x, Data(:,Indx)-Errors(:,Indx, 1), ...
                     Errors(:,Indx, 2)-Data(:,Indx), 'k', 'horizontal', 'linestyle', 'none', 'LineWidth', 1.5);
-
-
+                
+                
             else
                 errorbar(x, Data(:,Indx), abs(Data(:,Indx)-Errors(:,Indx, 1)), ...
                     abs(Errors(:,Indx, 2)-Data(:,Indx)), 'k', 'linestyle', 'none', 'LineWidth', 2); % TODO: CHECK!
@@ -58,3 +62,5 @@ else
     xticks(1:numel(Labels))
     xticklabels(Labels)
 end
+
+set(gca, 'FontName', Format.FontName)
