@@ -55,6 +55,8 @@ showPlots = false;
 %%% BEFORE CLOSING. But if you do that, you can always open wherever you
 %%% left off. Run as many times as you want
 rmCh(EEG.CutFilepath, [107 113])
+rmCh(EEG.CutFilepath, [43 44 38 39])
+ 
 MarkData(EEG) 
 
 %% remove or restore a whole channel
