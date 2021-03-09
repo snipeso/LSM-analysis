@@ -1,6 +1,6 @@
 clear
 clc
-close all
+% close all
 
 
 Stats_Parameters
@@ -8,7 +8,7 @@ Stats_Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-Task1 = 'LAT';
+Task1 = 'PVT';
 
 
 Task = Task1;
@@ -44,13 +44,13 @@ Task = Task1;
 %     ];
 % Analysis = 'Questionnaires';
 
-Types = append( 'Hotspot_', {'Amplitude', 'Intercept', 'Slope', 'Peak', 'FWHM'});
-YLabels = {'Amplitude', 'Amplitude', 'Angle', 'Amplitude', 'Amplitude'};
-Normalizations = [
-    false, false; % loggify
-    false, true % zscore
-    ];
-Analysis = 'PowerPeaks';
+% Types = append( 'Hotspot_', {'Amplitude', 'Intercept', 'Slope', 'Peak', 'FWHM'});
+% YLabels = {'Amplitude', 'Amplitude', 'Angle', 'Amplitude', 'Amplitude'};
+% Normalizations = [
+%     false, false; % loggify
+%     false, true % zscore
+%     ];
+% Analysis = 'PowerPeaks';
 
 % Types = {'Delta', 'Theta', 'Alpha', 'Beta'};
 
@@ -62,12 +62,14 @@ Analysis = 'PowerPeaks';
 %     ];
 
 
-% Types = {'meanRTs', 'medianRTs', 'stdRTs', 'Q1Q4RTs', 'Top10', 'Bottom10', 'Top20', 'Bottom20'};
-% YLabels = repmat({'Seconds'}, 1, numel(Types));
-% Normalizations = [
-%     false, false; % loggify
-%     false, true % zscore
-%     ];
+Types = {'Mean', 'Median', 'STD', 'Q1Q4', 'Top10', 'Bottom10', 'Top20', 'Bottom20'};
+YLabels = repmat({'Seconds'}, 1, numel(Types));
+Normalizations = [
+     false; % loggify
+   true % zscore
+    ];
+Analysis = 'Speed';
+
 
 % Types = {'meanRTs', 'Q1Q4RTs'};
 % YLabels = repmat({'Seconds'}, 1, numel(Types));

@@ -8,7 +8,7 @@ Q_Parameters
 
 Normalization = 'zscore'; % 'zscore'
 
-Condition = 'Evening';
+Condition = 'RRT';
 Tag = 'Questionnaires';
 PlotStats = true;
 

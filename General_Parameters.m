@@ -184,9 +184,7 @@ Format.MeasuresDict = containers.Map;
 Measures.EEG = {'Delta', 'Theta', 'Alpha', 'Beta',...
     'backDelta', 'backTheta', 'backAlpha', 'backBeta',...
     'miTot', 'miDuration', 'miStart',   'rP300mean', 'sP300mean', 'Power', 'PowerPeaks'};
-Measures.Behavior = { 'Hits', 'Misses', 'Late', 'Lapses-FA', ...
-    'FA', 'Lapses', 'meanRTs', 'medianRTs',...
-    'stdRTs', 'Q1Q4RTs', 'Top10', 'Bottom10'};
+Measures.Behavior = {'RTs', 'Speed'};
 Measures.Questionnaires = { 'Questionnaires', 'KSS', 'Motivation', 'Effortful', 'Focused',  'Difficult'};
 MeasureTypes = fieldnames(Measures);
 for M = MeasureTypes'
@@ -287,7 +285,7 @@ Format.Labels.PVT.OneNight.Plot = {'Evening', 'Morning'};
 Format.Labels.LAT.OneNight.Sessions = {'Session2Beam1', 'MainPost'};
 Format.Labels.LAT.OneNight.Plot = {'Evening', 'Morning'};
 
-Format.Labels.Fixation.OneNight.Sessions = {'Main7', 'MainPost'};
+Format.Labels.Fixation.OneNight.Sessions = {'Main8', 'MainPost'};
 Format.Labels.Fixation.OneNight.Plot = {'Evening', 'Morning'};
 
 % sessions for comparing overnight changes

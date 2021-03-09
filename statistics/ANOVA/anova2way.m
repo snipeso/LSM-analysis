@@ -84,23 +84,23 @@ if exist('Format', 'var') && ~isempty(Format)
     comparisons([comparisons{:, 2}]>=0.1, :) = [];
     
     %%% plot just means
-%    figure('units','normalized','outerposition',[0 0 .3 .34])
-   figure('units','normalized','Position',[ 0.1898    0.3597    0.1531    0.1542])
-    PlotBars([ClassicMeans; SopMeans]', [ClassicSEM; SopSEM]', {'BL', 'S1', 'S2'}, ColorPair, 'vertical', Format)
-    
-%     title([Task, ' ', Type])
-%     ylabel(YLabel)
-    box off
-    
-    set(gca, 'FontName', Format.FontName, 'FontSize',12, 'XColor', 'none')
-    
-    
-    if size(comparisons, 1) > 0
-        sigstar(comparisons(:, 1),[comparisons{:, 2}]', comparisons(:, 3))
-    end
-    %     axis square
-    set(gca, 'XTick', [])
-    saveas(gcf,fullfile(Figure_Path, [TitleTag, '_means_anova2way.svg']))
+% %    figure('units','normalized','outerposition',[0 0 .3 .34])
+%    figure('units','normalized','Position',[ 0.1898    0.3597    0.1531    0.1542])
+%     PlotBars([ClassicMeans; SopMeans]', [ClassicSEM; SopSEM]', {'BL', 'S1', 'S2'}, ColorPair, 'vertical', Format)
+%     
+% %     title([Task, ' ', Type])
+% %     ylabel(YLabel)
+%     box off
+%     
+%     set(gca, 'FontName', Format.FontName, 'FontSize',12, 'XColor', 'none')
+%     
+%     
+%     if size(comparisons, 1) > 0
+%         sigstar(comparisons(:, 1),[comparisons{:, 2}]', comparisons(:, 3))
+%     end
+%     %     axis square
+%     set(gca, 'XTick', [])
+%     saveas(gcf,fullfile(Figure_Path, [TitleTag, '_means_anova2way.svg']))
     
     %%% start of united plot
     % pairwise significance tests

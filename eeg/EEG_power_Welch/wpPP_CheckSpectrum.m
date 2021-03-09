@@ -6,8 +6,8 @@ wp_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-Task = 'PVT';
-Condition = 'BAT';
+Task = 'Fixation';
+Condition = 'OneNight';
 
 %
 % Task = 'Oddball';
@@ -120,10 +120,12 @@ for Indx_P = 1:numel(Participants)
     PlotPowerHighlight(log(squeeze(RawData(Indx_P, :, :))), log(Freqs), FreqsIndxBand, ...
         Format.Colors.(Condition).Sessions, Format)
     title(Participants{Indx_P})
+    xlim(log([Freqs([1, end])]))
     Indx = Indx+1;
 end
 
 
+ saveas(gcf,fullfile(Paths.Results, [Title, '_', Task, '_', Condition, '_Hotspot_LogLog.svg']))
 
 
 figure('units','normalized','outerposition',[0 0 1 .7])

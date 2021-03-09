@@ -16,7 +16,10 @@ Analysis = 'RTs';
 Task = 'Oddball';
 
 Destination = fullfile(Paths.Preprocessed, 'Statistics', Analysis);
-
+    if ~exist(Destination, 'dir')
+        mkdir(Destination)
+    end
+    
 
 
 
@@ -28,10 +31,7 @@ for Indx_C = 1:numel(Conditions)
     Sessions = Format.Labels.(Task).(Condition).Sessions;
     SessionLabels = Format.Labels.(Task).(Condition).Plot;
     
-    if ~exist(Destination, 'dir')
-        mkdir(Destination)
-    end
-    
+
     
     MeanRTs = nan(numel(Participants), numel(Sessions));
     MedianRTs = nan(numel(Participants), numel(Sessions));
@@ -110,7 +110,6 @@ for Indx_C = 1:numel(Conditions)
     
     % save matrix
     Filename = strjoin({Analysis, Condition, Task, 'STD.mat'}, '_');
-    
     Matrix = stdRTs;
     save(fullfile(Destination, Filename), 'Matrix', 'Sessions', 'SessionLabels')
     
@@ -153,7 +152,6 @@ for Indx_C = 1:numel(Conditions)
     
     % save matrix
     Filename = strjoin({Analysis, Condition, Task, 'Top10.mat'}, '_');
-    
     Matrix = Top10;
     save(fullfile(Destination, Filename), 'Matrix', 'Sessions', 'SessionLabels')
     

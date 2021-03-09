@@ -2,6 +2,7 @@
 run(fullfile(extractBefore(mfilename('fullpath'), 'tasks'), 'General_Parameters'))
 Paths.Datasets = 'D:\Data\Raw';
 Paths.Preprocessed = 'D:\Data\Preprocessed\';
+Paths.Results = fullfile(Paths.Results, 'Tasks');
 
 % Locations
 

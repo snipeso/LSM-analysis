@@ -11,7 +11,7 @@ LineColors = linspace(0, .8, size(Matrix, 1));
 end
 
 hold on
-plot(Freqs, zeros(size(Freqs)), ':', 'LineWidth', .1, 'Color', 'k') % plot the 0 axis
+% plot(Freqs, zeros(size(Freqs)), ':', 'LineWidth', .1, 'Color', 'k') % plot the 0 axis
 for Indx_L = 1:nLines
     
     if size(HighlightColor, 1) > 1

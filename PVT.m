@@ -107,7 +107,7 @@ y = 1./x;
 ylim([0, 10])
 xlim([.1 .7])
 xticks(.1:.1:.7)
-ylim([1 7])
+ylim([1 5])
 plot(x, y, 'LineWidth', 2.5, 'Color', [0 0 0])
 hold on
 
@@ -139,7 +139,7 @@ for Indx_S = 1:numel(Shifts)
     Mean = mean(BL+Shifts(Indx_S));
     plot([Mean, Mean], [0, 7000], 'Color', Shift_Colors(Indx_S, :), 'LineWidth', 2.5)
     ylim( [0, 7000])
-    xlim([.16, .6])
+    xlim([.15, .7])
     ylabel('# RTs')
     subplot(2,1, 2)
     hold on
@@ -160,6 +160,43 @@ for Indx_S = 1:numel(Shifts)
     
 end
 
+%%
+
+% effect sizes
+% Cohen's d = (M1 - M2)/sqrt((S1^2 + S2^2)/2)
+Means = .1:.05:.7;
+Shift = .03;
+D_RT = nan(size(Means));
+D_Speed =  nan(size(Means));
+
+
+for Indx_M = 1:numel(Means)
+    BL_temp = BL - (BL_mu-Means(Indx_M));
+    SD_temp = BL_temp + Shift;
+    D_RT(Indx_M) = CohenD(BL_temp*1000, SD_temp*1000);
+    
+        D_Speed(Indx_M) = CohenD(1./(BL_temp), 1./(SD_temp));
+% figure
+% subplot(1, 2, 1)
+% histogram(BL_temp, 'BinEdges', 0.05:.005:.8);hold on;histogram( SD_temp, 'BinEdges', 0.05:.005:.8)
+% subplot(1, 2, 2)
+% histogram(1./BL_temp);hold on;histogram(1./SD_temp)
+%     
+end
+
+figure('units','normalized','outerposition',[0 0 .5 .5])
+subplot(1, 2, 1)
+bar(Means, D_RT)
+xlabel('BL Mean')
+ylabel('Cohens D')
+title('RT effect sizes')
+% ylim([.5 .9])
+subplot(1, 2, 2)
+bar(Means, D_Speed)
+xlabel('BL Mean')
+ylabel('Cohens D')
+title('Speed effect sizes')
+% ylim([.5 .9])
 % 
 % %%
 % 
@@ -189,3 +226,4 @@ end
 % ylabel('Speed')
 % axis square
 % set(gca, 'FontSize', 12, 'FontName', 'Arial Nova')
+
