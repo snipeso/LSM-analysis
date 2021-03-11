@@ -15,8 +15,8 @@ switch Condition
         Title = 'SleepDep';
 end
 
-Sessions = allSessions.([Task,Condition]);
-SessionLabels = allSessionLabels.([Task, Condition]);
+Sessions = Format.Labels.(Task).(Condition).Sessions;
+SessionLabels = Format.Labels.(Task).(Condition).Plot;
 
 % set figure destination
 Paths.Figures = fullfile(Paths.Figures, Stimulus, Task);

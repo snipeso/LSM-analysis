@@ -10,13 +10,14 @@ close all
 Stimulus = 'Resp';
 % Options: 'Tones' (from LAT), 'Alarm', 'Stim', 'Resp', 'RespISI'
 
-Condition = 'Beam';
+Condition = 'OneNight';
 % Options: 'Beam', 'BL', 'SD'
 
-Task = 'PVT';
+Task = 'Oddball';
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+Title = Condition;
 Load_SimpleERP
 
 

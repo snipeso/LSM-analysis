@@ -35,12 +35,12 @@ newfs = 250;
 if ~exist(Paths.Summary, 'dir')
     mkdir(Paths.Summary)
 end
-
-% get response times
-Responses = [Task, 'AllAnswers.mat'];
-if exist(fullfile(Paths.Responses, Responses), 'file')
-    load(fullfile(Paths.Responses, Responses), 'AllAnswers')
-else
-    AllAnswers = importTask(Paths.Datasets, Task, Paths.Responses); % needs to have access to raw data folder
-end
+% 
+% % get response times
+% Responses = [Task, 'AllAnswers.mat'];
+% if exist(fullfile(Paths.Responses, Responses), 'file')
+%     load(fullfile(Paths.Responses, Responses), 'AllAnswers')
+% else
+%     AllAnswers = importTask(Paths.Datasets, Task, Paths.Responses); % needs to have access to raw data folder
+% end
 

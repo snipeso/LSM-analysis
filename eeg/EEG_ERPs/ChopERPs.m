@@ -10,15 +10,24 @@ TriggerTimes = AllTriggerTimes(strcmp(AllTriggers, Trigger));
 
 Starts = round(TriggerTimes + Window(1)*fs);
 
-Points = round(fs*(Window(2)-Windows(1)));
+Points = round(fs*(Window(2)-Window(1)));
 
 
-ERPs = nan(numel(Starts), Points);
+ERPs = nan(numel(Starts), numel(EEG.chanlocs), Points );
 for Indx_E = 1:numel(Starts)
     Start = Starts(Indx_E);
     Stop = Start+Points-1;
-    Epoch = EEG.data(:, Start:Stop);
     
+    if Start <= 0
+        continue
+    end
+    if Stop > size(EEG.data, 2)
+        continue
+    end
+    
+    Epoch = EEG.data(:, Start:Stop);
+
+                                                                                        
     % remove all epochs with 1/3 nan values
     if nnz(isnan(Epoch(1, :))) >  Points/3
         continue
@@ -27,12 +36,12 @@ for Indx_E = 1:numel(Starts)
     % baseline correction
     if exist('BL_Window', 'var')
         BL_Points = round(fs*(BL_Window(2)-BL_Window(1)));
-        Start_BL = round(fs*BL_Window(1)) - Start;
+        Start_BL = round(fs*BL_Window(1)) - round(fs*Window(1));
         Stop_BL = Start_BL+BL_Points-1;
         
-        BL = nanmean(Epoch(Start_BL:Stop_BL));
+        BL = nanmean(Epoch(:, Start_BL:Stop_BL), 2);
         Epoch = Epoch - BL;
     end
     
-    ERPs(Indx_E, :) = Epoch;
+    ERPs(Indx_E, :, :) = Epoch;
 end
