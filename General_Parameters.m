@@ -122,7 +122,6 @@ Format.Colors.Generic.Dark1 = [24 41 166]/255; % blue
 Format.Colors.Generic.Dark2 = [145 26 150]/255; % purple
 Format.Colors.Tally = [34 168 136; 244, 204, 32; 228, 103, 90 ]/255; % correct, late, missed
 
-
 Format.Colors.BAT.Sessions = [Format.Colors.Generic.Dark1; Format.Colors.Generic.Red; Format.Colors.Generic.Pale2 ];
 
 Format.Colors.RRT.Sessions =[
@@ -139,6 +138,10 @@ Format.Colors.RRT.Sessions =[
 252, 193, 40; % m8
 59, 104, 0; % post
 ]/255;
+
+
+Format.Colors.Match2Sample = Format.Colors.RRT.Sessions([6, 9, 11], :);
+
 
 Format.Colors.Tasks.PVT = [244, 204, 32]/255;
 Format.Colors.Tasks.LAT = [246, 162, 75]/255;
@@ -196,6 +199,7 @@ end
 
 clear Measures MeasureTypes M T
 Format.Legend.Tally = {'Hits', 'Late', 'Misses'};
+Format.Legend.Match2Sample = {'N1', 'N2', 'N3'};
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Format.Tasks.All = {'Game', 'SpFT', 'LAT', 'PVT', 'Match2Sample', 'Music',...

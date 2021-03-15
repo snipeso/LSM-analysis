@@ -11,21 +11,30 @@ EEGT_Parameters
 
 
 
-Normalization = ''; % 'zscore', TODO: 'BL'
+Normalization = 'zscore'; % 'zscore', TODO: 'BL'
 Refresh = true;
 
 Freqs = 1:.25:40;
 Subset = 'All'; % 'All', 'Correct', 'Incorrect'
+Hotspot = 'Hotspot';
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Task = 'Match2Sample';
 Condition = 'BAT';
 EEG_Type = 'Wake';
+Legend = [ Format.Legend.(Task),'Baseline'];
+Colors = [Format.Colors.Match2Sample;Format.Colors.Generic.Dark1];
 Window = 4;
 
 EndBL_Trigger = 'S  3';
 StartRT_Trigger = 'S 10';
+
+Paths.Results = string(fullfile(Paths.Results, 'PowerTasks'));
+if ~exist(Paths.Results, 'dir')
+    mkdir(Paths.Results)
+end
+
 
 Sessions = Format.Labels.(Task).(Condition).Sessions;
 SessionLabels = Format.Labels.(Task).(Condition).Plot;
@@ -48,8 +57,8 @@ if Refresh || ~exist(SummaryFile, 'file')
     end
     
     
-     Levels = unique(Answers.level);
-     
+    Levels = unique(Answers.level);
+    
     % assemble matrix: participant x session x condition x ch x freq
     % conditions: n1, n3, n6
     % save BL and encoding matrix participant x session x ch x freq
@@ -59,6 +68,12 @@ if Refresh || ~exist(SummaryFile, 'file')
     
     % get eeg data
     for Indx_P = 1:numel(Participants)
+        
+        % for zscoring
+        SUM = zeros(1, numel(Freqs));
+        SUMSQ = zeros(1, numel(Freqs));
+        N = 0;
+        
         for Indx_S = 1:numel(Sessions)
             Participant = Participants{Indx_P};
             
@@ -69,7 +84,7 @@ if Refresh || ~exist(SummaryFile, 'file')
             % load EEG
             EEG_Filename = strjoin({Participant, Task, Sessions{Indx_S}, 'Clean.set'}, '_');
             EEG_Filepath = fullfile(Paths.Preprocessed, 'Interpolated', EEG_Type, Task);
-               Cuts_Filepath = fullfile(Paths.Preprocessed, 'Cleaning', 'Cuts', Task);
+            Cuts_Filepath = fullfile(Paths.Preprocessed, 'Cleaning', 'Cuts', Task);
             if ~exist(fullfile(EEG_Filepath, EEG_Filename), 'file')
                 warning(['Cant find ', EEG_Filename])
                 continue
@@ -79,7 +94,7 @@ if Refresh || ~exist(SummaryFile, 'file')
             fs = EEG.srate;
             
             % load cuts, remove noise
-                        Cuts = fullfile(Cuts_Filepath, [extractBefore(EEG_Filename, '_Clean'), ...
+            Cuts = fullfile(Cuts_Filepath, [extractBefore(EEG_Filename, '_Clean'), ...
                 '_Cleaning_Cuts.mat']);
             EEG = nanNoise(EEG, Cuts);
             
@@ -90,7 +105,7 @@ if Refresh || ~exist(SummaryFile, 'file')
             StartRetentions =  AllTriggerTimes(strcmp(AllTriggerTypes, StartRT_Trigger));
             
             
-            if size(Trials, 1) ~= EndBaselines || size(Trials, 1) ~= StartRetentions
+            if size(Trials, 1) ~= numel(EndBaselines) || size(Trials, 1) ~= numel(StartRetentions)
                 warning(['Something went wrong with triggers for ', EEG_Filename])
                 continue
             end
@@ -106,76 +121,157 @@ if Refresh || ~exist(SummaryFile, 'file')
                 otherwise
                     Remove = Skipped;
             end
-
-            EndBaselines(Remove, :, :) = [];
-            StartRetentions(Remove, :, :) = [];
+            
+            EndBaselines(Remove) = [];
+            StartRetentions(Remove) = [];
             Trials(Remove, :) = [];
             
-            R_Power = nan(size(Trials, 1), numel(Chanlocs), numel(Freqs));
-            BL_Power = R_Power;
-            E_Power = R_Power;
-            
-            for Indx_T = 1:numel(Trials)
-                EndBL = EndBaselines(Indx_T);
-                StartBL = EndBL - round(Window*fs);
-                
-                StartRT = StartRetentions(Indx_T);
-                EndRT = StartRT + round(Window*fs);
-                
-                BL_Data = EEG.data(:,StartBL:EndBL);
-                pxx = pwelch(BL_Data', [], 0, Freqs, fs)';
-                BL_Power(Indx_T, :, :) = pxx;
-                
-                E_Data = EEG.data(:, EndBL:StartRT);
-                pxx = pwelch(E_Data', [], 0, Freqs, fs)';
-                E_Power(Indx_T, :, :) = pxx;
-                
-                R_Data = EEG.data(:, StartRT:EndRT);
-                pxx = pwelch(R_Data', [], 0, Freqs, fs)';
-                R_Power(Indx_T, :, :) = pxx;
-            end
-            
-%              Retention = nan(numel(Participants), numel(Sessions), numel(Levels));
-
-            % save split by level
+            % calculate power
+            StartBaselines = EndBaselines- round(Window*fs);
+             EndRetentions = StartRetentions + round(Window*fs);
+             
+              R_Power = PowerTrials(EEG, Freqs, StartRetentions, EndRetentions);
+               BL_Power = PowerTrials(EEG, Freqs, StartBaselines, EndBaselines);
+                E_Power = PowerTrials(EEG, Freqs, EndBaselines, StartRetentions);
+%             R_Power = nan(size(Trials, 1), numel(Chanlocs), numel(Freqs));
+%             BL_Power = R_Power;
+%             E_Power = R_Power;
+%             
+%             for Indx_T = 1:numel(Trials)
+%                 EndBL = EndBaselines(Indx_T);
+%                 StartBL = EndBL - round(Window*fs);
+%                 
+%                 StartRT = StartRetentions(Indx_T);
+%                 EndRT = StartRT + round(Window*fs);
+%                 
+%                 BL_Data = EEG.data(:,round(StartBL:EndBL));
+%                 pxx = pwelch(BL_Data', [], 0, Freqs, fs)';
+%                 BL_Power(Indx_T, :, :) = pxx;
+%                 
+%                 E_Data = EEG.data(:, round(EndBL:StartRT));
+%                 pxx = pwelch(E_Data', [], 0, Freqs, fs)';
+%                 E_Power(Indx_T, :, :) = pxx;
+%                 
+%                 R_Data = EEG.data(:, round(StartRT:EndRT));
+%                 pxx = pwelch(R_Data', [], 0, Freqs, fs)';
+%                 R_Power(Indx_T, :, :) = pxx;
+%             end
+%             
+            % save, split by level
             for Indx_L = 1:numel(Levels)
                 T = Trials.level == Levels(Indx_L);
                 
                 Baseline(Indx_P, Indx_S, Indx_L, 1:numel(Chanlocs), 1:numel(Freqs)) = ...
-                    nanmean();
-                
-                
+                    nanmean(BL_Power(T, :, :), 1);
+                Encoding(Indx_P, Indx_S, Indx_L, 1:numel(Chanlocs), 1:numel(Freqs)) = ...
+                    nanmean(E_Power(T, :, :), 1);
+                Retention(Indx_P, Indx_S, Indx_L, 1:numel(Chanlocs), 1:numel(Freqs)) = ...
+                    nanmean(R_Power(T, :, :), 1);
             end
             
-            
+            All = cat(1, BL_Power, E_Power, R_Power);
+            SUM =SUM + squeeze(nansum(nansum(All, 2), 1)); % sum windows and channels
+            SUMSQ = SUMSQ + squeeze(nansum(nansum(All.^2, 2), 1));
+            N = N + nnz(~isnan(reshape(All(:, :, 1), 1, [])));
             
             
         end
+        
+        
+        if strcmp(Normalization, 'zscore')
+            MEAN = SUM/N;
+            SD = sqrt((SUMSQ - N.*(MEAN.^2))./(N - 1));
+            
+            for Indx_S =1:numel(Sessions)
+                for Indx_L = 1:numel(Levels)
+                    for Indx_C = 1:numel(Chanlocs)
+                        BL =  squeeze(Baseline(Indx_P, Indx_S, Indx_L, Indx_C, :))';
+                        Baseline(Indx_P, Indx_S, Indx_L, Indx_C, :) = (BL-MEAN)./SD;
+                        
+                        E = squeeze(Encoding(Indx_P, Indx_S, Indx_L, Indx_C, :))';
+                        Encoding(Indx_P, Indx_S, Indx_L, Indx_C, :) = (E-MEAN)./SD;
+                        
+                        R = squeeze(Retention(Indx_P, Indx_S, Indx_L, Indx_C, :))';
+                        Retention(Indx_P, Indx_S, Indx_L, Indx_C, :) = (R-MEAN)./SD;
+                    end
+                end
+            end
+        end
+        
     end
-    
-    
-    
 else
     load(SummaryFile, 'Retention', 'Baseline', 'Encoding', 'Chanlocs')
 end
 
+%%
 
-% S3: show symbols (4s prior are BL)
-% s10: start retention period
+% plot split by level for each session
+figure('units','normalized','outerposition',[0 0 1 1])
+ FreqsIndxBand =  dsearchn( Freqs', Bands.Theta');
+    Indexes_Hotspot =  ismember( str2double({Chanlocs.labels}), EEG_Channels.(Hotspot));
+for Indx_S = 1:numel(Sessions)
+    Matrix = squeeze(nanmean(Retention(:, Indx_S, :, Indexes_Hotspot, :), 4));
+    Matrix(:, end+1, :) = squeeze(nanmean(nanmean(Baseline(:, Indx_S, :, Indexes_Hotspot, :), 4), 3));
+  
+subplot(1, numel(Sessions), Indx_S)
+PlotPowerHighlight(Matrix, Freqs, FreqsIndxBand, Colors, Format, Legend)
+title([strjoin({'Retention', SessionLabels{Indx_S}, Task, Normalization}, ' ')])
+end
 
-% get behavioral data
+  saveas(gcf,fullfile(Paths.Results, [ Task, '_', Normalization, ...
+      '_', Subset, '_Retention_Power_by_Level.svg']))
+  
+  % Plot power during encoding
+  figure('units','normalized','outerposition',[0 0 1 1])
+ FreqsIndxBand =  dsearchn( Freqs', Bands.Theta');
+    Indexes_Hotspot =  ismember( str2double({Chanlocs.labels}), EEG_Channels.(Hotspot));
+for Indx_S = 1:numel(Sessions)
+    Matrix = squeeze(nanmean(Encoding(:, Indx_S, :, Indexes_Hotspot, :), 4));
+    Matrix(:, end+1, :) = squeeze(nanmean(nanmean(Baseline(:, Indx_S, :, Indexes_Hotspot, :), 4), 3));
+  
+subplot(1, numel(Sessions), Indx_S)
+PlotPowerHighlight(Matrix, Freqs, FreqsIndxBand, Colors, Format, Legend)
+title([strjoin({'Encoding', SessionLabels{Indx_S}, Task, Normalization}, ' ')])
+end
 
-% assemble matrix: participant x session x condition x ch x freq
-% conditions: n1, n3, n6
-% save BL and encoding matrix participant x session x ch x freq
-
-
-% try normal z scoring first: zscore whole thing by participants
-
+  saveas(gcf,fullfile(Paths.Results, [ Task, '_', Normalization, ...
+      '_', Subset, '_Encoding_Power_by_Level.svg']))
+  
+  
+  % plot topography
+  
+    figure('units','normalized','outerposition',[0 0 1 .5])
+    Indx = 1;
+    for Indx_L = 1:numel(Levels)
+       for Indx_S = 1:numel(Sessions)
+           BL =  squeeze(nanmean(nanmean(Baseline(:, Indx_S, :, :, FreqsIndxBand(1):FreqsIndxBand(2)), 5),3));
+           M = squeeze(nanmean(Retention(:, Indx_S, Indx_L, :, FreqsIndxBand(1):FreqsIndxBand(2)), 5));
+          subplot(numel(Levels), numel(Sessions), Indx)
+          PlotTopoDiff(BL, M, Chanlocs, [-5 5], Format)
+          title(['R ', SessionLabels{Indx_S}, ' ', Format.Legend.Match2Sample{Indx_L}])
+          Indx = Indx+1;
+       end
+    end
+    
+      saveas(gcf,fullfile(Paths.Results, [ Task, '_', Normalization, ...
+      '_', Subset, '_Retention_Topos_by_Level.svg']))
+  
+  
+      figure('units','normalized','outerposition',[0 0 1 .5])
+    Indx = 1;
+    for Indx_L = 1:numel(Levels)
+       for Indx_S = 1:numel(Sessions)
+           BL =  squeeze(nanmean(nanmean(Baseline(:, Indx_S, :, :, FreqsIndxBand(1):FreqsIndxBand(2)), 5),3));
+           M = squeeze(nanmean(Encoding(:, Indx_S, Indx_L, :, FreqsIndxBand(1):FreqsIndxBand(2)), 5));
+          subplot(numel(Levels), numel(Sessions), Indx)
+          PlotTopoDiff(BL, M, Chanlocs, [-5 5], Format)
+          title(['E ', SessionLabels{Indx_S}, ' ', Format.Legend.Match2Sample{Indx_L}])
+          Indx = Indx+1;
+       end
+    end
+    
+      saveas(gcf,fullfile(Paths.Results, [ Task, '_', Normalization, ...
+      '_', Subset, '_Encoding_Topos_by_Level.svg']))
 % TODO: BL, normalizes trial by baseline just prior
 
-% plot for each session each condition power
 
-% plot average across sessions
-
-% plot split by correct vs incorrect responses

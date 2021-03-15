@@ -11,7 +11,7 @@ LineColors = linspace(0, .8, size(Matrix, 1));
 end
 
 hold on
-% plot(Freqs, zeros(size(Freqs)), ':', 'LineWidth', .1, 'Color', 'k') % plot the 0 axis
+% plot(Freqs, zeros(size(Freqs)), ':', 'LineWidth', .1, 'Color', 'k', 'HandleVisibility','off') % plot the 0 axis
 for Indx_L = 1:nLines
     
     if size(HighlightColor, 1) > 1
@@ -25,7 +25,7 @@ for Indx_L = 1:nLines
         Line = Matrix(Indx_L, :);
     end
     
-    plot(Freqs, Line, '--', 'LineWidth', 1.5, 'Color', LineColors(Indx_L)*ones(1,3))
+    plot(Freqs, Line, '--', 'LineWidth', 1.5, 'Color', LineColors(Indx_L)*ones(1,3),'HandleVisibility','off')
     
     plot(Freqs(FreqsIndxBand(1):FreqsIndxBand(2)), ...
         Line(FreqsIndxBand(1):FreqsIndxBand(2)), ...
@@ -46,5 +46,6 @@ xlabel('Frequency (Hz)',  'FontSize', 14)
 %     title(AllTasksLabels{Indx_T}, 'FontSize', 20)
 %     axis square
 
-if exist('Legend', 'var') && Legend
+if exist('Legend', 'var')
+    legend(Legend)
 end
