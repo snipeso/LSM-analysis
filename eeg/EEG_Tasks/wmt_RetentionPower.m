@@ -70,8 +70,8 @@ if Refresh || ~exist(SummaryFile, 'file')
     for Indx_P = 1:numel(Participants)
         
         % for zscoring
-        SUM = zeros(1, numel(Freqs));
-        SUMSQ = zeros(1, numel(Freqs));
+        SUM = zeros(numel(Freqs), 1);
+        SUMSQ = zeros(numel(Freqs), 1);
         N = 0;
         
         for Indx_S = 1:numel(Sessions)
@@ -179,20 +179,20 @@ if Refresh || ~exist(SummaryFile, 'file')
         
         
         if strcmp(Normalization, 'zscore')
-            MEAN = SUM/N;
+            MEAN = SUM./N;
             SD = sqrt((SUMSQ - N.*(MEAN.^2))./(N - 1));
             
             for Indx_S =1:numel(Sessions)
                 for Indx_L = 1:numel(Levels)
                     for Indx_C = 1:numel(Chanlocs)
                         BL =  squeeze(Baseline(Indx_P, Indx_S, Indx_L, Indx_C, :))';
-                        Baseline(Indx_P, Indx_S, Indx_L, Indx_C, :) = (BL-MEAN)./SD;
+                        Baseline(Indx_P, Indx_S, Indx_L, Indx_C, :) = (BL-MEAN')./SD';
                         
                         E = squeeze(Encoding(Indx_P, Indx_S, Indx_L, Indx_C, :))';
-                        Encoding(Indx_P, Indx_S, Indx_L, Indx_C, :) = (E-MEAN)./SD;
+                        Encoding(Indx_P, Indx_S, Indx_L, Indx_C, :) = (E-MEAN')./SD';
                         
                         R = squeeze(Retention(Indx_P, Indx_S, Indx_L, Indx_C, :))';
-                        Retention(Indx_P, Indx_S, Indx_L, Indx_C, :) = (R-MEAN)./SD;
+                        Retention(Indx_P, Indx_S, Indx_L, Indx_C, :) = (R-MEAN')./SD';
                     end
                 end
             end
