@@ -15,7 +15,7 @@ Normalization = 'zscore'; % 'zscore', TODO: 'BL'
 Refresh = true;
 
 Freqs = 1:.25:40;
-Subset = 'All'; % 'All', 'Correct', 'Incorrect'
+Subset = 'Incorrect'; % 'All', 'Correct', 'Incorrect'
 Hotspot = 'Hotspot';
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -217,6 +217,7 @@ subplot(1, numel(Sessions), Indx_S)
 PlotPowerHighlight(Matrix, Freqs, FreqsIndxBand, Colors, Format, Legend)
 title([strjoin({'Retention', SessionLabels{Indx_S}, Task, Normalization}, ' ')])
 end
+ NewLims = SetLims(1, 3, 'y');
 
   saveas(gcf,fullfile(Paths.Results, [ Task, '_', Normalization, ...
       '_', Subset, '_Retention_Power_by_Level.svg']))
@@ -233,11 +234,11 @@ subplot(1, numel(Sessions), Indx_S)
 PlotPowerHighlight(Matrix, Freqs, FreqsIndxBand, Colors, Format, Legend)
 title([strjoin({'Encoding', SessionLabels{Indx_S}, Task, Normalization}, ' ')])
 end
-
+ NewLims = SetLims(1, 3, 'y');
   saveas(gcf,fullfile(Paths.Results, [ Task, '_', Normalization, ...
       '_', Subset, '_Encoding_Power_by_Level.svg']))
   
-  
+  %%
   % plot topography
   
     figure('units','normalized','outerposition',[0 0 1 .5])
