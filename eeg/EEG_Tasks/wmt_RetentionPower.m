@@ -12,11 +12,12 @@ EEGT_Parameters
 
 
 Normalization = 'zscore'; % 'zscore', TODO: 'BL'
-Refresh = true;
+Refresh = false;
 
 Freqs = 1:.25:40;
-Subset = 'Incorrect'; % 'All', 'Correct', 'Incorrect'
-Hotspot = 'Hotspot';
+Subset = 'All'; % 'All', 'Correct', 'Incorrect'
+Hotspot = 'Backspot';
+YLim = [-.2 1.4];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -176,14 +177,17 @@ if Refresh || ~exist(SummaryFile, 'file')
         end
         
     end
+     save(SummaryFile, 'Retention', 'Baseline', 'Encoding', 'Chanlocs')
 else
     load(SummaryFile, 'Retention', 'Baseline', 'Encoding', 'Chanlocs')
 end
 
 %%
 
+Levels = 1:3;
+
 % plot split by level for each session
-figure('units','normalized','outerposition',[0 0 1 1])
+figure('units','normalized','outerposition',[0 0 1 .5])
 FreqsIndxBand =  dsearchn( Freqs', Bands.Theta');
 Indexes_Hotspot =  ismember( str2double({Chanlocs.labels}), EEG_Channels.(Hotspot));
 for Indx_S = 1:numel(Sessions)
@@ -193,14 +197,18 @@ for Indx_S = 1:numel(Sessions)
     subplot(1, numel(Sessions), Indx_S)
     PlotPowerHighlight(Matrix, Freqs, FreqsIndxBand, Colors, Format, Legend)
     title([strjoin({'Retention', SessionLabels{Indx_S}, Task, Normalization}, ' ')])
+    if exist('YLim', 'var')
+        ylim(YLim)
+    end
+    xlim([0 30])
 end
 NewLims = SetLims(1, 3, 'y');
 
 saveas(gcf,fullfile(Paths.Results, [ Task, '_', Normalization, ...
-    '_', Subset, '_Retention_Power_by_Level.svg']))
+    '_', Subset, '_', Hotspot, '_Retention_Power_by_Level.svg']))
 
 % Plot power during encoding
-figure('units','normalized','outerposition',[0 0 1 1])
+figure('units','normalized','outerposition',[0 0 1 .5])
 FreqsIndxBand =  dsearchn( Freqs', Bands.Theta');
 Indexes_Hotspot =  ismember( str2double({Chanlocs.labels}), EEG_Channels.(Hotspot));
 for Indx_S = 1:numel(Sessions)
@@ -210,15 +218,21 @@ for Indx_S = 1:numel(Sessions)
     subplot(1, numel(Sessions), Indx_S)
     PlotPowerHighlight(Matrix, Freqs, FreqsIndxBand, Colors, Format, Legend)
     title([strjoin({'Encoding', SessionLabels{Indx_S}, Task, Normalization}, ' ')])
+      if exist('YLim', 'var')
+        ylim(YLim)
+      end
+    xlim([0 30])
 end
 NewLims = SetLims(1, 3, 'y');
 saveas(gcf,fullfile(Paths.Results, [ Task, '_', Normalization, ...
-    '_', Subset, '_Encoding_Power_by_Level.svg']))
+    '_', Subset,  '_', Hotspot,  '_Encoding_Power_by_Level.svg']))
 
-%%
+
 % plot topography
 
-figure('units','normalized','outerposition',[0 0 1 .5])
+
+
+figure('units','normalized','outerposition',[0 0 .5 .5])
 Indx = 1;
 for Indx_L = 1:numel(Levels)
     for Indx_S = 1:numel(Sessions)
@@ -235,7 +249,7 @@ saveas(gcf,fullfile(Paths.Results, [ Task, '_', Normalization, ...
     '_', Subset, '_Retention_Topos_by_Level.svg']))
 
 
-figure('units','normalized','outerposition',[0 0 1 .5])
+figure('units','normalized','outerposition',[0 0 .5 .5])
 Indx = 1;
 for Indx_L = 1:numel(Levels)
     for Indx_S = 1:numel(Sessions)
@@ -253,3 +267,39 @@ saveas(gcf,fullfile(Paths.Results, [ Task, '_', Normalization, ...
 % TODO: BL, normalizes trial by baseline just prior
 
 
+
+%%% N1 vs N3
+
+figure('units','normalized','outerposition',[0 0 .5 .3])
+Indx = 1;
+
+    for Indx_S = 1:numel(Sessions)
+        BL =  squeeze(nanmean(Retention(:, Indx_S, 1, :, FreqsIndxBand(1):FreqsIndxBand(2)), 5));
+        M = squeeze(nanmean(Retention(:, Indx_S, 2, :, FreqsIndxBand(1):FreqsIndxBand(2)), 5));
+        subplot(1, numel(Sessions), Indx)
+        PlotTopoDiff(BL, M, Chanlocs, [-5 5], Format)
+        title(['R ', SessionLabels{Indx_S}, ' N1 vs N3'])
+        Indx = Indx+1;
+    end
+
+saveas(gcf,fullfile(Paths.Results, [ Task, '_', Normalization, ...
+    '_', Subset, '_Retention_Topos_N1vsN3.svg']))
+
+
+
+% plot split by level for each session
+figure('units','normalized','outerposition',[0 0 .5 .5])
+FreqsIndxBand =  dsearchn( Freqs', Bands.Theta');
+Indexes_Hotspot =  ismember( str2double({Chanlocs.labels}), EEG_Channels.(Hotspot));
+for Indx_S = 1:numel(Sessions)
+    Matrix = squeeze(nanmean(Retention(:, Indx_S, 1:2, Indexes_Hotspot, :), 4));
+    
+    subplot(1, numel(Sessions), Indx_S)
+    PlotPowerHighlight(Matrix, Freqs, FreqsIndxBand, Colors, Format, Legend(1:2))
+    title([strjoin({'Retention', SessionLabels{Indx_S}, Task, Normalization}, ' ')])
+xlim([0 30])
+end
+NewLims = SetLims(1, 3, 'y');
+
+saveas(gcf,fullfile(Paths.Results, [ Task, '_', Normalization, ...
+    '_', Subset,  '_', Hotspot,  '_Retention_Power_N1vsN3.svg']))

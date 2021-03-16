@@ -9,7 +9,7 @@ close all
 
 Refresh = true;
 
-Task = 'PVT';
+Task = 'Oddball';
 Stimulus = 'Resp';
 % Options: 'Tones' (from LAT), 'Alarm', 'Stim', 'Resp'
 

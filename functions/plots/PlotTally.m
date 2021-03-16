@@ -6,7 +6,7 @@ Colors = Format.Colors.Tally;
 
 % normalize responses
 meanMatrix = squeeze(nanmean(Matrix, 1));
-prcntMatrix = 100*(meanMatrix./sum(meanMatrix, 2));
+prcntMatrix = 100*(meanMatrix./nansum(meanMatrix, 2));
 
 PlotStacks(prcntMatrix, Colors)
 

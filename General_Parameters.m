@@ -199,7 +199,7 @@ end
 
 clear Measures MeasureTypes M T
 Format.Legend.Tally = {'Hits', 'Late', 'Misses'};
-Format.Legend.Match2Sample = {'N1', 'N2', 'N3'};
+Format.Legend.Match2Sample = {'N1', 'N3', 'N6'};
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Format.Tasks.All = {'Game', 'SpFT', 'LAT', 'PVT', 'Match2Sample', 'Music',...

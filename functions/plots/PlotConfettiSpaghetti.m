@@ -1,4 +1,4 @@
-function PlotConfettiSpaghetti(Matrix, SessionLabels, YLims, Labels, ColorGroups, Format, Stats)
+function PlotConfettiSpaghetti(Matrix, SessionLabels, YLims, YLabels, ColorGroups, Format, Stats)
 % PlotConfettiSpaghetti(Matrix, SessionLabels, YLims, Title, Labels, ColorGroups)
 % plots a speghetti plot based on the matrix, with sessions on the x axis.
 % A faded color indicates participants; either a unique color per person,
@@ -72,9 +72,9 @@ else
 end
 
 
-if exist('Labels', 'var') && ~isempty(Labels)
-    yticks(linspace(YLims(1), YLims(2), numel(Labels)))
-    yticklabels(Labels)
+if exist('Labels', 'var') && ~isempty(YLabels)
+    yticks(linspace(YLims(1), YLims(2), numel(YLabels)))
+    yticklabels(YLabels)
 end
 %
 

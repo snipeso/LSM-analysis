@@ -1,3 +1,6 @@
+clear
+clc
+close all
 
 
 ERP_Parameters
@@ -8,7 +11,7 @@ Condition = 'RRT';
 Refresh = true;
 
 Window = [-1, 2];
-BL_Window = [-.75 -.25];
+BL_Window = [-.75 0];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -57,8 +60,8 @@ if Refresh || ~exist(fullfile(Paths.Summary, ERP_Filename), 'file')
             
             Points = size(Target_ERPs, 3);
             
-            T =  nanmean(Target_ERPs, 1);
-         
+            T = nanmean(Target_ERPs, 1);
+            
             Targets(Indx_P, Indx_S, 1:numel(Chanlocs), 1:Points) = T;
             
             
@@ -66,12 +69,12 @@ if Refresh || ~exist(fullfile(Paths.Summary, ERP_Filename), 'file')
             % random selection
             Standard_ERPs = Standard_ERPs( randi(size(Standard_ERPs, 1), size(Target_ERPs, 1), 1), :, :);
             S = nanmean(Standard_ERPs, 1);
-          
+            
             Standards(Indx_P, Indx_S, 1:numel(Chanlocs), 1:Points) = S;
         end
     end
     
-
+    
     % save to matrix
     save(fullfile(Paths.Summary, ERP_Filename), 'Targets', 'Standards', 'Chanlocs', 'Points')
 else
@@ -80,7 +83,7 @@ end
 
 %%
 
-Ch = 55;
+Ch = 6;
 ChanIndx = ismember( str2double({Chanlocs.labels}), Ch);
 
 
@@ -96,10 +99,10 @@ for Indx_S = 1:numel(Sessions)
     S = squeeze(nanmean(Standards(:, Indx_S, ChanIndx, :), 3));
     
     for Indx_P = 1:numel(Participants)
-       T(Indx_P, :) = smooth(T(Indx_P, :), 100); 
-
-      S(Indx_P, :) = smooth(S(Indx_P, :), 100); 
-      Diff(Indx_P, Indx_S, :) =  T(Indx_P, :)- S(Indx_P, :);
+        T(Indx_P, :) = smooth(T(Indx_P, :), 100);
+        
+        S(Indx_P, :) = smooth(S(Indx_P, :), 100);
+        Diff(Indx_P, Indx_S, :) =  T(Indx_P, :)- S(Indx_P, :);
     end
     
     plot(t, nanmean(T,1), ...
@@ -113,10 +116,10 @@ for Indx_S = 1:numel(Sessions)
     ylabel('Amplitude (miV)')
     TimeSeriesStats(cat(3, T, S), t, 200)
 end
- NewLims = SetLims(3, 4, 'y');
+NewLims = SetLims(3, 4, 'y');
 
- %%
- %%% plot Global Mean Field Power
+%%
+%%% plot Global Mean Field Power
 figure('units','normalized','outerposition',[0 0 1 1])
 t = linspace(Window(1), Window(2), Points);
 for Indx_S = 1:numel(Sessions)
@@ -129,10 +132,10 @@ for Indx_S = 1:numel(Sessions)
     S = GMFP(S);
     
     for Indx_P = 1:numel(Participants)
-       T(Indx_P, :) = smooth(T(Indx_P, :), 100); 
-
-      S(Indx_P, :) = smooth(S(Indx_P, :), 100); 
-      Diff(Indx_P, Indx_S, :) =  T(Indx_P, :)- S(Indx_P, :);
+        T(Indx_P, :) = smooth(T(Indx_P, :), 100);
+        
+        S(Indx_P, :) = smooth(S(Indx_P, :), 100);
+        Diff(Indx_P, Indx_S, :) =  T(Indx_P, :)- S(Indx_P, :);
     end
     
     plot(t, nanmean(T,1), ...
@@ -146,26 +149,26 @@ for Indx_S = 1:numel(Sessions)
     ylabel('Amplitude (miV)')
     TimeSeriesStats(cat(3, T, S), t, 200)
 end
- NewLims = SetLims(3, 4, 'y');
- 
- %%
- figure('units','normalized','outerposition',[0 0 1 .5])
- for Indx_S = 1:numel(Sessions)
-     
-     D = squeeze(Diff(:, Indx_S, :));
-    subplot(1, numel(Sessions), Indx_S) 
-      plot(t, nanmean(D,1), ...
+NewLims = SetLims(3, 4, 'y');
+
+%%
+figure('units','normalized','outerposition',[0 0 1 .5])
+for Indx_S = 1:numel(Sessions)
+    
+    D = squeeze(Diff(:, Indx_S, :));
+    subplot(1, numel(Sessions), Indx_S)
+    plot(t, nanmean(D,1), ...
         'LineWidth', 2, 'Color', Format.Colors.Generic.Dark1)
     title(SessionLabels{Indx_S})
     xlim([-.25, 1.5])
     xlabel('Time (s)')
     if Indx_S == 1
-    ylabel('Amplitude (miV)')
+        ylabel('Amplitude (miV)')
     end
     TimeSeriesStats(D, t, 200)
- end
-  NewLims = SetLims(1, numel(Sessions), 'y');
- 
+end
+NewLims = SetLims(1, numel(Sessions), 'y');
+
 % identify P100, P200, P300 peaks, save amplitude to matrix
 
 

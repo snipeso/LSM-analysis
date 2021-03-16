@@ -9,7 +9,6 @@ AllTriggerTimes =  [EEG.event.latency];
 TriggerTimes = AllTriggerTimes(strcmp(AllTriggers, Trigger));
 
 Starts = round(TriggerTimes + Window(1)*fs);
-
 Points = round(fs*(Window(2)-Window(1)));
 
 
@@ -40,7 +39,8 @@ for Indx_E = 1:numel(Starts)
         Stop_BL = Start_BL+BL_Points-1;
         
         BL = nanmean(Epoch(:, Start_BL:Stop_BL), 2);
-        Epoch = Epoch - BL;
+        STD_BL = nanstd(Epoch(:, Start_BL:Stop_BL), 0, 2);
+        Epoch = (Epoch - BL)./STD_BL;
     end
     
     ERPs(Indx_E, :, :) = Epoch;

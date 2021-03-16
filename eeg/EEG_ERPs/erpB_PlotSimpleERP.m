@@ -33,7 +33,7 @@ tPower = linspace(Start, Stop, ERPWindow*HilbertFS);
 [~, StartPower] = min(abs(tPower -PowerWindow(1)));
 [~, StopPower] = min(abs(tPower -PowerWindow(2)));
 
-
+%%
 
 %%%%%%%%%%%%
 %%% Plots
@@ -55,7 +55,7 @@ for Indx_Ch = 1:numel(PlotChannels)
         %         PlotERP(tPower, allPower.(BandNames{Indx_B}), TriggerTime, ...
         %             PlotChannels(Indx_Ch), 'Participants', Format.Colors.Participants)
         PlotERP(tPower, allPower.(BandNames{Indx_B}), TriggerTime, ...
-            PlotChannels(Indx_Ch), [], 'Sessions',Format.Colors.([Task,Condition]))
+            PlotChannels(Indx_Ch), [], 'Sessions',Format.Colors.(Condition).Sessions)
         xlim(Xlims)
         title([Labels{Indx_Ch}, ' ', BandNames{Indx_B}, ' ', replace(TitleTag, '_', ' '),])
         set(gca, 'FontSize', 14, 'FontName', Format.FontName)
@@ -65,7 +65,7 @@ for Indx_Ch = 1:numel(PlotChannels)
     
     % plot mean ERPs by session
     figure('units','normalized','outerposition',[0 0 .5 .5])
-    PlotERP(t, allData, TriggerTime,  PlotChannels(Indx_Ch), BLPoints, 'Sessions', Format.Colors.([Task,Condition]))
+    PlotERP(t, allData, TriggerTime,  PlotChannels(Indx_Ch), BLPoints, 'Sessions', Format.Colors.(Condition).Sessions)
     xlim(Xlims)
     title([Labels{Indx_Ch}, ' ', replace(TitleTag, '_', ' '), ' ERP by Session'])
     ylabel('miV')
