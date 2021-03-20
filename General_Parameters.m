@@ -292,6 +292,11 @@ Format.Labels.LAT.OneNight.Plot = {'Evening', 'Morning'};
 Format.Labels.Fixation.OneNight.Sessions = {'Main8', 'MainPost'};
 Format.Labels.Fixation.OneNight.Plot = {'Evening', 'Morning'};
 
+Format.Labels.Fixation.BAT.Sessions = {'BaselinePost', 'Main3', 'Main7'};
+Format.Labels.Fixation.BAT2.Sessions = {'MainPost', 'Main4', 'Main8'};
+
+Format.Labels.Fixation.BAT.Plot = {'BL', 'SD1', 'SD2'};
+
 % sessions for comparing overnight changes
 Format.Labels.PVT.Morning.Sessions = {'Session1Beam', 'MainPost'};
 Format.Labels.PVT.Morning.Plot = {'Pre', 'Post'};

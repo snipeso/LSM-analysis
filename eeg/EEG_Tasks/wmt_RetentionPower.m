@@ -18,6 +18,7 @@ Freqs = 1:.25:40;
 Subset = 'All'; % 'All', 'Correct', 'Incorrect'
 Hotspot = 'Backspot';
 YLim = [-.2 1.4];
+Band = 'Beta';
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -186,9 +187,13 @@ end
 
 Levels = 1:3;
 
+
+TitleInfo = {Task, Normalization,  Subset, Hotspot, Band};
+TitleTag = strjoin(TitleInfo, '_'); % TODO!
+
 % plot split by level for each session
 figure('units','normalized','outerposition',[0 0 1 .5])
-FreqsIndxBand =  dsearchn( Freqs', Bands.Theta');
+FreqsIndxBand =  dsearchn( Freqs', Bands.(Band)');
 Indexes_Hotspot =  ismember( str2double({Chanlocs.labels}), EEG_Channels.(Hotspot));
 for Indx_S = 1:numel(Sessions)
     Matrix = squeeze(nanmean(Retention(:, Indx_S, :, Indexes_Hotspot, :), 4));
@@ -196,7 +201,7 @@ for Indx_S = 1:numel(Sessions)
     
     subplot(1, numel(Sessions), Indx_S)
     PlotPowerHighlight(Matrix, Freqs, FreqsIndxBand, Colors, Format, Legend)
-    title([strjoin({'Retention', SessionLabels{Indx_S}, Task, Normalization}, ' ')])
+    title([strjoin({'Retention', SessionLabels{Indx_S}, Subset, Hotspot, Band}, ' ')])
     if exist('YLim', 'var')
         ylim(YLim)
     end
@@ -204,12 +209,11 @@ for Indx_S = 1:numel(Sessions)
 end
 NewLims = SetLims(1, 3, 'y');
 
-saveas(gcf,fullfile(Paths.Results, [ Task, '_', Normalization, ...
-    '_', Subset, '_', Hotspot, '_Retention_Power_by_Level.svg']))
+saveas(gcf,fullfile(Paths.Results, [TitleTag,  '_Retention_Power_by_Level.svg']))
 
 % Plot power during encoding
 figure('units','normalized','outerposition',[0 0 1 .5])
-FreqsIndxBand =  dsearchn( Freqs', Bands.Theta');
+FreqsIndxBand =  dsearchn( Freqs', Bands.(Band)');
 Indexes_Hotspot =  ismember( str2double({Chanlocs.labels}), EEG_Channels.(Hotspot));
 for Indx_S = 1:numel(Sessions)
     Matrix = squeeze(nanmean(Encoding(:, Indx_S, :, Indexes_Hotspot, :), 4));
@@ -224,8 +228,7 @@ for Indx_S = 1:numel(Sessions)
     xlim([0 30])
 end
 NewLims = SetLims(1, 3, 'y');
-saveas(gcf,fullfile(Paths.Results, [ Task, '_', Normalization, ...
-    '_', Subset,  '_', Hotspot,  '_Encoding_Power_by_Level.svg']))
+saveas(gcf,fullfile(Paths.Results, [TitleTag, '_Encoding_Power_by_Level.svg']))
 
 
 % plot topography
@@ -245,8 +248,7 @@ for Indx_L = 1:numel(Levels)
     end
 end
 
-saveas(gcf,fullfile(Paths.Results, [ Task, '_', Normalization, ...
-    '_', Subset, '_Retention_Topos_by_Level.svg']))
+saveas(gcf,fullfile(Paths.Results, [TitleTag, '_Retention_Topos_by_Level.svg']))
 
 
 figure('units','normalized','outerposition',[0 0 .5 .5])
@@ -262,8 +264,7 @@ for Indx_L = 1:numel(Levels)
     end
 end
 
-saveas(gcf,fullfile(Paths.Results, [ Task, '_', Normalization, ...
-    '_', Subset, '_Encoding_Topos_by_Level.svg']))
+saveas(gcf,fullfile(Paths.Results, [TitleTag, '_Encoding_Topos_by_Level.svg']))
 % TODO: BL, normalizes trial by baseline just prior
 
 
@@ -282,14 +283,13 @@ Indx = 1;
         Indx = Indx+1;
     end
 
-saveas(gcf,fullfile(Paths.Results, [ Task, '_', Normalization, ...
-    '_', Subset, '_Retention_Topos_N1vsN3.svg']))
+saveas(gcf,fullfile(Paths.Results, [TitleTag, '_Retention_Topos_N1vsN3.svg']))
 
 
 
 % plot split by level for each session
 figure('units','normalized','outerposition',[0 0 .5 .5])
-FreqsIndxBand =  dsearchn( Freqs', Bands.Theta');
+FreqsIndxBand =  dsearchn( Freqs', Bands.(Band)');
 Indexes_Hotspot =  ismember( str2double({Chanlocs.labels}), EEG_Channels.(Hotspot));
 for Indx_S = 1:numel(Sessions)
     Matrix = squeeze(nanmean(Retention(:, Indx_S, 1:2, Indexes_Hotspot, :), 4));
@@ -301,5 +301,11 @@ xlim([0 30])
 end
 NewLims = SetLims(1, 3, 'y');
 
-saveas(gcf,fullfile(Paths.Results, [ Task, '_', Normalization, ...
-    '_', Subset,  '_', Hotspot,  '_Retention_Power_N1vsN3.svg']))
+saveas(gcf,fullfile(Paths.Results, [TitleTag, '_Retention_Power_N1vsN3.svg']))
+
+
+
+% plot comparison for each 
+
+
+

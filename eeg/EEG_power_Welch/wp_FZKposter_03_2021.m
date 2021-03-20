@@ -9,7 +9,7 @@ wp_Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% set parameters
 
-Normalization = ''; % 'zscore', 'log', 'none'
+Normalization = 'zscore'; % 'zscore', 'log', 'none'
 YLimBand = [-2, 6 ];
 YLimSpectrum = [-.5, 1.2];
 
@@ -17,7 +17,7 @@ RefreshMatrices = true;
 
 Tag = 'Power';
 Hotspot = 'Hotspot'; % TODO: make sure this is in apporpriate figure name
-Plot_Single_Topos = false;
+Plot_Single_Topos = true;
 
 % Channels_10_20 = EEG_Channels.Standard;
 
@@ -503,7 +503,7 @@ for Indx_B = 1:numel(AllBands)
                 M1 = Band_Topo_All(:, :, Indx_S, Indx_O);
                 PlotTopoDiff(M0, M1, Chanlocs, CLims, Format)
                 colorbar off
-                saveas(gcf,fullfile(Destination, [TitleTag, '_TaskDiffs_', CompareTaskSessions{Indx_S}, '_', ...
+                saveas(gcf,fullfile(Destination, [TitleTag, '_TaskDiffsFromFix_', CompareTaskSessions{Indx_S}, '_', ...
                     num2str(CLims(1)), '_', num2str(CLims(2)), '_' AllTasks{Indx_O}, '.svg']))
                 
                 
@@ -524,6 +524,8 @@ for Indx_B = 1:numel(AllBands)
                 title([AllTasksLabels{Indx_O}, ' ' num2str(Indx_S)])
                 
             end
+             saveas(gcf,fullfile(Destination, [TitleTag, '_TaskDiffsFromFixALL_', CompareTaskSessions{Indx_S}, '_', ...
+                    num2str(CLims(1)), '_', num2str(CLims(2)),'.svg']))
         end
         
         
@@ -538,9 +540,12 @@ for Indx_B = 1:numel(AllBands)
         S_BL = squeeze(Hotspot_Spectrum(:, :, 1, Indx_T));
         S_SD = squeeze(Hotspot_Spectrum(:, :, 2, Indx_T));
         
+        Matrix = cat(3, S_BL, S_SD);
+        Matrix = permute(Matrix, [1,3,2]);
+        
         figure('units','normalized','outerposition',[0 0 .25 .4])
-       PlotPowerHighlight(WhiteSpectrum_Hotspot, Freqs, FreqsIndxBand, ...
-        Format.Colors.(Condition).Sessions, Format)
+       PlotPowerHighlight(Matrix, Freqs, FreqsIndxBand, ...
+        C, Format)
         
         ylabel(YLabel)
         ylim(YLimSpectrum)
@@ -580,11 +585,12 @@ for Indx_B = 1:numel(AllBands)
     % correct for multiple comparisons
     
     figure('units','normalized','outerposition',[0 0 .5 .5])
-    PlotBars(BL_SD_Hotspot.HedgesG, [BL_SD_Hotspot.HedgesCI_Low,BL_SD_Hotspot.HedgesCI_High ], AllTasksLabels, Colors, 'vertical', Format)
+    PlotBars2(BL_SD_Hotspot.HedgesG, [BL_SD_Hotspot.HedgesCI_Low,BL_SD_Hotspot.HedgesCI_High ],...
+        AllTasksLabels, Colors, 'vertical', Format)
     ylabel('Hedges g')
     set(gca, 'FontSize', 12)
     saveas(gcf,fullfile(Paths.Results, [TitleTag, '_SD2-BL_EffectSizes.svg']))
-    
+    close all
     
 end
 

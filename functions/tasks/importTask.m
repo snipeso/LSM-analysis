@@ -30,7 +30,8 @@ for Indx_P = 1:size(Datasets, 1)
             
             continue
         elseif numel(Files)>1
-            warning([Folder, ' has too many files'])
+
+         warning(strjoin([Folder, ' has too many files']))
             continue
         end
         
