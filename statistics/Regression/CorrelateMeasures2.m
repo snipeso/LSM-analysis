@@ -17,7 +17,7 @@ Normalization = 'zscoreP'; %'zscoreS&P' 'zscoreP', 'none'
 % Normalization = 'none'; %'zscoreS&P' 'zscoreP', 'none'
 
 % Condition = 'BAT';
-% 
+%
 % Plot = struct();
 % Plot.Power = {'Hotspot_Delta', 'Hotspot_Theta', 'Hotspot_Alpha', 'Hotspot_Beta'};
 % Plot.Questionnaires = {'KSS', 'Difficult', 'Effortful', 'Focused', 'Motivation', 'Relaxing'};
@@ -25,15 +25,15 @@ Normalization = 'zscoreP'; %'zscoreS&P' 'zscoreP', 'none'
 
 
 % Condition = 'BAT';
-% 
+%
 % Plot = struct();
 % Plot.Power = {'Hotspot_Delta', 'Hotspot_Theta', 'Hotspot_Alpha', 'Hotspot_Beta'};
 % Plot.PowerPeaks = {'Hotspot_Amplitude', 'Hotspot_Peak', 'Hotspot_Slope', 'Hotspot_Intercept', 'Hotspot_FWHM' };
 % Plot.Questionnaires = {'KSS', 'Difficult', 'Effortful', 'Focused', 'Motivation', 'Relaxing'};
-% 
-% 
+%
+%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
+%
 % Tasks = Format.Tasks.(Condition);
 
 Condition = 'RRT';
@@ -45,7 +45,7 @@ Plot.Power = {'AllCh_Theta', 'Hotspot_Theta', 'Hotspot_Beta'};
 Plot.Questionnaires = {'KSS', 'WakeDifficulty', 'Difficulty', 'FixatingDifficulty', ...
     'Alertness',  'Focus', 'Motivation', ...
     'PhysicEnergy', 'EmotionEnergy', 'SpiritEnergy',  'PsychEnergy',  ...
-   'Mood',    'Happiness', 'Anger', ...
+    'Mood',    'Happiness', 'Anger', ...
     'Sadness',  'Fear', 'Stress', 'Tolerance',  'Other Pain'}; % extras:  'Enjoyment',  'Relxation',  'Hunger',  'Thirst',
 
 Tasks = {'Fixation'};
@@ -92,58 +92,58 @@ for Indx_M = 1:numel(Measures)
         switch Normalization
             case 'zscoreS&P'
                 if numel(Tasks) == 1
-                      for Indx_P = 1:numel(Participants)
-                    
-                    T = AllTasks(Indx_P, :, :);
-                    Mean = nanmean(T(:));
-                    STD = nanstd(T(:));
-                    AllTasks(Indx_P, :, :) = (T-Mean)./STD;
-                    
-                    
-                end
-                
-                if Indx_M == numel(Measures) && Indx_V == numel(Variables)
-                    ScatterGroup = ones(size(AllTasks));
-                end
-                
-                AllTasks = squeeze(AllTasks);
-                Means = nanmean(AllTasks, 1);
-                AllTasks = AllTasks-Means;
-                
-                V = AllTasks(:);
-                All_Measures = cat(2, All_Measures, V);
-                PlotMeasures = cat(2, PlotMeasures, Variable);
-                
-                
-                ScatterColors = Format.Colors.(Condition).Sessions;
-                else
-                ScatterGroup = nan(size(AllTasks));
-                for Indx_P = 1:numel(Participants)
-                    for Indx_S = 1:numel(SessionLabels)
-                        T = AllTasks(Indx_P, Indx_S, :);
+                    for Indx_P = 1:numel(Participants)
+                        
+                        T = AllTasks(Indx_P, :, :);
                         Mean = nanmean(T(:));
                         STD = nanstd(T(:));
-                        AllTasks(Indx_P, Indx_S, :) = (T-Mean)./STD;
+                        AllTasks(Indx_P, :, :) = (T-Mean)./STD;
                         
                         
-                        
-                        ScatterGroup(Indx_P, Indx_S, :) = 1:numel(Tasks); % stupid hack, since I cant think right now
+                    end
+                    
+                    if Indx_M == numel(Measures) && Indx_V == numel(Variables)
+                        ScatterGroup = ones(size(AllTasks));
+                    end
+                    
+                    AllTasks = squeeze(AllTasks);
+                    Means = nanmean(AllTasks, 1);
+                    AllTasks = AllTasks-Means;
+                    
+                    V = AllTasks(:);
+                    All_Measures = cat(2, All_Measures, V);
+                    PlotMeasures = cat(2, PlotMeasures, Variable);
+                    
+                    
+                    ScatterColors = Format.Colors.(Condition).Sessions;
+                else
+                    ScatterGroup = nan(size(AllTasks));
+                    for Indx_P = 1:numel(Participants)
+                        for Indx_S = 1:numel(SessionLabels)
+                            T = AllTasks(Indx_P, Indx_S, :);
+                            Mean = nanmean(T(:));
+                            STD = nanstd(T(:));
+                            AllTasks(Indx_P, Indx_S, :) = (T-Mean)./STD;
+                            
+                            
+                            
+                            ScatterGroup(Indx_P, Indx_S, :) = 1:numel(Tasks); % stupid hack, since I cant think right now
+                        end
+                    end
+                    
+                    V = AllTasks(:);
+                    All_Measures = cat(2, All_Measures, V);
+                    PlotMeasures = cat(2, PlotMeasures, Variable);
+                    ScatterGroup = ScatterGroup(:); % list of tasks
+                    
+                    
+                    ScatterColors = [];
+                    
+                    for Indx_T = 1:numel(Tasks)
+                        ScatterColors = cat(1, ScatterColors, Format.Colors.Tasks.(Tasks{Indx_T})) ;
                     end
                 end
                 
-                V = AllTasks(:);
-                All_Measures = cat(2, All_Measures, V);
-                PlotMeasures = cat(2, PlotMeasures, Variable);
-                ScatterGroup = ScatterGroup(:); % list of tasks
-                
-                
-                ScatterColors = [];
-                
-                for Indx_T = 1:numel(Tasks)
-                    ScatterColors = cat(1, ScatterColors, Format.Colors.Tasks.(Tasks{Indx_T})) ;
-                end
-                end
-                    
             case 'zscoreP'
                 
                 for Indx_P = 1:numel(Participants)
@@ -183,7 +183,7 @@ for Indx_M = 1:numel(Measures)
                     ScatterGroup = ScatterGroup(:); % list of sessions
                 end
                 ScatterColors = [];
-                 V = AllTasks(:);
+                V = AllTasks(:);
                 All_Measures = cat(2, All_Measures, V);
                 PlotMeasures = cat(2, PlotMeasures, Variable);
         end
@@ -235,29 +235,29 @@ for Plotting = PlotGroups
     end
     
     if PlotAll
-    figure('units','normalized','outerposition',[0 0 1 1])
-    FigIndx = 1;
-    Indx = 1;
-    for Indx_X = 1:numel(PlotMeasures)
-        for Indx_Y = Indx_X+1:numel(PlotMeasures)
-            
-            if Indx > 3*5 % loop through subplots until run out, then start new figure
-                saveas(gcf,fullfile(Paths.Results, [TitleTagNew, '_ScatterAll', num2str(FigIndx),'.svg']))
-                figure('units','normalized','outerposition',[0 0 1 1])
-                Indx = 1;
-                FigIndx = FigIndx + 1;
+        figure('units','normalized','outerposition',[0 0 1 1])
+        FigIndx = 1;
+        Indx = 1;
+        for Indx_X = 1:numel(PlotMeasures)
+            for Indx_Y = Indx_X+1:numel(PlotMeasures)
+                
+                if Indx > 3*5 % loop through subplots until run out, then start new figure
+                    saveas(gcf,fullfile(Paths.Results, [TitleTagNew, '_ScatterAll', num2str(FigIndx),'.svg']))
+                    figure('units','normalized','outerposition',[0 0 1 1])
+                    Indx = 1;
+                    FigIndx = FigIndx + 1;
+                end
+                subplot(3, 5, Indx)
+                PlotConfetti(All_Measures(:, Indx_X), All_Measures(:, Indx_Y), ...
+                    ScatterGroup, Format, [], ScatterColorsTemp)
+                xlabel(PlotMeasures{Indx_X})
+                ylabel(PlotMeasures{Indx_Y})
+                title(['R=', num2str(R(Indx_X, Indx_Y), '%.2f'), ' p=', num2str(P(Indx_X, Indx_Y), '%.2f')])
+                Indx = Indx+1;
             end
-            subplot(3, 5, Indx)
-            PlotConfetti(All_Measures(:, Indx_X), All_Measures(:, Indx_Y), ...
-                ScatterGroup, Format, [], ScatterColorsTemp)
-            xlabel(PlotMeasures{Indx_X})
-            ylabel(PlotMeasures{Indx_Y})
-            title(['R=', num2str(R(Indx_X, Indx_Y), '%.2f'), ' p=', num2str(P(Indx_X, Indx_Y), '%.2f')])
-            Indx = Indx+1;
+            
         end
-        
-    end
-    saveas(gcf,fullfile(Paths.Results, [TitleTagNew, '_ScatterAll', num2str(FigIndx), '.svg']))
+        saveas(gcf,fullfile(Paths.Results, [TitleTagNew, '_ScatterAll', num2str(FigIndx), '.svg']))
     end
 end
 

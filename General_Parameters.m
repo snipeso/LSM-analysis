@@ -41,6 +41,7 @@ GroupLabels.Gender = {'m','m','m', 'f','m', 'f','f', 'm','f', 'f','m', 'm','m', 
 Format = struct();
 
 Format.FontName = 'Tw Cen MT'; % use something else for papers
+Format.TopoRes = 150;
 
 % Colors
 Format.Colormap.Linear = flip(colorcet('L17'));
