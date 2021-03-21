@@ -40,15 +40,15 @@ Condition = 'RRT';
 
 Plot = struct();
 
-Plot.PowerPeaks = { 'Hotspot_Slope', 'Hotspot_Peak','Hotspot_Intercept','Hotspot_Amplitude',  'Hotspot_FWHM'};
-Plot.Power = {'Hotspot_Theta', 'Hotspot_Beta'};
+Plot.PowerPeaks = append('AllCh_', { 'Slope', 'Peak','Intercept','Amplitude',  'FWHM'});
+Plot.Power = {'AllCh_Theta', 'Hotspot_Theta', 'Hotspot_Beta'};
 Plot.Questionnaires = {'KSS', 'WakeDifficulty', 'Difficulty', 'FixatingDifficulty', ...
     'Alertness',  'Focus', 'Motivation', ...
     'PhysicEnergy', 'EmotionEnergy', 'SpiritEnergy',  'PsychEnergy',  ...
    'Mood',    'Happiness', 'Anger', ...
     'Sadness',  'Fear', 'Stress', 'Tolerance',  'Other Pain'}; % extras:  'Enjoyment',  'Relxation',  'Hunger',  'Thirst',
 
-Tasks = {'Oddball'};
+Tasks = {'Fixation'};
 
 PlotAll = false;
 

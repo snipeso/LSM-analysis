@@ -7,19 +7,19 @@ wp_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Refresh = false;
+Refresh = true;
 PlotSpectrums = false;
 Normalization = 'zscore';
-Condition = 'Classic';
+Condition = 'BAT';
 
 Tag = 'PowerPeaks';
-Hotspot = 'Hotspot'; % TODO: make sure this is in apporpriate figure name
+Hotspot = 'AllCh'; % TODO: make sure this is in apporpriate figure name
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 Tasks = Format.Tasks.(Condition);
-TitleTag = strjoin({Tag, Normalization, Condition}, '_');
+TitleTag = strjoin({Tag, Normalization, Condition, Hotspot}, '_');
 
 % make destination folders
 Paths.Results = string(fullfile(Paths.Results, Tag));
@@ -38,7 +38,7 @@ for Indx_T = 1:numel(Tasks)
     Task = Tasks{Indx_T};
     
     % in loop, load all files
-    PeaksPath = fullfile(Paths.Summary, [Task, '_' Condition, '_PowerPeaks.mat']);
+    PeaksPath = fullfile(Paths.Summary, [Task, '_' Condition, '_',Hotspot, '_PowerPeaks.mat']);
     PowerPath = fullfile(Paths.WelchPower, Task);
     Sessions = Format.Labels.(Task).(Condition).Sessions;
     SessionLabels = Format.Labels.(Task).(Condition).Plot;

@@ -16,7 +16,7 @@ YLimSpectrum = [-.5, 1.2];
 RefreshMatrices = true;
 
 Tag = 'Power';
-Hotspot = 'Hotspot'; % TODO: make sure this is in apporpriate figure name
+Hotspot = 'AllCh'; % TODO: make sure this is in apporpriate figure name
 Plot_Single_Topos = false;
 
 % Channels_10_20 = EEG_Channels.Standard;

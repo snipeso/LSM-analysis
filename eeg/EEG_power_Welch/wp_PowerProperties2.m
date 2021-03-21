@@ -9,18 +9,19 @@ wp_Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% set parameters
 
-Normalization = ''; % 'zscore', 'log', 'none'
+Normalization = 'zscore'; % 'zscore', 'log', 'none'
 
 Refresh = true;
-Condition = 'Morning';
 Tag = 'Power';
-Hotspot = 'Hotspot'; % TODO: make sure this is in apporpriate figure name
+Hotspot = 'AllCh'; % TODO: make sure this is in apporpriate figure name
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 Tasks =  Format.Tasks.BAT;
+TasksLabels = Format.Tasks.BAT;
+RRT =  Format.RRT.BAT;
 TasksLabels = Format.Tasks.BAT;
 
 
