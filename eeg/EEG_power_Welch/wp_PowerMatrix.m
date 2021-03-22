@@ -11,7 +11,7 @@ wp_Parameters
 Refresh = true;
 PlotSpectrums = false;
 Normalization = '';
-Condition = 'RRT';
+Condition = 'All';
 
 Tag = 'Power';
 Hotspot = 'Hotspot'; % TODO: make sure this is in apporpriate figure name

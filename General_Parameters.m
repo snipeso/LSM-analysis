@@ -203,8 +203,9 @@ Format.Legend.Tally = {'Hits', 'Late', 'Misses'};
 Format.Legend.Match2Sample = {'N1', 'N3', 'N6'};
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Format.Tasks.All = {'Game', 'SpFT', 'LAT', 'PVT', 'Match2Sample', 'Music',...
-    'MWT', 'Standing', 'QuestionnaireEEG', 'Oddball', 'Fixation', 'TV'};
+% Format.Tasks.All = {'Game', 'SpFT', 'LAT', 'PVT', 'Match2Sample', 'Music',...
+%     'MWT', 'Standing', 'QuestionnaireEEG', 'Oddball', 'Fixation', 'TV'};
+Format.Tasks.All = {'LAT', 'PVT'};
 Format.Tasks.BAT = {'Match2Sample','LAT', 'PVT',  'SpFT', 'Game', 'Music'};
 Format.Labels.BAT = {'WMT', 'LAT', 'PVT', 'Speech', 'Game', 'Music'};
 % Format.Tasks.RRT = {'Standing', 'QuestionnaireEEG', 'Oddball', 'Fixation'};

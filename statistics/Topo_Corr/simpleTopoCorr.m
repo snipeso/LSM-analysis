@@ -13,5 +13,6 @@ Values = reshape(Values, [], 1);
 for Indx_Ch = 1:nCh
    T = squeeze(Topos(:, :, Indx_Ch)); 
    T = reshape(T, [], 1);
-   [TopoR(Indx_Ch), TopoP(Indx_Ch)] = corr(Values, T);
+   [TopoR(Indx_Ch), TopoP(Indx_Ch)] = corr(Values, T, 'rows', 'complete');
+%    figure; scatter(Values, T)
 end

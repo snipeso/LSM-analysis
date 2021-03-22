@@ -4,6 +4,8 @@ clear
 clc
 close all
 
+topo_Parameters
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Normalization = 'zscoreP'; %'zscoreS&P' 'zscoreP', 'none'
@@ -12,11 +14,12 @@ Condition = 'RRT';
 
 Topos = struct();
 Topos.Power = {'Theta'}; % {'Delta', 'Theta', 'Alpha', 'Beta'}
-% Topos.PowerPeaks = {'Intercept', 'Amplitude', 'FWHM'};
+Topos.Power = {'Delta', 'Theta', 'Alpha', 'Beta'};
+Topos.PowerPeaks = {'Intercept', 'Amplitude', 'FWHM'};
 
 Values = struct();
+% Values.Questionnaires = {'KSS',  'WakeDifficulty', 'FixatingDifficulty'};
 Values.Questionnaires = {'KSS'};
-
 % Values.Questionnaires = {'KSS', 'WakeDifficulty', 'Difficulty', 'FixatingDifficulty', ...
 %     'Alertness',  'Focus', 'Motivation', ...
 %     'PhysicEnergy', 'EmotionEnergy', 'SpiritEnergy',  'PsychEnergy',  ...
@@ -24,9 +27,10 @@ Values.Questionnaires = {'KSS'};
 %     'Sadness',  'Fear', 'Stress', 'Tolerance',  'Other Pain'}; % extras:  'Enjoyment',  'Relxation',  'Hunger',  'Thirst',
 
 
-Tasks = {'Fixation'};
-% Tasks = Format.Tasks.(Condition);
+% Tasks = {'Oddball', 'Fixation'};
+Tasks = Format.Tasks.(Condition);
 
+CLimits = [-.6, .6];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 TitleTag = strjoin({'SimpleTopoCorr', Normalization, Condition, Tasks{1:end}}, '_');
@@ -59,7 +63,7 @@ for Indx_TM = 1:numel(TopoMeasures)
                             T = Topo(Indx_P, Indx_S, :);
                             Mean = nanmean(T(:));
                             STD = nanstd(T(:));
-                            Topo(Indx_P, :, :) = (T-Mean)./STD;
+                            Topo(Indx_P, Indx_S, :) = (T-Mean)./STD;
                         end
                     end
                 case 'zscoreP'
@@ -73,13 +77,13 @@ for Indx_TM = 1:numel(TopoMeasures)
             
             
             for Indx_VM = 1:numel(ValueMeasures)
-                ValueTypes = Values.(ValueMeasures{Indx_V});
+                ValueTypes = Values.(ValueMeasures{Indx_VM});
                 for Indx_VT = 1:numel(ValueTypes)
                     
                     % load matrix of values to compare (p x s)
-                    Filename_Value = strjoin({ValueMeasures{Indx_V}, ...
+                    Filename_Value = strjoin({ValueMeasures{Indx_VM}, ...
                         Condition, Task, [ValueTypes{Indx_VT}, '.mat']}, '_');
-                    load(fullfile(Paths.Stats, ValueMeasures{Indx_V}, Filename_Topo), ...
+                    load(fullfile(Paths.Stats, ValueMeasures{Indx_VM}, Filename_Value), ...
                         'Matrix')
                     
                     % normalize values
@@ -106,14 +110,18 @@ for Indx_TM = 1:numel(TopoMeasures)
                     % get correlation
                     [TopoR, TopoP] = simpleTopoCorr(Topo, Matrix);
                     [~, h] = fdr(TopoP, .05);
-                    figure
-                    topoplot(TopoR, Chanlocs, 'maplimits', [-1 1], ...
+                    figure('units','normalized','outerposition',[0 0 .15 .3])
+                    Indexes = 1:numel(Chanlocs);
+                    topoplot(TopoR, Chanlocs, 'maplimits', CLimits, ...
                         'style', 'map', 'headrad', 'rim', 'gridscale', Format.TopoRes, ...
                         'emarker2', {Indexes(logical(h)), 'o', 'w', 3, .01});
                     title(strjoin({ValueTypes{Indx_VT}, 'vs', TopoBands{Indx_TB}, Task, Normalization}, ' '))
+                    set(gca, 'FontSize', 12, 'FontName', Format.FontName)
                     colormap(Format.Colormap.Divergent)
                     colorbar
                     
+                    saveas(gcf, fullfile(Paths.Results, ...
+                        strjoin({ValueTypes{Indx_VT}, 'vs', TopoBands{Indx_TB}, Task, [Normalization, '.svg']}, '_')))
                 end
                 
             end

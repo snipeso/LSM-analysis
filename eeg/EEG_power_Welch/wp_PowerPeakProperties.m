@@ -7,13 +7,13 @@ wp_Parameters
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Refresh = true;
+Refresh = false;
 PlotSpectrums = false;
-Normalization = 'zscore';
+Normalization = '';
 Condition = 'BAT';
 
 Tag = 'PowerPeaks';
-Hotspot = 'AllCh'; % TODO: make sure this is in apporpriate figure name
+Hotspot = 'Hotspot'; % TODO: make sure this is in apporpriate figure name
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -32,6 +32,10 @@ if ~exist(Paths.Stats, 'dir')
     mkdir(Paths.Stats)
 end
 
+Paths.Topos = fullfile(Paths.Topos, Tag);
+if ~exist(Paths.Topos, 'dir')
+    mkdir(Paths.Topos)
+end
 
 for Indx_T = 1:numel(Tasks)
     
@@ -130,6 +134,12 @@ for Indx_T = 1:numel(Tasks)
             [Variables{Indx_V}, '.mat']}, '_');
         save(fullfile(Paths.Stats, Filename_Hotspot), 'Matrix', 'Sessions', 'SessionLabels')
         
+        
+        % export topographies
+        Topo = PowerPeaks.(Variables{Indx_V});
+          Filename_Topo = strjoin({Tag, Condition, Task, ...
+            [Variables{Indx_V}, '.mat']}, '_');
+        save(fullfile(Paths.Topos, Filename_Topo), 'Topo', 'Sessions', 'SessionLabels', 'Chanlocs')
         
         if strcmp(Normalization, 'zscore')
             Matrix = (Matrix - nanmean(Matrix, 2))./nanstd(Matrix, 0, 2);
