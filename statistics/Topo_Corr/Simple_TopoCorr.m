@@ -10,10 +10,10 @@ topo_Parameters
 
 Normalization = 'zscoreP'; %'zscoreS&P' 'zscoreP', 'none'
 
-Condition = 'RRT';
+Condition = 'All';
 
 Topos = struct();
-Topos.Power = {'Theta'}; % {'Delta', 'Theta', 'Alpha', 'Beta'}
+% Topos.Power = {'Theta'}; % {'Delta', 'Theta', 'Alpha', 'Beta'}
 Topos.Power = {'Delta', 'Theta', 'Alpha', 'Beta'};
 Topos.PowerPeaks = {'Intercept', 'Amplitude', 'FWHM'};
 
@@ -28,7 +28,8 @@ Values.Questionnaires = {'KSS'};
 
 
 % Tasks = {'Oddball', 'Fixation'};
-Tasks = Format.Tasks.(Condition);
+% Tasks = Format.Tasks.(Condition);
+Tasks ={'LAT'};
 
 CLimits = [-.6, .6];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -19,12 +19,12 @@ clc
 close all
 EEG_Parameters
 
-Filename = 'P11_Fixation_MainPost_Cleaning.set'; % choose this if you want to clean a specific file
+Filename = 'P03_Game_Session2_Cleaning.set'; % choose this if you want to clean a specific file
 % Filename = []; % choose this if you want to randomly select a file to clean from the list
-Folder = 'Fixation';
+Folder = 'Game';
 
 Source = fullfile(Paths.Preprocessed, 'Cleaning', 'SET', Folder);
-Destination = fullfile(Paths.Preprocessed, 'Cleaning', 'Cuts', Folder);
+Destination = fullfile(Paths.Preprocessed, 'Cleaning', 'Cuts_Elena', Folder);
 
 EEG = loadEEGtoCut(Source, Destination, Filename, EEG_Triggers); % load file
 m = matfile(EEG.CutFilepath,'Writable',true); % create cuts file, load it to current workspace
@@ -54,8 +54,7 @@ showPlots = false;
 %%% run this function to open the popup window for marking the data. SAVE
 %%% BEFORE CLOSING. But if you do that, you can always open wherever you
 %%% left off. Run as many times as you want
-rmCh(EEG.CutFilepath, [107 113])
-rmCh(EEG.CutFilepath, [43 44 38 39])
+rmCh(EEG.CutFilepath, [48, 49, 56, 107, 113, 119, 125:128])
  
 MarkData(EEG) 
 

@@ -8,7 +8,7 @@ Q_Parameters
 
 Normalization = 'zscore'; % 'zscore'
 
-Condition = 'BAT';
+Condition = 'All';
 Tag = 'Questionnaires';
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
