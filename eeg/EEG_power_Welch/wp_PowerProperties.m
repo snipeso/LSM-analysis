@@ -13,7 +13,7 @@ Normalization = ''; % 'zscore', 'log', 'none'
 YLimBand = [-2, 6 ];
 YLimSpectrum = [-.5, 1.2];
 
-RefreshMatrices = true;
+RefreshMatrices = false;
 
 Tag = 'Power';
 Hotspot = 'AllCh'; % TODO: make sure this is in apporpriate figure name
@@ -40,16 +40,14 @@ SessionLabels_RRT =  Format.Labels.(RRT{1}).RRT.Plot;
 
 CompareTaskSessions = {'Baseline', 'Session2'};
 
-
-Paths.Results = string(fullfile(Paths.Results, 'FZK_03-2021'));
-if ~exist(Paths.Results, 'dir')
-    mkdir(Paths.Results)
-end
-
-
 Paths.Stats = fullfile(Paths.Stats, Tag);
 if ~exist(Paths.Stats, 'dir')
     mkdir(Paths.Stats)
+end
+
+Paths.Topos = fullfile(Paths.Topos, Tag);
+if ~exist(Paths.Topos, 'dir')
+    mkdir(Paths.Topos)
 end
 
 Results = struct();
@@ -277,12 +275,23 @@ for Indx_B = 1:numel(AllBands)
     % save matrices for stats
     for Indx_T  = 1:nTasks
         Matrix = squeeze(Band_Hotspot_BAT(:, :, Indx_T));
-        
         Sessions = Sessions_BAT;
         SessionLabels = SessionLabels_BAT;
         Filename_Hotspot = strjoin({'Power', 'BAT', Tasks{Indx_T}, Hotspot, ...
             [Variable, Normalization, '.mat']}, '_');
         save(fullfile(Paths.Stats, Filename_Hotspot), 'Matrix', 'Sessions', 'SessionLabels')
+        
+        
+        % save topos for stats
+        Topo = squeeze(Band_Topo_Tasks(:, :, :, Indx_T));
+        Topo = permute(Topo, [1, 3, 2]);
+        Sessions = Sessions_BAT;
+        SessionLabels = SessionLabels_BAT;
+        Filename_Topo = strjoin({'Power', 'BAT', Tasks{Indx_T}, ...
+            [Variable, Normalization, '.mat']}, '_');
+        save(fullfile(Paths.Topos, Filename_Topo), 'Topo', 'Sessions', 'SessionLabels', 'Chanlocs')
+        
+        
     end
     
     for Indx_T  = 1:nRRT
@@ -293,6 +302,16 @@ for Indx_B = 1:numel(AllBands)
         Filename_Hotspot = strjoin({'Power', 'RRT', RRT{Indx_T}, Hotspot, ...
             [Variable, Normalization, '.mat']}, '_');
         save(fullfile(Paths.Stats, Filename_Hotspot), 'Matrix', 'Sessions', 'SessionLabels')
+        
+        % save topos for stats
+        Topo = squeeze(Band_Topo_RRT(:, :, :, Indx_T));
+        Topo = permute(Topo, [1, 3, 2]);
+        Sessions = Sessions_RRT;
+        SessionLabels = SessionLabels_RRT;
+        Filename_Topo = strjoin({'Power', 'RRT', RRT{Indx_T}, ...
+            [Variable, Normalization, '.mat']}, '_');
+        save(fullfile(Paths.Topos, Filename_Topo), 'Topo', 'Sessions', 'SessionLabels', 'Chanlocs')
+        
     end
     
     
