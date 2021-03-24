@@ -34,6 +34,10 @@ end
 % merge data with component structure
 NewEEG = EEG;
 NewEEG.data = Data.data;
+NewEEG.pnts = Data.pnts;
+NewEEG.xmax = Data.xmax;
+NewEEG.times = Data.times;
+NewEEG.event = Data.event;
 
 % remove components
 NewEEG = pop_subcomp(NewEEG, badcomps);

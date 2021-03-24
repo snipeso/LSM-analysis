@@ -16,9 +16,9 @@ Refresh = false;
 
 Freqs = 1:.25:40;
 Subset = 'All'; % 'All', 'Correct', 'Incorrect'
-Hotspot = 'Backspot';
+Hotspot = 'Hotspot';
 YLim = [-.2 1.4];
-Band = 'Beta';
+Band = 'Theta';
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -178,7 +178,7 @@ if Refresh || ~exist(SummaryFile, 'file')
         end
         
     end
-     save(SummaryFile, 'Retention', 'Baseline', 'Encoding', 'Chanlocs')
+    save(SummaryFile, 'Retention', 'Baseline', 'Encoding', 'Chanlocs')
 else
     load(SummaryFile, 'Retention', 'Baseline', 'Encoding', 'Chanlocs')
 end
@@ -222,9 +222,9 @@ for Indx_S = 1:numel(Sessions)
     subplot(1, numel(Sessions), Indx_S)
     PlotPowerHighlight(Matrix, Freqs, FreqsIndxBand, Colors, Format, Legend)
     title([strjoin({'Encoding', SessionLabels{Indx_S}, Task, Normalization}, ' ')])
-      if exist('YLim', 'var')
+    if exist('YLim', 'var')
         ylim(YLim)
-      end
+    end
     xlim([0 30])
 end
 NewLims = SetLims(1, 3, 'y');
@@ -232,8 +232,6 @@ saveas(gcf,fullfile(Paths.Results, [TitleTag, '_Encoding_Power_by_Level.svg']))
 
 
 % plot topography
-
-
 
 figure('units','normalized','outerposition',[0 0 .5 .5])
 Indx = 1;
@@ -268,23 +266,106 @@ saveas(gcf,fullfile(Paths.Results, [TitleTag, '_Encoding_Topos_by_Level.svg']))
 % TODO: BL, normalizes trial by baseline just prior
 
 
+%%% plot SD effect for BL, Encoding and retention
+figure
+Indx = 1;
+for Indx_L = 1:numel(Levels)
+    for Indx_S = 2:numel(Sessions)
+        BL =  squeeze(nanmean(Baseline(:, 1, Indx_L, :, FreqsIndxBand(1):FreqsIndxBand(2)), 5));
+        M = squeeze(nanmean(Baseline(:, Indx_S, Indx_L, :, FreqsIndxBand(1):FreqsIndxBand(2)), 5));
+        
+        subplot(numel(Levels), numel(Sessions)-1, Indx)
+        PlotTopoDiff(BL, M, Chanlocs, [-5 5], Format)
+        title(['SD effect on BL ', SessionLabels{Indx_S}, ' ', Format.Legend.Match2Sample{Indx_L}])
+        Indx = Indx+1;
+    end
+end
+
+saveas(gcf,fullfile(Paths.Results, [TitleTag, '_Baseline_Topos_by_Session.svg']))
+
+
+
+figure
+Indx = 1;
+for Indx_L = 1:numel(Levels)
+    for Indx_S = 2:numel(Sessions)
+        BL =  squeeze(nanmean(Retention(:, 1, Indx_L, :, FreqsIndxBand(1):FreqsIndxBand(2)), 5));
+        M = squeeze(nanmean(Retention(:, Indx_S, Indx_L, :, FreqsIndxBand(1):FreqsIndxBand(2)), 5));
+        
+        subplot(numel(Levels), numel(Sessions)-1, Indx)
+        PlotTopoDiff(BL, M, Chanlocs, [-5 5], Format)
+        title(['SD effect on RT ', SessionLabels{Indx_S}, ' ', Format.Legend.Match2Sample{Indx_L}])
+        Indx = Indx+1;
+    end
+end
+
+saveas(gcf,fullfile(Paths.Results, [TitleTag, '_Retention_Topos_by_Session.svg']))
+
+
+
+figure
+Indx = 1;
+for Indx_L = 1:numel(Levels)
+    for Indx_S = 2:numel(Sessions)
+        BL =  squeeze(nanmean(Encoding(:, 1, Indx_L, :, FreqsIndxBand(1):FreqsIndxBand(2)), 5));
+        M = squeeze(nanmean(Encoding(:, Indx_S, Indx_L, :, FreqsIndxBand(1):FreqsIndxBand(2)), 5));
+        
+        subplot(numel(Levels), numel(Sessions)-1, Indx)
+        PlotTopoDiff(BL, M, Chanlocs, [-5 5], Format)
+        title(['SD effect on EN ', SessionLabels{Indx_S}, ' ', Format.Legend.Match2Sample{Indx_L}])
+        Indx = Indx+1;
+    end
+end
+
+saveas(gcf,fullfile(Paths.Results, [TitleTag, '_Encoding_Topos_by_Session.svg']))
+
 
 %%% N1 vs N3
 
 figure('units','normalized','outerposition',[0 0 .5 .3])
 Indx = 1;
 
-    for Indx_S = 1:numel(Sessions)
-        BL =  squeeze(nanmean(Retention(:, Indx_S, 1, :, FreqsIndxBand(1):FreqsIndxBand(2)), 5));
-        M = squeeze(nanmean(Retention(:, Indx_S, 2, :, FreqsIndxBand(1):FreqsIndxBand(2)), 5));
-        subplot(1, numel(Sessions), Indx)
-        PlotTopoDiff(BL, M, Chanlocs, [-5 5], Format)
-        title(['R ', SessionLabels{Indx_S}, ' N1 vs N3'])
-        Indx = Indx+1;
-    end
+for Indx_S = 1:numel(Sessions)
+    BL =  squeeze(nanmean(Encoding(:, Indx_S, 1, :, FreqsIndxBand(1):FreqsIndxBand(2)), 5));
+    M = squeeze(nanmean(Encoding(:, Indx_S, 2, :, FreqsIndxBand(1):FreqsIndxBand(2)), 5));
+    subplot(1, numel(Sessions), Indx)
+    PlotTopoDiff(BL, M, Chanlocs, [-5 5], Format)
+    title(['R ', SessionLabels{Indx_S}, ' N1 vs N3'])
+    Indx = Indx+1;
+end
 
 saveas(gcf,fullfile(Paths.Results, [TitleTag, '_Retention_Topos_N1vsN3.svg']))
 
+
+%%% plot for each participant
+Session = 3;
+figure('units','normalized','outerposition',[0 0 1 1])
+for Indx_P = 1:numel(Participants)
+    BL =  squeeze(nanmean(Retention(Indx_P, Session, 1, :, FreqsIndxBand(1):FreqsIndxBand(2)), 5));
+    M = squeeze(nanmean(Retention(Indx_P, Session, 2, :, FreqsIndxBand(1):FreqsIndxBand(2)), 5));
+    subplot(3, 4, Indx_P)
+   topoplot(M-BL, Chanlocs,  'style', 'map', 'headrad', 'rim','gridscale', 150)
+   colormap(Format.Colormap.Divergent)
+   colorbar
+    title([Participants{Indx_P}, ' N1 vs N3'])
+end
+saveas(gcf,fullfile(Paths.Results, [TitleTag, '_Individuals_', Sessions{Session}, '_N1vsN3.svg']))
+
+
+% Level = 1;
+% figure('units','normalized','outerposition',[0 0 1 1])
+% for Indx_P = 1:numel(Participants)
+%     BL =  squeeze(nanmean(Retention(Indx_P, 1, Level, :, FreqsIndxBand(1):FreqsIndxBand(2)), 5));
+%     M = squeeze(nanmean(Retention(Indx_P, 3, Level, :, FreqsIndxBand(1):FreqsIndxBand(2)), 5));
+%     subplot(3, 4, Indx_P)
+%    topoplot(M-BL, Chanlocs,  'style', 'map', 'headrad', 'rim','gridscale', 150)
+%    colormap(Format.Colormap.Divergent)
+%    colorbar
+%     title([Participants{Indx_P}, ' N1 vs N3'])
+% end
+% saveas(gcf,fullfile(Paths.Results, [TitleTag, '_Individuals_', Levels{Level}, '_S1vsS3.svg']))
+% 
+% 
 
 
 % plot split by level for each session
@@ -297,7 +378,7 @@ for Indx_S = 1:numel(Sessions)
     subplot(1, numel(Sessions), Indx_S)
     PlotPowerHighlight(Matrix, Freqs, FreqsIndxBand, Colors, Format, Legend(1:2))
     title([strjoin({'Retention', SessionLabels{Indx_S}, Task, Normalization}, ' ')])
-xlim([0 30])
+    xlim([0 30])
 end
 NewLims = SetLims(1, 3, 'y');
 
@@ -305,7 +386,7 @@ saveas(gcf,fullfile(Paths.Results, [TitleTag, '_Retention_Power_N1vsN3.svg']))
 
 
 
-% plot comparison for each 
+% plot comparison for each
 
 
 

@@ -354,6 +354,7 @@ EEG_Channels.Hotspot = [2:6, 9:13, 15, 16, 18:20, 23, 24, 26:29, 111, 112, 117, 
 EEG_Channels.Backspot = unique([EEG_Channels.O1, EEG_Channels.O2, 72, 75]);
 EEG_Channels.AllCh = 1:128;
 EEG_Channels.AllCh(ismember(EEG_Channels.AllCh, EEG_Channels.notEEG)) = [];
+EEG_Channels.Elena = [48, 49, 56, 107, 113, 119, 125:128];
 
 EEG_Channels.CZ = [36, 104];
 EEG_Channels.FZ = [11];

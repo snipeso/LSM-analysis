@@ -61,9 +61,9 @@ for Indx_T = 1:numel(Tasks)
         end
         
         try
-        % set to nan all cut data
-        Cuts_Filepath = fullfile(Source_Cuts, [extractBefore(File, '_Clean'), '_Cleaning_Cuts.mat']);
-        EEG = nanNoise(EEG, Cuts_Filepath);
+            % set to nan all cut data
+            Cuts_Filepath = fullfile(Source_Cuts, [extractBefore(File, '_Clean'), '_Cleaning_Cuts.mat']);
+            EEG = nanNoise(EEG, Cuts_Filepath);
         catch
             warning(['SKIPPING ', EEG.filename])
             continue

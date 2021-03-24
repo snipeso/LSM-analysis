@@ -19,9 +19,9 @@ clc
 close all
 EEG_Parameters
 
-Filename = 'P03_Game_Session2_Cleaning.set'; % choose this if you want to clean a specific file
+Filename = 'P10_Match2Sample_Session2_Cleaning.set'; % choose this if you want to clean a specific file
 % Filename = []; % choose this if you want to randomly select a file to clean from the list
-Folder = 'Game';
+Folder = 'Match2Sample';
 
 Source = fullfile(Paths.Preprocessed, 'Cleaning', 'SET', Folder);
 Destination = fullfile(Paths.Preprocessed, 'Cleaning', 'Cuts_Elena', Folder);
@@ -54,7 +54,7 @@ showPlots = false;
 %%% run this function to open the popup window for marking the data. SAVE
 %%% BEFORE CLOSING. But if you do that, you can always open wherever you
 %%% left off. Run as many times as you want
-rmCh(EEG.CutFilepath, [48, 49, 56, 107, 113, 119, 125:128])
+rmCh(EEG.CutFilepath, EEG_Channels.Elena)
  
 MarkData(EEG) 
 

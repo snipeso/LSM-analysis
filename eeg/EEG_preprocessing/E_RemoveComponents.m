@@ -7,15 +7,16 @@ clc
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Task = 'QuestionnaireEEG';
-Refresh = false;
+Task = 'Match2Sample';
+Refresh = true;
 
 Data_Type = 'Wake';
-% Filename = ['P01_PVT_Session2Comp_ICA_Components.set'];
+% Filename = ['P01_Game_Session2_ICA_Components.set'];
 Filename = [];
 CheckOutput = true;
 Automate = false;
-
+Component_Folder = 'Components_Elena'; % 'Components';
+Destination_Folder = 'Deblinked_Elena'; % 'Deblinked'
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 EEG_Parameters
 
@@ -26,9 +27,9 @@ end
     
 
 % get files and paths
-Source_Comps = fullfile(Paths.Preprocessed, 'ICA', 'Components', Task);
+Source_Comps = fullfile(Paths.Preprocessed, 'ICA', Component_Folder, Task);
 Source_Data = fullfile(Paths.Preprocessed, Data_Type, 'SET', Task);
-Destination = fullfile(Paths.Preprocessed, 'ICA', ['Deblinked_',Data_Type], Task);
+Destination = fullfile(Paths.Preprocessed, 'ICA', [Destination_Folder, '_',Data_Type], Task);
 
 if ~exist(Destination, 'dir')
     mkdir(Destination)

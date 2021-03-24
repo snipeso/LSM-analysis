@@ -11,17 +11,23 @@ clear
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Tasks = {'Oddball', 'Fixation', 'Standing'}; % specify folder for analysis
-Tasks = {'PVT'};
-DataType = 'Wake';
-Refresh = false;
+Tasks = {'Match2Sample'};
+DataType = 'Wake'; % 'Wake', 'ICA'
+Refresh = true;
 SpotCheck = false;
+RemoveChannels = 'Elena'; % 'notEEG'
 
+SourceEEG_Folder = 'Deblinked_Elena'; % 'Deblinked'
+SourceCuts_Folder = 'Cuts_Elena'; % 'Cuts'
+% Destination_Folder = DataType;
+Destination_Folder = 'Elena';
+FinalTopo = 'Elena'; % notEEG
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 EEG_Parameters
 
 % get final channels
 load('StandardChanlocs128.mat', 'StandardChanlocs')
-StandardChanlocs(EEG_Channels.notEEG) = [];
+StandardChanlocs(EEG_Channels.(FinalTopo)) = [];
 
 
 for Indx_T = 1:numel(Tasks)
@@ -29,9 +35,9 @@ for Indx_T = 1:numel(Tasks)
     Task = Tasks{Indx_T};
     
     % get files and paths
-    Source_EEG = fullfile(Paths.Preprocessed, 'ICA', ['Deblinked_', DataType], Task);
-    Source_Cuts = fullfile(Paths.Preprocessed, 'Cleaning', 'Cuts', Task);
-    Destination = fullfile(Paths.Preprocessed, 'Interpolated', DataType, Task);
+    Source_EEG = fullfile(Paths.Preprocessed, 'ICA', [SourceEEG_Folder, '_', DataType], Task);
+    Source_Cuts = fullfile(Paths.Preprocessed, 'Cleaning', SourceCuts_Folder, Task);
+    Destination = fullfile(Paths.Preprocessed, 'Interpolated', Destination_Folder, Task);
     
     if ~exist(Destination, 'dir')
         mkdir(Destination)
