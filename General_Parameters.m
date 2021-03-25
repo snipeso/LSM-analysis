@@ -7,9 +7,9 @@ Paths = struct(); % I make structs of variables so they don't flood the workspac
 Paths.Analysis = mfilename('fullpath');
 Paths.Analysis = extractBefore(Paths.Analysis, 'General_Parameters');
 
-% get related paths
-Paths.Figures = fullfile(Paths.Analysis, 'figures');
-Paths.Results = fullfile(Paths.Analysis, 'results');
+Paths.Preprocessed = 'D:\Data\Preprocessed'; % LSM external hard disk
+Paths.Results = 'D:\Data\Results';
+Paths.Datasets ='D:\Data\Raw';
 
 
 % add location of subfunctions
@@ -386,6 +386,17 @@ Bands.Theta = [4 8];
 Bands.Alpha = [8 14];
 Bands.Beta = [15 25];
 BandNames = fieldnames(Bands);
+
+
+
+Epochs.Match2Sample.Baseline.Trigger = {EEG_Triggers.Stim};
+Epochs.Match2Sample.Baseline.Window = [-4 0];
+
+Epochs.Match2Sample.Encoding.Trigger = {EEG_Triggers.Stim};
+Epochs.Match2Sample.Encoding.Window = [0 3];
+
+Epochs.Match2Sample.Retention.Trigger = {'S 10'};
+Epochs.Match2Sample.Retention.Window = [0 4];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

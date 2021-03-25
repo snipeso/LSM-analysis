@@ -29,8 +29,8 @@ Legend = [ Format.Legend.(Task),'Baseline'];
 Colors = [Format.Colors.Match2Sample;Format.Colors.Generic.Dark1];
 Window = 4;
 
-EndBL_Trigger = 'S  3';
-StartRT_Trigger = 'S 10';
+EndBL_Trigger = Epochs.(Task).Baseline.Trigger;
+StartRT_Trigger = 'S 10'; % start fixatio
 
 Paths.Results = string(fullfile(Paths.Results, 'PowerTasks'));
 if ~exist(Paths.Results, 'dir')

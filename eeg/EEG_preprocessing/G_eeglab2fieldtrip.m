@@ -11,8 +11,6 @@ Task = 'Match2Sample';
 Refresh = true;
 
 Data_Type = 'Wake';
-% Filename = ['P01_PVT_Session2Comp_ICA_Components.set'];
-Filename = [];
 
 Source_Folder = 'Elena'; % 'Deblinked'
 Destination_Folder = 'SourceLocalization';

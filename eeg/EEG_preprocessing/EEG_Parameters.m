@@ -77,6 +77,7 @@ Parameters(6).hp_stopband = 0.05; % high pass filter
 Trigger_Padding = 1; % amount of time in seconds to keep around start and stop triggers
 
 
+
 % spot checking
 SpotCheckFrequency = 10; % 1 out of this number will be plotted
 CheckChannels = [10, 70]; % frontal and occipital channel
