@@ -8,10 +8,10 @@ EEG_Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Task = 'Match2Sample';
-Epoch = 'Retention';
-Criteria = 'level';
-Keep = [1];
-Title = strjoin(Format.Legend.(Task)(Keep), '_');
+Epoch = 'Baseline'; % based on Epoch struct in general parameters, select type of epoch
+Criteria = 'level'; % based on behavior output table, what trial information used to select trials
+Keep = [1, 3, 6]; % which aspects of Criteria to keep
+Title = 'All'; % new title to assign to condition
 
 Refresh = false;
 
@@ -59,6 +59,12 @@ for Indx_F = 1:nFiles
     Participant = Info{1};
     Session = Info{3};
     
+      NewFilename = strjoin({Participant, Task, Session, Epoch, [Title, '.mat']}, '_');
+      
+      if ~Refresh && exist(fullfile(Destination, NewFilename), 'file')
+          continue
+      end
+    
     % load EEG
     EEG = pop_loadset('filepath', Source, 'filename', Filename);
     
@@ -97,9 +103,10 @@ for Indx_F = 1:nFiles
     
     EEG = pop_select(EEG, 'notrial', unique([hasNan, Remove']));
     
+    EEG = eeg_checkset(EEG);
     Data = eeglab2fieldtrip(EEG, 'raw', 'none');
     
-    NewFilename = strjoin({Participant, Task, Session, [Title, '.mat']}, '_');
+  
     save(fullfile(Destination, NewFilename), 'Data', '-v7.3');
     
 end
