@@ -1,5 +1,3 @@
-
-
 clear
 close all
 clc
@@ -386,7 +384,67 @@ saveas(gcf,fullfile(Paths.Results, [TitleTag, '_Retention_Power_N1vsN3.svg']))
 
 
 
-% plot comparison for each
+
+%%% correlate increase with SD with increase with WM
+
+WM = squeeze(nanmean(nanmean(Retention(:, 1, 1:2, Indexes_Hotspot, ....
+    FreqsIndxBand), 4),5));
+SD =  squeeze(nanmean(nanmean(nanmean(Baseline(:, [1,3], :, Indexes_Hotspot, ....
+    FreqsIndxBand), 4),5),3));
+
+% WM(10, :) = nan;
+% SD(10, :) = nan;
+% WMd = (WM(:,2)-WM(:, 1))./WM(:,1);
+% SDd = (SD(:,2)-SD(:, 1))./SD(:,1);
+WMd = (WM(:,2)-WM(:, 1));
+SDd = (SD(:,2)-SD(:, 1));
 
 
+figure
+PlotParticipantConfetti(WMd, SDd, Format, 50)
+xlabel('Increase WM (%)')
+ylabel('Increase SD (%)')
+[r, p] =  corr(WMd, SDd, 'rows', 'complete');
+title(['r=', num2str(r), '; p=', num2str(p)])
+saveas(gcf,fullfile(Paths.Results, [TitleTag, '_IndividualsIncrease.svg']))
+
+
+
+% SD2 peak vs N3 peak
+WM = squeeze(nanmean(Retention(:, 1, 1:2, Indexes_Hotspot, :), 4));
+SD = squeeze(nanmean(nanmean(Baseline(:, [1,3], :, Indexes_Hotspot, :), 4),3));
+
+Matrix = cat(2, WM(:, 2, :), SD(:, 2, :));
+figure
+PeakComparison(Matrix, Bands.(Band), Freqs, {'N3', 'SD2'}, Format)
+title(strjoin([TitleInfo, ' Retention N3 peak vs SD2 peak'],  ' '))
+saveas(gcf,fullfile(Paths.Results, [TitleTag, '_Retention_PeakChange_N3vsSD2.svg']))
+
+
+% same but for encoding
+WM = squeeze(nanmean(Encoding(:, 1, 1:2, Indexes_Hotspot, :), 4));
+SD = squeeze(nanmean(nanmean(Baseline(:, [1,3], :, Indexes_Hotspot, :), 4),3));
+
+Matrix = cat(2, WM(:, 2, :), SD(:, 2, :));
+figure
+PeakComparison(Matrix, Bands.(Band), Freqs, {'N3', 'SD2'}, Format)
+title(strjoin([TitleInfo, ' Encoding N3 peak vs SD2 peak'],  ' '))
+saveas(gcf,fullfile(Paths.Results, [TitleTag, '_Encoding_PeakChange_N3vsSD2.svg']))
+
+
+
+% BLvsSD2 peak vs N1vsN3peak
+WM = squeeze(nanmean(Retention(:, 1, 1:2, Indexes_Hotspot, :), 4));
+SD = squeeze(nanmean(nanmean(Baseline(:, [1,3], :, Indexes_Hotspot, :), 4),3));
+
+WMd = WM(:, 2, :)- WM(:, 1, :);
+SDd = SD(:, 2, :)- SD(:, 1, :);
+Matrix = cat(2, WMd(:, 1, :), SDd(:, 1, :));
+figure
+PeakComparison(Matrix, Bands.(Band), Freqs, {'N1vN3', 'BLvSD2'}, Format)
+title(strjoin([TitleInfo, ' Change with WM vs SD'],  ' '))
+saveas(gcf,fullfile(Paths.Results, [TitleTag, '_Retention_PeakChange_N1vN3_BLvSD2.svg']))
+
+
+% hedges g
 
