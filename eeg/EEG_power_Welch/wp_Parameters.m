@@ -14,7 +14,6 @@ CD = extractBefore(mfilename('fullpath'), 'wp_Parameters');
 Paths.Summary = fullfile(CD, 'SummaryData');
 Paths.WelchPower = fullfile(Paths.Preprocessed, 'Power', 'WelchPower_Peaks');
 % Paths.WelchPower = fullfile(Paths.Preprocessed, 'Power', 'WelchPower_Old');
-Paths.Figures = fullfile(Paths.Figures, 'Welch');
 
 % Parameters
 FreqRes = 0.1;

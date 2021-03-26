@@ -22,4 +22,4 @@ for Indx_P = 1:nParticipants
 end
 
 PlotConfettiSpaghetti(Peaks, SessionLabels, [], [], [], Format, true)
-ylabel('Theta Peak Frequency')
+ylabel('Peak Frequency')

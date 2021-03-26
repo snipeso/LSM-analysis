@@ -16,7 +16,7 @@ YLimSpectrum = [-.5, 1.2];
 RefreshMatrices = true;
 
 Tag = 'Power';
-Hotspot = 'AllCh'; % TODO: make sure this is in apporpriate figure name
+Hotspot = 'Hotspot'; % TODO: make sure this is in apporpriate figure name
 Plot_Single_Topos = false;
 
 % Channels_10_20 = EEG_Channels.Standard;
@@ -98,7 +98,7 @@ end
 %%
 AllBands = fieldnames(Bands);
 
-for Indx_B = 1:numel(AllBands)
+for Indx_B = 2 %1:numel(AllBands)
     Variable = AllBands{Indx_B};
     TitleTag = ['FZK_', Variable, '_', Normalization];
     
@@ -524,8 +524,8 @@ for Indx_B = 1:numel(AllBands)
                 title([AllTasksLabels{Indx_O}, ' ' num2str(Indx_S)])
                 
             end
-             saveas(gcf,fullfile(Destination, [TitleTag, '_TaskDiffsFromFixALL_', CompareTaskSessions{Indx_S}, '_', ...
-                    num2str(CLims(1)), '_', num2str(CLims(2)),'.svg']))
+            saveas(gcf,fullfile(Destination, [TitleTag, '_TaskDiffsFromFixALL_', CompareTaskSessions{Indx_S}, '_', ...
+                num2str(CLims(1)), '_', num2str(CLims(2)),'.svg']))
         end
         
         
@@ -544,8 +544,8 @@ for Indx_B = 1:numel(AllBands)
         Matrix = permute(Matrix, [1,3,2]);
         
         figure('units','normalized','outerposition',[0 0 .25 .4])
-       PlotPowerHighlight(Matrix, Freqs, FreqsIndxBand, ...
-        C, Format)
+        PlotPowerHighlight(Matrix, Freqs, FreqsIndxBand, ...
+            C, Format)
         
         ylabel(YLabel)
         ylim(YLimSpectrum)
@@ -557,7 +557,7 @@ for Indx_B = 1:numel(AllBands)
     
     
     
-    
+    %%
     
     %%% Effect Sizes
     BL_SD_Hotspot = struct();
@@ -573,7 +573,6 @@ for Indx_B = 1:numel(AllBands)
         BL_SD_Hotspot(Indx_T).HedgesCI_High = statsHedges.hedgesgCi(2);
         
         % TODO: normality tests?
-        
     end
     
     
@@ -587,11 +586,76 @@ for Indx_B = 1:numel(AllBands)
     figure('units','normalized','outerposition',[0 0 .5 .5])
     PlotBars2(BL_SD_Hotspot.HedgesG, [BL_SD_Hotspot.HedgesCI_Low,BL_SD_Hotspot.HedgesCI_High ],...
         AllTasksLabels, Colors, 'vertical', Format)
+    title('Sleep Deprivation (BL vs SD2) Effect Sizes')
     ylabel('Hedges g')
     set(gca, 'FontSize', 12)
     saveas(gcf,fullfile(Paths.Results, [TitleTag, '_SD2-BL_EffectSizes.svg']))
-    close all
     
+    
+    
+    %%% Task theta effect sizes
+    
+    FixIndx = ismember(AllTasks, 'Fixation');
+    Others = find(~FixIndx);
+    figure('units','normalized','outerposition',[0 0 1 .5])
+    for Indx_S = 1:2
+        subplot(1,2, Indx_S)
+        BL_SD_Hotspot = struct();
+        for Indx_O = Others
+            Fix = squeeze(Band_Hotspot(:, Indx_S, FixIndx));
+            Task = squeeze(Band_Hotspot(:, Indx_S, Indx_O));
+            statsHedges = mes(Task, Fix, 'hedgesg', 'isDep', 1, 'nBoot', 1000);
+            BL_SD_Hotspot(Indx_O).task = AllTasks{Indx_O};
+            BL_SD_Hotspot(Indx_O).mean = nanmean(Band_Hotspot(:, :, Indx_O),'all');
+            BL_SD_Hotspot(Indx_O).p = statsHedges.t.p;
+            BL_SD_Hotspot(Indx_O).HedgesG = statsHedges.hedgesg;
+            BL_SD_Hotspot(Indx_O).HedgesCI_Low = statsHedges.hedgesgCi(1);
+            BL_SD_Hotspot(Indx_O).HedgesCI_High = statsHedges.hedgesgCi(2);
+            
+            % TODO: normality tests?
+        end
+        
+        
+        BL_SD_Hotspot = struct2table(BL_SD_Hotspot);
+        BL_SD_Hotspot.fdr_p = fdr(BL_SD_Hotspot.p);
+        
+        writetable(BL_SD_Hotspot, fullfile(Paths.Results, ...
+            [TitleTag, '_', Hotspot, '_', CompareTaskSessions{Indx_S},'_TaskEffectSizes.csv']));
+        
+        % correct for multiple comparisons
+        PlotBars2(BL_SD_Hotspot.HedgesG, [BL_SD_Hotspot.HedgesCI_Low,BL_SD_Hotspot.HedgesCI_High ],...
+            AllTasksLabels(Others), Colors(Others, :), 'vertical', Format)
+        ylabel('Hedges g')
+        set(gca, 'FontSize', 12)
+        title(strjoin({CompareTaskSessions{Indx_S}, 'Task vs Fix'}, ' '))
+    end
+    NewLims = SetLims(1, 2, 'y');
+    saveas(gcf,fullfile(Paths.Results, [TitleTag, 'Task_EffectSizes.svg']))
+    
+    
+    
+    %% peak shifts in hotspot
+    % differences across tasks Bl, SD2
+    figure('units','normalized','outerposition',[0 0 1 .5])
+    for Indx_S = 1:2
+        subplot(1, 2, Indx_S)
+        Matrix = squeeze(Hotspot_Spectrum(:, :, Indx_S, :));
+        Matrix = permute(Matrix, [1, 3, 2]);
+        PeakComparison(Matrix, Bands.(Variable), Freqs, AllTasksLabels, Format)
+        title(strjoin({CompareTaskSessions{Indx_S}, 'Peak', Variable},  ' '))
+    end
+    saveas(gcf,fullfile(Paths.Results, [TitleTag, 'PeakTasks.svg']))
+    
+    % BLvsSD across tasks
+     figure('units','normalized','outerposition',[0 0 .5 .5])
+      BL = squeeze(Hotspot_Spectrum(:, :, 1, :));
+      SD =  squeeze(Hotspot_Spectrum(:, :, 2, :));
+      Matrix = (SD-BL);
+        Matrix = permute(Matrix, [1, 3, 2]);
+        PeakComparison(Matrix, Bands.(Variable), Freqs, AllTasksLabels, Format)
+        title(strjoin({CompareTaskSessions{Indx_S}, 'Peak', Variable},  ' '))
+     saveas(gcf,fullfile(Paths.Results, [TitleTag, 'PeakChangeSD.svg']))
+   
 end
 
 
