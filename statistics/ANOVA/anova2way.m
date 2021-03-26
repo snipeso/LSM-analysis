@@ -220,6 +220,7 @@ for Indx = 1:3
         Matrix = (Matrix2 +Matrix1)./2;
     end
     
+    error('TODO: use HedgesG stat function')
     statsHedges = mes(Matrix(:, 2), Matrix(:, 1), 'hedgesg', 'isDep', 1, 'nBoot', 1000);
     Hedges(1, Indx) = statsHedges.hedgesg;
     HedgesCI(1, Indx, :) = statsHedges.hedgesgCi;

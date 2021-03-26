@@ -31,11 +31,20 @@ if ~isempty(Errors)
     
     % Based on barweb.m by Bolu Ajiboye from MATLAB File Exchange
     for Indx = 1:nbars
+        if  ndims(Data) == 2 && size(Data, 1) == 1
+            x = Indx;
+        else
         % Calculate center of each bar
         x = (1:ngroups) - groupwidth/2 + (2*Indx-1) * groupwidth / (2*nbars);
+        end
         
         if ndims(Errors) == 2
+            if ndims(Data) == 2 && size(Data, 1) == 1
+                  errorbar(x, Data(Indx),  Data(Indx)-Errors(Indx, 1),  Errors(Indx,2)-Data(Indx), 'k', 'linestyle', 'none', 'LineWidth', 1.5);
+      
+            else
             errorbar(x, Data(:,Indx),  Data(:,Indx)-Errors(:, 1),  Errors(:,2)-Data(:,Indx), 'k', 'linestyle', 'none', 'LineWidth', 1.5);
+            end
         elseif ndims(Errors) == 3
             if exist('Orientation', 'var') && strcmp(Orientation, 'horizontal')
                 %                 errorbar(Data(:,Indx), x, abs(Data(:,Indx)-Errors(:,Indx, 1)), ...

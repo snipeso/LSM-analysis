@@ -447,4 +447,17 @@ saveas(gcf,fullfile(Paths.Results, [TitleTag, '_Retention_PeakChange_N1vN3_BLvSD
 
 
 % hedges g
+WM = squeeze(nanmean(nanmean(Retention(:, 1, 1:2, Indexes_Hotspot, ....
+    FreqsIndxBand), 4),5));
+SD =  squeeze(nanmean(nanmean(nanmean(Baseline(:, [1,3], :, Indexes_Hotspot, ....
+    FreqsIndxBand), 4),5),3));
 
+[WMg, WMCI] = HedgesG(squeeze(WM(:, 2)),squeeze(WM(:, 1)));
+[SDg, SDCI] = HedgesG(squeeze(SD(:, 2)),squeeze(SD(:, 1)));
+
+figure
+C = [Format.Colors.Generic.Dark1; Format.Colors.Generic.Red];
+
+PlotBars2([WMg, SDg], [WMCI, SDCI]', {'WM', 'SD'}, C, 'vertical', Format)
+set(gca, 'FontSize', 14)
+ 
