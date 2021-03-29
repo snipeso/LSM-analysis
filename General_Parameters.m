@@ -43,6 +43,7 @@ Format = struct();
 
 Format.FontName = 'Tw Cen MT'; % use something else for papers
 Format.TopoRes = 150;
+Format.FreqRange = [0 30];
 
 % Colors
 Format.Colormap.Linear = flip(colorcet('L17'));
@@ -356,7 +357,10 @@ EEG_Channels.Backspot = unique([EEG_Channels.O1, EEG_Channels.O2, 72, 75]);
 EEG_Channels.AllCh = 1:128;
 EEG_Channels.AllCh(ismember(EEG_Channels.AllCh, EEG_Channels.notEEG)) = [];
 EEG_Channels.Elena = [48, 49, 56, 107, 113, 119, 125:128];
-
+EEG_Channels.Sample = [15, 11, 55, 62, 75];
+EEG_Channels.Hotspot_Sample = [16 11 6 4, 124 123 122];
+EEG_Channels.Backspot_Sample = [58 65 79 75];
+EEG_Channels.Grid = [24 11 124, 36 55 104, 52 62 92, 65 75 90];
 EEG_Channels.CZ = [36, 104];
 EEG_Channels.FZ = [11];
 EEG_Channels.OZ = [70 83];

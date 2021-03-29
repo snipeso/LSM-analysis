@@ -342,9 +342,9 @@ for Indx_P = 1:numel(Participants)
     BL =  squeeze(nanmean(Retention(Indx_P, Session, 1, :, FreqsIndxBand(1):FreqsIndxBand(2)), 5));
     M = squeeze(nanmean(Retention(Indx_P, Session, 2, :, FreqsIndxBand(1):FreqsIndxBand(2)), 5));
     subplot(3, 4, Indx_P)
-   topoplot(M-BL, Chanlocs,  'style', 'map', 'headrad', 'rim','gridscale', 150)
-   colormap(Format.Colormap.Divergent)
-   colorbar
+    topoplot(M-BL, Chanlocs,  'style', 'map', 'headrad', 'rim','gridscale', 150)
+    colormap(Format.Colormap.Divergent)
+    colorbar
     title([Participants{Indx_P}, ' N1 vs N3'])
 end
 saveas(gcf,fullfile(Paths.Results, [TitleTag, '_Individuals_', Sessions{Session}, '_N1vsN3.svg']))
@@ -362,8 +362,8 @@ saveas(gcf,fullfile(Paths.Results, [TitleTag, '_Individuals_', Sessions{Session}
 %     title([Participants{Indx_P}, ' N1 vs N3'])
 % end
 % saveas(gcf,fullfile(Paths.Results, [TitleTag, '_Individuals_', Levels{Level}, '_S1vsS3.svg']))
-% 
-% 
+%
+%
 
 
 % plot split by level for each session
@@ -442,11 +442,51 @@ SDd = SD(:, 2, :)- SD(:, 1, :);
 Matrix = cat(2, WMd(:, 1, :), SDd(:, 1, :));
 figure
 PeakComparison(Matrix, Bands.(Band), Freqs, {'N1vN3', 'BLvSD2'}, Format)
-title(strjoin([TitleInfo, ' Change with WM vs SD'],  ' '))
+title(strjoin([TitleInfo, 'Change with WM vs SD'],  ' '))
 saveas(gcf,fullfile(Paths.Results, [TitleTag, '_Retention_PeakChange_N1vN3_BLvSD2.svg']))
 
+%%
+%%% spectrum and peaks at different locations
+PlotCh = 'Sample';
 
-% hedges g
+EEG_Channels.(PlotCh) = sort(EEG_Channels.(PlotCh));
+Indexes =  ismember( str2double({Chanlocs.labels}), EEG_Channels.(PlotCh));
+ChColors = Format.Colormap.Rainbow(round(linspace(1, size(Format.Colormap.Rainbow, 1), nnz(Indexes)+1)), :);
+WM = squeeze(Retention(:, 1, 1:2, Indexes, :));
+SD = squeeze(nanmean(Baseline(:, [1,3], :, Indexes, :), 3));
+WMd = squeeze(WM(:, 2, :, :)- WM(:, 1, :, :));
+SDd = squeeze(SD(:, 2, :, :)- SD(:, 1, :, :));
+
+figure('units','normalized','outerposition',[0 0 .5 .5])
+
+% WM peak change
+subplot(2, 2, 1)
+PeakComparison(WMd, Bands.(Band), Freqs, string(EEG_Channels.(PlotCh)), Format)
+title(strjoin({Band, Normalization, 'Peak shift WM', PlotCh},  ' '))
+
+% WM whole spectrum change
+subplot(2, 2, 2)
+PlotPowerHighlight(WMd, Freqs, FreqsIndxBand, ChColors, Format, string(EEG_Channels.(PlotCh)))
+title(strjoin({Band, Normalization, 'Spectrum shift WM', PlotCh},  ' '))
+xlim([0 30])
+
+% SD peak change
+subplot(2, 2, 3)
+PeakComparison(SDd, Bands.(Band), Freqs, string(EEG_Channels.(PlotCh)), Format)
+title(strjoin({Band, Normalization, 'Peak shift SD', PlotCh},  ' '))
+
+% WM whole spectrum change
+subplot(2, 2, 4)
+PlotPowerHighlight(SDd, Freqs, FreqsIndxBand, ChColors, Format, string(EEG_Channels.(PlotCh)))
+title(strjoin({Band, Normalization, 'Spectrum shift SD', PlotCh},  ' '))
+xlim([0 30])
+
+
+Title =  strjoin({Task, Normalization, Subset, PlotCh,  Band, 'Channel_Shift.svg'}, '_');
+saveas(gcf,fullfile(Paths.Results, Title))
+
+%%
+%%% hedges g
 WM = squeeze(nanmean(nanmean(Retention(:, 1, 1:2, Indexes_Hotspot, ....
     FreqsIndxBand), 4),5));
 SD =  squeeze(nanmean(nanmean(nanmean(Baseline(:, [1,3], :, Indexes_Hotspot, ....
@@ -460,4 +500,4 @@ C = [Format.Colors.Generic.Dark1; Format.Colors.Generic.Red];
 
 PlotBars2([WMg, SDg], [WMCI, SDCI]', {'WM', 'SD'}, C, 'vertical', Format)
 set(gca, 'FontSize', 14)
- 
+

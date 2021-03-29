@@ -8,13 +8,13 @@ EEGT_Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Normalization = 'zscore'; % 'zscore', TODO: 'BL'
-Refresh = true;
+Refresh = false;
 
 Freqs = 1:.25:40;
 Hotspot = 'Hotspot';
 YLim = [-.2 1.4];
 Band = 'Theta';
-TotBins = 3;
+TotBins = 5;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

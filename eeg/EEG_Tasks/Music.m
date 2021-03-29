@@ -13,7 +13,7 @@ EEGT_Parameters
 
 
 Normalization = 'zscore'; % 'zscore', TODO: 'BL'
-Refresh = true;
+Refresh = false;
 
 Freqs = 1:.25:40;
 Window = 4; % in seconds
