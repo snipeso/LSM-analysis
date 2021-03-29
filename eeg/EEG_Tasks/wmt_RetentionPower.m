@@ -447,7 +447,7 @@ saveas(gcf,fullfile(Paths.Results, [TitleTag, '_Retention_PeakChange_N1vN3_BLvSD
 
 %%
 %%% spectrum and peaks at different locations
-PlotCh = 'Sample';
+PlotCh = 'Hotspot_Sample';
 
 EEG_Channels.(PlotCh) = sort(EEG_Channels.(PlotCh));
 Indexes =  ismember( str2double({Chanlocs.labels}), EEG_Channels.(PlotCh));
@@ -457,7 +457,7 @@ SD = squeeze(nanmean(Baseline(:, [1,3], :, Indexes, :), 3));
 WMd = squeeze(WM(:, 2, :, :)- WM(:, 1, :, :));
 SDd = squeeze(SD(:, 2, :, :)- SD(:, 1, :, :));
 
-figure('units','normalized','outerposition',[0 0 .5 .5])
+figure('units','normalized','outerposition',[0 0 1 1])
 
 % WM peak change
 subplot(2, 2, 1)
@@ -489,15 +489,24 @@ saveas(gcf,fullfile(Paths.Results, Title))
 %%% hedges g
 WM = squeeze(nanmean(nanmean(Retention(:, 1, 1:2, Indexes_Hotspot, ....
     FreqsIndxBand), 4),5));
-SD =  squeeze(nanmean(nanmean(nanmean(Baseline(:, [1,3], :, Indexes_Hotspot, ....
+SD1 =  squeeze(nanmean(nanmean(nanmean(Baseline(:, [1,2], :, Indexes_Hotspot, ....
+    FreqsIndxBand), 4),5),3));
+SD2 =  squeeze(nanmean(nanmean(nanmean(Baseline(:, [1,3], :, Indexes_Hotspot, ....
+    FreqsIndxBand), 4),5),3));
+SDr =  squeeze(nanmean(nanmean(nanmean(Retention(:, [1,3], :, Indexes_Hotspot, ....
     FreqsIndxBand), 4),5),3));
 
+
 [WMg, WMCI] = HedgesG(squeeze(WM(:, 2)),squeeze(WM(:, 1)));
-[SDg, SDCI] = HedgesG(squeeze(SD(:, 2)),squeeze(SD(:, 1)));
+[SD2g, SD2CI] = HedgesG(squeeze(SD2(:, 2)),squeeze(SD2(:, 1)));
+[SDrg, SDrCI] = HedgesG(squeeze(SDr(:, 2)),squeeze(SDr(:, 1)));
+[SD1g, SD1CI] = HedgesG(squeeze(SD1(:, 2)),squeeze(SD1(:, 1)));
 
 figure
-C = [Format.Colors.Generic.Dark1; Format.Colors.Generic.Red];
+C = [Format.Colors.Generic.Dark1; Format.Colors.Generic.Pale2; Format.Colors.Generic.Red; Format.Colors.Generic.Dark2];
 
-PlotBars2([WMg, SDg], [WMCI, SDCI]', {'WM', 'SD'}, C, 'vertical', Format)
+PlotBars2([WMg, SD1g, SD2g, SDrg], [WMCI,SD1CI, SD2CI, SDrCI]', {'WM', 'BL SD1', 'BL SD2', 'RT SD'}, C, 'vertical', Format)
 set(gca, 'FontSize', 14)
+ylabel('Hedges G')
+saveas(gcf,fullfile(Paths.Results, [TitleTag,'WMvsSDg.svg']))
 

@@ -16,8 +16,15 @@ for Indx_L = 1:nLines
     
     if size(HighlightColor, 1) > 1
         HC = HighlightColor(Indx_L, :);
+        
+        LC = rgb2hsv(HC);
+        LC(3) = LC(3)*.75;
+        LC(2) = LC(2)*.5;
+        LC = hsv2rgb(LC);
+        
     else
         HC = HighlightColor;
+        LC = LineColors(Indx_L)*ones(1,3);
     end
     if ndims(Matrix) > 2
     Line = squeeze(nanmean(Matrix(:, Indx_L, :), 1));
@@ -25,7 +32,7 @@ for Indx_L = 1:nLines
         Line = Matrix(Indx_L, :);
     end
     
-    plot(Freqs, Line, '--', 'LineWidth', 1.5, 'Color', LineColors(Indx_L)*ones(1,3),'HandleVisibility','off')
+    plot(Freqs, Line, '--', 'LineWidth', 1.5, 'Color', LC,'HandleVisibility','off')
     
     plot(Freqs(FreqsIndxBand(1):FreqsIndxBand(2)), ...
         Line(FreqsIndxBand(1):FreqsIndxBand(2)), ...
