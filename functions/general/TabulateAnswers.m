@@ -1,4 +1,4 @@
-function [AnsAll, Labels] = TabulateAnswers(Answers, Sessions, Participants, qID, ColName)
+function [Answers, Labels] = TabulateAnswers(Table, Sessions, Participants, qID, Column)
 % puts answers from table into a matrix that gets used by the plotting
 % functions.
 % Answers is the table
@@ -11,18 +11,18 @@ function [AnsAll, Labels] = TabulateAnswers(Answers, Sessions, Participants, qID
 % Labels is a cell list of the corresponding labels of the question
 
 % create empty matrix or cell array, depending on what the datatype is
-if isa(Answers.(ColName)(1), 'double') || isa(Answers.(ColName)(1), 'single')
-    AnsAll = nan(numel(Participants), numel(Sessions));
+if isa(Table.(Column)(1), 'double') || isa(Table.(Column)(1), 'single')
+    Answers = nan(numel(Participants), numel(Sessions));
 else
-    AnsAll = cell(numel(Participants), numel(Sessions));
+    Answers = cell(numel(Participants), numel(Sessions));
 end
 
 for Indx_P = 1:numel(Participants)
     for Indx_S = 1:numel(Sessions)
         
         % get answer of specific session for specific participant
-        QuestionIndexes = strcmp(Answers.qID, qID) & strcmp(Answers.dataset, Participants{Indx_P}) & strcmp(Answers.Level2, Sessions{Indx_S});
-        Ans = Answers.(ColName)( QuestionIndexes);
+        QuestionIndexes = strcmp(Table.qID, qID) & strcmp(Table.dataset, Participants{Indx_P}) & strcmp(Table.Level2, Sessions{Indx_S});
+        Ans = Table.(Column)( QuestionIndexes);
         
         % handle problems
         if numel(Ans) < 1
@@ -33,16 +33,16 @@ for Indx_P = 1:numel(Participants)
         
         % save in appropriate way
         if isa(Ans, 'double') || isa(Ans, 'single')
-            AnsAll(Indx_P, Indx_S) = Ans;
+            Answers(Indx_P, Indx_S) = Ans;
         else
-            AnsAll(Indx_P, Indx_S) = {Ans};
+            Answers(Indx_P, Indx_S) = {Ans};
         end
         
     end
 end
 
 %%% gather labels
-Labels = Answers.qLabels(find(QuestionIndexes, 1));
+Labels = Table.qLabels(find(QuestionIndexes, 1));
 Labels = replace(Labels, '//', '-');
 Labels = split(Labels, '-');
 
