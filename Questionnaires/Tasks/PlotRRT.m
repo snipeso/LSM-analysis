@@ -4,13 +4,21 @@ close all
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% GroupLabel = [];
-GroupLabel = 'Gender';
+GroupLabel = [];
+
+
+% GroupLabel = 'Gender';
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Q_Parameters
+Info = getInfo();
+Paths = Info.Paths;
 Figure_Path = fullfile(Paths.Results, 'RRT');
+Sessions = Info.Sessions;
+SessionLabels = Info.Labels.Sessions;
+PlotProps = Info.Manuscript;
+StatsP = Info.StatsP;
+Participants = Info.Participants;
 
 if ~exist(Figure_Path, 'dir')
     mkdir(Figure_Path)
@@ -29,22 +37,26 @@ filename = 'Fixation_All.csv';
 
 Answers = readtable(fullfile(Paths.CSV, filename));
 
-Sessions = allSessions.RRT;
-SessionLabels = allSessionLabels.RRT;
 
+if isempty(GroupLabel)
+    Colors = PlotProps.Color.Participants;
+end
+%%
 %%% plot KSS
-[AnsAll, Labels] = TabulateAnswers(Answers, Sessions,  Participants, 'RT_TIR_1', 'numAnswer_1');
+
+
+[AnsAll, Labels] = table2matrix_questionnaires(Answers, Participants, Sessions, 'RT_TIR_1',  'numAnswer_1');
 
 AnsAll = 1+AnsAll.*8; % convert to 1 to 9 scale
-figure( 'units','normalized','outerposition',[0 0 .5 .5])
+figure( 'units','normalized','outerposition',[0 0 .5 .8])
 hold on
-PlotConfettiSpaghetti(AnsAll, SessionLabels, [0 10], Labels, Group, Format)
+data2D('line', AnsAll, SessionLabels, Labels, [0 10], Colors, StatsP, PlotProps);
 title('RRT KSS')
 yticks(1:9)
 saveas(gcf,fullfile(Figure_Path, ['KSS_', TitleTag, '.svg']))
 
 
-%%% plot overview
+%% plot overview
 %
 Answers.qID(strcmp(Answers.qLabels, 'Frustrating/Neutral/Relaxing')) = {'RT_OVR_1_1'};
 Answers.numAnswer_1(strcmp(Answers.qID,  'RT_OVR_3_2') & strcmp(Answers.strAnswer, '0')) = 1;
@@ -56,17 +68,17 @@ Titles = {'Enjoyment';
     'Difficulty Staying Awake'};
 figure( 'units','normalized','outerposition',[0 0 1 1])
 for Indx_Q = 1:numel(qIDs)
-    [AnsAll, Labels] = TabulateAnswers(Answers, Sessions,  Participants, qIDs{Indx_Q}, 'numAnswer_1');
+    [AnsAll, Labels] = table2matrix_questionnaires(Answers, Participants, Sessions,  qIDs{Indx_Q},  'numAnswer_1');
     AnsAll = AnsAll.*100;
     subplot(2, 2, Indx_Q)
-    PlotConfettiSpaghetti(AnsAll, SessionLabels, [0 100],  Labels, Group, Format)
+    data2D('line', AnsAll, SessionLabels, Labels, [0 100], Colors, StatsP, PlotProps);
     title(Titles{Indx_Q})
 end
 saveas(gcf,fullfile(Figure_Path, ['Overview_', TitleTag, '.svg']))
 
 
 
-%%% plot 4 energies
+%% plot 4 energies
 
 figure( 'units','normalized','outerposition',[0 0 1 1])
 qID = 'RT_TIR_2';
@@ -87,25 +99,25 @@ saveas(gcf,fullfile(Figure_Path, ['4Energies_', TitleTag, '.svg']))
 
 
 
-%%% alertness and focus
+%% alertness and focus
 
 figure( 'units','normalized','outerposition',[0 0 1 .5])
 
-[AnsAll, Labels] = TabulateAnswers(Answers, Sessions,  Participants, 'RT_TIR_4', 'numAnswer_1');
+[AnsAll, Labels] = table2matrix_questionnaires(Answers, Participants, Sessions,  'RT_TIR_4',  'numAnswer_1');
 AnsAll = AnsAll.*100;
 subplot(1, 2, 1)
-PlotConfettiSpaghetti(AnsAll,  SessionLabels, [0 100],  Labels, Group, Format)
+data2D('line', AnsAll, SessionLabels, Labels, [0 100], Colors, StatsP, PlotProps);
 title('Alertness')
 
-[AnsAll, Labels] = TabulateAnswers(Answers, Sessions,  Participants, 'RT_TIR_6', 'numAnswer_1');
+ [AnsAll, Labels] = table2matrix_questionnaires(Answers, Participants, Sessions,  'RT_TIR_6',  'numAnswer_1');
 AnsAll = AnsAll.*100;
 subplot(1, 2, 2)
-PlotConfettiSpaghetti(AnsAll, SessionLabels, [0 100],  Labels, Group, Format)
+data2D('line', AnsAll, SessionLabels, Labels, [0 100], Colors, StatsP, PlotProps);
 title('Focus')
 saveas(gcf,fullfile(Figure_Path, ['Alertness_', TitleTag, '.svg']))
 
 
-%%% task difficulty Oddball
+%% task difficulty Oddball
 
 figure( 'units','normalized','outerposition',[0 0 .5 .5])
 [AnsAll, Labels] = TabulateAnswers(Answers, Sessions,  Participants, 'RT_oddball', 'numAnswer_1');
@@ -204,9 +216,6 @@ title('Motivation Feelings')
 saveas(gcf,fullfile(Figure_Path, ['Motivation_', TitleTag, '.svg']))
 
 
-
-
-
 %%% plot sleep need
 [AnsAll, Labels] = TabulateAnswers(Answers, Sessions,   Participants, 'RT_TIR_5', 'numAnswer_1' );
 figure( 'units','normalized','outerposition',[0 0 .6 .5])
@@ -215,7 +224,7 @@ PlotConfettiSpaghetti(AnsAll, SessionLabels, [1 7],  Labels, Group, Format)
 saveas(gcf,fullfile(Figure_Path, ['SleepDesire_Confetti', TitleTag, '.svg']))
 
 
-%%% plot thoughts
+%% plot thoughts
 qID = 'RT_THO_1';
 TotTho = nnz(strcmp(Answers.qID, qID));
 MaxAns = 6;
@@ -223,6 +232,7 @@ ThotAll = nan(numel(Participants), numel(Sessions), MaxAns);
 for Indx_A = 1:MaxAns
     [ThotAll(:, :, Indx_A), Labels] =  TabulateAnswers(Answers, Sessions, ...
         Participants, qID, ['numAnswer_', num2str(Indx_A)] );
+    
 end
 figure( 'units','normalized','outerposition',[0 0 .6 .5])
 PlotMultipleChoice(ThotAll, SessionLabels, 'Thoughts', Labels, Format)
