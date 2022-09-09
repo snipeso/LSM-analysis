@@ -5,7 +5,7 @@ if ~exist(Destination, 'dir')
 end
 
 % find all paths
-[Subfolders, Datasets] = AllFolderPaths(DatasetPaths, 'PXX', false, {'CSVs', 'Lazy', 'P00'});
+[Subfolders, Datasets] = AllFolderPaths(DatasetPaths, 'PXX', false, {'CSVs', 'Lazy', 'P00', 'Applicants'});
 
 % get only paths related to task
 Subfolders(~contains(Subfolders, Task)) = [];
@@ -82,4 +82,4 @@ end
 
 
 % save
-save(fullfile(Destination, [Task, 'AllAnswers.mat']), 'AllAnswers')
+save(fullfile(Destination, [Task, '_AllAnswers.mat']), 'AllAnswers')
